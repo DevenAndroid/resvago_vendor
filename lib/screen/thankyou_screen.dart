@@ -43,7 +43,7 @@ SizedBox(height: 20,),
       Align(
         alignment: Alignment.center,
         child: Text(
-          'THANK YOU',
+          'THANK YOU ',
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.w600,
