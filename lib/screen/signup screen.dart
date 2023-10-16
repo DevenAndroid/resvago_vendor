@@ -385,7 +385,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if (_formKeySignup.currentState!.validate() &&
                               value == true &&
                               showValidationImg == true) {
-                             Get.toNamed(MyRouters.thankYouScreen);
+                            Get.toNamed(MyRouters.thankYouScreen);
                           } else {
                             showValidation = true;
                             showValidationImg = true;
@@ -407,6 +407,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   showPickImageSheet() {
     showCupertinoModalPopup<void>(
       context: context,
