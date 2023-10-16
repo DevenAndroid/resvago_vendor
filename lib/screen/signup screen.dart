@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +14,9 @@ import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
+import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
+import '../model/signup_model.dart';
 import '../routers/routers.dart';
 import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
@@ -47,6 +50,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {});
   }
 
+  File categoryFile = File("");
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  FirebaseService firebaseService = FirebaseService();
+  // RegisterData? get registerData => widget.resturentData;
+  // Future<void> addresturentToFirestore() async {
+  //   if(!formKey.currentState!.validate())return;
+  //   if(categoryFile.path.isEmpty){
+  //     showToast("Please select category image");
+  //     return;
+  //   }
+  //
+  //   String imageUrl = categoryFile.path;
+  //   if (!categoryFile.path.contains("https")) {
+  //     if (resturentData != null) {
+  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
+  //       await gg.delete();
+  //     }
+  //     UploadTask uploadTask = FirebaseStorage.instance
+  //         .ref("categoryImages")
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
+  //         .putFile(categoryFile);
+  //
+  //     TaskSnapshot snapshot = await uploadTask;
+  //     imageUrl = await snapshot.ref.getDownloadURL();
+  //   } else {
+  //     if (resturentData != null) {
+  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
+  //       await gg.delete();
+  //     }
+  //     UploadTask uploadTask = FirebaseStorage.instance
+  //         .ref("categoryImages")
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
+  //         .putFile(categoryFile);
+  //
+  //     TaskSnapshot snapshot = await uploadTask;
+  //     imageUrl = await snapshot.ref.getDownloadURL();
+  //   }
+  //   if (resturentData != null) {
+  //     await firebaseService.manageCategoryProduct(
+  //       documentReference: widget.collectionReference.doc(resturentData!.docid),
+  //       deactivate: resturentData!.deactivate,
+  //       description: descriptionController.text.trim(),
+  //       docid: resturentData!.docid,
+  //       image: imageUrl,
+  //       name: kk,
+  //       searchName: arrangeNumbers,
+  //     );
+  //   }
+  //   else {
+  //     await firebaseService.manageCategoryProduct(
+  //         documentReference: widget.collectionReference.doc(DateTime.now().millisecondsSinceEpoch.toString()),
+  //         deactivate: null,
+  //         description: descriptionController.text.trim(),
+  //         docid: DateTime.now().millisecondsSinceEpoch,
+  //         image: imageUrl,
+  //         name: kk,
+  //         searchName: arrangeNumbers,
+  //         time: DateTime.now().millisecondsSinceEpoch
+  //     );
+  //   }
+  //   Get.back();
+  // }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
