@@ -120,7 +120,7 @@ class CommonButtonBlue extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             minimumSize: Size(AddSize.screenWidth, AddSize.size50 * 1.2),
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppTheme.primaryColor,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8), // <-- Radius

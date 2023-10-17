@@ -18,9 +18,7 @@ import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
 import '../helper.dart';
-import '../model/signup_model.dart';
 import '../routers/routers.dart';
-import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -63,11 +61,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
 
+  void checkEmailInFirestore() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('vendor_users')
+        .where('email', isEqualTo: emailController.text)
+        .get();
+
+    if (result.docs.isNotEmpty) {
+      Fluttertoast.showToast(msg: 'Email already exits');
+    }  else {
+      addUserToFirestore();
+    }
+  }
+
   Future<void> addUserToFirestore() async {
-    // if (!formKey.currentState!.validate()) return;
-    // if (categoryFile.path.isEmpty) {
-    //   return;
-    // }
 
     String imageUrl = categoryFile.path;
       UploadTask uploadTask = FirebaseStorage.instance
@@ -232,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     color: Color(0xFF8487A1),
                                   )
                                 : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
-                        controller: registerController.passwordController,
+                        controller: passwordController,
                         obscureText: obscureText4,
                         // length: 10,
                         validator: MultiValidator([
@@ -267,7 +274,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     color: Color(0xFF8487A1),
                                   )
                                 : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
-                        controller: registerController.confirmPassController,
+                        controller: confirmPasswordController,
                         // length: 10,
                         obscureText: obscureText3,
                         validator: (value) {
@@ -317,7 +324,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ],
                                 )
                               : Container(
-                                  padding: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.only(top: 8),
                                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   width: double.maxFinite,
                                   height: 130,
@@ -339,7 +346,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
-                                        height: 15,
+                                        height: 11,
                                       ),
                                     ],
                                   ),
@@ -364,7 +371,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       value = newValue!;
-                                      checkboxColor.value = !newValue;
+                                      setState(() {
+
+                                      });
                                     });
                                   }),
                             ),
@@ -378,13 +387,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (_formKeySignup.currentState!.validate() && value == true && showValidationImg == true) {
-                            Get.toNamed(MyRouters.thankYouScreen);
-                          } else {
-                            showValidation = true;
-                            showValidationImg = true;
-                            setState(() {});
+
+                          if(value){
+                            if (_formKeySignup.currentState!.validate()  && showValidationImg == true) {
+                              checkEmailInFirestore();
+                            }
+                            else {
+                              Fluttertoast.showToast(msg: 'Please Select CheckBox');
+                              showValidation = true;
+                              showValidationImg = true;
+                              setState(() {});
+                            }
+                          }else{
+                            Fluttertoast.showToast(msg: 'Please select CheckBox');
                           }
+
                         },
                         title: 'APPLY',
                       ),
