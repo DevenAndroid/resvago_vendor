@@ -1,12 +1,17 @@
+import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/routers/routers.dart';
 import '../controllers/login_controller.dart';
 import '../widget/appassets.dart';
+import 'dashboard/dashboard_chart.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  String verificationId;
+   OtpScreen({super.key, required this.verificationId});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -15,10 +20,50 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
   final loginController = Get.put(LoginController());
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String verificationId = "";
+  reSend() async {
+    try {
+      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          log("Verification Failed: $e");
+        },
+        codeSent: (String verificationId, [int? resendToken]) {
+          // Update the parameter to accept nullable int
+          log("Code Sent: $verificationId");
+          this.verificationId = verificationId;
+          Get.to(() => OtpScreen(verificationId: verificationId));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          log("Auto Retrieval Timeout: $verificationId");
+        },
+      );
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+  verifyOtp() async {
+    try {
+      PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+        verificationId: widget.verificationId,
+        smsCode: otpController.text.trim(),
+      );
+      final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
+      final User? user = authResult.user;
+      log('Successfully signed in with phone number: ${user!.phoneNumber}');
+      Get.offAllNamed(MyRouters.vendorDashboard);
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    log(loginController.mobileController.text);
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
@@ -53,31 +98,34 @@ class _OtpScreenState extends State<OtpScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              PinCodeFields(
-                                length: 4,
-                                controller: otpController,
-                                fieldBorderStyle: FieldBorderStyle.square,
-                                responsive: false,
-                                fieldHeight: 55.0,
-                                fieldWidth: 55.0,
-                                borderWidth: 1.0,
-                                activeBorderColor: Colors.white,
-                                activeBackgroundColor:
-                                    Colors.white.withOpacity(.10),
-                                borderRadius: BorderRadius.circular(10.0),
-                                keyboardType: TextInputType.number,
-                                autoHideKeyboard: true,
-                                fieldBackgroundColor:
-                                    Colors.white.withOpacity(.10),
-                                borderColor: Colors.white,
-                                textStyle: GoogleFonts.poppins(
-                                  fontSize: 25.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: PinCodeFields(
+                                  length: 6,
+                                  controller: otpController,
+                                  fieldBorderStyle: FieldBorderStyle.square,
+                                  responsive: true,
+                                  fieldHeight: 50.0,
+                                  fieldWidth: 60.0,
+                                  borderWidth: 1.0,
+                                  activeBorderColor: Colors.white,
+                                  activeBackgroundColor:
+                                      Colors.white.withOpacity(.10),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  keyboardType: TextInputType.number,
+                                  autoHideKeyboard: true,
+                                  fieldBackgroundColor:
+                                      Colors.white.withOpacity(.10),
+                                  borderColor: Colors.white,
+                                  textStyle: GoogleFonts.poppins(
+                                    fontSize: 25.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  onComplete: (output) {
+                                    verifyOtp();
+                                  },
                                 ),
-                                onComplete: (output) {
-                                  // Get.back();
-                                },
                               ),
                               const SizedBox(
                                 height: 20,
@@ -99,7 +147,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  // Get.toNamed(MyRouters.signupScreen);
+                                  reSend();
                                 },
                                 child: Center(
                                   child: Text(

@@ -12,4 +12,8 @@ class AppAssets {
   static const String onboarding = "assets/images/onboarding.png";
   static const String onboarding1 = "assets/images/onboarding1.png";
   static const String onboarding2 = "assets/images/onboarding2.png";
+  static const String dashBoardImage1 = 'assets/images/Group 1000004267.png';
+  static const String dashBoardImage2 = 'assets/images/Group 1000004268.png';
+  static const String dashBoardImage3 = 'assets/images/Group 1000004269.png';
+  static const String dashBoardImage4 = 'assets/images/Group 1000004270.png';
 }

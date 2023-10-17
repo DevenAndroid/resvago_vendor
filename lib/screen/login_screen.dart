@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -8,6 +12,7 @@ import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 
 import '../widget/custom_textfield.dart';
+import 'otp_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,23 +24,45 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String verificationId = "";
+  login() async {
+    try {
+      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          log("Verification Failed: $e");
+        },
+        codeSent: (String verificationId, [int? resendToken]) {
+          // Update the parameter to accept nullable int
+          log("Code Sent: $verificationId");
+          this.verificationId = verificationId;
+          Get.to(() => OtpScreen(verificationId: verificationId));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          log("Auto Retrieval Timeout: $verificationId");
+        },
+      );
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var size  = MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
             child: Container(
                 height: Get.height,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(
-                         AppAssets.login
-                        ))),
+                decoration:
+                    const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0,right: 4),
+                    padding: const EdgeInsets.only(left: 4.0, right: 4),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -43,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: size.height*0.26,
+                              height: size.height * 0.26,
                             ),
                             Align(
                               alignment: Alignment.center,
@@ -70,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 38),
                               child: Column(
@@ -86,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                   CommonTextFieldWidget(
-                                     controller: loginController.mobileController,
+                                  CommonTextFieldWidget(
+                                    controller: loginController.mobileController,
                                     length: 10,
                                     validator: RequiredValidator(errorText: 'Please enter your phone number '),
                                     keyboardType: TextInputType.number,
@@ -97,10 +123,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const SizedBox(
                                     height: 35,
                                   ),
-                                   CommonButton(
-                                    onPressed: (){
-    if (_formKey.currentState!.validate()) {
-                                      Get.toNamed(MyRouters.otpScreen);}
+                                  CommonButton(
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        login();
+                                      }
                                     },
                                     title: 'Login',
                                   ),
@@ -174,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Image.asset(
-                                               AppAssets.google,
+                                                AppAssets.google,
                                                 height: 25,
                                               ),
                                               const SizedBox(
@@ -199,12 +226,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     children: [
                                       Text(
                                         "Don't Have an Account?",
-                                        style:
-                                            GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                        style: GoogleFonts.poppins(
+                                            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                       ),
                                       InkWell(
                                         onTap: () {
-                                         Get.toNamed(MyRouters.signUpScreen);
+                                          Get.toNamed(MyRouters.signUpScreen);
                                         },
                                         child: Text(
                                           ' Signup',
@@ -217,20 +244,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             )
-                            // SizedBox(height: 25),
-                            // Text(
-                            //   'Enter Mobile number',
-                            //   style: TextStyle(
-                            //     color: Colors.white,
-                            //     fontSize: 16,
-                            //   ),
-                            // ),
-                            // SizedBox(
-                            //   height: 2,
-                            // ),
-                            // SizedBox(
-                            //   height: 2,
-                            // ),
                           ]),
                     ),
                   ),
