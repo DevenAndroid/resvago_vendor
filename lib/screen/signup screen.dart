@@ -281,7 +281,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter your Confirm password';
                           }
-                          if (value.toString() == registerController.passwordController.text) {
+                          if (value.toString() == passwordController.text) {
                             return null;
                           }
                           return "Confirm password not matching with password";

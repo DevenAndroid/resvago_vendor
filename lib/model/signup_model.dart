@@ -7,6 +7,7 @@ class RegisterData {
   final dynamic password;
   final dynamic confirmPassword;
   final dynamic image;
+  final dynamic? docid;
 
   RegisterData(
       {required this.restaurantName,
@@ -16,7 +17,7 @@ class RegisterData {
       required this.address,
       required this.password,
       required this.confirmPassword,
-      required this.image});
+      required this.image,  this.docid});
 
   Map<String, dynamic> toMap() {
     return {
@@ -28,6 +29,7 @@ class RegisterData {
       'password': password,
       'confirmPassword': confirmPassword,
       'image': image,
+      'docid': docid,
     };
   }
 
@@ -41,6 +43,7 @@ class RegisterData {
       password: map['password'],
       confirmPassword: map['confirmPassword'],
       image: map['image'],
+      docid: map['docid'],
     );
   }
 }

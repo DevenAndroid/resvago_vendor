@@ -1,11 +1,15 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/model/signup_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
@@ -36,6 +40,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
 
+  Future<Map<String, dynamic>> fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot<Map<String, dynamic>> userData =
+      await FirebaseFirestore.instance.collection('vendor_users').doc(user.uid).get();
+      print(userData.data().toString());
+      print(user.uid);
+      return userData.data() ?? {};
+    } else {
+      return {}; // Return an empty map if the user is not authenticated
+    }
+  }
   void showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -67,25 +83,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                       child: obscureText4
                           ? const Icon(
-                        Icons.visibility_off,
-                        color: Color(0xFF8487A1),
-                      )
-                          : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
+                              Icons.visibility_off,
+                              color: Color(0xFF8487A1),
+                            )
+                          : const Icon(Icons.visibility,
+                              color: Color(0xFF8487A1))),
                   obscureText: obscureText4,
                   // length: 10,
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Please enter your password'),
                     MinLengthValidator(8,
-                        errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                        errorText:
+                            'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                     PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                        errorText: "Password must be at least with 1 special character & 1 numerical"),
+                        errorText:
+                            "Password must be at least with 1 special character & 1 numerical"),
                   ]),
                   hint: '************',
                 ),
-
                 const SizedBox(
                   height: 20,
-                ),  Text(
+                ),
+                Text(
                   "New Password",
                   style: GoogleFonts.poppins(
                       color: AppTheme.registortext,
@@ -104,25 +123,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                       child: obscureText4
                           ? const Icon(
-                        Icons.visibility_off,
-                        color: Color(0xFF8487A1),
-                      )
-                          : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
+                              Icons.visibility_off,
+                              color: Color(0xFF8487A1),
+                            )
+                          : const Icon(Icons.visibility,
+                              color: Color(0xFF8487A1))),
                   obscureText: obscureText4,
                   // length: 10,
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Please enter your password'),
                     MinLengthValidator(8,
-                        errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                        errorText:
+                            'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                     PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                        errorText: "Password must be at least with 1 special character & 1 numerical"),
+                        errorText:
+                            "Password must be at least with 1 special character & 1 numerical"),
                   ]),
                   hint: '************',
                 ),
-
                 const SizedBox(
                   height: 20,
-                ),  Text(
+                ),
+                Text(
                   "Confirm New Password",
                   style: GoogleFonts.poppins(
                       color: AppTheme.registortext,
@@ -141,22 +163,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                       child: obscureText4
                           ? const Icon(
-                        Icons.visibility_off,
-                        color: Color(0xFF8487A1),
-                      )
-                          : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
+                              Icons.visibility_off,
+                              color: Color(0xFF8487A1),
+                            )
+                          : const Icon(Icons.visibility,
+                              color: Color(0xFF8487A1))),
                   obscureText: obscureText4,
                   // length: 10,
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Please enter your password'),
                     MinLengthValidator(8,
-                        errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                        errorText:
+                            'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                     PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                        errorText: "Password must be at least with 1 special character & 1 numerical"),
+                        errorText:
+                            "Password must be at least with 1 special character & 1 numerical"),
                   ]),
                   hint: '************',
                 ),
-
                 const SizedBox(
                   height: 20,
                 ),
@@ -171,9 +195,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       },
     );
   }
-  
+  Map<String, dynamic> userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    fetchUserData().then((data) {
+        userData = data;
+        log(userData.toString());
+    });
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
@@ -199,58 +234,65 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Stack(
                       children: [
                         Container(
-                          padding: EdgeInsets.only(bottom: 50),
+                            padding: EdgeInsets.only(bottom: 50),
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.white)),
-                            child: Image.asset('assets/images/Group.png')
+                                border: Border.all(color: Colors.white)),
+                            child: Image.asset('assets/images/Group.png')),
+                        Positioned(
+                          top: 90,
+                          left: 130,
+                          right: 130,
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              color: Color(0xffFAAF40),
+                              border: Border.all(
+                                  color: const Color(0xff3B5998), width: 6),
+                              borderRadius: BorderRadius.circular(50),
+                              // color: Colors.brown
+                            ),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl:
+                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIsAAACLCAMAAABmx5rNAAAAk1BMVEX///8AESEAAACqrrL8/Pz///0AABIAAAsAABb+/f8AEiD3+PgACBwAABQAABgDEyTCxMYkJy8NEBnm5+nf4OBERksAAAXv8PFJTFAAABvIy800N0AqLDFVWWGcoKK6vL8sLzlOUlnU1tiPkpV0eHtdY2aFiIppa281ODxgZGwbICkADRcUGiYRGCASFSQAChlBRFDZEkPCAAADqElEQVR4nO2a23aqMBCGQyCEkwoCxkMLFizWnt//6XbQrVUrhNYw7rX2fFcsb/ydmX+YTCQEQRAEQRAEQRAEQRAE+QZj359uhRUXuWmaYRIz4t5UiZ+tlxNaw59W5q1UWBYjxZpSJzB2BA6lVUxukSvGRDa2Dc8z9oyMDx6ZPrGgpbgkTmkgv/+I0cgI6EbAlg2zXDIfD4xL8KdEJhAwTRYp7oYXpRgjexoT0NCIsTO6rMUwJgsCWb3+o92kREIrQCnEpI1RqdM0mcNJEc9BixTDc1IoJS7JqOG1iTF4TlyINsOIv2jw0CEwfA3jJNn6absU2QG5YBBiXFKqtEgr5UC+fnSUWiYVjBaRKspF4mwglBASP7U6estsKkC0JJFaS5D+f1riZYccAWkRqVqLcw8z3Vn3ak/zFVB/qTr0OhNIy7yDlgRGCvNVxevJcoHRYpFyogqLnBmARt5k3C5ltoBx9BbFm1qGBQ4xbbP1ZO1DHgQKGnhN4/fgBTBDdV2GdoOXPCcq5MESVIw5uZymwetczt3Aq4b5m3T20Zph90zr4zQwMjLxip+HZvBSCbDOcoDV5598QY/KZmjTh3m9JAKWsqdYLeoF2XZNllbw6TlFJHlWVWWWJ/6NlZzkA9o9W+paEaE4+37ZVA6fQ5avn015avrkeKfr1kdtM+XTzAdcBvlZRIfGjL6Wp4uWefVKhyOHRhlE7VgWYyRc8J2TA27f3Wd5kSRJkWf3d/bh80VIGOvZ3S4jVmUfWpxnBDalzvv7u0Nlq/l6Ww7syu37peSSYnm8H/OM0d+10NfTDros+tw61z/UfB40zQpnnztRPWj2VsQWMan6nLYnqA8mfZl7uwVqW2CexSmgZT9CrC47w1MtMjIZIT1UjWywpvqMdk4/50eLhB/da2UfmuAj1B2XumuJlx9LkWkavgmiN01Si/9w+Y5Ghf3gax6vOi1SL4dGt5mYPLb+PEM7LcE40XoDycim7ZKmHXuj10sdVi7NUK1XOP50doWW4VTnOJPzK6Rsr3A0IR35+ftqqbE/9dlaeUmjghaaypeR8roUySSVuqwkOizd2wkioUnLVYbeoc3WHXbLSi2arqytDvt/FUGqx0dd7miUWiI9O4j8uuayw9bT7kr+gyG3AY/rmRxW13aXGr7SoqX1Px1dsR+1aKm0xEWPqedcfR+tYsg1NbswpdeShnqkMCK2fy38PXkhdL0bNSxSbrJWRBAEQRAEQRAEQRAE+Rf4A9JzM5mdCizPAAAAAElFTkSuQmCC",
+                              height: AddSize.size30,
+                              width: AddSize.size30,
+                              errorWidget: (_, __, ___) => const Icon(
+                                Icons.person,
+                                size: 60,
+                              ),
+                              placeholder: (_, __) => const SizedBox(),
+                            ),
+                          ),
                         ),
                         Positioned(
-                            top: 90,
-                            left: 130,
-                            right: 130,
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: Color(0xffFAAF40),
-                                border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                borderRadius: BorderRadius.circular(50),
-                                // color: Colors.brown
-                              ),
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl:
-                                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIsAAACLCAMAAABmx5rNAAAAk1BMVEX///8AESEAAACqrrL8/Pz///0AABIAAAsAABb+/f8AEiD3+PgACBwAABQAABgDEyTCxMYkJy8NEBnm5+nf4OBERksAAAXv8PFJTFAAABvIy800N0AqLDFVWWGcoKK6vL8sLzlOUlnU1tiPkpV0eHtdY2aFiIppa281ODxgZGwbICkADRcUGiYRGCASFSQAChlBRFDZEkPCAAADqElEQVR4nO2a23aqMBCGQyCEkwoCxkMLFizWnt//6XbQrVUrhNYw7rX2fFcsb/ydmX+YTCQEQRAEQRAEQRAEQRAE+QZj359uhRUXuWmaYRIz4t5UiZ+tlxNaw59W5q1UWBYjxZpSJzB2BA6lVUxukSvGRDa2Dc8z9oyMDx6ZPrGgpbgkTmkgv/+I0cgI6EbAlg2zXDIfD4xL8KdEJhAwTRYp7oYXpRgjexoT0NCIsTO6rMUwJgsCWb3+o92kREIrQCnEpI1RqdM0mcNJEc9BixTDc1IoJS7JqOG1iTF4TlyINsOIv2jw0CEwfA3jJNn6absU2QG5YBBiXFKqtEgr5UC+fnSUWiYVjBaRKspF4mwglBASP7U6estsKkC0JJFaS5D+f1riZYccAWkRqVqLcw8z3Vn3ak/zFVB/qTr0OhNIy7yDlgRGCvNVxevJcoHRYpFyogqLnBmARt5k3C5ltoBx9BbFm1qGBQ4xbbP1ZO1DHgQKGnhN4/fgBTBDdV2GdoOXPCcq5MESVIw5uZymwetczt3Aq4b5m3T20Zph90zr4zQwMjLxip+HZvBSCbDOcoDV5598QY/KZmjTh3m9JAKWsqdYLeoF2XZNllbw6TlFJHlWVWWWJ/6NlZzkA9o9W+paEaE4+37ZVA6fQ5avn015avrkeKfr1kdtM+XTzAdcBvlZRIfGjL6Wp4uWefVKhyOHRhlE7VgWYyRc8J2TA27f3Wd5kSRJkWf3d/bh80VIGOvZ3S4jVmUfWpxnBDalzvv7u0Nlq/l6Ww7syu37peSSYnm8H/OM0d+10NfTDros+tw61z/UfB40zQpnnztRPWj2VsQWMan6nLYnqA8mfZl7uwVqW2CexSmgZT9CrC47w1MtMjIZIT1UjWywpvqMdk4/50eLhB/da2UfmuAj1B2XumuJlx9LkWkavgmiN01Si/9w+Y5Ghf3gax6vOi1SL4dGt5mYPLb+PEM7LcE40XoDycim7ZKmHXuj10sdVi7NUK1XOP50doWW4VTnOJPzK6Rsr3A0IR35+ftqqbE/9dlaeUmjghaaypeR8roUySSVuqwkOizd2wkioUnLVYbeoc3WHXbLSi2arqytDvt/FUGqx0dd7miUWiI9O4j8uuayw9bT7kr+gyG3AY/rmRxW13aXGr7SoqX1Px1dsR+1aKm0xEWPqedcfR+tYsg1NbswpdeShnqkMCK2fy38PXkhdL0bNSxSbrJWRBAEQRAEQRAEQRAE+Rf4A9JzM5mdCizPAAAAAElFTkSuQmCC",
-                                height: AddSize.size30,
-                                width: AddSize.size30,
-                                errorWidget: (_, __, ___) => const Icon(Icons.person,size: 60,),
-                                placeholder: (_, __) => const SizedBox(),
-                              ),
+                          top: 150,
+                          left: 210,
+                          right: 122,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff04666E),
+                              borderRadius: BorderRadius.circular(50),
                             ),
-                        ),
-                        Positioned(
-                            top: 150,
-                            left: 210,
-                            right: 122,
-                            child: Container(
-                              height: 30,
-                              width: 30,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff04666E),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Icon(Icons.camera_alt,color: Colors.white,size: 15,),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 15,
                             ),
+                          ),
                         )
                       ],
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        "Mac Restaurant",
+                        'Mac',
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.bold,
@@ -270,153 +312,171 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      "Restaurant Name",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
+                    FutureBuilder(
+                      future: fetchUserData(),
+                      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          Map<String, dynamic> userData = snapshot.data!;
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                userData['restaurantName'].toString(),
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                validator: RequiredValidator(
+                                    errorText: 'Please enter your Restaurant Name '),
+                                // keyboardType: TextInputType.none,
+                                // textInputAction: TextInputAction.next,
+                                hint: 'Mac Restaurant',
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Category",
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                // length: 10,
+                                validator: RequiredValidator(
+                                    errorText: 'Please enter your Category '),
+                                // keyboardType: TextInputType.number,
+                                // textInputAction: TextInputAction.next,
+                                hint: 'Veg Restaurant',
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Email",
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                // length: 10,
+                                validator: MultiValidator([
+                                  RequiredValidator(errorText: 'Please enter your email'),
+                                  EmailValidator(
+                                      errorText: 'Enter a valid email address'),
+                                ]),
+                                keyboardType: TextInputType.emailAddress,
+                                // textInputAction: TextInputAction.next,
+                                hint: 'MacRestaurant@gmail.com',
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Mobile Number",
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                length: 10,
+                                validator: RequiredValidator(
+                                    errorText: 'Please enter your Mobile Number '),
+                                keyboardType: TextInputType.number,
+                                // textInputAction: TextInputAction.next,
+                                hint: '987-654-3210',
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Address",
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                // length: 10,
+                                validator: RequiredValidator(
+                                    errorText: 'Please enter your Address '),
+                                keyboardType: TextInputType.streetAddress,
+                                // textInputAction: TextInputAction.next,
+                                hint: 'Street, Zip Code, City',
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Password",
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                suffix: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        obscureText4 = !obscureText4;
+                                      });
+                                    },
+                                    child: obscureText4
+                                        ? const Icon(
+                                      Icons.visibility_off,
+                                      color: Color(0xFF8487A1),
+                                    )
+                                        : const Icon(Icons.visibility,
+                                        color: Color(0xFF8487A1))),
+                                obscureText: obscureText4,
+                                // length: 10,
+                                validator: MultiValidator([
+                                  RequiredValidator(
+                                      errorText: 'Please enter your password'),
+                                  MinLengthValidator(8,
+                                      errorText:
+                                      'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                                  PatternValidator(
+                                      r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                                      errorText:
+                                      "Password must be at least with 1 special character & 1 numerical"),
+                                ]),
+                                hint: '************',
+                              ),
+                            ],
+                          );
+                        }
+                      },
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      validator: RequiredValidator(
-                          errorText: 'Please enter your Restaurant Name '),
-                      // keyboardType: TextInputType.none,
-                      // textInputAction: TextInputAction.next,
-                      hint: 'Mac Restaurant',
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Category",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      // length: 10,
-                      validator: RequiredValidator(
-                          errorText: 'Please enter your Category '),
-                      // keyboardType: TextInputType.number,
-                      // textInputAction: TextInputAction.next,
-                      hint: 'Veg Restaurant',
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Email",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      // length: 10,
-                      validator: MultiValidator([
-                        RequiredValidator(
-                            errorText: 'Please enter your email'),
-                        EmailValidator(
-                            errorText: 'Enter a valid email address'),
-                      ]),
-                      keyboardType: TextInputType.emailAddress,
-                      // textInputAction: TextInputAction.next,
-                      hint: 'MacRestaurant@gmail.com',
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Mobile Number",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      length: 10,
-                      validator: RequiredValidator(
-                          errorText: 'Please enter your Mobile Number '),
-                      keyboardType: TextInputType.number,
-                      // textInputAction: TextInputAction.next,
-                      hint: '987-654-3210',
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Address",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      // length: 10,
-                      validator: RequiredValidator(
-                          errorText: 'Please enter your Address '),
-                      keyboardType: TextInputType.streetAddress,
-                      // textInputAction: TextInputAction.next,
-                      hint: 'Street, Zip Code, City',
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Password",
-                      style: GoogleFonts.poppins(
-                          color: AppTheme.registortext,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    RegisterTextFieldWidget(
-                      suffix: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              obscureText4 = !obscureText4;
-                            });
-                          },
-                          child: obscureText4
-                              ? const Icon(
-                                  Icons.visibility_off,
-                                  color: Color(0xFF8487A1),
-                                )
-                              : const Icon(Icons.visibility,
-                                  color: Color(0xFF8487A1))),
-                      obscureText: obscureText4,
-                      // length: 10,
-                      validator: MultiValidator([
-                        RequiredValidator(
-                            errorText: 'Please enter your password'),
-                        MinLengthValidator(8,
-                            errorText:
-                                'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                        PatternValidator(
-                            r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                            errorText:
-                                "Password must be at least with 1 special character & 1 numerical"),
-                      ]),
-                      hint: '************',
-                    ),
+
                     const SizedBox(
                       height: 20,
                     ),
@@ -433,18 +493,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(11),
                         border: Border.all(
-                          width: 2,
-                          color: const Color(0xffFAAF40)
-                        ),
+                            width: 2, color: const Color(0xffFAAF40)),
                       ),
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showBottomSheet(context);
                         },
                         child: const Center(
                           child: Text(
                             "CHANGE PASSWORD",
-                            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Color(0xffFAAF40)),
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffFAAF40)),
                           ),
                         ),
                       ),
