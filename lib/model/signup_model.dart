@@ -6,7 +6,7 @@ class RegisterData {
   final dynamic address;
   final dynamic password;
   final dynamic confirmPassword;
-  final bool image;
+  final dynamic image;
 
   RegisterData(
       {required this.restaurantName,

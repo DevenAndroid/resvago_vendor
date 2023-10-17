@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future manageCategoryProduct({
-    required DocumentReference documentReference,
+  Future manageRegisterUsers({
     dynamic restaurantName,
     dynamic category,
     dynamic email,
@@ -17,7 +16,7 @@ class FirebaseService {
     dynamic image,
   }) async {
     try {
-        await documentReference.set({
+        await FirebaseFirestore.instance.collection('vendor_users').add({
           "restaurantName": restaurantName,
           "category": category,
           "email": email,
