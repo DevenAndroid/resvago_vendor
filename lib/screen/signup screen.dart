@@ -1,19 +1,23 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
+import '../helper.dart';
 import '../model/signup_model.dart';
 import '../routers/routers.dart';
 import '../widget/addsize.dart';
@@ -47,68 +51,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {});
   }
 
+  TextEditingController restaurantNameController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
   File categoryFile = File("");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
-  // RegisterData? get registerData => widget.resturentData;
-  // Future<void> addresturentToFirestore() async {
-  //   if(!formKey.currentState!.validate())return;
-  //   if(categoryFile.path.isEmpty){
-  //     showToast("Please select category image");
-  //     return;
-  //   }
-  //
-  //   String imageUrl = categoryFile.path;
-  //   if (!categoryFile.path.contains("https")) {
-  //     if (resturentData != null) {
-  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
-  //       await gg.delete();
-  //     }
-  //     UploadTask uploadTask = FirebaseStorage.instance
-  //         .ref("categoryImages")
-  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
-  //         .putFile(categoryFile);
-  //
-  //     TaskSnapshot snapshot = await uploadTask;
-  //     imageUrl = await snapshot.ref.getDownloadURL();
-  //   } else {
-  //     if (resturentData != null) {
-  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
-  //       await gg.delete();
-  //     }
-  //     UploadTask uploadTask = FirebaseStorage.instance
-  //         .ref("categoryImages")
-  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
-  //         .putFile(categoryFile);
-  //
-  //     TaskSnapshot snapshot = await uploadTask;
-  //     imageUrl = await snapshot.ref.getDownloadURL();
-  //   }
-  //   if (resturentData != null) {
-  //     await firebaseService.manageCategoryProduct(
-  //       documentReference: widget.collectionReference.doc(resturentData!.docid),
-  //       deactivate: resturentData!.deactivate,
-  //       description: descriptionController.text.trim(),
-  //       docid: resturentData!.docid,
-  //       image: imageUrl,
-  //       name: kk,
-  //       searchName: arrangeNumbers,
-  //     );
-  //   }
-  //   else {
-  //     await firebaseService.manageCategoryProduct(
-  //         documentReference: widget.collectionReference.doc(DateTime.now().millisecondsSinceEpoch.toString()),
-  //         deactivate: null,
-  //         description: descriptionController.text.trim(),
-  //         docid: DateTime.now().millisecondsSinceEpoch,
-  //         image: imageUrl,
-  //         name: kk,
-  //         searchName: arrangeNumbers,
-  //         time: DateTime.now().millisecondsSinceEpoch
-  //     );
-  //   }
-  //   Get.back();
-  // }
+
+  Future<void> addUserToFirestore() async {
+    // if (!formKey.currentState!.validate()) return;
+    // if (categoryFile.path.isEmpty) {
+    //   return;
+    // }
+
+    String imageUrl = categoryFile.path;
+      UploadTask uploadTask = FirebaseStorage.instance
+          .ref("categoryImages")
+          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .putFile(categoryFile);
+
+      TaskSnapshot snapshot = await uploadTask;
+      imageUrl = await snapshot.ref.getDownloadURL();
+    await firebaseService.manageRegisterUsers(
+      restaurantName: restaurantNameController.text.trim(),
+      category: categoryController.text.trim(),
+      email: emailController.text.trim(),
+      mobileNumber: mobileNumberController.text.trim(),
+      address: addressController.text.trim(),
+      password: passwordController.text.trim(),
+      confirmPassword: confirmPasswordController.text.trim(),
+      image: imageUrl,
+    );
+    print("manish");
+
+    Get.toNamed(MyRouters.thankYouScreen);
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -144,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
-                        controller: registerController.restaurantController,
+                        controller: restaurantNameController,
                         // length: 10,
                         validator: RequiredValidator(errorText: 'Please enter your Restaurant Name '),
                         // keyboardType: TextInputType.none,
@@ -162,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
-                        controller: registerController.categoryController,
+                        controller: categoryController,
                         // length: 10,
                         validator: RequiredValidator(errorText: 'Please enter your Category '),
                         // keyboardType: TextInputType.number,
@@ -180,7 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
-                        controller: registerController.emailController,
+                        controller: emailController,
                         // length: 10,
                         validator: MultiValidator([
                           RequiredValidator(errorText: 'Please enter your email'),
@@ -201,7 +184,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
-                        controller: registerController.mobileController,
+                        controller: mobileNumberController,
                         length: 10,
                         validator: RequiredValidator(errorText: 'Please enter your Mobile Number '),
                         keyboardType: TextInputType.number,
@@ -219,7 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
-                        controller: registerController.addressController,
+                        controller: addressController,
                         // length: 10,
                         validator: RequiredValidator(errorText: 'Please enter your Address '),
                         keyboardType: TextInputType.streetAddress,
@@ -310,9 +293,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         strokeWidth: 1,
                         child: InkWell(
                           onTap: () {
-                            showPickImageSheet();
+                            showActionSheet(context);
                           },
-                          child: profileImage.path != ""
+                          child: categoryFile.path != ""
                               ? Stack(
                                   children: [
                                     Container(
@@ -325,6 +308,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
+                                      child: Image.file(categoryFile,
+                                          errorBuilder: (_,__,___)=> Image.network(categoryFile.path,
+                                              errorBuilder: (_,__,___)=> SizedBox()
+                                          )
+                                      ),
                                     ),
                                   ],
                                 )
@@ -414,35 +402,100 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  showPickImageSheet() {
+  void showActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
-          'Select Image',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.primaryColor),
-        ),
-        // message: const Text('Message'),
-        cancelButton: CupertinoActionSheetAction(
-          child: const Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop("Cancel");
-          },
+          'Select Picture from',
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: const Text('Gallery'),
             onPressed: () {
-              pickImage(imageSource: ImageSource.gallery);
-              Navigator.pop(context);
+              Helper.addImagePicker(
+                      imageSource: ImageSource.camera, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
             },
+            child: const Text("Camera"),
           ),
           CupertinoActionSheetAction(
-            child: const Text('Camera'),
             onPressed: () {
-              pickImage(imageSource: ImageSource.camera);
-              Navigator.pop(context);
+              Helper.addImagePicker(
+                      imageSource: ImageSource.gallery, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
             },
+            child: const Text('Gallery'),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Cancel'),
           ),
         ],
       ),
