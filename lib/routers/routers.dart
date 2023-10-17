@@ -17,7 +17,7 @@ class MyRouters {
   static var thankYouScreen = "/thankYouScreen";
   static var vendorDashboard = "/vendorDashboard";
   static var menuScreen = "/menuScreen";
-  static var addMenuScreen = "/addMenuScreen";
+  // static var addMenuScreen = "/addMenuScreen";
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
     GetPage(name: '/onBoardingScreen', page: () => const OnBoardingScreen()),
@@ -27,6 +27,6 @@ class MyRouters {
     GetPage(name: '/thankYouScreen', page: () => const ThankYouScreen()),
     GetPage(name: '/vendorDashboard', page: () => const VendorDashboard()),
     GetPage(name: '/menuScreen', page: () => const MenuScreen()),
-    GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
+    // GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
   ];
 }
