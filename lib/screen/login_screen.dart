@@ -1,8 +1,9 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -26,6 +27,20 @@ class _LoginScreenState extends State<LoginScreen> {
   final loginController = Get.put(LoginController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
+
+  void checkPhoneNumberInFirestore() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('vendor_users')
+        .where('mobileNumber', isEqualTo: loginController.mobileController.text)
+        .get();
+
+    if (result.docs.isNotEmpty) {
+      login();
+    }  else {
+      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
+    }
+  }
+
   login() async {
     try {
       final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
@@ -126,8 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   CommonButton(
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
-                                        login();
-                                      }
+                                        checkPhoneNumberInFirestore();                                      }
                                     },
                                     title: 'Login',
                                   ),
