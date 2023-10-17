@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
@@ -103,26 +104,32 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               child: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 30,
-                      child: Container(
-                          height: AddSize.size45,
-                          width: AddSize.size45,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white)),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl:
-                                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIsAAACLCAMAAABmx5rNAAAAk1BMVEX///8AESEAAACqrrL8/Pz///0AABIAAAsAABb+/f8AEiD3+PgACBwAABQAABgDEyTCxMYkJy8NEBnm5+nf4OBERksAAAXv8PFJTFAAABvIy800N0AqLDFVWWGcoKK6vL8sLzlOUlnU1tiPkpV0eHtdY2aFiIppa281ODxgZGwbICkADRcUGiYRGCASFSQAChlBRFDZEkPCAAADqElEQVR4nO2a23aqMBCGQyCEkwoCxkMLFizWnt//6XbQrVUrhNYw7rX2fFcsb/ydmX+YTCQEQRAEQRAEQRAEQRAE+QZj359uhRUXuWmaYRIz4t5UiZ+tlxNaw59W5q1UWBYjxZpSJzB2BA6lVUxukSvGRDa2Dc8z9oyMDx6ZPrGgpbgkTmkgv/+I0cgI6EbAlg2zXDIfD4xL8KdEJhAwTRYp7oYXpRgjexoT0NCIsTO6rMUwJgsCWb3+o92kREIrQCnEpI1RqdM0mcNJEc9BixTDc1IoJS7JqOG1iTF4TlyINsOIv2jw0CEwfA3jJNn6absU2QG5YBBiXFKqtEgr5UC+fnSUWiYVjBaRKspF4mwglBASP7U6estsKkC0JJFaS5D+f1riZYccAWkRqVqLcw8z3Vn3ak/zFVB/qTr0OhNIy7yDlgRGCvNVxevJcoHRYpFyogqLnBmARt5k3C5ltoBx9BbFm1qGBQ4xbbP1ZO1DHgQKGnhN4/fgBTBDdV2GdoOXPCcq5MESVIw5uZymwetczt3Aq4b5m3T20Zph90zr4zQwMjLxip+HZvBSCbDOcoDV5598QY/KZmjTh3m9JAKWsqdYLeoF2XZNllbw6TlFJHlWVWWWJ/6NlZzkA9o9W+paEaE4+37ZVA6fQ5avn015avrkeKfr1kdtM+XTzAdcBvlZRIfGjL6Wp4uWefVKhyOHRhlE7VgWYyRc8J2TA27f3Wd5kSRJkWf3d/bh80VIGOvZ3S4jVmUfWpxnBDalzvv7u0Nlq/l6Ww7syu37peSSYnm8H/OM0d+10NfTDros+tw61z/UfB40zQpnnztRPWj2VsQWMan6nLYnqA8mfZl7uwVqW2CexSmgZT9CrC47w1MtMjIZIT1UjWywpvqMdk4/50eLhB/da2UfmuAj1B2XumuJlx9LkWkavgmiN01Si/9w+Y5Ghf3gax6vOi1SL4dGt5mYPLb+PEM7LcE40XoDycim7ZKmHXuj10sdVi7NUK1XOP50doWW4VTnOJPzK6Rsr3A0IR35+ftqqbE/9dlaeUmjghaaypeR8roUySSVuqwkOizd2wkioUnLVYbeoc3WHXbLSi2arqytDvt/FUGqx0dd7miUWiI9O4j8uuayw9bT7kr+gyG3AY/rmRxW13aXGr7SoqX1Px1dsR+1aKm0xEWPqedcfR+tYsg1NbswpdeShnqkMCK2fy38PXkhdL0bNSxSbrJWRBAEQRAEQRAEQRAE+Rf4A9JzM5mdCizPAAAAAElFTkSuQmCC",
-                            height: AddSize.size30,
-                            width: AddSize.size30,
-                            errorWidget: (_, __, ___) => const Icon(Icons.person),
-                            placeholder: (_, __) => const SizedBox(),
-                          )),
+                  GestureDetector(
+                    onTap: (){
+                      Get.to(const UserProfileScreen());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 18),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 30,
+                        child: Container(
+                            height: AddSize.size45,
+                            width: AddSize.size45,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white)),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl:
+                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIsAAACLCAMAAABmx5rNAAAAk1BMVEX///8AESEAAACqrrL8/Pz///0AABIAAAsAABb+/f8AEiD3+PgACBwAABQAABgDEyTCxMYkJy8NEBnm5+nf4OBERksAAAXv8PFJTFAAABvIy800N0AqLDFVWWGcoKK6vL8sLzlOUlnU1tiPkpV0eHtdY2aFiIppa281ODxgZGwbICkADRcUGiYRGCASFSQAChlBRFDZEkPCAAADqElEQVR4nO2a23aqMBCGQyCEkwoCxkMLFizWnt//6XbQrVUrhNYw7rX2fFcsb/ydmX+YTCQEQRAEQRAEQRAEQRAE+QZj359uhRUXuWmaYRIz4t5UiZ+tlxNaw59W5q1UWBYjxZpSJzB2BA6lVUxukSvGRDa2Dc8z9oyMDx6ZPrGgpbgkTmkgv/+I0cgI6EbAlg2zXDIfD4xL8KdEJhAwTRYp7oYXpRgjexoT0NCIsTO6rMUwJgsCWb3+o92kREIrQCnEpI1RqdM0mcNJEc9BixTDc1IoJS7JqOG1iTF4TlyINsOIv2jw0CEwfA3jJNn6absU2QG5YBBiXFKqtEgr5UC+fnSUWiYVjBaRKspF4mwglBASP7U6estsKkC0JJFaS5D+f1riZYccAWkRqVqLcw8z3Vn3ak/zFVB/qTr0OhNIy7yDlgRGCvNVxevJcoHRYpFyogqLnBmARt5k3C5ltoBx9BbFm1qGBQ4xbbP1ZO1DHgQKGnhN4/fgBTBDdV2GdoOXPCcq5MESVIw5uZymwetczt3Aq4b5m3T20Zph90zr4zQwMjLxip+HZvBSCbDOcoDV5598QY/KZmjTh3m9JAKWsqdYLeoF2XZNllbw6TlFJHlWVWWWJ/6NlZzkA9o9W+paEaE4+37ZVA6fQ5avn015avrkeKfr1kdtM+XTzAdcBvlZRIfGjL6Wp4uWefVKhyOHRhlE7VgWYyRc8J2TA27f3Wd5kSRJkWf3d/bh80VIGOvZ3S4jVmUfWpxnBDalzvv7u0Nlq/l6Ww7syu37peSSYnm8H/OM0d+10NfTDros+tw61z/UfB40zQpnnztRPWj2VsQWMan6nLYnqA8mfZl7uwVqW2CexSmgZT9CrC47w1MtMjIZIT1UjWywpvqMdk4/50eLhB/da2UfmuAj1B2XumuJlx9LkWkavgmiN01Si/9w+Y5Ghf3gax6vOi1SL4dGt5mYPLb+PEM7LcE40XoDycim7ZKmHXuj10sdVi7NUK1XOP50doWW4VTnOJPzK6Rsr3A0IR35+ftqqbE/9dlaeUmjghaaypeR8roUySSVuqwkOizd2wkioUnLVYbeoc3WHXbLSi2arqytDvt/FUGqx0dd7miUWiI9O4j8uuayw9bT7kr+gyG3AY/rmRxW13aXGr7SoqX1Px1dsR+1aKm0xEWPqedcfR+tYsg1NbswpdeShnqkMCK2fy38PXkhdL0bNSxSbrJWRBAEQRAEQRAEQRAE+Rf4A9JzM5mdCizPAAAAAElFTkSuQmCC",
+                              height: AddSize.size30,
+                              width: AddSize.size30,
+                              errorWidget: (_, __, ___) => const Icon(Icons.person),
+                              placeholder: (_, __) => const SizedBox(),
+                            )
+                        ),
+                      ),
                     ),
                   ),
                   Positioned(
