@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkUserAuth() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
-
     if (user != null) {
       Navigator.pushReplacement(
         context,
@@ -48,16 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: const Color(0xff3B5998),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 80, width: 80, child: Center(child: Image.asset(AppAssets.splash))),
-          Center(child: const Image(image: AssetImage(AppAssets.Resvago))),
-        ],
-      ),
+    return  Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Center(child: Image(image: const AssetImage(AppAssets.Resvago),width: width * 2,height: height,)),
     );
   }
 }

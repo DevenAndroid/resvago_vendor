@@ -1,10 +1,10 @@
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../model/signup_model.dart';
@@ -28,12 +28,111 @@ class _VendorDashboardState extends State<VendorDashboard> {
     AppAssets.dashBoardImage3,
     AppAssets.dashBoardImage4,
   ];
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  int currentDrawer = 0;
   FirebaseService service = FirebaseService();
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+        key: _scaffoldKey,
         backgroundColor: const Color(0xffF5F5F5),
+        drawer: Drawer(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0)
+          ),
+          width: MediaQuery.sizeOf(context).width * .70,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(
+                height: 230,
+                child: DrawerHeader(
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                      colors: [
+                        AppTheme.primaryColor,
+                        AppTheme.primaryColor,
+                      ],
+                    )),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(4),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: const ShapeDecoration(
+                              shape: CircleBorder(),
+                              color: Colors.white,
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                              height: screenSize.height * 0.12,
+                              width: screenSize.height * 0.12,
+                              errorWidget: (_, __, ___) => const SizedBox(),
+                              placeholder: (_, __) => const SizedBox(),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text("TestVendor",
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                color: const Color(0xFFFFFFFF),
+                                fontWeight: FontWeight.w600,
+                              )),
+                          Text("TestVendor@gmail.com",
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                color: const Color(0xFFFFFFFF),
+                                fontWeight: FontWeight.w400,
+                              )
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.dashboard),
+                title: Text('Dashboard',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 0;
+                    Get.back();
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.restaurant_menu_sharp),
+                title: Text('Menu',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 1;
+                    Get.toNamed(MyRouters.menuScreen);
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
         appBar: AppBar(
           toolbarHeight: 100,
           elevation: 0,
