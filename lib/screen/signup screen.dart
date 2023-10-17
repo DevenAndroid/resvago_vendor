@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
 import '../model/signup_model.dart';
@@ -42,8 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Rx<File> image = File("").obs;
   pickImage({required imageSource}) async {
     log(profileImage.path);
-    final value =
-        await ImagePicker().pickImage(source: imageSource, imageQuality: 45);
+    final value = await ImagePicker().pickImage(source: imageSource, imageQuality: 45);
     if (value == null) return;
     profileImage = File(value.path);
     log(profileImage.path.toString());
@@ -117,10 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(
-          title: "Restaurant Registration",
-          context: context,
-          backgroundColor: Colors.white),
+      appBar: backAppBar(title: "Restaurant Registration", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: _formKeySignup,
@@ -144,10 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         "Restaurant Name",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -155,8 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: registerController.restaurantController,
                         // length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Restaurant Name '),
+                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name '),
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -166,10 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Category",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -177,8 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: registerController.categoryController,
                         // length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Category '),
+                        validator: RequiredValidator(errorText: 'Please enter your Category '),
                         // keyboardType: TextInputType.number,
                         // textInputAction: TextInputAction.next,
                         hint: 'Veg Restaurant',
@@ -188,10 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Email",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -200,10 +183,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: registerController.emailController,
                         // length: 10,
                         validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your email'),
-                          EmailValidator(
-                              errorText: 'Enter a valid email address'),
+                          RequiredValidator(errorText: 'Please enter your email'),
+                          EmailValidator(errorText: 'Enter a valid email address'),
                         ]),
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
@@ -214,10 +195,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Mobile Number",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -225,8 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: registerController.mobileController,
                         length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Mobile Number '),
+                        validator: RequiredValidator(errorText: 'Please enter your Mobile Number '),
                         keyboardType: TextInputType.number,
                         // textInputAction: TextInputAction.next,
                         hint: '987-654-3210',
@@ -236,10 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Address",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -247,8 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: registerController.addressController,
                         // length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Address '),
+                        validator: RequiredValidator(errorText: 'Please enter your Address '),
                         keyboardType: TextInputType.streetAddress,
                         // textInputAction: TextInputAction.next,
                         hint: 'Street, Zip Code, City',
@@ -258,10 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Password",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -278,21 +248,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Icons.visibility_off,
                                     color: Color(0xFF8487A1),
                                   )
-                                : const Icon(Icons.visibility,
-                                    color: Color(0xFF8487A1))),
+                                : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
                         controller: registerController.passwordController,
                         obscureText: obscureText4,
                         // length: 10,
                         validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your password'),
+                          RequiredValidator(errorText: 'Please enter your password'),
                           MinLengthValidator(8,
-                              errorText:
-                                  'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                          PatternValidator(
-                              r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                              errorText:
-                                  "Password must be at least with 1 special character & 1 numerical"),
+                              errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                          PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                              errorText: "Password must be at least with 1 special character & 1 numerical"),
                         ]),
                         hint: '************',
                       ),
@@ -301,10 +266,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Confirm Password",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -321,8 +283,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Icons.visibility_off,
                                     color: Color(0xFF8487A1),
                                   )
-                                : const Icon(Icons.visibility,
-                                    color: Color(0xFF8487A1))),
+                                : const Icon(Icons.visibility, color: Color(0xFF8487A1))),
                         controller: registerController.confirmPassController,
                         // length: 10,
                         obscureText: obscureText3,
@@ -330,8 +291,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter your Confirm password';
                           }
-                          if (value.toString() ==
-                              registerController.passwordController.text) {
+                          if (value.toString() == registerController.passwordController.text) {
                             return null;
                           }
                           return "Confirm password not matching with password";
@@ -344,11 +304,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       DottedBorder(
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(20),
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false
-                            ? const Color(0xFFFAAF40)
-                            : Colors.red,
+                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
                         dashPattern: const [6],
                         strokeWidth: 1,
                         child: InkWell(
@@ -362,12 +319,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
-                                        image: DecorationImage(
-                                            image: FileImage(profileImage),
-                                            fit: BoxFit.fill),
+                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
                                       ),
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
+                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
@@ -376,8 +330,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 )
                               : Container(
                                   padding: const EdgeInsets.only(top: 10),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   width: double.maxFinite,
                                   height: 130,
                                   alignment: Alignment.center,
@@ -394,9 +347,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                       const Text(
                                         'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black54),
+                                        style: TextStyle(fontSize: 16, color: Colors.black54),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -416,14 +367,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             scale: 1.1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false
-                                      ? const Color(0xFF64646F)
-                                      : Colors.red),
+                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   value: value,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
@@ -434,12 +381,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }),
                             ),
                           ),
-                          const Text(
-                              'I do not wish to receive via sms form This app',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 13,
-                                  color: Color(0xFF64646F))),
+                          const Text('I do not wish to receive via sms form This app',
+                              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF64646F))),
                         ],
                       ),
                       const SizedBox(
@@ -447,9 +390,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (_formKeySignup.currentState!.validate() &&
-                              value == true &&
-                              showValidationImg == true) {
+                          if (_formKeySignup.currentState!.validate() && value == true && showValidationImg == true) {
                             Get.toNamed(MyRouters.thankYouScreen);
                           } else {
                             showValidation = true;
@@ -479,10 +420,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Image',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: AppTheme.primaryColor),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.primaryColor),
         ),
         // message: const Text('Message'),
         cancelButton: CupertinoActionSheetAction(

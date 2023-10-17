@@ -1,5 +1,5 @@
 class RegisterData {
-  final dynamic? restaurantName;
+  final dynamic restaurantName;
   final dynamic category;
   final dynamic email;
   final dynamic mobileNumber;
