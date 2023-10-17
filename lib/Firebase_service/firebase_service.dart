@@ -38,7 +38,31 @@ class FirebaseService {
     }
   }
 
-
+  Future manageMenu({
+    dynamic dishName,
+    dynamic category,
+    dynamic price,
+    dynamic docid,
+    dynamic discount,
+    dynamic description,
+    dynamic image,
+    required booking
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('vendor_menu').add({
+        "dishName": dishName,
+        "category": category,
+        "price": price,
+        "docid": docid,
+        "discount": discount,
+        "description": description,
+        "image": image,
+        "booking": booking
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
     DocumentSnapshot docSnap =

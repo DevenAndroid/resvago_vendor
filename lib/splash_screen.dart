@@ -18,16 +18,17 @@ class _SplashScreenState extends State<SplashScreen> {
   FirebaseService service = FirebaseService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  checkLogin() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser != null) {
-      RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser.uid);
-      if (thisUserModel != null) {
-        Get.offAllNamed(MyRouters.vendorDashboard, arguments: [thisUserModel, currentUser]);
-      } else {
-        Get.offAllNamed(MyRouters.onBoardingScreen);
-      }
-    }
+  checkLogin()  {
+    Get.offAllNamed(MyRouters.onBoardingScreen);
+    // User? currentUser = _auth.currentUser;
+    // if (currentUser != null) {
+    //   RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser.uid);
+    //   if (thisUserModel != null) {
+    //     Get.offAllNamed(MyRouters.vendorDashboard, arguments: [thisUserModel, currentUser]);
+    //   } else {
+    //     Get.offAllNamed(MyRouters.onBoardingScreen);
+    //   }
+    // }
   }
 
   @override
@@ -42,16 +43,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: const Color(0xff3B5998),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 80, width: 80, child: Center(child: Image.asset(AppAssets.splash))),
-          Center(child: const Image(image: AssetImage(AppAssets.Resvago))),
-        ],
-      ),
+    return  Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Center(child: Image(image: const AssetImage(AppAssets.Resvago),width: width * 2,height: height,)),
     );
   }
 }

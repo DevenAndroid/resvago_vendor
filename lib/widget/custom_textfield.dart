@@ -71,7 +71,6 @@ class CommonTextFieldWidget extends StatelessWidget {
         LengthLimitingTextInputFormatter(length),
       ],
       decoration: InputDecoration(
-
           hintText: hint,
           focusColor: Colors.white,
           hintStyle: GoogleFonts.poppins(
@@ -87,8 +86,7 @@ class CommonTextFieldWidget extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white.withOpacity(.10),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
           // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white.withOpacity(.35)),
@@ -98,8 +96,7 @@ class CommonTextFieldWidget extends StatelessWidget {
               borderSide: BorderSide(color: Colors.white.withOpacity(.35)),
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           border: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Colors.white.withOpacity(.35), width: 3.0),
+              borderSide: BorderSide(color: Colors.white.withOpacity(.35), width: 3.0),
               borderRadius: BorderRadius.circular(15.0)),
           suffixIcon: suffix,
           prefixIcon: prefix),
@@ -111,14 +108,12 @@ class CommonButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
 
-  const CommonButton({Key? key, required this.title, this.onPressed})
-      : super(key: key);
+  const CommonButton({Key? key, required this.title, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12), color: Colors.white),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white),
       child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
@@ -132,43 +127,39 @@ class CommonButton extends StatelessWidget {
           ),
           child: Text(title,
               style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.primaryColor,
-                  letterSpacing: .5,
-                  fontSize: 20))),
+                  fontWeight: FontWeight.w700, color: AppTheme.primaryColor, letterSpacing: .5, fontSize: 20))),
     );
   }
 }
-AppBar
-backAppBar(
+
+AppBar backAppBar(
     {required title,
-      required BuildContext context,
-      String dispose = "",
-      Color? backgroundColor = AppTheme.backgroundcolor,
-      Color? textColor = Colors.black,
-      Widget? icon,
-      disposeController}) {
+    required BuildContext context,
+    String dispose = "",
+    Color? backgroundColor = AppTheme.backgroundcolor,
+    Color? textColor = Colors.black,
+    Widget? icon,
+    disposeController}) {
   return AppBar(
     toolbarHeight: 60,
     elevation: 0,
     leadingWidth: AddSize.size22 * 1.6,
     backgroundColor: backgroundColor,
+    surfaceTintColor: AppTheme.backgroundcolor,
     title: Text(
       title,
-      style:
-        GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
+      style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
     ),
     leading: Padding(
       padding: EdgeInsets.only(left: AddSize.padding10),
       child: GestureDetector(
           onTap: () {
             Get.back();
-            if (dispose == "dispose") {}
           },
           child: icon ??
-              SvgPicture.asset(
-                AppAssets.appbarBack,
-                height: AddSize.size25,
+              Image.asset(
+                AppAssets.back,
+                height: AddSize.size15,
               )),
     ),
   );
