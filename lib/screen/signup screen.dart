@@ -75,7 +75,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> addUserToFirestore() async {
-
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     String imageUrl = categoryFile.path;
       UploadTask uploadTask = FirebaseStorage.instance
           .ref("categoryImages")
@@ -93,10 +94,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: passwordController.text.trim(),
       confirmPassword: confirmPasswordController.text.trim(),
       image: imageUrl,
-    );
-    print("manish");
-
-    Get.offAllNamed(MyRouters.thankYouScreen);
+    ).then((value) {
+      Get.back();
+      Helper.hideLoader(loader);
+    });
+    Get.toNamed(MyRouters.thankYouScreen);
   }
 
   @override

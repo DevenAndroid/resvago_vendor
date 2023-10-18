@@ -59,11 +59,8 @@ class FirebaseService {
     dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('vendor_users')
-          .doc(menuId)
-          .set({
-        "menuId": menuId,
+      await FirebaseFirestore.instance.collection('vendor_menu').doc(menuId).set({
+        "menuId":menuId,
         "dishName": dishName,
         "category": category,
         "price": price,
@@ -74,11 +71,12 @@ class FirebaseService {
         "booking": booking,
         "searchName": searchName,
       });
-      showToast("Category Updated");
+      showToast("Menu Added Successfully");
     } catch (e) {
       throw Exception(e);
     }
   }
+
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
