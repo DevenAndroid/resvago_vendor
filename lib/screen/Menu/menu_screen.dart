@@ -4,11 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:resvago_vendor/helper.dart';
 import 'package:resvago_vendor/model/menu_model.dart';
-import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-import '../../controllers/menu_controller.dart';
-import '../../model/category_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/apptheme.dart';
 import 'add_menu.dart';
@@ -22,25 +21,35 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   final TextEditingController searchController = TextEditingController();
-  bool isDescendingOrder = true;
+  String searchQuery = '';
 
   Stream<List<MenuData>> getMenu() {
-    return FirebaseFirestore.instance
-        .collection("vendor_menu")
-        .orderBy('time', descending: isDescendingOrder)
-        .snapshots()
-        .map((querySnapshot) {
+    return FirebaseFirestore.instance.collection("vendor_menu").snapshots().map((querySnapshot) {
       List<MenuData> menuList = [];
       try {
         for (var doc in querySnapshot.docs) {
           var gg = doc.data();
-          menuList.add(MenuData.fromMap(gg,doc.id.toString()));
+          menuList.add(MenuData.fromMap(gg, doc.id.toString()));
         }
       } catch (e) {
         throw Exception(e.toString());
       }
       return menuList;
     });
+  }
+
+  List<MenuData> filterMenus(List<MenuData> menus, String query) {
+    if (query.isEmpty) {
+      return menus; // Return all users if the search query is empty
+    } else {
+      // Filter the users based on the search query
+      return menus.where((menu) {
+        if (menu.dishName is String) {
+          return menu.dishName.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
   }
 
   @override
@@ -69,11 +78,14 @@ class _MenuScreenState extends State<MenuScreen> {
                           ]),
                       child: TextField(
                         maxLines: 1,
-                        controller: searchController,
                         style: const TextStyle(fontSize: 17),
                         textAlignVertical: TextAlignVertical.center,
                         textInputAction: TextInputAction.search,
-                        onChanged: (value) => {},
+                        onChanged: (value) => {
+                          setState(() {
+                            searchQuery = value;
+                          })
+                        },
                         decoration: InputDecoration(
                             filled: true,
                             prefixIcon: IconButton(
@@ -124,19 +136,23 @@ class _MenuScreenState extends State<MenuScreen> {
                 stream: getMenu(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return LoadingAnimationWidget.fourRotatingDots(
+                      color: AppTheme.primaryColor,
+                      size: 40,
+                    );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     List<MenuData> menu = snapshot.data ?? [];
                     log(menu.toString());
-                    return menu.isNotEmpty
+                    final filteredUsers = filterMenus(menu, searchQuery); //
+                    return filteredUsers.isNotEmpty
                         ? ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: menu.length,
+                            itemCount: filteredUsers.length,
                             itemBuilder: (BuildContext context, int index) {
-                              var menuItem = menu[index];
+                              var menuItem = filteredUsers[index];
                               return Stack(
                                 children: [
                                   Padding(
@@ -235,36 +251,63 @@ class _MenuScreenState extends State<MenuScreen> {
                                           ))),
                                   Positioned(
                                       right: 10,
-                                      bottom: 45,
-                                      top: 45,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => AddMenuScreen(
-                                                menuId: menuItem.menuId,
-                                                menuItemData: menuItem,
-                                              ));
-                                        },
-                                        child: Container(
-                                            height: 24,
-                                            width: 24,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFDFE8F6),
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.edit,
-                                                color: AppTheme.lightBlueColor,
-                                                size: AddSize.size15,
-                                              ),
-                                            )),
+                                      top: 20,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => AddMenuScreen(
+                                                    menuId: menuItem.menuId,
+                                                    menuItemData: menuItem,
+                                                  ));
+                                            },
+                                            child: Container(
+                                                height: 24,
+                                                width: 24,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFFDFE8F6),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    color: AppTheme.lightBlueColor,
+                                                    size: AddSize.size15,
+                                                  ),
+                                                )),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          GestureDetector(
+                                            onTap: () {
+                                              FirebaseFirestore.instance
+                                                  .collection('vendor_menu')
+                                                  .doc(menuItem.menuId)
+                                                  .delete()
+                                                  .then((value) {
+                                                setState(() {});
+                                              });
+                                            },
+                                            child: Container(
+                                                height: 24,
+                                                width: 24,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red.withOpacity(.2),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.delete_outline_sharp,
+                                                    color: Colors.red,
+                                                    size: AddSize.size15,
+                                                  ),
+                                                )),
+                                          ),
+                                        ],
                                       ))
                                 ],
                               );
                             })
-                        : const CircularProgressIndicator(
-                            color: AppTheme.primaryColor,
-                          );
+                        : loading();
                   }
                 },
               ),
