@@ -136,14 +136,3 @@ class CommonButtonBlue extends StatelessWidget {
     );
   }
 }
-showToast(message) {
-  Fluttertoast.cancel();
-  Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: AppTheme.primaryColor,
-      textColor: Colors.white,
-      fontSize: 16.0);
-}

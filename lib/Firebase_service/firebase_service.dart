@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import '../helper.dart';
 import '../model/signup_model.dart';
 
 class FirebaseService {
@@ -38,7 +39,10 @@ class FirebaseService {
     }
   }
 
+
+
   Future manageMenu({
+    required String menuId,
     dynamic dishName,
     dynamic category,
     dynamic price,
@@ -46,10 +50,14 @@ class FirebaseService {
     dynamic discount,
     dynamic description,
     dynamic image,
-    required booking
-  }) async {
+    dynamic booking,
+    dynamic time,
+    dynamic searchName,
+  })
+  async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_menu').add({
+      await FirebaseFirestore.instance.collection('vendor_users').doc(menuId).set({
+        "menuId":menuId,
         "dishName": dishName,
         "category": category,
         "price": price,
@@ -57,12 +65,15 @@ class FirebaseService {
         "discount": discount,
         "description": description,
         "image": image,
-        "booking": booking
+        "booking": booking,
+        "searchName": searchName,
       });
+      showToast("Category Updated");
     } catch (e) {
       throw Exception(e);
     }
   }
+
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
     DocumentSnapshot docSnap =
