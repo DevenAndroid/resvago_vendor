@@ -64,7 +64,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       minLines: minLines,
       maxLines: maxLines,
-      cursorColor: const Color(0xFF7ED957),
+      cursorColor: AppTheme.primaryColor,
       inputFormatters: [
         LengthLimitingTextInputFormatter(length),
       ],

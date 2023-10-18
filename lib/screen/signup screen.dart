@@ -62,14 +62,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FirebaseService firebaseService = FirebaseService();
 
   void checkEmailInFirestore() async {
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('vendor_users')
-        .where('email', isEqualTo: emailController.text)
-        .get();
+    final QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
 
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already exits');
-    }  else {
+    } else {
       addUserToFirestore();
     }
   }
@@ -78,14 +76,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     String imageUrl = categoryFile.path;
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref("categoryImages")
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
-          .putFile(categoryFile);
+    UploadTask uploadTask = FirebaseStorage.instance
+        .ref("categoryImages")
+        .child(DateTime.now().millisecondsSinceEpoch.toString())
+        .putFile(categoryFile);
 
-      TaskSnapshot snapshot = await uploadTask;
-      imageUrl = await snapshot.ref.getDownloadURL();
-    await firebaseService.manageRegisterUsers(
+    TaskSnapshot snapshot = await uploadTask;
+    imageUrl = await snapshot.ref.getDownloadURL();
+    await firebaseService
+        .manageRegisterUsers(
       restaurantName: restaurantNameController.text.trim(),
       category: categoryController.text.trim(),
       email: emailController.text.trim(),
@@ -94,7 +93,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: passwordController.text.trim(),
       confirmPassword: confirmPasswordController.text.trim(),
       image: imageUrl,
-    ).then((value) {
+    )
+        .then((value) {
       Get.back();
       Helper.hideLoader(loader);
     });
@@ -318,10 +318,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       height: 180,
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
-                                          errorBuilder: (_,__,___)=> Image.network(categoryFile.path,
-                                              errorBuilder: (_,__,___)=> SizedBox()
-                                          )
-                                      ),
+                                          errorBuilder: (_, __, ___) =>
+                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => SizedBox())),
                                     ),
                                   ],
                                 )
@@ -373,9 +371,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       value = newValue!;
-                                      setState(() {
-
-                                      });
+                                      setState(() {});
                                     });
                                   }),
                             ),
@@ -389,21 +385,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-
-                          if(value){
-                            if (_formKeySignup.currentState!.validate()  && showValidationImg == true) {
-                              checkEmailInFirestore();
-                            }
-                            else {
-                              Fluttertoast.showToast(msg: 'Please Select CheckBox');
-                              showValidation = true;
-                              showValidationImg = true;
-                              setState(() {});
-                            }
-                          }else{
-                            Fluttertoast.showToast(msg: 'Please select CheckBox');
+                          if (_formKeySignup.currentState!.validate() && categoryFile.path != "" && value == true) {
+                            checkEmailInFirestore();
+                          } else {
+                            showValidationImg = true;
+                            showValidation = true;
+                            setState(() {});
                           }
-
                         },
                         title: 'APPLY',
                       ),
@@ -427,15 +415,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Picture from',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.camera, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -472,9 +457,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.gallery, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [

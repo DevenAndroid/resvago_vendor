@@ -66,7 +66,7 @@ class CommonTextFieldWidget extends StatelessWidget {
       textInputAction: textInputAction,
       minLines: minLines,
       maxLines: maxLines,
-      cursorColor: const Color(0xFF7ED957),
+      cursorColor: AppTheme.backgroundcolor,
       inputFormatters: [
         LengthLimitingTextInputFormatter(length),
       ],

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,24 +57,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     addMenuToFirestore();
   }
 
-  Stream<List<CategoryData>> getCategory() {
-    return FirebaseFirestore.instance
-        .collection("resturent")
-        .orderBy('time', descending: isDescendingOrder)
-        .snapshots()
-        .map((querySnapshot) {
-      List<CategoryData> resturent = [];
-      try {
-        for (var doc in querySnapshot.docs) {
-          var gg = doc.data();
-          resturent.add(CategoryData.fromMap(gg));
-        }
-      } catch (e) {
-        throw Exception(e.toString());
-      }
-      return resturent;
-    });
-  }
   Future<void> addMenuToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -101,6 +84,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       }
     await firebaseService.manageMenu(
       menuId: menuId,
+      vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
       dishName: dishNameController.text.trim(),
       category: categoryValue,
       price: priceController.text.trim(),
@@ -124,13 +108,27 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   }
 }
 
+  List<CategoryData>? categoryList;
+
+getVendorCategories() {
+    FirebaseFirestore.instance
+    .collection("resturent")
+    .orderBy('time', descending: isDescendingOrder).get().then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        categoryList ??= [];
+        categoryList!.add(CategoryData.fromMap(gg));
+      }
+      setState(() {});
+    });
+}
 
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getCategory();
+    // getCategory();
+    getVendorCategories();
     if(widget.menuItemData == null)return;
     dishNameController.text = widget.menuItemData!.dishName ?? "";
     priceController.text = widget.menuItemData!.price ?? "";
@@ -191,87 +189,77 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      StreamBuilder<List<CategoryData>>(
-                        stream: getCategory(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const SizedBox();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            List<CategoryData> resturent = snapshot.data ?? [];
-                            return resturent.isNotEmpty
-                                ? DropdownButtonFormField<dynamic>(
-                                    focusColor: Colors.white,
-                                    isExpanded: true,
-                                    iconEnabledColor: const Color(0xff97949A),
-                                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                                    borderRadius: BorderRadius.circular(10),
-                                    hint: Text(
-                                      "Select category".tr,
-                                      style: const TextStyle(
-                                          color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
-                                      textAlign: TextAlign.justify,
-                                    ),
-                                    decoration: InputDecoration(
-                                      focusColor: const Color(0xFF384953),
-                                      hintStyle: GoogleFonts.poppins(
-                                        color: const Color(0xFF384953),
-                                        textStyle: GoogleFonts.poppins(
-                                          color: const Color(0xFF384953),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                        fontSize: 14,
-                                        // fontFamily: 'poppins',
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white.withOpacity(.10),
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                      // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                        borderRadius: BorderRadius.circular(6.0),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                          borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.red.shade800),
-                                          borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                      border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
-                                          borderRadius: BorderRadius.circular(6.0)),
-                                    ),
-                                    value: categoryValue,
-                                    items: resturent.toList().map((items) {
-                                      return DropdownMenuItem(
-                                        value: items.name.toString(),
-                                        child: Text(
-                                          items.name.toString(),
-                                          style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        categoryValue = newValue.toString();
-                                        log(categoryValue.toString());
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (categoryValue == null) {
-                                        return 'Please select category';
-                                      }
-                                      return null;
-                                    },
-                                  )
-                                : const SizedBox.shrink();
-                          }
+                      if(categoryList != null)
+                      DropdownButtonFormField<dynamic>(
+                        focusColor: Colors.white,
+                        isExpanded: true,
+                        iconEnabledColor: const Color(0xff97949A),
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                        borderRadius: BorderRadius.circular(10),
+                        hint: Text(
+                          "Select category".tr,
+                          style: const TextStyle(
+                              color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
+                          textAlign: TextAlign.justify,
+                        ),
+                        decoration: InputDecoration(
+                          focusColor: const Color(0xFF384953),
+                          hintStyle: GoogleFonts.poppins(
+                            color: const Color(0xFF384953),
+                            textStyle: GoogleFonts.poppins(
+                              color: const Color(0xFF384953),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                            ),
+                            fontSize: 14,
+                            // fontFamily: 'poppins',
+                            fontWeight: FontWeight.w300,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(.10),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red.shade800),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                          border: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
+                              borderRadius: BorderRadius.circular(6.0)),
+                        ),
+                        value: categoryValue,
+                        items: categoryList!.map((items) {
+                          return DropdownMenuItem(
+                            value: items.name.toString(),
+                            child: Text(
+                              items.name.toString(),
+                              style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          categoryValue = newValue.toString();
+                          log(categoryValue.toString());
+                          setState(() {});
                         },
-                      ),
+                        validator: (value) {
+                          if (categoryValue == null) {
+                            return 'Please select category';
+                          }
+                          return null;
+                        },
+                      )
+                      else
+                        Center(
+                          child: Text("No Category Available"),
+                        ),
                       const SizedBox(
                         height: 10,
                       ),

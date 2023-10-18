@@ -72,7 +72,7 @@ class Helper {
 }
 
  loading() {
-   Center(
+   return Center(
       child: LoadingAnimationWidget.fourRotatingDots(
     color: AppTheme.primaryColor,
     size: 40,

@@ -1,6 +1,7 @@
 class MenuData {
    dynamic dishName;
    dynamic menuId;
+   dynamic vendorId;
    dynamic category;
    dynamic price;
    dynamic docid;
@@ -10,11 +11,12 @@ class MenuData {
    dynamic booking;
    dynamic time;
 
-  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId});
+  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId});
 
   Map<String, dynamic> toMap() {
     return {
       "menuId": menuId,
+      "vendorId": vendorId,
       "dishName": dishName,
       "category": category,
       "price": price,
@@ -30,6 +32,7 @@ class MenuData {
   factory MenuData.fromMap(Map<String, dynamic> map, String menuId) {
     return MenuData(
       dishName: map['dishName'],
+      vendorId: map['vendorId'],
       menuId: menuId,
       category: map['category'],
       price: map['price'],
