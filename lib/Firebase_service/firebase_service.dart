@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:get/get.dart';
+import 'package:resvago_vendor/screen/user_profile.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -26,8 +25,7 @@ class FirebaseService {
     try {
       CollectionReference collection =
           FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc();
-      String documentId = DocumentReference.id;
+      var DocumentReference = collection.doc("+91${mobileNumber}");
 
       DocumentReference.set({
         "restaurantName": restaurantName,
@@ -39,8 +37,9 @@ class FirebaseService {
         "password": password,
         "confirmPassword": confirmPassword,
         "image": image,
-        "userID": documentId,
+        "userID": "+91${mobileNumber}",
       });
+
     } catch (e) {
       throw Exception(e);
     }
@@ -58,11 +57,13 @@ class FirebaseService {
     dynamic booking,
     dynamic time,
     dynamic searchName,
-  })
-  async {
+  }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_users').doc(menuId).set({
-        "menuId":menuId,
+      await FirebaseFirestore.instance
+          .collection('vendor_users')
+          .doc(menuId)
+          .set({
+        "menuId": menuId,
         "dishName": dishName,
         "category": category,
         "price": price,
