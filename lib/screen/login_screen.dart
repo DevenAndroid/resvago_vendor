@@ -12,6 +12,7 @@ import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 
+import '../helper.dart';
 import '../widget/custom_textfield.dart';
 import 'otp_screen.dart';
 
@@ -36,15 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result.docs.isNotEmpty) {
       login();
-    }  else {
+    } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
   }
 
   login() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     try {
       final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
-      await _auth.verifyPhoneNumber(
+      await _auth
+          .verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {
@@ -60,8 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
           log("Auto Retrieval Timeout: $verificationId");
         },
       );
+      Helper.hideLoader(loader);
     } catch (e) {
-      log("Error: $e");
+      Helper.hideLoader(loader);
     }
   }
 
@@ -142,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   CommonButton(
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
-                                        checkPhoneNumberInFirestore();                                      }
+                                        checkPhoneNumberInFirestore();
+                                      }
                                     },
                                     title: 'Login',
                                   ),
