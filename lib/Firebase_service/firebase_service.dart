@@ -1,8 +1,8 @@
-
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../helper.dart';
@@ -21,25 +21,30 @@ class FirebaseService {
     dynamic password,
     dynamic confirmPassword,
     dynamic image,
+    dynamic userID,
   }) async {
     try {
-        await FirebaseFirestore.instance.collection('vendor_users').add({
-          "restaurantName": restaurantName,
-          "category": category,
-          "email": email,
-          "docid": docid,
-          "mobileNumber": mobileNumber,
-          "address": address,
-          "password": password,
-          "confirmPassword": confirmPassword,
-          "image": image,
-        });
+      CollectionReference collection =
+          FirebaseFirestore.instance.collection('vendor_users');
+      var DocumentReference = collection.doc();
+      String documentId = DocumentReference.id;
+
+      DocumentReference.set({
+        "restaurantName": restaurantName,
+        "category": category,
+        "email": email,
+        "docid": docid,
+        "mobileNumber": mobileNumber,
+        "address": address,
+        "password": password,
+        "confirmPassword": confirmPassword,
+        "image": image,
+        "userID": documentId,
+      });
     } catch (e) {
       throw Exception(e);
     }
   }
-
-
 
   Future manageMenu({
     required String menuId,
@@ -77,12 +82,13 @@ class FirebaseService {
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
     DocumentSnapshot docSnap =
-    await firestore.collection("vendor_users").doc(uid.trim()).get();
+        await firestore.collection("vendor_users").doc(uid.trim()).get();
     if (kDebugMode) {
       if (kDebugMode) print(docSnap.exists);
     }
     if (docSnap.data() != null) {
-      vendorModel = RegisterData.fromMap(docSnap.data() as Map<String, dynamic>);
+      vendorModel =
+          RegisterData.fromMap(docSnap.data() as Map<String, dynamic>);
       log(jsonEncode(docSnap.data()));
     }
     return vendorModel;
