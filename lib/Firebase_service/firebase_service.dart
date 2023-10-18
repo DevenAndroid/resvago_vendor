@@ -81,6 +81,40 @@ class FirebaseService {
   }
 
 
+  Future manageSlot({
+    required String slotId,
+    dynamic vendorId,
+    dynamic dishName,
+    dynamic category,
+    dynamic price,
+    dynamic docid,
+    dynamic discount,
+    dynamic description,
+    dynamic image,
+    dynamic booking,
+    dynamic time,
+    dynamic searchName,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('vendor_slot').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("slot").doc(slotId).set({
+        "menuId":slotId,
+        "vendorId": vendorId,
+        "dishName": dishName,
+        "category": category,
+        "price": price,
+        "docid": docid,
+        "discount": discount,
+        "description": description,
+        "image": image,
+        "booking": booking,
+        "searchName": searchName,
+      });
+      showToast("Menu Added Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
     DocumentSnapshot docSnap =
