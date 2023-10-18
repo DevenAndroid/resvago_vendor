@@ -6,14 +6,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:resvago_vendor/model/profile_model.dart';
 import 'package:resvago_vendor/model/signup_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
-import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
+import '../helper.dart';
 import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
 
@@ -37,26 +41,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   var obscureText5 = true;
   Rx<File> image = File("").obs;
 
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController restaurantController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPassController = TextEditingController();
+  TextEditingController oldPasswordController = TextEditingController();
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
 
-  Future<Map<String, dynamic>> fetchUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot<Map<String, dynamic>> userData =
-      await FirebaseFirestore.instance.collection('vendor_users').doc(user.uid).get();
-      print(userData.data().toString());
-      print(user.uid);
-      return userData.data() ?? {};
-    } else {
-      return {}; // Return an empty map if the user is not authenticated
-    }
-  }
   void showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -75,6 +76,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   height: 10,
                 ),
                 RegisterTextFieldWidget(
+                  controller: oldPasswordController,
                   suffix: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -115,6 +117,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   height: 10,
                 ),
                 RegisterTextFieldWidget(
+                  controller: passwordController,
                   suffix: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -155,6 +158,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   height: 10,
                 ),
                 RegisterTextFieldWidget(
+                  controller: confirmPassController,
                   suffix: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -185,7 +189,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   height: 20,
                 ),
                 CommonButtonBlue(
-                  onPressed: () {},
+                  onPressed: () {
+                    updateProfileToFirestore();
+                  },
                   title: 'Save',
                 ),
               ],
@@ -195,20 +201,53 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       },
     );
   }
-  Map<String, dynamic> userData = {};
+
+  void updateProfileToFirestore() {
+    FirebaseFirestore.instance
+        .collection("vendor_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .update({
+      "restaurantName": restaurantController.text.trim(),
+      "address": addressController.text.trim(),
+      "password": passwordController.text.trim(),
+      "email": emailController.text.trim(),
+      "category": categoryController.text.trim(),
+      "image": profileImage.toString(),
+      "mobileNumber": mobileController.text.trim(),
+      "confirmPassword": confirmPassController.text.trim()
+    }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
+  }
+
+  ProfileData profileData = ProfileData();
+  void fetchdata() {
+    FirebaseFirestore.instance
+        .collection("vendor_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        mobileController.text = profileData.mobileNumber.toString();
+        restaurantController.text = profileData.restaurantName.toString();
+        categoryController.text = profileData.category.toString();
+        emailController.text = profileData.email.toString();
+        addressController.text = profileData.address.toString();
+        // passwordController.text = profileData.password.toString();
+        // confirmPassController.text = profileData.confirmPassword.toString();
+        setState(() {});
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    fetchdata();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    fetchUserData().then((data) {
-        userData = data;
-        log(userData.toString());
-    });
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
@@ -256,8 +295,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                             child: CachedNetworkImage(
                               fit: BoxFit.cover,
-                              imageUrl:
-                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIsAAACLCAMAAABmx5rNAAAAk1BMVEX///8AESEAAACqrrL8/Pz///0AABIAAAsAABb+/f8AEiD3+PgACBwAABQAABgDEyTCxMYkJy8NEBnm5+nf4OBERksAAAXv8PFJTFAAABvIy800N0AqLDFVWWGcoKK6vL8sLzlOUlnU1tiPkpV0eHtdY2aFiIppa281ODxgZGwbICkADRcUGiYRGCASFSQAChlBRFDZEkPCAAADqElEQVR4nO2a23aqMBCGQyCEkwoCxkMLFizWnt//6XbQrVUrhNYw7rX2fFcsb/ydmX+YTCQEQRAEQRAEQRAEQRAE+QZj359uhRUXuWmaYRIz4t5UiZ+tlxNaw59W5q1UWBYjxZpSJzB2BA6lVUxukSvGRDa2Dc8z9oyMDx6ZPrGgpbgkTmkgv/+I0cgI6EbAlg2zXDIfD4xL8KdEJhAwTRYp7oYXpRgjexoT0NCIsTO6rMUwJgsCWb3+o92kREIrQCnEpI1RqdM0mcNJEc9BixTDc1IoJS7JqOG1iTF4TlyINsOIv2jw0CEwfA3jJNn6absU2QG5YBBiXFKqtEgr5UC+fnSUWiYVjBaRKspF4mwglBASP7U6estsKkC0JJFaS5D+f1riZYccAWkRqVqLcw8z3Vn3ak/zFVB/qTr0OhNIy7yDlgRGCvNVxevJcoHRYpFyogqLnBmARt5k3C5ltoBx9BbFm1qGBQ4xbbP1ZO1DHgQKGnhN4/fgBTBDdV2GdoOXPCcq5MESVIw5uZymwetczt3Aq4b5m3T20Zph90zr4zQwMjLxip+HZvBSCbDOcoDV5598QY/KZmjTh3m9JAKWsqdYLeoF2XZNllbw6TlFJHlWVWWWJ/6NlZzkA9o9W+paEaE4+37ZVA6fQ5avn015avrkeKfr1kdtM+XTzAdcBvlZRIfGjL6Wp4uWefVKhyOHRhlE7VgWYyRc8J2TA27f3Wd5kSRJkWf3d/bh80VIGOvZ3S4jVmUfWpxnBDalzvv7u0Nlq/l6Ww7syu37peSSYnm8H/OM0d+10NfTDros+tw61z/UfB40zQpnnztRPWj2VsQWMan6nLYnqA8mfZl7uwVqW2CexSmgZT9CrC47w1MtMjIZIT1UjWywpvqMdk4/50eLhB/da2UfmuAj1B2XumuJlx9LkWkavgmiN01Si/9w+Y5Ghf3gax6vOi1SL4dGt5mYPLb+PEM7LcE40XoDycim7ZKmHXuj10sdVi7NUK1XOP50doWW4VTnOJPzK6Rsr3A0IR35+ftqqbE/9dlaeUmjghaaypeR8roUySSVuqwkOizd2wkioUnLVYbeoc3WHXbLSi2arqytDvt/FUGqx0dd7miUWiI9O4j8uuayw9bT7kr+gyG3AY/rmRxW13aXGr7SoqX1Px1dsR+1aKm0xEWPqedcfR+tYsg1NbswpdeShnqkMCK2fy38PXkhdL0bNSxSbrJWRBAEQRAEQRAEQRAE+Rf4A9JzM5mdCizPAAAAAElFTkSuQmCC",
+                              imageUrl: profileData.image == null
+                                  ? "image"
+                                  : profileData.image.toString(),
                               height: AddSize.size30,
                               width: AddSize.size30,
                               errorWidget: (_, __, ___) => const Icon(
@@ -292,7 +332,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Mac',
+                        profileData.restaurantName == null
+                            ? "email"
+                            : profileData.restaurantName.toString(),
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.bold,
@@ -302,7 +344,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        "veg Restaurant",
+                        profileData.category == null
+                            ? "email"
+                            : profileData.category.toString(),
                         style: GoogleFonts.poppins(
                             color: Colors.grey,
                             fontWeight: FontWeight.normal,
@@ -312,176 +356,172 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    FutureBuilder(
-                      future: fetchUserData(),
-                      builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          Map<String, dynamic> userData = snapshot.data!;
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                userData['restaurantName'].toString(),
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                validator: RequiredValidator(
-                                    errorText: 'Please enter your Restaurant Name '),
-                                // keyboardType: TextInputType.none,
-                                // textInputAction: TextInputAction.next,
-                                hint: 'Mac Restaurant',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Category",
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                // length: 10,
-                                validator: RequiredValidator(
-                                    errorText: 'Please enter your Category '),
-                                // keyboardType: TextInputType.number,
-                                // textInputAction: TextInputAction.next,
-                                hint: 'Veg Restaurant',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Email",
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                // length: 10,
-                                validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your email'),
-                                  EmailValidator(
-                                      errorText: 'Enter a valid email address'),
-                                ]),
-                                keyboardType: TextInputType.emailAddress,
-                                // textInputAction: TextInputAction.next,
-                                hint: 'MacRestaurant@gmail.com',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Mobile Number",
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                length: 10,
-                                validator: RequiredValidator(
-                                    errorText: 'Please enter your Mobile Number '),
-                                keyboardType: TextInputType.number,
-                                // textInputAction: TextInputAction.next,
-                                hint: '987-654-3210',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Address",
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                // length: 10,
-                                validator: RequiredValidator(
-                                    errorText: 'Please enter your Address '),
-                                keyboardType: TextInputType.streetAddress,
-                                // textInputAction: TextInputAction.next,
-                                hint: 'Street, Zip Code, City',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Password",
-                                style: GoogleFonts.poppins(
-                                    color: AppTheme.registortext,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              RegisterTextFieldWidget(
-                                suffix: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        obscureText4 = !obscureText4;
-                                      });
-                                    },
-                                    child: obscureText4
-                                        ? const Icon(
-                                      Icons.visibility_off,
-                                      color: Color(0xFF8487A1),
-                                    )
-                                        : const Icon(Icons.visibility,
-                                        color: Color(0xFF8487A1))),
-                                obscureText: obscureText4,
-                                // length: 10,
-                                validator: MultiValidator([
-                                  RequiredValidator(
-                                      errorText: 'Please enter your password'),
-                                  MinLengthValidator(8,
-                                      errorText:
-                                      'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                                  PatternValidator(
-                                      r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                                      errorText:
-                                      "Password must be at least with 1 special character & 1 numerical"),
-                                ]),
-                                hint: '************',
-                              ),
-                            ],
-                          );
-                        }
-                      },
+                    Text(
+                      'Restaurant Name',
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
                     ),
-
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: restaurantController,
+                      validator: RequiredValidator(
+                          errorText: 'Please enter your Restaurant Name '),
+                      hint: profileData.restaurantName == null
+                          ? "email"
+                          : profileData.restaurantName.toString(),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Category",
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: categoryController,
+                      validator: RequiredValidator(
+                          errorText: 'Please enter your Category '),
+                      // keyboardType: TextInputType.number,
+                      // textInputAction: TextInputAction.next,
+                      hint: profileData.category == null
+                          ? "email"
+                          : profileData.category.toString(),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Email",
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: emailController,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: 'Please enter your email'),
+                        EmailValidator(
+                            errorText: 'Enter a valid email address'),
+                      ]),
+                      keyboardType: TextInputType.emailAddress,
+                      // textInputAction: TextInputAction.next,
+                      hint: profileData.email == null
+                          ? "email"
+                          : profileData.email.toString(),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Mobile Number",
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: mobileController,
+                      length: 10,
+                      validator: RequiredValidator(
+                          errorText: 'Please enter your Mobile Number '),
+                      keyboardType: TextInputType.number,
+                      // textInputAction: TextInputAction.next,
+                      hint: profileData.mobileNumber == null
+                          ? "email"
+                          : profileData.mobileNumber.toString(),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Address",
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: addressController,
+                      validator: RequiredValidator(
+                          errorText: 'Please enter your Address '),
+                      keyboardType: TextInputType.streetAddress,
+                      // textInputAction: TextInputAction.next,
+                      hint: profileData.address == null
+                          ? "email"
+                          : profileData.address.toString(),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Password",
+                      style: GoogleFonts.poppins(
+                          color: AppTheme.registortext,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    RegisterTextFieldWidget(
+                      controller: passwordController,
+                      suffix: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              obscureText4 = !obscureText4;
+                            });
+                          },
+                          child: obscureText4
+                              ? const Icon(
+                                  Icons.visibility_off,
+                                  color: Color(0xFF8487A1),
+                                )
+                              : const Icon(Icons.visibility,
+                                  color: Color(0xFF8487A1))),
+                      obscureText: obscureText4,
+                      // length: 10,
+                      validator: MultiValidator([
+                        RequiredValidator(
+                            errorText: 'Please enter your password'),
+                        MinLengthValidator(8,
+                            errorText:
+                                'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                        PatternValidator(
+                            r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                            errorText:
+                                "Password must be at least with 1 special character & 1 numerical"),
+                      ]),
+                      hint: profileData.password == null
+                          ? "email"
+                          : profileData.password.toString(),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
                     CommonButtonBlue(
-                      onPressed: () {},
+                      onPressed: () {
+                        updateProfileToFirestore();
+                      },
                       title: 'Save',
                     ),
                     const SizedBox(
@@ -516,6 +556,106 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void showActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text(
+          'Select Picture from',
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(
+                      imageSource: ImageSource.camera, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  profileImage = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
+            },
+            child: const Text("Camera"),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(
+                      imageSource: ImageSource.gallery, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  profileImage = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
+            },
+            child: const Text('Gallery'),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
       ),
     );
   }

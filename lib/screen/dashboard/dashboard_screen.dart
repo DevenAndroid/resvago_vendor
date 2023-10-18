@@ -205,7 +205,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      Get.to(const UserProfileScreen());
+                      Get.to(UserProfileScreen());
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 18),
