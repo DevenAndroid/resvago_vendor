@@ -36,6 +36,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   TextEditingController discountNumberController = TextEditingController();
   TextEditingController descriptionController    = TextEditingController();
   String get menuId => widget.menuId;
+  MenuData? get menuItemData => widget.menuItemData;
   String? categoryValue;
   File categoryFile = File("");
   bool delivery = false;
@@ -45,32 +46,16 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   bool isDescendingOrder = true;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  File profileImage = File("");
+  bool showValidation = false;
+  bool showValidationImg = false;
+  // final menuController = Get.put(MenuDataController());
+  var obscureText5 = true;
 
-  Future<void> addMenuToFirestore() async {
-    String imageUrl = categoryFile.path;
-    UploadTask uploadTask = FirebaseStorage.instance
-        .ref("categoryImages")
-        .child(DateTime.now().millisecondsSinceEpoch.toString())
-        .putFile(categoryFile);
-
-    TaskSnapshot snapshot = await uploadTask;
-    imageUrl = await snapshot.ref.getDownloadURL();
-    await firebaseService.manageMenu(
-      menuId: menuId,
-      dishName: dishNameController.text.trim(),
-      category: categoryValue,
-      price: priceController.text.trim(),
-      discount: discountNumberController.text.trim(),
-      description: descriptionController.text,
-      booking: delivery == true
-          ? "Delivery"
-          : dining == true
-          ? "Dining"
-          : "",
-      image: imageUrl,
-      time: DateTime.now().millisecondsSinceEpoch,
-    );
+  void checkMenuInFirestore() async {
+    addMenuToFirestore();
   }
+
   Stream<List<CategoryData>> getCategory() {
     return FirebaseFirestore.instance
         .collection("resturent")
@@ -89,91 +74,57 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       return resturent;
     });
   }
-  // Future<void> addVendorToFirestore() async {
-  //   if (!formKey.currentState!.validate()) return;
-  //   if (categoryFile.path.isEmpty) {
-  //     showToast("Please select image");
-  //     return;
-  //   }
-  //   List<String> arrangeNumbers = [];
-  //   String kk = dishNameController.text.trim();
-  //   arrangeNumbers.clear();
-  //   for (var i = 0; i < kk.length; i++) {
-  //     arrangeNumbers.add(kk.substring(0, i + 1));
-  //   }
-  //   String imageUrl = categoryFile.path;
-  //   if (!categoryFile.path.contains("https")) {
-  //     if (menuData != null) {
-  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
-  //       await gg.delete();
-  //     }
-  //     UploadTask uploadTask = FirebaseStorage.instance
-  //         .ref("categoryImages")
-  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
-  //         .putFile(categoryFile);
-  //
-  //     TaskSnapshot snapshot = await uploadTask;
-  //     imageUrl = await snapshot.ref.getDownloadURL();
-  //   } else {
-  //     if (menuData != null) {
-  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
-  //       await gg.delete();
-  //     }
-  //     UploadTask uploadTask = FirebaseStorage.instance
-  //         .ref("categoryImages")
-  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
-  //         .putFile(categoryFile);
-  //
-  //     TaskSnapshot snapshot = await uploadTask;
-  //     imageUrl = await snapshot.ref.getDownloadURL();
-  //   }
-  //   if (menuData != null) {
-  //     await firebaseService.manageMenu(
-  //       description: descriptionController.text.trim(),
-  //       docid: menuData!.docid,
-  //       image: imageUrl,
-  //       searchName: arrangeNumbers,
-  //       dishName: kk,
-  //       price: priceController.text,
-  //       discount: discountNumberController.text,
-  //       category: categoryValue,
-  //       booking: delivery == true
-  //           ? "Delivery"
-  //           : dining == true
-  //           ? "Dining"
-  //           : "",
-  //       time: DateTime.now().millisecondsSinceEpoch,
-  //     );
-  //   } else {
-  //     await firebaseService.manageMenu(
-  //       description: descriptionController.text.trim(),
-  //       docid: menuData!.docid,
-  //       image: imageUrl,
-  //       searchName: arrangeNumbers,
-  //       dishName: kk,
-  //       price: priceController.text,
-  //       discount: discountNumberController.text,
-  //       category: categoryValue,
-  //       booking: delivery == true
-  //           ? "Delivery"
-  //           : dining == true
-  //           ? "Dining"
-  //           : "",
-  //       time: DateTime.now().millisecondsSinceEpoch,
-  //     );
-  //   }
-  //   Get.back();
-  // }
-  
-  File profileImage = File("");
-  bool showValidation = false;
-  bool showValidationImg = false;
-  // final menuController = Get.put(MenuDataController());
-  var obscureText5 = true;
+  Future<void> addMenuToFirestore() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    try {
+      List<String> arrangeNumbers = [];
+      String kk = dishNameController.text.trim();
 
-  void checkMenuInFirestore() async {
-      addMenuToFirestore();
+      arrangeNumbers.clear();
+      for (var i = 0; i < kk.length; i++) {
+        arrangeNumbers.add(kk.substring(0, i + 1));
+      }
+      String imageUrl = categoryFile.path;
+      if (!categoryFile.path.contains("https")) {
+        if (menuItemData != null) {
+          Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
+          await gg.delete();
+        }
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref("categoryImages")
+            .child(DateTime.now().millisecondsSinceEpoch.toString())
+            .putFile(categoryFile);
+
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrl = await snapshot.ref.getDownloadURL();
+      }
+    await firebaseService.manageMenu(
+      menuId: menuId,
+      dishName: dishNameController.text.trim(),
+      category: categoryValue,
+      price: priceController.text.trim(),
+      discount: discountNumberController.text.trim(),
+      description: descriptionController.text,
+      booking: delivery == true
+          ? "Delivery"
+          : dining == true
+          ? "Dining"
+          : "",
+      image: imageUrl,
+      time: DateTime.now().millisecondsSinceEpoch,
+    ).then((value) {
+      Get.back();
+      Helper.hideLoader(loader);
+    });
+  } catch (e) {
+  Helper.hideLoader(loader);
+  showToast(e.toString());
+  throw Exception(e.toString());
   }
+}
+
+
 
   @override
   void initState() {
@@ -510,7 +461,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       CommonButtonBlue(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            if (value == true) {
+                            if (delivery == true || dining == true) {
                               checkMenuInFirestore();
                             } else {
                               Fluttertoast.showToast(msg: 'Please Select booking type');
