@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 import '../helper.dart';
 import '../model/signup_model.dart';
@@ -61,7 +62,7 @@ class FirebaseService {
   })
   async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_users').doc(menuId).set({
+      await FirebaseFirestore.instance.collection('vendor_menu').doc(menuId).set({
         "menuId":menuId,
         "dishName": dishName,
         "category": category,
@@ -73,11 +74,12 @@ class FirebaseService {
         "booking": booking,
         "searchName": searchName,
       });
-      showToast("Category Updated");
+      showToast("Menu Added Successfully");
     } catch (e) {
       throw Exception(e);
     }
   }
+
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

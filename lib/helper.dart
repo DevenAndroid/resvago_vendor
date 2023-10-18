@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:resvago_vendor/widget/apptheme.dart';
 
 class Helper {
-  static Future addImagePicker(
-      {ImageSource imageSource = ImageSource.gallery,
-        int imageQuality = 100}) async {
+  static Future addImagePicker({ImageSource imageSource = ImageSource.gallery, int imageQuality = 100}) async {
     try {
-      final item = await ImagePicker()
-          .pickImage(source: imageSource, imageQuality: imageQuality);
+      final item = await ImagePicker().pickImage(source: imageSource, imageQuality: imageQuality);
       if (item == null) {
         return null;
       } else {
@@ -33,16 +31,17 @@ class Helper {
         left: 0,
         child: Material(
             color: Colors.white10,
-            child: const SizedBox(
+            child: SizedBox(
                 height: 35,
                 width: 45,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(
-                      color: Colors.blueAccent,
-                    ),
+                    LoadingAnimationWidget.fourRotatingDots(
+                      size: 30,
+                      color: AppTheme.primaryColor,
+                    )
                   ],
                 ))),
       );
@@ -51,7 +50,7 @@ class Helper {
   }
 
   static hideLoader(OverlayEntry loader) {
-    Timer(const Duration(milliseconds: 500), () {
+    Timer(const Duration(milliseconds: 250), () {
       try {
         loader.remove();
         // ignore: empty_catches
@@ -60,7 +59,7 @@ class Helper {
   }
 }
 
-showToast(message) {
+ showToast(message) {
   Fluttertoast.cancel();
   Fluttertoast.showToast(
       msg: message,
@@ -72,22 +71,27 @@ showToast(message) {
       fontSize: 14);
 }
 
+ loading() {
+   Center(
+      child: LoadingAnimationWidget.fourRotatingDots(
+    color: AppTheme.primaryColor,
+    size: 40,
+  ));
+}
 
 extension DateOnlyCompare on DateTime {
   bool isSmallerThen(DateTime other) {
     return (year == other.year && month == other.month && day < other.day) ||
-        (year == other.year && month < other.month) || (year < other.year);
+        (year == other.year && month < other.month) ||
+        (year < other.year);
   }
 
   bool get isPreviousDay {
     DateTime now = DateTime.now();
-    return DateTime(year, month, day)
-        .difference(DateTime(now.year, now.month, now.day))
-        .inDays == -1;
+    return DateTime(year, month, day).difference(DateTime(now.year, now.month, now.day)).inDays == -1;
   }
 
   bool isSameDate(DateTime other) {
-    return year == other.year && month == other.month
-        && day == other.day;
+    return year == other.year && month == other.month && day == other.day;
   }
 }
