@@ -5,7 +5,9 @@ class AppAssets {
   static const String thankYou = "assets/images/thankyou.png";
   static const String login = "assets/images/login.png";
   static const String back = "assets/images/back.png";
+  static const String backWhite = "assets/icons/backwhite.png";
   static const String facebook = "assets/icons/facrebook.png";
+  static const String oderlistbg = "assets/images/oderlistbg.png";
   static const String tick = "assets/icons/tick.png";
   static const String google = "assets/icons/google.png";
   static const String home = "assets/icons/home.svg";

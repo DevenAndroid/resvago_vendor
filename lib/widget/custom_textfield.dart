@@ -54,7 +54,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white),
       onTap: onTap,
       onChanged: onChanged,
       readOnly: readOnly!,
