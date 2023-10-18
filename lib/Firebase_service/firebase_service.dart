@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
@@ -47,6 +48,7 @@ class FirebaseService {
 
   Future manageMenu({
     required String menuId,
+    dynamic vendorId,
     dynamic dishName,
     dynamic category,
     dynamic price,
@@ -59,8 +61,9 @@ class FirebaseService {
     dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_menu').doc(menuId).set({
+      await FirebaseFirestore.instance.collection('vendor_menu').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("menus").doc(menuId).set({
         "menuId":menuId,
+        "vendorId": vendorId,
         "dishName": dishName,
         "category": category,
         "price": price,
