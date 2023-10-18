@@ -450,9 +450,14 @@ getVendorCategories() {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (delivery == true || dining == true) {
-                              checkMenuInFirestore();
+                              if(categoryFile.path != ""){
+                                checkMenuInFirestore();
+                              }
+                              else{
+                                Fluttertoast.showToast(msg: 'Please select image');
+                              }
                             } else {
-                              Fluttertoast.showToast(msg: 'Please Select booking type');
+                              Fluttertoast.showToast(msg: 'Please select booking type');
                             }
                           }
                         },
