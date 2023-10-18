@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
-import 'package:resvago_vendor/screen/user_profile.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -39,6 +37,30 @@ class FirebaseService {
         "confirmPassword": confirmPassword,
         "image": image,
         "userID": "+91${mobileNumber}",
+      });
+
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future manageCouponCode({
+    dynamic promoCodeName,
+    dynamic code,
+    dynamic discount,
+    dynamic valetedDate,
+    dynamic userID,
+  }) async {
+    try {
+      CollectionReference collection =
+      FirebaseFirestore.instance.collection('Coupon_data');
+      var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
+
+      DocumentReference.set({
+        "promoCodeName": promoCodeName,
+        "code": code,
+        "discount": discount,
+        "valetedDate": valetedDate,
       });
 
     } catch (e) {

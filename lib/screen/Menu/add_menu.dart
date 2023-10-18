@@ -456,7 +456,7 @@ getVendorCategories() {
                             }
                           }
                         },
-                        title: 'APPLY',
+                        title: 'Save',
                       ),
                       const SizedBox(
                         height: 20,
