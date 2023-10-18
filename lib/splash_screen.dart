@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/screen/bottom_nav_bar/bottomnav_bar.dart';
 import 'package:resvago_vendor/screen/dashboard/dashboard_screen.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => VendorDashboard()),
+        MaterialPageRoute(builder: (context) => BottomNavbar()),
       );
     } else {
       Navigator.pushReplacement(

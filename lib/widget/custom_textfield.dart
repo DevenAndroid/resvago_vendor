@@ -116,9 +116,12 @@ class CommonButton extends StatelessWidget {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white),
       child: ElevatedButton(
           onPressed: onPressed,
+          onLongPress: null,
           style: ElevatedButton.styleFrom(
+
             minimumSize: Size(AddSize.screenWidth, AddSize.size50 * 1.2),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
+
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12), // <-- Radius

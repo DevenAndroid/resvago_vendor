@@ -54,7 +54,7 @@ class _OtpScreenState extends State<OtpScreen> {
       final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
       final User? user = authResult.user;
       log('Successfully signed in with phone number: ${user!.phoneNumber}');
-      Get.offAllNamed(MyRouters.vendorDashboard);
+      Get.offAllNamed(MyRouters.bottomNavbar);
     } catch (e) {
       log("Error: $e");
     }
@@ -81,7 +81,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height: size.height * 0.26,
+                                height: size.height * 0.32,
                               ),
                               Align(
                                 alignment: Alignment.center,
@@ -153,7 +153,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   child: Text(
                                     'RESEND OTP',
                                     style: GoogleFonts.poppins(
-                                        color: const Color(0xFFFFBA00),
+                                        color:  Colors.white,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16),
                                     textAlign: TextAlign.center,

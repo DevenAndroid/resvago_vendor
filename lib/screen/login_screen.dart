@@ -81,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration:
                     const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
                 child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 4.0, right: 4),
                     child: Form(
@@ -90,12 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: size.height * 0.26,
+                              height: size.height * 0.32,
                             ),
                             Align(
                               alignment: Alignment.center,
                               child: Text(
-                                'WELCOME BACK',
+                                'WELCOME ',
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     hint: 'Enter your Mobile number',
                                   ),
                                   const SizedBox(
-                                    height: 35,
+                                    height: 15,
                                   ),
                                   CommonButton(
                                     onPressed: () {
@@ -152,7 +153,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                     title: 'Login',
                                   ),
                                   const SizedBox(
-                                    height: 45,
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Customer Booking?',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    'Signup as a customer',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -178,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ],
                                   ),
                                   const SizedBox(
-                                    height: 45,
+                                    height: 20,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ],
                                   ),
                                   const SizedBox(
-                                    height: 50,
+                                    height: 20,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -256,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         child: Text(
                                           ' Signup',
                                           style: GoogleFonts.poppins(
-                                              color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 14),
+                                              color:  Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
                                         ),
                                       )
                                     ],
