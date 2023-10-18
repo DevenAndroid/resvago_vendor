@@ -1,11 +1,17 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:resvago_vendor/model/menu_model.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-
+import '../../controllers/menu_controller.dart';
+import '../../model/category_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/apptheme.dart';
+import 'add_menu.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -16,6 +22,27 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   final TextEditingController searchController = TextEditingController();
+  bool isDescendingOrder = true;
+
+  Stream<List<MenuData>> getMenu() {
+    return FirebaseFirestore.instance
+        .collection("vendor_menu")
+        .orderBy('time', descending: isDescendingOrder)
+        .snapshots()
+        .map((querySnapshot) {
+      List<MenuData> menuList = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          var gg = doc.data();
+          menuList.add(MenuData.fromMap(gg,doc.id.toString()));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return menuList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +98,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.toNamed(MyRouters.addMenuScreen);
+                      Get.to(AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
                     },
                     child: Container(
                       height: AddSize.size20 * 2.2,
@@ -93,128 +120,154 @@ class _MenuScreenState extends State<MenuScreen> {
               SizedBox(
                 height: AddSize.size10,
               ),
-              ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Stack(
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.symmetric(vertical: AddSize.size10),
-                            child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      offset: const Offset(
-                                        .1,
-                                        .1,
-                                      ),
-                                      blurRadius: 19.0,
-                                      spreadRadius: 1.0,
-                                    ),
-                                  ],
-                                  color: AppTheme.backgroundcolor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      height: AddSize.size80,
-                                      width: AddSize.size80,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              "https://images.unsplash.com/photo-1564671165093-20688ff1fffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lYWx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-                                          errorWidget: (_, __, ___) => const SizedBox(),
-                                          placeholder: (_, __) => const SizedBox(),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: AddSize.size15,
-                                    ),
-                                    const Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+              StreamBuilder<List<MenuData>>(
+                stream: getMenu(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<MenuData> menu = snapshot.data ?? [];
+                    log(menu.toString());
+                    return menu.isNotEmpty
+                        ? ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: menu.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var menuItem = menu[index];
+                              return Stack(
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(vertical: AddSize.size10),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                offset: const Offset(
+                                                  .1,
+                                                  .1,
+                                                ),
+                                                blurRadius: 19.0,
+                                                spreadRadius: 1.0,
+                                              ),
+                                            ],
+                                            color: AppTheme.backgroundcolor,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
                                             children: [
-                                              Expanded(
-                                                child: Text(
-                                                  "Paneer",
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w500, fontSize: 18, color: AppTheme.blackcolor),
+                                              SizedBox(
+                                                height: AddSize.size80,
+                                                width: AddSize.size80,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: menuItem.image.toString(),
+                                                    errorWidget: (_, __, ___) => const SizedBox(),
+                                                    placeholder: (_, __) => const SizedBox(),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Veg",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300, fontSize: 14, color: Color(0xFF8C9BB2)),
+                                              SizedBox(
+                                                width: AddSize.size15,
                                               ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            menuItem.dishName ?? "".toString(),
+                                                            style: const TextStyle(
+                                                                fontWeight: FontWeight.w500,
+                                                                fontSize: 18,
+                                                                color: AppTheme.blackcolor),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          menuItem.category.toString(),
+                                                          style: const TextStyle(
+                                                              fontWeight: FontWeight.w300,
+                                                              fontSize: 14,
+                                                              color: Color(0xFF8C9BB2)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            "\$${menuItem.price.toString()}",
+                                                            // '20.00',
+                                                            style: const TextStyle(
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: 16,
+                                                              color: AppTheme.lightBlueColor,
+                                                            ),
+                                                          )
+                                                        ]),
+                                                  ],
+                                                ),
+                                              )
                                             ],
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "\$20",
-                                                  // '20.00',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16,
-                                                    color: AppTheme.lightBlueColor,
-                                                  ),
-                                                )
-                                              ]),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ))),
-                        Positioned(
-                            right: 10,
-                            bottom: 45,
-                            top: 45,
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                  height: 24,
-                                  width: 24,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFDFE8F6),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: AppTheme.lightBlueColor,
-                                      size: AddSize.size15,
-                                    ),
-                                  )),
-                            ))
-                      ],
-                    );
-                  })
+                                          ))),
+                                  Positioned(
+                                      right: 10,
+                                      bottom: 45,
+                                      top: 45,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => AddMenuScreen(
+                                                menuId: menuItem.menuId,
+                                                menuItemData: menuItem,
+                                              ));
+                                        },
+                                        child: Container(
+                                            height: 24,
+                                            width: 24,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFDFE8F6),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.edit,
+                                                color: AppTheme.lightBlueColor,
+                                                size: AddSize.size15,
+                                              ),
+                                            )),
+                                      ))
+                                ],
+                              );
+                            })
+                        : const CircularProgressIndicator(
+                            color: AppTheme.primaryColor,
+                          );
+                  }
+                },
+              ),
             ]),
           ),
         ));

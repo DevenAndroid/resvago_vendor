@@ -12,55 +12,39 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/model/category_model.dart';
+import 'package:resvago_vendor/model/menu_model.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../Firebase_service/firebase_service.dart';
-import '../../controllers/menu_controller.dart';
 import '../../helper.dart';
-import '../../routers/routers.dart';
 import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
 class AddMenuScreen extends StatefulWidget {
-  const AddMenuScreen({super.key});
-
+   const AddMenuScreen({super.key, required this.menuId,this.menuItemData});
+  final String menuId;
+  final MenuData? menuItemData;
   @override
   State<AddMenuScreen> createState() => _AddMenuScreenState();
 }
 
 class _AddMenuScreenState extends State<AddMenuScreen> {
-  File profileImage = File("");
-  bool showValidation = false;
-  bool showValidationImg = false;
-  final _formKeySignup = GlobalKey<FormState>();
-  final menuController = Get.put(MenuDataController());
-  RxBool checkboxColor = false.obs;
+  TextEditingController dishNameController       = TextEditingController();
+  TextEditingController categoryController       = TextEditingController();
+  TextEditingController priceController          = TextEditingController();
+  TextEditingController discountNumberController = TextEditingController();
+  TextEditingController descriptionController    = TextEditingController();
+  String get menuId => widget.menuId;
+  String? categoryValue;
+  File categoryFile = File("");
   bool delivery = false;
   bool dining = false;
   bool value = false;
-  var obscureText5 = true;
-
-  TextEditingController dishNameController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController discountNumberController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  String? categoryValue;
-  File categoryFile = File("");
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
-
-  void checkMenuInFirestore() async {
-    final QuerySnapshot result =
-        await FirebaseFirestore.instance.collection('vendor_menu').where('dishName', isEqualTo: dishNameController.text).get();
-
-    if (result.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Menu already exits');
-    } else {
-      addMenuToFirestore();
-    }
-  }
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool isDescendingOrder = true;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<void> addMenuToFirestore() async {
     String imageUrl = categoryFile.path;
@@ -72,21 +56,139 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     TaskSnapshot snapshot = await uploadTask;
     imageUrl = await snapshot.ref.getDownloadURL();
     await firebaseService.manageMenu(
+      menuId: menuId,
       dishName: dishNameController.text.trim(),
       category: categoryValue,
       price: priceController.text.trim(),
       discount: discountNumberController.text.trim(),
-      description:descriptionController.text,
-      booking: delivery == true ? "Delivery" : dining == true ? "Dining" : "",
+      description: descriptionController.text,
+      booking: delivery == true
+          ? "Delivery"
+          : dining == true
+          ? "Dining"
+          : "",
       image: imageUrl,
+      time: DateTime.now().millisecondsSinceEpoch,
     );
+  }
+  Stream<List<CategoryData>> getCategory() {
+    return FirebaseFirestore.instance
+        .collection("resturent")
+        .orderBy('time', descending: isDescendingOrder)
+        .snapshots()
+        .map((querySnapshot) {
+      List<CategoryData> resturent = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          var gg = doc.data();
+          resturent.add(CategoryData.fromMap(gg));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return resturent;
+    });
+  }
+  // Future<void> addVendorToFirestore() async {
+  //   if (!formKey.currentState!.validate()) return;
+  //   if (categoryFile.path.isEmpty) {
+  //     showToast("Please select image");
+  //     return;
+  //   }
+  //   List<String> arrangeNumbers = [];
+  //   String kk = dishNameController.text.trim();
+  //   arrangeNumbers.clear();
+  //   for (var i = 0; i < kk.length; i++) {
+  //     arrangeNumbers.add(kk.substring(0, i + 1));
+  //   }
+  //   String imageUrl = categoryFile.path;
+  //   if (!categoryFile.path.contains("https")) {
+  //     if (menuData != null) {
+  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
+  //       await gg.delete();
+  //     }
+  //     UploadTask uploadTask = FirebaseStorage.instance
+  //         .ref("categoryImages")
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
+  //         .putFile(categoryFile);
+  //
+  //     TaskSnapshot snapshot = await uploadTask;
+  //     imageUrl = await snapshot.ref.getDownloadURL();
+  //   } else {
+  //     if (menuData != null) {
+  //       Reference gg = FirebaseStorage.instance.refFromURL(categoryFile.path);
+  //       await gg.delete();
+  //     }
+  //     UploadTask uploadTask = FirebaseStorage.instance
+  //         .ref("categoryImages")
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString())
+  //         .putFile(categoryFile);
+  //
+  //     TaskSnapshot snapshot = await uploadTask;
+  //     imageUrl = await snapshot.ref.getDownloadURL();
+  //   }
+  //   if (menuData != null) {
+  //     await firebaseService.manageMenu(
+  //       description: descriptionController.text.trim(),
+  //       docid: menuData!.docid,
+  //       image: imageUrl,
+  //       searchName: arrangeNumbers,
+  //       dishName: kk,
+  //       price: priceController.text,
+  //       discount: discountNumberController.text,
+  //       category: categoryValue,
+  //       booking: delivery == true
+  //           ? "Delivery"
+  //           : dining == true
+  //           ? "Dining"
+  //           : "",
+  //       time: DateTime.now().millisecondsSinceEpoch,
+  //     );
+  //   } else {
+  //     await firebaseService.manageMenu(
+  //       description: descriptionController.text.trim(),
+  //       docid: menuData!.docid,
+  //       image: imageUrl,
+  //       searchName: arrangeNumbers,
+  //       dishName: kk,
+  //       price: priceController.text,
+  //       discount: discountNumberController.text,
+  //       category: categoryValue,
+  //       booking: delivery == true
+  //           ? "Delivery"
+  //           : dining == true
+  //           ? "Dining"
+  //           : "",
+  //       time: DateTime.now().millisecondsSinceEpoch,
+  //     );
+  //   }
+  //   Get.back();
+  // }
+  
+  File profileImage = File("");
+  bool showValidation = false;
+  bool showValidationImg = false;
+  // final menuController = Get.put(MenuDataController());
+  var obscureText5 = true;
+
+  void checkMenuInFirestore() async {
+      addMenuToFirestore();
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    menuController.getCategory();
+    getCategory();
+    if(widget.menuItemData == null)return;
+    dishNameController.text = widget.menuItemData!.dishName ?? "";
+    priceController.text = widget.menuItemData!.price ?? "";
+    discountNumberController.text = widget.menuItemData!.discount ?? "";
+    descriptionController.text = widget.menuItemData!.description ?? "";
+    categoryFile = File(widget.menuItemData!.image ?? "");
+    categoryValue = widget.menuItemData!.category ?? "";
+    delivery = widget.menuItemData!.booking == "Delivery" ? true : false;
+    dining = widget.menuItemData!.booking == "Dining" ? true : false;
   }
 
   @override
@@ -97,7 +199,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       appBar: backAppBar(title: "Add Menu", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
-          key: _formKeySignup,
+          key: formKey,
           child: Column(
             children: [
               const SizedBox(
@@ -139,7 +241,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         height: 10,
                       ),
                       StreamBuilder<List<CategoryData>>(
-                        stream: menuController.getCategory(),
+                        stream: getCategory(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const SizedBox();
@@ -161,37 +263,37 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                       textAlign: TextAlign.justify,
                                     ),
                                     decoration: InputDecoration(
-                                        focusColor: const Color(0xFF384953),
-                                        hintStyle: GoogleFonts.poppins(
+                                      focusColor: const Color(0xFF384953),
+                                      hintStyle: GoogleFonts.poppins(
+                                        color: const Color(0xFF384953),
+                                        textStyle: GoogleFonts.poppins(
                                           color: const Color(0xFF384953),
-                                          textStyle: GoogleFonts.poppins(
-                                            color: const Color(0xFF384953),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w300,
-                                          ),
                                           fontSize: 14,
-                                          // fontFamily: 'poppins',
                                           fontWeight: FontWeight.w300,
                                         ),
-                                        filled: true,
-                                        fillColor: Colors.white.withOpacity(.10),
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                        // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                        focusedBorder: OutlineInputBorder(
+                                        fontSize: 14,
+                                        // fontFamily: 'poppins',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white.withOpacity(.10),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                      // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                                        borderRadius: BorderRadius.circular(6.0),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                          borderRadius: BorderRadius.circular(6.0),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                            borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                      errorBorder:  OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                                      errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: Colors.red.shade800),
                                           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                        border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
-                                            borderRadius: BorderRadius.circular(6.0)),
-                                        ),
+                                      border: OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
+                                          borderRadius: BorderRadius.circular(6.0)),
+                                    ),
                                     value: categoryValue,
                                     items: resturent.toList().map((items) {
                                       return DropdownMenuItem(
@@ -359,7 +461,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       delivery = !delivery;
-                                      if(delivery == true){
+                                      if (delivery == true) {
                                         dining = false;
                                         value = delivery;
                                         log(value.toString());
@@ -388,7 +490,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       dining = newValue!;
-                                      if(dining == true){
+                                      if (dining == true) {
                                         delivery = false;
                                         value = dining;
                                         log(value.toString());
@@ -407,11 +509,10 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (_formKeySignup.currentState!.validate()) {
-                            if(value == true){
+                          if (formKey.currentState!.validate()) {
+                            if (value == true) {
                               checkMenuInFirestore();
-                            }
-                            else{
+                            } else {
                               Fluttertoast.showToast(msg: 'Please Select booking type');
                             }
                           }
