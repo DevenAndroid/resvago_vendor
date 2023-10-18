@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../model/signup_model.dart';
@@ -134,8 +135,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.timer_outlined),
-                title: Text('Slot',
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Create Coupon',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -143,8 +144,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
                     )),
                 onTap: () {
                   setState(() {
-                    currentDrawer = 2;
-                    Get.toNamed(MyRouters.addBookingSlot);
+                    currentDrawer = 1;
+                    Get.to(const CreatePromoCodeScreen());
                   });
                 },
               ),

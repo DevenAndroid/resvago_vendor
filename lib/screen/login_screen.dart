@@ -77,136 +77,160 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
             child: Container(
-                height: Get.height,
                 decoration:
                     const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0, right: 4),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: size.height * 0.32,
-                            ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'WELCOME ',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 28,
-                                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0, right: 4),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.32,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'WELCOME ',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 28,
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Login your account.',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  // fontFamily: 'poppins',
-                                ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Login your account.',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 13,
+                                // fontFamily: 'poppins',
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 38),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Enter Mobile number',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 14,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 38),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Enter Mobile number',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                CommonTextFieldWidget(
+                                  controller: loginController.mobileController,
+                                  length: 10,
+                                  validator: RequiredValidator(errorText: 'Please enter your phone number '),
+                                  keyboardType: TextInputType.number,
+                                  // textInputAction: TextInputAction.next,
+                                  hint: 'Enter your Mobile number',
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                CommonButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      checkPhoneNumberInFirestore();
+                                    }
+                                  },
+                                  title: 'Login',
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  'Customer Booking?',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Signup as a customer',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      height: 1,
+                                      width: 120,
+                                      color: const Color(0xFFD2D8DC),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  CommonTextFieldWidget(
-                                    controller: loginController.mobileController,
-                                    length: 10,
-                                    validator: RequiredValidator(errorText: 'Please enter your phone number '),
-                                    keyboardType: TextInputType.number,
-                                    // textInputAction: TextInputAction.next,
-                                    hint: 'Enter your Mobile number',
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  CommonButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        checkPhoneNumberInFirestore();
-                                      }
-                                    },
-                                    title: 'Login',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Customer Booking?',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600
+                                    //SizedBox(width: 10,),
+                                    Text('Or Login with'.toLowerCase(),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        )),
+                                    //SizedBox(width: 10,),
+                                    Container(
+                                      height: 1,
+                                      width: 120,
+                                      color: const Color(0xFFD2D8DC),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Signup as a customer',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        height: 1,
-                                        width: 120,
-                                        color: const Color(0xFFD2D8DC),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: 152,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(.10),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: Colors.white.withOpacity(.35))),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            AppAssets.facebook,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Facebook',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                          )
+                                        ],
                                       ),
-                                      //SizedBox(width: 10,),
-                                      Text('Or Login with'.toLowerCase(),
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white,
-                                          )),
-                                      //SizedBox(width: 10,),
-                                      Container(
-                                        height: 1,
-                                        width: 120,
-                                        color: const Color(0xFFD2D8DC),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: Container(
                                         width: 152,
                                         height: 60,
                                         decoration: BoxDecoration(
@@ -217,78 +241,50 @@ class _LoginScreenState extends State<LoginScreen> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              AppAssets.facebook,
+                                              AppAssets.google,
                                               height: 25,
                                             ),
                                             const SizedBox(
                                               width: 10,
                                             ),
                                             Text(
-                                              'Facebook',
+                                              'Google',
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
                                           ],
                                         ),
                                       ),
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: Container(
-                                          width: 152,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(.10),
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(color: Colors.white.withOpacity(.35))),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                AppAssets.google,
-                                                height: 25,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                'Google',
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Don't Have an Account?",
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Don't Have an Account?",
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Get.toNamed(MyRouters.signUpScreen);
+                                      },
+                                      child: Text(
+                                        ' Signup',
                                         style: GoogleFonts.poppins(
-                                            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                            color:  Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          Get.toNamed(MyRouters.signUpScreen);
-                                        },
-                                        child: Text(
-                                          ' Signup',
-                                          style: GoogleFonts.poppins(
-                                              color:  Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ]),
-                    ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ]),
                   ),
                 ))));
   }
