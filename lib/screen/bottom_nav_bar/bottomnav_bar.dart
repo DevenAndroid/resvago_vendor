@@ -6,6 +6,7 @@ import 'package:resvago_vendor/screen/bottom_nav_bar/wallet_screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../../controllers/bottomnavbar_controller.dart';
 import '../../widget/apptheme.dart';
+import '../Menu/menu_screen.dart';
 import '../add_booking_slot_screen.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'menu_list_screen.dart';
