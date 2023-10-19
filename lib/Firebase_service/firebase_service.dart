@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
-import 'package:resvago_vendor/screen/user_profile.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -45,8 +44,33 @@ class FirebaseService {
     }
   }
 
+  Future manageCouponCode({
+    dynamic promoCodeName,
+    dynamic code,
+    dynamic discount,
+    dynamic valetedDate,
+    dynamic userID,
+  }) async {
+    try {
+      CollectionReference collection =
+      FirebaseFirestore.instance.collection('Coupon_data');
+      var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
+
+      DocumentReference.set({
+        "promoCodeName": promoCodeName,
+        "code": code,
+        "discount": discount,
+        "valetedDate": valetedDate,
+      });
+
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future manageMenu({
     required String menuId,
+    dynamic vendorId,
     dynamic dishName,
     dynamic category,
     dynamic price,
@@ -59,8 +83,9 @@ class FirebaseService {
     dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_menu').doc(menuId).set({
+      await FirebaseFirestore.instance.collection('vendor_menu').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("menus").doc(menuId).set({
         "menuId":menuId,
+        "vendorId": vendorId,
         "dishName": dishName,
         "category": category,
         "price": price,
@@ -77,6 +102,40 @@ class FirebaseService {
     }
   }
 
+
+  Future manageSlot({
+    required String slotId,
+    dynamic vendorId,
+    dynamic dishName,
+    dynamic category,
+    dynamic price,
+    dynamic docid,
+    dynamic discount,
+    dynamic description,
+    dynamic image,
+    dynamic booking,
+    dynamic time,
+    dynamic searchName,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('vendor_slot').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("slot").doc(slotId).set({
+        "menuId":slotId,
+        "vendorId": vendorId,
+        "dishName": dishName,
+        "category": category,
+        "price": price,
+        "docid": docid,
+        "discount": discount,
+        "description": description,
+        "image": image,
+        "booking": booking,
+        "searchName": searchName,
+      });
+      showToast("Menu Added Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

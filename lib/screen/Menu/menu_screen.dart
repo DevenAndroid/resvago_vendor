@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -24,7 +25,12 @@ class _MenuScreenState extends State<MenuScreen> {
   String searchQuery = '';
 
   Stream<List<MenuData>> getMenu() {
-    return FirebaseFirestore.instance.collection("vendor_menu").snapshots().map((querySnapshot) {
+    return FirebaseFirestore.instance
+        .collection("vendor_menu")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection("menus")
+        .snapshots()
+        .map((querySnapshot) {
       List<MenuData> menuList = [];
       try {
         for (var doc in querySnapshot.docs) {
@@ -140,9 +146,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       color: AppTheme.primaryColor,
                       size: 40,
                     );
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
+                  }
+                  if (snapshot.hasData) {
                     List<MenuData> menu = snapshot.data ?? [];
                     log(menu.toString());
                     final filteredUsers = filterMenus(menu, searchQuery); //
@@ -303,12 +308,75 @@ class _MenuScreenState extends State<MenuScreen> {
                                                 )),
                                           ),
                                         ],
+                                      ))),
+                              Positioned(
+                                  right: 10,
+                                  top: 20,
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => AddMenuScreen(
+                                            menuId: menuItem.menuId,
+                                            menuItemData: menuItem,
+                                          ));
+                                        },
+                                        child: Container(
+                                            height: 24,
+                                            width: 24,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFDFE8F6),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.edit,
+                                                color: AppTheme.lightBlueColor,
+                                                size: AddSize.size15,
+                                              ),
+                                            )),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      GestureDetector(
+                                        onTap: () {
+                                          FirebaseFirestore.instance
+                                              .collection('vendor_menu').doc(
+                                            FirebaseAuth.instance.currentUser!.phoneNumber)
+                                          .collection('menus')
+                                              .doc(menuItem.menuId)
+                                              .delete()
+                                              .then((value) {
+                                            setState(() {});
+                                          });
+                                        },
+                                        child: Container(
+                                            height: 24,
+                                            width: 24,
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.withOpacity(.2),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.delete_outline_sharp,
+                                                color: Colors.red,
+                                                size: AddSize.size15,
+                                              ),
+                                            )),
+                                      ),
+                                    ],
+                                  ))
+                            ],
                                       ))
                                 ],
                               );
                             })
-                        : loading();
+                        : const Center(
+                            child: Text("No Menu Created"),
+
+                          );
                   }
+                  return const SizedBox.shrink();
                 },
               ),
             ]),
