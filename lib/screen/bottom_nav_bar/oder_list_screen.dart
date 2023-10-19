@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
 import '../../widget/addsize.dart';
@@ -363,16 +364,16 @@ class _OderListScreenState extends State<OderListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("Order No.", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
-                              SizedBox(width: 1,),
+                              const SizedBox(width: 1,),
                               Text("Status", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("Earning", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -381,39 +382,44 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
+                          const SizedBox(height: 10,),
+                          InkWell(
+                            onTap: (){
+                              Get.toNamed(MyRouters.oderDetailsScreen);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("#1234", style: GoogleFonts.poppins(
+                                        color: const Color(0xFF454B5C),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14),),
+                                    Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
+                                        color: const Color(0xFF8C9BB2),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11),),
+                                  ],
+                                ),
+                                Text("Processing", style: GoogleFonts.poppins(
+                                    color: const Color(0xFFFFB26B),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12),),
+                                Text("\$450.00", style: GoogleFonts.poppins(
+                                    color: const Color(0xFF454B5C),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12),),
+                              ],
+                            ),
                           ),
                           Divider(
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -422,21 +428,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Completed", style: GoogleFonts.poppins(
-                                  color: Color(0xFF65CD90),
+                                  color: const Color(0xFF65CD90),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -445,7 +451,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -454,21 +460,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Reject", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFF557E),
+                                  color: const Color(0xFFFF557E),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -477,7 +483,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -486,21 +492,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -509,7 +515,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -518,21 +524,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -541,7 +547,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,), Row(
+                          const SizedBox(height: 10,), Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
@@ -549,21 +555,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -572,7 +578,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 40,),
+                          const SizedBox(height: 40,),
 
 
 
@@ -589,16 +595,16 @@ class _OderListScreenState extends State<OderListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("Order No.", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
-                              SizedBox(width: 1,),
+                              const SizedBox(width: 1,),
                               Text("Status", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("Earning", style: GoogleFonts.poppins(
-                                  color: Color(0xFF3B5998),
+                                  color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -607,7 +613,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -616,21 +622,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -639,7 +645,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -648,21 +654,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Completed", style: GoogleFonts.poppins(
-                                  color: Color(0xFF65CD90),
+                                  color: const Color(0xFF65CD90),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -671,7 +677,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -680,21 +686,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Reject", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFF557E),
+                                  color: const Color(0xFFFF557E),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -703,7 +709,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -712,21 +718,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -735,7 +741,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -744,21 +750,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -767,7 +773,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 10,), Row(
+                          const SizedBox(height: 10,), Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
@@ -775,21 +781,21 @@ class _OderListScreenState extends State<OderListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("#1234", style: GoogleFonts.poppins(
-                                      color: Color(0xFF454B5C),
+                                      color: const Color(0xFF454B5C),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),),
                                   Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: Color(0xFF8C9BB2),
+                                      color: const Color(0xFF8C9BB2),
                                       fontWeight: FontWeight.w500,
                                       fontSize: 11),),
                                 ],
                               ),
                               Text("Processing", style: GoogleFonts.poppins(
-                                  color: Color(0xFFFFB26B),
+                                  color: const Color(0xFFFFB26B),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: Color(0xFF454B5C),
+                                  color: const Color(0xFF454B5C),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                             ],
@@ -798,7 +804,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          SizedBox(height: 40,),
+                          const SizedBox(height: 40,),
 
 
 
