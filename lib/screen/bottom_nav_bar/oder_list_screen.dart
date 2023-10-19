@@ -3,6 +3,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
 import '../../widget/addsize.dart';
@@ -614,32 +615,37 @@ class _OderListScreenState extends State<OderListScreen> {
                             color: Colors.black12.withOpacity(0.09),
                           ),
                           const SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Processing", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFFB26B),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
+                          InkWell(
+                            onTap:(){
+                              Get.to(DeliveryOderDetailsScreen());
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("#1234", style: GoogleFonts.poppins(
+                                        color: const Color(0xFF454B5C),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14),),
+                                    Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
+                                        color: const Color(0xFF8C9BB2),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11),),
+                                  ],
+                                ),
+                                Text("Processing", style: GoogleFonts.poppins(
+                                    color: const Color(0xFFFFB26B),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12),),
+                                Text("\$450.00", style: GoogleFonts.poppins(
+                                    color: const Color(0xFF454B5C),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12),),
+                              ],
+                            ),
                           ),
                           Divider(
                             thickness: 1,
