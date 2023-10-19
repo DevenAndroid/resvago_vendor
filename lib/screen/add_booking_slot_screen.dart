@@ -1,14 +1,15 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/slot.dart';
-import 'package:resvago_vendor/widget/appassets.dart';
 import '../Firebase_service/firebase_service.dart';
+import '../controllers/slot_controller.dart';
 import '../helper.dart';
+import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 import '../widget/custom_textfield.dart';
@@ -21,6 +22,7 @@ class AddBookingSlot extends StatefulWidget {
 }
 
 class _AddBookingSlotState extends State<AddBookingSlot> {
+  final slotController = Get.put(SlotController());
   final _formKeyBooking = GlobalKey<FormState>();
   TextEditingController selectDateController = TextEditingController();
   TextEditingController lunchStartTimeController = TextEditingController();
@@ -293,10 +295,46 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
     selectedTime = TimeOfDay.now();
     selectedTimeDinnerStart = TimeOfDay.now();
   }
+
   FirebaseService firebaseService = FirebaseService();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   bool isDescendingOrder = true;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  Future<void> addSlotToFirestore() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    try {
+      await firebaseService.manageSlot(
+        slotId:DateTime.now().millisecondsSinceEpoch.toString(),
+        time: DateTime.now().millisecondsSinceEpoch,
+        slot: slotController.timeslots,
+        dinnerSlot: slotController.dinnerTimeslots,
+        startDateForLunch: slotController.startDate.text,
+        endDateForLunch: slotController.endDate.text,
+        startTimeForLunch: slotController.startTime.text,
+        endTimeForLunch: slotController.endTime.text,
+        startDateForDinner: slotController.dinnerStartDate.text,
+        endDateForDinner: slotController.dinnerEndDate.text,
+        startTimeForDinner: slotController.dinnerStartTime.text,
+        endTimeForDinner: slotController.dinnerEndTime.text,
+        dinnerDuration: slotController.dinnerServiceDuration.text,
+        lunchDuration: slotController.serviceDuration.text,
+        vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
+        noOfGuest: slotController.noOfGuest.text,
+        setOffer: slotController.setOffer.text
+      ).then((value) {
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+    }
+    catch (e) {
+      Helper.hideLoader(loader);
+      showToast(e.toString());
+      log(e.toString());
+      throw Exception(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -313,282 +351,25 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                     const SizedBox(
                       height: 8,
                     ),
-                    Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                            padding: const EdgeInsets.all(15),
-                            width: size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Select Date",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      DateTime? pickedDate = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(1950),
-                                          //DateTime.now() - not to allow to choose before today.
-                                          lastDate: DateTime(2100));
-
-                                      if (pickedDate != null) {
-                                        print(pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                                        String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                        print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                                        setState(() {
-                                          selectDateController.text = formattedDate; //set output date to TextField value.
-                                        });
-                                      } else {}
-                                    },
-                                    controller: selectDateController,
-                                    // length: 10,
-                                    validator: RequiredValidator(errorText: 'Please enter your Date '),
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(
-                                        AppAssets.calender,
-                                      ),
-                                    ),
-                                    hint: '10 Oct 2023',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Lunch Start Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTime(context);
-                                    },
-
-                                    controller: lunchStartTimeController,
-                                    // length: 10,
-                                    validator: RequiredValidator(errorText: 'Please enter your Lunch Start Time '),
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(AppAssets.clock),
-                                    ),
-                                    hint: '10:30AM',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Lunch End Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTimeLunchEnd(context);
-                                    },
-                                    controller: lunchEndTimeController,
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(AppAssets.clock),
-                                    ),
-                                    validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter Lunch End Time'),
-                                    ]),
-                                    hint: '10:30AM',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Internal Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTimeInterval(context);
-                                    },
-                                    controller: intervalTimeController,
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(AppAssets.clock),
-                                    ),
-                                    validator: RequiredValidator(errorText: 'Please enter your Interwall Time '),
-                                    hint: '30 Mint',
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ]))),
-                    // const BookableUI(),
-                    Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                            padding: const EdgeInsets.all(15),
-                            width: size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Dinner Start Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTimeDinnerStart(context);
-                                    },
-                                    controller: dinnerStartTimeController,
-                                    // length: 10,
-                                    validator: RequiredValidator(errorText: 'Please enter your Dinner Start Time '),
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(
-                                        AppAssets.clock,
-                                      ),
-                                    ),
-                                    hint: '8:30AM',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Dinner End Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTimeDinnerEnd(context);
-                                    },
-                                    controller: dinnerEndTimeController,
-                                    // length: 10,
-                                    validator: RequiredValidator(errorText: 'Please enter your Dinner End Time '),
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(AppAssets.clock),
-                                    ),
-                                    hint: '10:30AM',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Interval Time",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      selectTimeDinnerInterval(context);
-                                    },
-                                    controller: intervalTimePasswordController1,
-                                    suffix: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SvgPicture.asset(AppAssets.clock),
-                                    ),
-                                    validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter Interval Time'),
-                                    ]),
-                                    hint: '10:30AM',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Number of guest",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    controller: numberOfGuestController,
-                                    suffix: const Padding(
-                                      padding: EdgeInsets.all(12.0),
-                                    ),
-                                    validator: RequiredValidator(errorText: 'Please enter your no of guest '),
-                                    hint: '30 Mint',
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Set Offers",
-                                    style: GoogleFonts.poppins(
-                                        color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  RegisterTextFieldWidget(
-                                    controller: setOffersController,
-                                    suffix: const Padding(
-                                      padding: EdgeInsets.all(12.0),
-                                    ),
-                                    validator: RequiredValidator(errorText: 'Please enter your offer '),
-                                    hint: '30 Mint',
-                                  ),
-                                  const SizedBox(
-                                    height: 25,
-                                  ),
-                                  CommonButtonBlue(
-                                    onPressed: () {
-                                      if (_formKeyBooking.currentState!.validate()) {
-                                        // Get.back();
-                                        // }
-                                      }
-                                    },
-                                    title: 'Create Slot',
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ]))),
+                    BookableUI(title:"Lunch"),
+                    BookableUI(title:"Dinner"),
                     const SizedBox(
                       height: 30,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
+                      child: CommonButtonBlue(
+                        onPressed: () {
+                          if (_formKeyBooking.currentState!.validate()) {
+                            slotController.getLunchTimeSlot();
+                            slotController.getDinnerTimeSlot();
+                            if(slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty){
+                              addSlotToFirestore();
+                            }
+                          }
+                        },
+                        title: 'Create Slot'.toUpperCase(),
+                      ),
                     ),
                   ]))),
         ));
