@@ -25,12 +25,8 @@ class _MenuScreenState extends State<MenuScreen> {
   String searchQuery = '';
 
   Stream<List<MenuData>> getMenu() {
-    return FirebaseFirestore.instance
-        .collection("vendor_menu")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .collection("menus")
-        .snapshots()
-        .map((querySnapshot) {
+    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
+    collection("menus").snapshots().map((querySnapshot) {
       List<MenuData> menuList = [];
       try {
         for (var doc in querySnapshot.docs) {
@@ -127,10 +123,10 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                       child: Center(
                           child: Icon(
-                        Icons.add,
-                        color: AppTheme.backgroundcolor,
-                        size: AddSize.size25,
-                      )),
+                            Icons.add,
+                            color: AppTheme.backgroundcolor,
+                            size: AddSize.size25,
+                          )),
                     ),
                   )
                 ],
@@ -147,7 +143,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       size: 40,
                     );
                   }
-                  if (snapshot.hasData) {
+                  if(snapshot.hasData){
                     List<MenuData> menu = snapshot.data ?? [];
                     log(menu.toString());
                     final filteredUsers = filterMenus(menu, searchQuery); //
@@ -161,159 +157,161 @@ class _MenuScreenState extends State<MenuScreen> {
                           return Stack(
                             children: [
                               Padding(
-                                  padding: EdgeInsets.symmetric(vertical: AddSize.size10),
-                                  child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            offset: const Offset(
-                                              .1,
-                                              .1,
-                                            ),
-                                            blurRadius: 19.0,
-                                            spreadRadius: 1.0,
-                                          ),
-                                        ],
-                                        color: AppTheme.backgroundcolor,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            height: AddSize.size80,
-                                            width: AddSize.size80,
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(20),
-                                              child: CachedNetworkImage(
-                                                imageUrl: menuItem.image.toString(),
-                                                errorWidget: (_, __, ___) => const SizedBox(),
-                                                placeholder: (_, __) => const SizedBox(),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: AddSize.size15,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        menuItem.dishName ?? "".toString(),
-                                                        style: const TextStyle(
-                                                            fontWeight: FontWeight.w500,
-                                                            fontSize: 18,
-                                                            color: AppTheme.blackcolor),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      menuItem.category.toString(),
-                                                      style: const TextStyle(
-                                                          fontWeight: FontWeight.w300,
-                                                          fontSize: 14,
-                                                          color: Color(0xFF8C9BB2)),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "\$${menuItem.price.toString()}",
-                                                        // '20.00',
-                                                        style: const TextStyle(
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: 16,
-                                                          color: AppTheme.lightBlueColor,
-                                                        ),
-                                                      )
-                                                    ]),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ))),
-                              Positioned(
-                                  right: 10,
-                                  top: 20,
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(() => AddMenuScreen(
-                                            menuId: menuItem.menuId,
-                                            menuItemData: menuItem,
-                                          ));
-                                        },
-                                        child: Container(
-                                            height: 24,
-                                            width: 24,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFDFE8F6),
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.edit,
-                                                color: AppTheme.lightBlueColor,
-                                                size: AddSize.size15,
-                                              ),
-                                            )),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      GestureDetector(
-                                        onTap: () {
-                                          FirebaseFirestore.instance
-                                              .collection("vendor_menu")
-                                              .doc(FirebaseAuth.instance
-                                              .currentUser!.phoneNumber)
-                                              .collection("menus")
-                                              .doc(menuItem.menuId)
-                                              .delete()
-                                              .then((value) {
-                                            setState(() {});
-                                          });
-                                        },
-                                        child: Container(
-                                            height: 24,
-                                            width: 24,
-                                            decoration: BoxDecoration(
-                                              color: Colors.red.withOpacity(.2),
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.delete_outline_sharp,
-                                                color: Colors.red,
-                                                size: AddSize.size15,
-                                              ),
-                                            )),
+                                padding: EdgeInsets.symmetric(vertical: AddSize.size10),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        offset: const Offset(
+                                          .1,
+                                          .1,
+                                        ),
+                                        blurRadius: 19.0,
+                                        spreadRadius: 1.0,
                                       ),
                                     ],
-                                  ))
+                                    color: AppTheme.backgroundcolor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                    SizedBox(
+                                    height: AddSize.size80,
+                                    width: AddSize.size80,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                            imageUrl: menuItem.image.toString(),
+                                            errorWidget: (_, __, ___) => const SizedBox(),
+                                        placeholder: (_, __) => const SizedBox(),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: AddSize.size15,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            menuItem.dishName ?? "".toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 18,
+                                                color: AppTheme.blackcolor),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          menuItem.category.toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 14,
+                                              color: Color(0xFF8C9BB2)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "\$${menuItem.price.toString()}",
+                                            // '20.00',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: AppTheme.lightBlueColor,
+                                            ),
+                                          )
+                                        ]),
+                                  ],
+                                ),
+                              )
                             ],
+                          ))),
+                          Positioned(
+                          right: 10,
+                          top: 20,
+                          child: Column(
+                          children: [
+                          GestureDetector(
+                          onTap: () {
+                          Get.to(() => AddMenuScreen(
+                          menuId: menuItem.menuId,
+                          menuItemData: menuItem,
+                          ));
+                          },
+                          child: Container(
+                          height: 24,
+                          width: 24,
+                          decoration: BoxDecoration(
+                          color: const Color(0xFFDFE8F6),
+                          borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                          child: Icon(
+                          Icons.edit,
+                          color: AppTheme.lightBlueColor,
+                          size: AddSize.size15,
+                          ),
+                          )),
+                          ),
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                          onTap: () {
+                          FirebaseFirestore.instance
+                              .collection("vendor_menu")
+                              .doc(FirebaseAuth.instance
+                              .currentUser!.phoneNumber)
+                              .collection("menus")
+                              .doc(menuItem.menuId)
+                              .delete()
+                              .then((value) {
+                          setState(() {});
+                          });
+                          },
+                          child: Container(
+                          height: 24,
+                          width: 24,
+                          decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(.2),
+                          borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                          child: Icon(
+                          Icons.delete_outline_sharp,
+                          color: Colors.red,
+                          size: AddSize.size15,
+                          ),
+                          )),
+                          ),
+                          ],
+                          ))
+                          ],
                           );
+                        })
+                        : const Center(child: Text("No Menu Created"),);
                   }
                   return const SizedBox.shrink();
                 },
