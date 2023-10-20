@@ -51,6 +51,7 @@ class FirebaseService {
     dynamic discount,
     dynamic startDate,
     dynamic endDate,
+    bool? deactivate,
     dynamic userID,
   }) async {
     try {
@@ -63,6 +64,7 @@ class FirebaseService {
         "discount": discount,
         "startDate": startDate,
         "endDate": endDate,
+        "deactivate" : false,
       });
     } catch (e) {
       throw Exception(e);

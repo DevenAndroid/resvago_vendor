@@ -155,7 +155,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         }
         profileData.menuImage ??= [];
         for (var element in profileData.menuImage!) {
-          controller.galleryImages.add(File(element));
+          controller.menuImages.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
 
@@ -525,7 +525,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             height: 10,
                           ),
-                          const ProductGalleryImages(),
+                          const ProductMenuImages(),
                           const SizedBox(
                             height: 20,
                           ),
@@ -797,6 +797,266 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                         ),
                                       )),
                                 ))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                ],
+              ],
+            )),
+      );
+    });
+  }
+}
+
+class ProductMenuImages extends StatefulWidget {
+  const ProductMenuImages({super.key});
+
+  @override
+  State<ProductMenuImages> createState() => _ProductMenuImagesState();
+}
+
+class _ProductMenuImagesState extends State<ProductMenuImages> {
+  final controller = Get.put(AddProductController());
+
+  showImagesBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: double.maxFinite,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () {
+                                Get.back();
+                                NewHelper()
+                                    .addImagePicker(
+                                  imageSource: ImageSource.camera,
+                                )
+                                    .then((value) {
+                                  if (value == null) return;
+                                  if (controller.menuImages.length < 5) {
+                                    controller.menuImages.add(value);
+                                    setState(() {});
+                                  }
+                                });
+                              },
+                              height: 58,
+                              elevation: 0,
+                              color: Colors.white,
+                              child: Text(
+                                "Take picture",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () {
+                                Get.back();
+                                NewHelper().multiImagePicker().then((value) {
+                                  if (value == null) return;
+                                  for (var element in value) {
+                                    if (controller.menuImages.length < 5) {
+                                      controller.menuImages.add(element);
+                                    } else {
+                                      break;
+                                    }
+                                  }
+                                  setState(() {});
+                                });
+                              },
+                              height: 58,
+                              elevation: 0,
+                              color: Colors.white,
+                              child: Text(
+                                "Choose From Gallery",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            // Get.toNamed(thankUScreen);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(double.maxFinite, 60),
+                              backgroundColor: Colors.orange,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              textStyle: GoogleFonts.poppins(
+                                  fontSize: 20, fontWeight: FontWeight.w600)),
+                          child: Text(
+                            "Submit",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.refreshInt.value > 0) {}
+      return Card(
+        elevation: 3,
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 4, 0, 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Image Gallery',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF000000),
+                                ),
+                              ),
+                            ),
+                            if (controller.showValidations &&
+                                controller.menuImages.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5, top: 2),
+                                child: Icon(
+                                  Icons.error_outline_rounded,
+                                  color: Theme.of(context).colorScheme.error,
+                                  size: 21,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showImagesBottomSheet();
+                        },
+                        child: Text(
+                          'Choose From Gallery ${controller.menuImages.isNotEmpty ? "${controller.menuImages.length}/5" : ""}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.orange,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (controller.menuImages.isNotEmpty) ...[
+                  SizedBox(
+                    height: 125,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Row(
+                        children: controller.menuImages
+                            .asMap()
+                            .entries
+                            .map((e) => Padding(
+                          padding: const EdgeInsets.only(right: 18),
+                          child: GestureDetector(
+                              onTap: () {
+                                NewHelper.showImagePickerSheet(
+                                    gotImage: (value) {
+                                      controller.menuImages[e.key] =
+                                          value;
+                                      setState(() {});
+                                    },
+                                    context: context,
+                                    removeOption: true,
+                                    removeImage: (fg) {
+                                      controller.menuImages
+                                          .removeAt(e.key);
+                                      setState(() {});
+                                    });
+                              },
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                    minWidth: 50, minHeight: 125),
+                                child: Image.file(
+                                  e.value,
+                                  errorBuilder: (_, __, ___) =>
+                                      Image.network(
+                                        e.value.path,
+                                        errorBuilder: (_, __, ___) =>
+                                        const Icon(
+                                          Icons.error_outline,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                ),
+                              )),
+                        ))
                             .toList(),
                       ),
                     ),

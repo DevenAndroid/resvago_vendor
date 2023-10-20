@@ -1,10 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 
+import '../model/coupon_model.dart';
 import '../widget/addsize.dart';
-import '../widget/appassets.dart';
 import '../widget/custom_textfield.dart';
+
 class PromoCodeList extends StatefulWidget {
   const PromoCodeList({super.key});
 
@@ -14,183 +19,278 @@ class PromoCodeList extends StatefulWidget {
 
 class _PromoCodeListState extends State<PromoCodeList> {
   var selectedItem = '';
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: backAppBar(title: "Promo code List", context: context),
-      body: SingleChildScrollView(
-      child: Column(
-      children: [
-      const SizedBox(height: 10,),
-        ListView.builder(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.vertical,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 4,
-            itemBuilder: (BuildContext, int index) {
-              return Stack(children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        width: AddSize.screenWidth,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 28,top: 7),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
+        appBar: backAppBar(title: "Promo code List", context: context),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          const SizedBox(
+            height: 10,
+          ),
+              StreamBuilder<List<CouponData>>(
+                stream: getCouponStream(),
+                builder: (BuildContext context, AsyncSnapshot<List<CouponData>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No Coupon Found"));
+                  } else {
+                    List<CouponData>? users = snapshot.data;
+                    final filteredUsers = filterUsers(users!, searchQuery);
 
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return filteredUsers.isNotEmpty
+                        ? ListView.builder(
+                        padding: EdgeInsets.zero,
+                        scrollDirection: Axis.vertical,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: filteredUsers.length,
+                        itemBuilder: (BuildContext, int index) {
+                          final item = filteredUsers[index];
 
-                                  children: [
-                                    Text("Welcome to New", style: GoogleFonts.poppins(
-                                        color: const Color(0xFF304048),
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),),
-                                    PopupMenuButton(color: Colors.grey,iconSize: 20,onSelected: (value) {
-                                      setState(() {
-                                        selectedItem = value.toString();
-                                      });
-                                      print(value);
-                                      Navigator.pushNamed(context, value.toString());
-                                    }, itemBuilder: ( ac) {
-                                      return  [
-                                        PopupMenuItem(
-                                          child: Text("Edit"),
-                                          onTap: (){},
-                                          value: '/Edit',
+                          return Stack(children: [
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    width: AddSize.screenWidth,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade200,
+                                          blurRadius: 10,
                                         ),
-                                        PopupMenuItem(
-                                          child: Text("View"),
-                                          onTap: (){},
-                                          value: '/View',
-                                        ),
-                                        PopupMenuItem(
-                                          child: Text("deactivate"),
-                                          onTap: (){},
-                                          value: '/deactivate',
-                                        )
-                                      ];
-                                    })
-
-                                  ],
-                                ),
-                              ),
-                              // const SizedBox(height: 0,),
-                              Text("Happy SUNDAY", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFAAF40),
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14),),
-                              const SizedBox(height: 30,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2.0,right: 25),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Discount", style: GoogleFonts.poppins(
-                                        color: const Color(0xFF304048),
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),),
-                                    Text("\$10.00", style: GoogleFonts.poppins(
-                                        color:  Colors.grey,
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14),),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 6,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2.0,right: 25),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("20 Oct 2023", style: GoogleFonts.poppins(
-                                        color:  Colors.grey,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),),
-                                    Text("To", style: GoogleFonts.poppins(
-                                        color:  Colors.grey,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),),
-                                    Text("22 Oct 2023", style: GoogleFonts.poppins(
-                                        color:  Colors.grey,
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14),),
-                                  ],
-                                ),
-                              ),
-
-
-                              const SizedBox(
-                                height: 20,
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-                Positioned(
-                    top: 80,
-                    left: -10,
-                    right: -10,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.grey[100],
-                        ),
-                        //Image.asset('assets/images/abc.png',height: 30,width: 30,),
-                        Expanded(
-                          child: FittedBox(
-                            child: Row(
-                              children: List.generate(
-                                  25,
-                                      (index) => Padding(
-                                    padding: const EdgeInsets.only(left: 2, right: 2),
-                                    child: Container(
-                                      color: Colors.grey[200],
-                                      height: 2,
-                                      width: 10,
+                                      ],
                                     ),
-                                  )),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 28, top: 7),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                RichText(
+                                                  overflow: TextOverflow.clip,
+                                                  textAlign: TextAlign.end,
+                                                  textDirection: TextDirection.rtl,
+                                                  softWrap: true,
+                                                  maxLines: 1,
+                                                  textScaleFactor: 1,
+                                                  text: TextSpan(
+                                                    text: item.promoCodeName.toString(),
+                                                    style: DefaultTextStyle.of(context).style,
+                                                    children: <TextSpan>[
+                                                      TextSpan(
+                                                          text: item.deactivate ? "  Deactivate" : "", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red)),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuButton(
+                                                    color: Colors.white,
+                                                    iconSize: 20,
+                                                    onSelected: (value) {
+                                                      setState(() {
+                                                        selectedItem = value.toString();
+                                                      });
+                                                      print(value);
+                                                      Navigator.pushNamed(
+                                                          context, value.toString());
+                                                    },
+                                                    itemBuilder: (ac) {
+                                                      return [
+                                                        PopupMenuItem(
+                                                          child: Text("Edit"),
+                                                          onTap: () {
+                                                            Get.to(const CreatePromoCodeScreen(isEditMode: true,));
+                                                          },
+                                                          value: '/Edit',
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: Text("deactivate"),
+                                                          onTap: () {
+                                                            FirebaseFirestore.instance
+                                                                .collection('Coupon_data')
+                                                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                                            .collection('Coupon')
+                                                                .doc(item.docid)
+                                                                .update({"deactivate": true});
+                                                          },
+                                                        )
+                                                      ];
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                          // const SizedBox(height: 0,),
+                                          Text(
+                                            item.code.toString(),
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFFFAAF40),
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: 14),
+                                          ),
+                                          const SizedBox(
+                                            height: 30,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 2.0, right: 25),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Discount",
+                                                  style: GoogleFonts.poppins(
+                                                      color: const Color(0xFF304048),
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 16),
+                                                ),
+                                                Text(
+                                                  "\$${item.discount.toString()}",
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey,
+                                                      fontWeight: FontWeight.w300,
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 2.0, right: 25),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  item.startDate.toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey,
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 16),
+                                                ),
+                                                Text(
+                                                  "To",
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey,
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 16),
+                                                ),
+                                                Text(
+                                                  item.endDate.toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey,
+                                                      fontWeight: FontWeight.w300,
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.grey[100],
-                        ),
-                      ],
-                    )),
-              ]);
-            }),
+                            Positioned(
+                                top: 80,
+                                left: -10,
+                                right: -10,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.grey[100],
+                                    ),
+                                    //Image.asset('assets/images/abc.png',height: 30,width: 30,),
+                                    Expanded(
+                                      child: FittedBox(
+                                        child: Row(
+                                          children: List.generate(
+                                              25,
+                                                  (index) => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.grey[100],
+                                    ),
+                                  ],
+                                )),
+                          ]);
+                        })
+                        : const Center(
+                      child: Text("No Coupon Found"),
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
+              )
 
-
-      ])));
+        ])));
+  }
+  List<CouponData> filterUsers(List<CouponData> users, String query) {
+    if (query.isEmpty) {
+      return users; // Return all users if the search query is empty
+    } else {
+      // Filter the users based on the search query
+      return users.where((user) {
+        if (user.promoCodeName is String) {
+          return user.promoCodeName.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
+  }
+  Stream<List<CouponData>> getCouponStream() {
+    return FirebaseFirestore.instance
+        .collection('Coupon_data').doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+    .collection('Coupon')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => CouponData(
+                  code: doc.data()['code'],
+                  discount: doc.data()['discount'],
+                  docid: doc.id,
+                  deactivate: doc.data()['deactivate'],
+                  promoCodeName: doc.data()['promoCodeName'],
+                  startDate: doc.data()['startDate'],
+                  endDate: doc.data()['endDate'],
+                ))
+            .toList());
   }
 }
