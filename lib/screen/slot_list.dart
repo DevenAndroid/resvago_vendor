@@ -40,18 +40,18 @@ class _SlotListScreenState extends State<SlotListScreen> {
   var selectedItem = '';
   CreateSlotData? slotData;
   getSlots() {
-    FirebaseFirestore.instance
-        .collection('vendor_slot')
-        .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-        .get()
-        .then((value) {
-      var gg = value.data();
-      log("Slots$gg");
-      slotData = CreateSlotData.fromMap(gg!, value.id);
-      log("Slots1$slotData");
+    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
+    collection("menus").orderBy('time', descending: isDescendingOrder).get().then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        slotDataList ??= [];
+        slotDataList!.add(CreateSlotData.fromMap(gg,element.id));
+      }
       setState(() {});
     });
   }
+
+
 
 
   @override

@@ -24,7 +24,8 @@ class _MenuScreenState extends State<MenuScreen> {
   String searchQuery = '';
 
   Stream<List<MenuData>> getMenu() {
-    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("menus").snapshots().map((querySnapshot) {
+    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
+    collection("menus").snapshots().map((querySnapshot) {
       List<MenuData> menuList = [];
       try {
         for (var doc in querySnapshot.docs) {

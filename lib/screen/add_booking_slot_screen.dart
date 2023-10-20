@@ -42,8 +42,8 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
       await firebaseService.manageSlot(
         slotId:widget.slotId,
         time: DateTime.now().millisecondsSinceEpoch,
-        slot: slotController.timeslots,
-        dinnerSlot: slotController.dinnerTimeslots,
+        // slot: slotController.dinnerSlots,
+        // dinnerSlot: slotController.dinnerSlots,
         startDateForLunch: slotController.startDate.text,
         endDateForLunch: slotController.endDate.text,
         startTimeForLunch: slotController.startTime.text,
@@ -58,7 +58,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
         noOfGuest: slotController.noOfGuest.text,
         setOffer: slotController.setOffer.text
       ).then((value) {
-        // Get.back();
+        Get.back();
         Helper.hideLoader(loader);
       });
     }
@@ -95,11 +95,12 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                       child: CommonButtonBlue(
                         onPressed: () {
                           if (_formKeyBooking.currentState!.validate()) {
-                            slotController.getLunchTimeSlot();
-                            slotController.getDinnerTimeSlot();
-                            if(slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty){
-                              addSlotToFirestore();
-                            }
+                            // slotController.getLunchTimeSlot();
+                            // slotController.getDinnerTimeSlot();
+                            // if(slotController.slots.isNotEmpty && slotController.dinnerSlots.isNotEmpty){
+                            //   addSlotToFirestore();
+                            // }
+                            addSlotToFirestore();
                           }
                         },
                         title: 'Create Slot'.toUpperCase(),
