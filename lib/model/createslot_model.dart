@@ -13,8 +13,8 @@ class CreateSlotData {
   dynamic dinnerDuration;
   dynamic noOfGuest;
   dynamic setOffer ;
-  List<String> slot;
-  List<String> dinnerSlot;
+  List<dynamic> slot;
+  List<dynamic> dinnerSlot;
   dynamic time;
 
   CreateSlotData({

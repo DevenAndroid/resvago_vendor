@@ -50,8 +50,7 @@ class FirebaseService {
     dynamic userID,
   }) async {
     try {
-      CollectionReference collection =
-      FirebaseFirestore.instance.collection('Coupon_data');
+      CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
       var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
 
       DocumentReference.set({
@@ -60,7 +59,6 @@ class FirebaseService {
         "discount": discount,
         "valetedDate": valetedDate,
       });
-
     } catch (e) {
       throw Exception(e);
     }
@@ -127,10 +125,9 @@ class FirebaseService {
     try {
       await FirebaseFirestore.instance
           .collection('vendor_slot')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .collection("slot")
-          .doc(slotId)
+          .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
           .set({
+        "slotId": slotId,
         "vendorId": vendorId,
         "startDateForLunch": startDateForLunch,
         "endDateForLunch": endDateForLunch,

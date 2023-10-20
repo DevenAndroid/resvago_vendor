@@ -108,8 +108,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   }
 }
 
-  List<CategoryData>? categoryList;
-
+List<CategoryData>? categoryList;
 getVendorCategories() {
     FirebaseFirestore.instance
     .collection("resturent")
