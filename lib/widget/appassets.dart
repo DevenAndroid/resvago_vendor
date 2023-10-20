@@ -24,8 +24,10 @@ class AppAssets {
   static const String oders = "assets/icons/oder.svg";
   static const String clock = "assets/icons/clock.svg";
   static const String calender = "assets/icons/calendar.svg";
+  static const String arrowDown = "assets/icons/arrowdown.svg";
   static const String wallet = "assets/icons/wallet.svg";
   static const String contact = "assets/icons/contact.svg";
+  static const String filter = "assets/icons/filter.png";
   static const String call = "assets/icons/call.png";
   static const String location = "assets/icons/location.png";
   static const String appbarBack = "assets/icons/back.svg";
