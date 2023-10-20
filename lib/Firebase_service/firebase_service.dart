@@ -23,8 +23,7 @@ class FirebaseService {
     dynamic aboutUs,
   }) async {
     try {
-      CollectionReference collection =
-          FirebaseFirestore.instance.collection('vendor_users');
+      CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
       var DocumentReference = collection.doc("+91${mobileNumber}");
 
       DocumentReference.set({
@@ -40,7 +39,6 @@ class FirebaseService {
         "aboutUs": aboutUs,
         "userID": "+91${mobileNumber}",
       });
-
     } catch (e) {
       throw Exception(e);
     }
@@ -55,8 +53,7 @@ class FirebaseService {
     dynamic userID,
   }) async {
     try {
-      CollectionReference collection =
-      FirebaseFirestore.instance.collection('Coupon_data');
+      CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
       var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
 
       DocumentReference.set({
@@ -66,7 +63,6 @@ class FirebaseService {
         "startDate": startDate,
         "endDate": endDate,
       });
-
     } catch (e) {
       throw Exception(e);
     }
@@ -87,8 +83,13 @@ class FirebaseService {
     dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_menu').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("menus").doc(menuId).set({
-        "menuId":menuId,
+      await FirebaseFirestore.instance
+          .collection('vendor_menu')
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .collection("menus")
+          .doc(menuId)
+          .set({
+        "menuId": menuId,
         "vendorId": vendorId,
         "dishName": dishName,
         "category": category,
@@ -106,36 +107,49 @@ class FirebaseService {
     }
   }
 
-
   Future manageSlot({
     required String slotId,
     dynamic vendorId,
-    dynamic dishName,
-    dynamic category,
-    dynamic price,
-    dynamic docid,
-    dynamic discount,
-    dynamic description,
-    dynamic image,
-    dynamic booking,
+    dynamic lunchDuration,
+    dynamic dinnerDuration,
+    dynamic startDateForLunch,
+    dynamic endDateForLunch,
+    dynamic startTimeForLunch,
+    dynamic endTimeForLunch,
+    dynamic startDateForDinner,
+    dynamic endDateForDinner,
+    dynamic startTimeForDinner,
+    dynamic endTimeForDinner,
+    dynamic noOfGuest,
+    dynamic setOffer,
+    required List<String> slot,
+    required List<String> dinnerSlot,
     dynamic time,
-    dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_slot').doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection("slot").doc(slotId).set({
-        "menuId":slotId,
+      await FirebaseFirestore.instance
+          .collection('vendor_slot')
+          .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
+          .set({
+        "slotId": slotId,
         "vendorId": vendorId,
-        "dishName": dishName,
-        "category": category,
-        "price": price,
-        "docid": docid,
-        "discount": discount,
-        "description": description,
-        "image": image,
-        "booking": booking,
-        "searchName": searchName,
+        "startDateForLunch": startDateForLunch,
+        "endDateForLunch": endDateForLunch,
+        "startTimeForLunch": startTimeForLunch,
+        "endTimeForLunch": endTimeForLunch,
+        "startDateForDinner": startDateForDinner,
+        "endDateForDinner": endDateForDinner,
+        "startTimeForDinner": startTimeForDinner,
+        "endTimeForDinner": endTimeForDinner,
+        "lunchDuration": lunchDuration,
+        "dinnerDuration": dinnerDuration,
+        "noOfGuest": noOfGuest,
+        "setOffer": setOffer,
+        "slot": slot,
+        "dinnerSlot": dinnerSlot,
+        "time": time,
       });
-      showToast("Menu Added Successfully");
+      showToast("Slot Added Successfully");
     } catch (e) {
       throw Exception(e);
     }
@@ -143,14 +157,12 @@ class FirebaseService {
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
-    DocumentSnapshot docSnap =
-        await firestore.collection("vendor_users").doc(uid.trim()).get();
+    DocumentSnapshot docSnap = await firestore.collection("vendor_users").doc(uid.trim()).get();
     if (kDebugMode) {
       if (kDebugMode) print(docSnap.exists);
     }
     if (docSnap.data() != null) {
-      vendorModel =
-          RegisterData.fromMap(docSnap.data() as Map<String, dynamic>);
+      vendorModel = RegisterData.fromMap(docSnap.data() as Map<String, dynamic>);
       log(jsonEncode(docSnap.data()));
     }
     return vendorModel;

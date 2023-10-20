@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var width = MediaQuery.of(context).size.width;
     return  Scaffold(
       backgroundColor: Colors.transparent,
-      body: Center(child: Image(image: const AssetImage(AppAssets.Resvago),width: width * 2,height: height,)),
+      body: Image(image: const AssetImage(AppAssets.Resvago),width: double.maxFinite,height: height,),
     );
   }
 }

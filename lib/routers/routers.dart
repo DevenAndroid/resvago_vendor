@@ -3,13 +3,19 @@ import 'package:resvago_vendor/screen/Menu/add_menu.dart';
 import 'package:resvago_vendor/screen/Menu/menu_screen.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/oder_list_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/dashboard_screen.dart';
+import '../screen/Promo_code_list.dart';
 import '../screen/add_booking_slot_screen.dart';
+import '../screen/bank_details_screen.dart';
 import '../screen/bottom_nav_bar/bottomnav_bar.dart';
 import '../screen/bottom_nav_bar/menu_list_screen.dart';
 import '../screen/bottom_nav_bar/wallet_screen.dart';
+import '../screen/delivery_oders_details_screen.dart';
 import '../screen/login_screen.dart';
+import '../screen/oder_details_screen.dart';
 import '../screen/onboarding_screen.dart';
+import '../screen/reviwe_screen.dart';
 import '../screen/signup screen.dart';
+import '../screen/slot_list.dart';
 import '../screen/thankyou_screen.dart';
 import '../splash_screen.dart';
 
@@ -27,6 +33,12 @@ class MyRouters {
   static var oderListScreen = "/oderListScreen";
   static var menuListScreen = "/menuListScreen";
   static var addBookingSlot = "/addBookingSlot";
+  static var oderDetailsScreen = "/oderDetailsScreen";
+  static var bankDetailsScreen = "/bankDetailsScreen";
+  static var promoCodeList = "/promoCodeList";
+  static var slotListScreen = "/slotListScreen";
+  static var deliveryOderDetailsScreen = "/deliveryOderDetailsScreen";
+  static var reviewScreen = "/reviewScreen";
   // static var addMenuScreen = "/addMenuScreen";
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -40,7 +52,13 @@ class MyRouters {
     GetPage(name: '/walletScreen', page: () => const WalletScreen()),
     GetPage(name: '/oderListScreen', page: () => const OderListScreen()),
     GetPage(name: '/menuListScreen', page: () => const MenuListScreen()),
-    GetPage(name: '/addBookingSlot', page: () => const AddBookingSlot()),
+    // GetPage(name: '/addBookingSlot', page: () => const AddBookingSlot()),
+    GetPage(name: '/oderDetailsScreen', page: () => const OderDetailsScreen()),
+    GetPage(name: '/bankDetailsScreen', page: () => const BankDetailsScreen()),
+    GetPage(name: '/promoCodeList', page: () => const PromoCodeList()),
+    GetPage(name: '/slotListScreen', page: () => const SlotListScreen()),
+    GetPage(name: '/deliveryOderDetailsScreen', page: () => const DeliveryOderDetailsScreen()),
+    GetPage(name: '/reviewScreen', page: () => const ReviewScreen()),
     // GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
   ];
 }
