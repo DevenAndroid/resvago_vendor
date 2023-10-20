@@ -13,6 +13,7 @@ class PromoCodeList extends StatefulWidget {
 }
 
 class _PromoCodeListState extends State<PromoCodeList> {
+  var selectedItem = '';
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +50,53 @@ class _PromoCodeListState extends State<PromoCodeList> {
                           ],
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 28,top: 10),
+                          padding: const EdgeInsets.only(left: 28,top: 7),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment:
                             CrossAxisAlignment.start,
                             children: [
 
-                              Text("Welcome to New", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF304048),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16),),
-                              const SizedBox(height: 4,),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                                  children: [
+                                    Text("Welcome to New", style: GoogleFonts.poppins(
+                                        color: const Color(0xFF304048),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16),),
+                                    PopupMenuButton(color: Colors.grey,iconSize: 20,onSelected: (value) {
+                                      setState(() {
+                                        selectedItem = value.toString();
+                                      });
+                                      print(value);
+                                      Navigator.pushNamed(context, value.toString());
+                                    }, itemBuilder: ( ac) {
+                                      return  [
+                                        PopupMenuItem(
+                                          child: Text("Edit"),
+                                          onTap: (){},
+                                          value: '/Edit',
+                                        ),
+                                        PopupMenuItem(
+                                          child: Text("View"),
+                                          onTap: (){},
+                                          value: '/View',
+                                        ),
+                                        PopupMenuItem(
+                                          child: Text("deactivate"),
+                                          onTap: (){},
+                                          value: '/deactivate',
+                                        )
+                                      ];
+                                    })
+
+                                  ],
+                                ),
+                              ),
+                              // const SizedBox(height: 0,),
                               Text("Happy SUNDAY", style: GoogleFonts.poppins(
                                   color: const Color(0xFFFAAF40),
                                   fontWeight: FontWeight.w300,
@@ -118,7 +154,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                   ],
                 ),
                 Positioned(
-                    top: 62,
+                    top: 80,
                     left: -10,
                     right: -10,
                     child: Row(

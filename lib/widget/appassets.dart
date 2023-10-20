@@ -14,6 +14,7 @@ class AppAssets {
   static const String pasta = "assets/images/pasta.png";
   static const String star = "assets/images/star.png";
   static const String picture = "assets/images/Ellipse 1563.png";
+  static const String calenderImg = "assets/images/calenderImg.png";
   static const String qr = "assets/images/qr.png";
   static const String tick = "assets/icons/tick.png";
   static const String google = "assets/icons/google.png";

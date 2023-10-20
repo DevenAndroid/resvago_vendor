@@ -15,6 +15,7 @@ import '../screen/oder_details_screen.dart';
 import '../screen/onboarding_screen.dart';
 import '../screen/reviwe_screen.dart';
 import '../screen/signup screen.dart';
+import '../screen/slotViwe screen.dart';
 import '../screen/slot_list.dart';
 import '../screen/thankyou_screen.dart';
 import '../splash_screen.dart';
@@ -39,6 +40,7 @@ class MyRouters {
   static var slotListScreen = "/slotListScreen";
   static var deliveryOderDetailsScreen = "/deliveryOderDetailsScreen";
   static var reviewScreen = "/reviewScreen";
+  static var slotViewScreen = "/slotViewScreen";
   // static var addMenuScreen = "/addMenuScreen";
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -59,6 +61,7 @@ class MyRouters {
     GetPage(name: '/slotListScreen', page: () => const SlotListScreen()),
     GetPage(name: '/deliveryOderDetailsScreen', page: () => const DeliveryOderDetailsScreen()),
     GetPage(name: '/reviewScreen', page: () => const ReviewScreen()),
+    GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),
     // GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
   ];
 }
