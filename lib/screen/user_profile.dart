@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -17,7 +14,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/model/profile_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
@@ -27,7 +23,6 @@ import '../controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../utils/helper.dart';
 import '../widget/addsize.dart';
-import '../widget/appassets.dart';
 import '../widget/common_text_field.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -60,7 +55,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
-  // List<File> selectedImages = [];
   final picker = ImagePicker();
   final controller = Get.put(AddProductController());
 
@@ -87,19 +81,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     Overlay.of(context).insert(loader);
     try {
       List<String> imagesLink = [];
+      List<String> menuImagesLink = [];
       for (var element in controller.galleryImages.asMap().entries) {
         if (element.value.path.contains("http")) {
           imagesLink.add(element.value.path);
         } else {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref(
-                  "menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+                  "restaurant_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
               .child("${element.key}image")
               .putFile(element.value);
-
           TaskSnapshot snapshot = await uploadTask;
           String imageUrl = await snapshot.ref.getDownloadURL();
           imagesLink.add(imageUrl);
+
+          UploadTask uploadMenuImage = FirebaseStorage.instance
+              .ref(
+              "menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .child("${element.key}image")
+              .putFile(element.value);
+
+          TaskSnapshot snapshot1 = await uploadMenuImage;
+          String imageUrl1 = await snapshot1.ref.getDownloadURL();
+          menuImagesLink.add(imageUrl1);
         }
       }
 
@@ -113,6 +117,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
         "restaurantImage": imagesLink,
+        "menuImage": menuImagesLink,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
         "confirmPassword": confirmPassController.text.trim()
@@ -143,8 +148,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         aboutUsController.text = profileData.aboutUs.toString();
-            profileData.restaurantImage ??= [];
+        profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
+          controller.galleryImages.add(File(element));
+          controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+        }
+        profileData.menuImage ??= [];
+        for (var element in profileData.menuImage!) {
           controller.galleryImages.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
@@ -502,86 +512,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           const ProductGalleryImages(),
-                          // DottedBorder(
-                          //   borderType: BorderType.RRect,
-                          //   radius: const Radius.circular(20),
-                          //   padding: const EdgeInsets.only(
-                          //       left: 40, right: 40, bottom: 10),
-                          //   color: showValidationImg == false
-                          //       ? const Color(0xFFFAAF40)
-                          //       : Colors.red,
-                          //   dashPattern: const [6],
-                          //   strokeWidth: 1,
-                          //   child: InkWell(
-                          //     onTap: () {
-                          //       getImages();
-                          //     },
-                          //     child: selectedImages != ""
-                          //         ? Stack(
-                          //             children: [
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10),
-                          //                   color: Colors.white,
-                          //                 ),
-                          //                 margin: const EdgeInsets.symmetric(
-                          //                     vertical: 10, horizontal: 10),
-                          //                 width: double.maxFinite,
-                          //                 height: 100,
-                          //                 alignment: Alignment.center,
-                          //                 child: selectedImages.isEmpty
-                          //                     ? const Center(child: Text('Sorry nothing selected!!'))
-                          //                     : ListView.builder(
-                          //                   itemCount: selectedImages.length,
-                          //                   scrollDirection: Axis.horizontal,
-                          //                   itemBuilder: (BuildContext context, int index) {
-                          //                     return Padding(
-                          //                       padding: const EdgeInsets.symmetric(horizontal: 6),
-                          //                       child: Center(
-                          //                           child: kIsWeb
-                          //                               ? Image.network(selectedImages[index].path)
-                          //                               : Image.file(selectedImages[index])),
-                          //                     );
-                          //                   },
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           )
-                          //         : Container(
-                          //             padding: const EdgeInsets.only(top: 8),
-                          //             margin: const EdgeInsets.symmetric(
-                          //                 vertical: 8, horizontal: 8),
-                          //             width: double.maxFinite,
-                          //             height: 130,
-                          //             alignment: Alignment.center,
-                          //             child: Column(
-                          //               mainAxisAlignment:
-                          //                   MainAxisAlignment.center,
-                          //               children: [
-                          //                 Image.asset(
-                          //                   AppAssets.gallery,
-                          //                   height: 60,
-                          //                   width: 50,
-                          //                 ),
-                          //                 const SizedBox(
-                          //                   height: 5,
-                          //                 ),
-                          //                 const Text(
-                          //                   'Accepted file types: JPEG, Doc, PDF, PNG',
-                          //                   style: TextStyle(
-                          //                       fontSize: 16,
-                          //                       color: Colors.black54),
-                          //                   textAlign: TextAlign.center,
-                          //                 ),
-                          //                 const SizedBox(
-                          //                   height: 11,
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //           ),
-                          //   ),
-                          // ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Menu Image",
+                            style: GoogleFonts.poppins(
+                                color: AppTheme.registortext,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const ProductGalleryImages(),
                           const SizedBox(
                             height: 20,
                           ),
@@ -603,106 +547,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void showActionSheet(BuildContext context) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.camera, imageQuality: 75)
-                  .then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  profileImage = File(croppedFile.path);
-                  setState(() {});
-                }
-
-                Get.back();
-              });
-            },
-            child: const Text("Camera"),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.gallery, imageQuality: 75)
-                  .then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  profileImage = File(croppedFile.path);
-                  setState(() {});
-                }
-
-                Get.back();
-              });
-            },
-            child: const Text('Gallery'),
-          ),
-          CupertinoActionSheetAction(
-            isDestructiveAction: true,
-            onPressed: () {
-              Get.back();
-            },
-            child: const Text('Cancel'),
-          ),
-        ],
       ),
     );
   }
