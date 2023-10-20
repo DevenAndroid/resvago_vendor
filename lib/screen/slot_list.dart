@@ -3,15 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
+import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
-import 'Menu/add_menu.dart';
 import 'add_booking_slot_screen.dart';
 
 class SlotListScreen extends StatefulWidget {
@@ -39,7 +37,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   //     return menuList;
   //   });
   // }
-
+  var selectedItem = '';
   CreateSlotData? slotData;
   getSlots() {
     FirebaseFirestore.instance
@@ -159,7 +157,70 @@ class _SlotListScreenState extends State<SlotListScreen> {
                         const Icon(Icons.remove_red_eye_outlined)
                       ],
                     ),
-                  ))
+                  )),
+
+    ListView.builder(
+                   shrinkWrap: true,
+                   scrollDirection: Axis.vertical,
+                   physics: const NeverScrollableScrollPhysics(),
+                   itemCount:10,
+                   itemBuilder: (context, index) {
+                     return Padding(
+                         padding: const EdgeInsets.all(8.0),
+                         child: Container(
+                           padding: const EdgeInsets.all(14),
+                           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.start,
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Image.asset(AppAssets.calenderImg,height: 50,),
+                               const SizedBox(width: 20,),
+                               Column(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                Text("10 Oct 2023 To 12 Oct 2023",
+                                 style: GoogleFonts.poppins(
+                                     color: const Color(0xFF1A2E33), fontWeight: FontWeight.w400, fontSize: 14),
+                               ),
+                                   Text("Total Guest : 25",
+                                     style: GoogleFonts.poppins(
+                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
+                                   ),
+
+                                 ],
+                               ),
+                               const Spacer(),
+                               PopupMenuButton(color: Colors.white,iconSize: 20,icon:const Icon(Icons.more_vert,color: Colors.grey,),padding: EdgeInsets.zero,onSelected: (value) {
+                                 setState(() {
+                                   selectedItem = value.toString();
+                                 });
+
+                                 Navigator.pushNamed(context, value.toString());
+                               }, itemBuilder: ( ac) {
+                                 return  [
+                                   PopupMenuItem(
+                                     onTap: (){},
+                                     value: '/Edit',
+                                     child: const Text("Edit"),
+                                   ),
+                                   PopupMenuItem(
+                                     onTap: (){
+                                       // Get.toNamed(MyRouters.slotViewScreen);
+                                     },
+                                     value: '/slotViewScreen',
+                                     child: const Text("View"),
+                                   ),
+                                   PopupMenuItem(
+                                     onTap: (){},
+                                     value: '/deactivate',
+                                     child: const Text("deactivate"),
+                                   )
+                                 ];
+                               })
+                             ]
+    )));})])
             // StreamBuilder<List<CreateSlotData>>(
             //     stream: getSlots(),
             //     builder: (context, snapshot) {
@@ -215,8 +276,8 @@ class _SlotListScreenState extends State<SlotListScreen> {
             //       }
             //       return const SizedBox.shrink();
             //     })
-          ],
-        ),
+
+
       ),
     );
   }
