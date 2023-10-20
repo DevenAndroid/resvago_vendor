@@ -10,7 +10,10 @@ class AppAssets {
   static const String oderlistbg = "assets/images/oderlistbg.png";
   static const String withdrawl = "assets/images/withdrawl.png";
   static const String shopping = "assets/images/shopping_cart_img.png";
+  static const String bankDetails = "assets/images/bank_details.png";
   static const String pasta = "assets/images/pasta.png";
+  static const String star = "assets/images/star.png";
+  static const String picture = "assets/images/Ellipse 1563.png";
   static const String qr = "assets/images/qr.png";
   static const String tick = "assets/icons/tick.png";
   static const String google = "assets/icons/google.png";
