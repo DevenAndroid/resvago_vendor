@@ -23,26 +23,28 @@ class CreatePromoCodeScreen extends StatefulWidget {
 class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   final _formKeySignup = GlobalKey<FormState>();
   final registerController = Get.put(RegisterController());
-  TextEditingController dateController = TextEditingController();
+  TextEditingController startDateController = TextEditingController();
+  TextEditingController endDateController = TextEditingController();
   TextEditingController promocodenameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController discountController = TextEditingController();
-
-  Future<void> selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked != null) {
-      setState(() {
-        String formattedDate = DateFormat('yyyy-MM-dd').format(
-            picked); // format date in required form here we use yyyy-MM-dd that means time is removed
-        dateController.text = formattedDate;
-      });
-    }
+  DateTime? selectedStartDateTime;
+  DateTime? selectedEndDateTIme;
+  final DateFormat selectedDateFormat = DateFormat("dd-MMM-yyyy");
+  pickDate(
+      {required Function(DateTime gg) onPick,
+      DateTime? initialDate,
+      DateTime? firstDate,
+      DateTime? lastDate}) async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate ?? DateTime.now(),
+        firstDate: firstDate ?? DateTime.now(),
+        lastDate: lastDate ?? DateTime(2101),
+        initialEntryMode: DatePickerEntryMode.calendarOnly);
+    if (pickedDate == null) return;
+    onPick(pickedDate);
+    // updateValues();
   }
 
   FirebaseService firebaseService = FirebaseService();
@@ -52,11 +54,11 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
     Overlay.of(context).insert(loader);
     await firebaseService
         .manageCouponCode(
-      promoCodeName: dateController.text.trim(),
-      code: promocodenameController.text.trim(),
-      discount: codeController.text.trim(),
-      valetedDate: discountController.text.trim(),
-    )
+            promoCodeName: startDateController.text.trim(),
+            code: promocodenameController.text.trim(),
+            discount: codeController.text.trim(),
+            startDate: discountController.text.trim(),
+            endDate: endDateController.text.trim())
         .then((value) {
       Get.back();
       Helper.hideLoader(loader);
@@ -144,6 +146,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                       ),
                       RegisterTextFieldWidget(
                         controller: discountController,
+                        keyboardType: TextInputType.number,
                         validator: RequiredValidator(
                             errorText: 'Please enter your Discount '),
                         hint: '10.00',
@@ -152,7 +155,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Valeted Date",
+                        "Start Date",
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -163,13 +166,55 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                       ),
                       RegisterTextFieldWidget(
                         readOnly: true,
-                        controller: dateController,
+                        controller: startDateController,
                         onTap: () {
-                          selectDate(context);
+                          pickDate(
+                              onPick: (DateTime gg) {
+                                startDateController.text =
+                                    selectedDateFormat.format(gg);
+                                selectedStartDateTime = gg;
+                              },
+                              initialDate: selectedStartDateTime,
+                              lastDate: selectedEndDateTIme);
                         },
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Discount '),
-                        hint: '20/10/203',
+                            errorText: 'Please enter start Date '),
+                        hint: startDateController.text.isEmpty
+                            ? 'Select Start Date'
+                            : startDateController.text,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "End Date",
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      RegisterTextFieldWidget(
+                        readOnly: true,
+                        controller: endDateController,
+                        onTap: () {
+                          pickDate(
+                              onPick: (DateTime gg) {
+                                endDateController.text =
+                                    selectedDateFormat.format(gg);
+                                selectedEndDateTIme = gg;
+                              },
+                              initialDate:
+                                  selectedEndDateTIme ?? selectedStartDateTime,
+                              firstDate: selectedStartDateTime);
+                        },
+                        validator: RequiredValidator(
+                            errorText: 'Please enter end Date '),
+                        hint: endDateController.text.isEmpty
+                            ? 'Select End Date'
+                            : endDateController.text,
                       ),
                       const SizedBox(
                         height: 20,

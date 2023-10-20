@@ -20,6 +20,7 @@ class FirebaseService {
     dynamic confirmPassword,
     dynamic image,
     dynamic userID,
+    dynamic aboutUs,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -35,6 +36,7 @@ class FirebaseService {
         "password": password,
         "confirmPassword": confirmPassword,
         "image": image,
+        "aboutUs": aboutUs,
         "userID": "+91${mobileNumber}",
       });
     } catch (e) {
@@ -46,7 +48,8 @@ class FirebaseService {
     dynamic promoCodeName,
     dynamic code,
     dynamic discount,
-    dynamic valetedDate,
+    dynamic startDate,
+    dynamic endDate,
     dynamic userID,
   }) async {
     try {
@@ -57,7 +60,8 @@ class FirebaseService {
         "promoCodeName": promoCodeName,
         "code": code,
         "discount": discount,
-        "valetedDate": valetedDate,
+        "startDate": startDate,
+        "endDate": endDate,
       });
     } catch (e) {
       throw Exception(e);
@@ -103,6 +107,54 @@ class FirebaseService {
     }
   }
 
+  // Future manageSlot({
+  //   required String slotId,
+  //   dynamic vendorId,
+  //   dynamic lunchDuration,
+  //   dynamic dinnerDuration,
+  //   dynamic startDateForLunch,
+  //   dynamic endDateForLunch,
+  //   dynamic startTimeForLunch,
+  //   dynamic endTimeForLunch,
+  //   dynamic startDateForDinner,
+  //   dynamic endDateForDinner,
+  //   dynamic startTimeForDinner,
+  //   dynamic endTimeForDinner,
+  //   dynamic noOfGuest,
+  //   dynamic setOffer,
+  //   required List<String> slot,
+  //   required List<String> dinnerSlot,
+  //   dynamic time,
+  // }) async {
+  //   try {
+  //     await FirebaseFirestore.instance
+  //         .collection('vendor_slot')
+  //         .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
+  //         .set({
+  //       "slotId": slotId,
+  //       "vendorId": vendorId,
+  //       "startDateForLunch": startDateForLunch,
+  //       "endDateForLunch": endDateForLunch,
+  //       "startTimeForLunch": startTimeForLunch,
+  //       "endTimeForLunch": endTimeForLunch,
+  //       "startDateForDinner": startDateForDinner,
+  //       "endDateForDinner": endDateForDinner,
+  //       "startTimeForDinner": startTimeForDinner,
+  //       "endTimeForDinner": endTimeForDinner,
+  //       "lunchDuration": lunchDuration,
+  //       "dinnerDuration": dinnerDuration,
+  //       "noOfGuest": noOfGuest,
+  //       "setOffer": setOffer,
+  //       "slot": slot,
+  //       "dinnerSlot": dinnerSlot,
+  //       "time": time,
+  //     });
+  //     showToast("Slot Added Successfully");
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
+
   Future manageSlot({
     required String slotId,
     dynamic vendorId,
@@ -118,16 +170,19 @@ class FirebaseService {
     dynamic endTimeForDinner,
     dynamic noOfGuest,
     dynamic setOffer,
-    required List<String> slot,
-    required List<String> dinnerSlot,
+    dynamic dateType,
+    // dynamic slot,
+    // dynamic dinnerSlot,
     dynamic time,
   }) async {
     try {
       await FirebaseFirestore.instance
           .collection('vendor_slot')
-          .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .collection("slot")
+          .doc(slotId)
           .set({
-        "slotId": slotId,
+        "slotId":slotId,
         "vendorId": vendorId,
         "startDateForLunch": startDateForLunch,
         "endDateForLunch": endDateForLunch,
@@ -141,8 +196,9 @@ class FirebaseService {
         "dinnerDuration": dinnerDuration,
         "noOfGuest": noOfGuest,
         "setOffer": setOffer,
-        "slot": slot,
-        "dinnerSlot": dinnerSlot,
+        "dateType": dateType,
+        // "slot": slot,
+        // "dinnerSlot": dinnerSlot,
         "time": time,
       });
       showToast("Slot Added Successfully");
@@ -150,6 +206,7 @@ class FirebaseService {
       throw Exception(e);
     }
   }
+
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

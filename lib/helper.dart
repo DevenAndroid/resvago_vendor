@@ -59,7 +59,7 @@ class Helper {
   }
 }
 
- showToast(message) {
+showToast(message) {
   Fluttertoast.cancel();
   Fluttertoast.showToast(
       msg: message,
@@ -67,12 +67,12 @@ class Helper {
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
       backgroundColor: Colors.black,
-      textColor: Colors.white,
+      textColor: AppTheme.primaryColor,
       fontSize: 14);
 }
 
- loading() {
-   return Center(
+loading() {
+  return Center(
       child: LoadingAnimationWidget.fourRotatingDots(
     color: AppTheme.primaryColor,
     size: 40,

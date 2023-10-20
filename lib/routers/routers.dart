@@ -63,7 +63,7 @@ class MyRouters {
     GetPage(name: '/slotListScreen', page: () => const SlotListScreen()),
     GetPage(name: '/deliveryOderDetailsScreen', page: () => const DeliveryOderDetailsScreen()),
     GetPage(name: '/reviewScreen', page: () => const ReviewScreen()),
-    GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),
+    //GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),
     GetPage(name: '/settingScreen', page: () => const SettingScreen()),
     // GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
   ];
