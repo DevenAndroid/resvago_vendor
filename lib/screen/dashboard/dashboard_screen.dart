@@ -4,8 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/screen/slot_list.dart';
+import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../model/signup_model.dart';
@@ -144,8 +147,92 @@ class _VendorDashboardState extends State<VendorDashboard> {
                     )),
                 onTap: () {
                   setState(() {
-                    currentDrawer = 1;
+                    currentDrawer = 2;
                     Get.to(const CreatePromoCodeScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Promo Code List',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 3;
+                    Get.to(const PromoCodeList());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Slot List',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 4;
+                    Get.to(const SlotListScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Setting',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const SettingScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Total Earning',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 6;
+                    Get.to(const TotalEarningScreen());
                   });
                 },
               ),
