@@ -48,7 +48,7 @@ class MyRouters {
     GetPage(name: '/walletScreen', page: () => const WalletScreen()),
     GetPage(name: '/oderListScreen', page: () => const OderListScreen()),
     GetPage(name: '/menuListScreen', page: () => const MenuListScreen()),
-    GetPage(name: '/addBookingSlot', page: () => const AddBookingSlot()),
+    // GetPage(name: '/addBookingSlot', page: () => const AddBookingSlot()),
     GetPage(name: '/oderDetailsScreen', page: () => const OderDetailsScreen()),
     GetPage(name: '/bankDetailsScreen', page: () => const BankDetailsScreen()),
     GetPage(name: '/promoCodeList', page: () => const PromoCodeList()),
