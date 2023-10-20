@@ -25,8 +25,12 @@ class _MenuScreenState extends State<MenuScreen> {
   String searchQuery = '';
 
   Stream<List<MenuData>> getMenu() {
-    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
-    collection("menus").snapshots().map((querySnapshot) {
+    return FirebaseFirestore.instance
+        .collection("vendor_menu")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection("menus")
+        .snapshots()
+        .map((querySnapshot) {
       List<MenuData> menuList = [];
       try {
         for (var doc in querySnapshot.docs) {
@@ -123,10 +127,10 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                       child: Center(
                           child: Icon(
-                            Icons.add,
-                            color: AppTheme.backgroundcolor,
-                            size: AddSize.size25,
-                          )),
+                        Icons.add,
+                        color: AppTheme.backgroundcolor,
+                        size: AddSize.size25,
+                      )),
                     ),
                   )
                 ],
@@ -143,7 +147,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       size: 40,
                     );
                   }
-                  if(snapshot.hasData){
+                  if (snapshot.hasData) {
                     List<MenuData> menu = snapshot.data ?? [];
                     log(menu.toString());
                     final filteredUsers = filterMenus(menu, searchQuery); //
@@ -310,8 +314,6 @@ class _MenuScreenState extends State<MenuScreen> {
                                   ))
                             ],
                           );
-                        })
-                        : const Center(child: Text("No Menu Created"),);
                   }
                   return const SizedBox.shrink();
                 },
