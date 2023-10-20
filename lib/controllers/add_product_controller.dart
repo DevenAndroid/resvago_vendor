@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class AddProductController extends GetxController {
   RxInt refreshInt = 0.obs;
   List<File> galleryImages = [];
-  List<File> menuImages = [];
+  List<File> menuGallery = [];
   bool showValidations = false;
 }

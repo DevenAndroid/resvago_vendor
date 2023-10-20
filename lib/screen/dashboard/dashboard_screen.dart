@@ -161,28 +161,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
-                title: Text('Coupon List',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    Get.to(const PromoCodeList());
-                    currentDrawer = 2;
-                    Get.to(const CreatePromoCodeScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
                 title: Text('Promo Code List',
                     style: GoogleFonts.poppins(
                       fontSize: 15,

@@ -88,6 +88,19 @@ class NewHelper {
     }
   }
 
+  Future<File?> videoPicker({ImageSource imageSource = ImageSource.gallery, int imageQuality = 80}) async {
+    try {
+      final item = await ImagePicker().pickVideo(source: imageSource,);
+      if (item == null) {
+        return null;
+      } else {
+        return File(item.path);
+      }
+    } on PlatformException catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<List<File>?> multiImagePicker({int imageQuality = 80}) async {
     try {
       final item = await ImagePicker().pickMultiImage(imageQuality: imageQuality);
@@ -117,6 +130,18 @@ class NewHelper {
           },
         ),
         actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: const Text('Video'),
+            onPressed: () {
+              // pickImage(
+              //     ImageSource.gallery);
+              NewHelper().videoPicker(imageSource: ImageSource.gallery).then((value) async {
+                if (value == null) return;
+                gotImage(await FlutterExifRotation.rotateImage(path: value.path));
+                Get.back();
+              });
+            },
+          ),
           CupertinoActionSheetAction(
             child: const Text('Gallery'),
             onPressed: () {

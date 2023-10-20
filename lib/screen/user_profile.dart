@@ -81,20 +81,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     Overlay.of(context).insert(loader);
     try {
       List<String> imagesLink = [];
-      List<String> menuImagesLink = [];
+      List<String> menuPhotoLink = [];
       for (var element in controller.galleryImages.asMap().entries) {
         if (element.value.path.contains("http")) {
           imagesLink.add(element.value.path);
         } else {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref(
-                  "restaurant_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              "restaurant_images/${FirebaseAuth.instance.currentUser!
+                  .phoneNumber}")
               .child("${element.key}image")
               .putFile(element.value);
           TaskSnapshot snapshot = await uploadTask;
           String imageUrl = await snapshot.ref.getDownloadURL();
           imagesLink.add(imageUrl);
-
+        }
+      }
+          for (var element in controller.menuGallery.asMap().entries) {
+            if (element.value.path.contains("http")) {
+              menuPhotoLink.add(element.value.path);
+            } else {
           UploadTask uploadMenuImage = FirebaseStorage.instance
               .ref(
               "menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
@@ -103,7 +109,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
           TaskSnapshot snapshot1 = await uploadMenuImage;
           String imageUrl1 = await snapshot1.ref.getDownloadURL();
-          menuImagesLink.add(imageUrl1);
+          menuPhotoLink.add(imageUrl1);
         }
       }
 
@@ -112,12 +118,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .update({
         "restaurantName": restaurantController.text.trim(),
-        "address": addressController.text.trim(),
+        "address": _address,
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
         "restaurantImage": imagesLink,
-        "menuImage": menuImagesLink,
+        "menuImage": menuPhotoLink,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
         "confirmPassword": confirmPassController.text.trim()
@@ -147,15 +153,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         categoryController.text = profileData.category.toString();
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
+        print(profileData.address.toString());
         aboutUsController.text = profileData.aboutUs.toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
-        profileData.menuImage ??= [];
-        for (var element in profileData.menuImage!) {
-          controller.menuImages.add(File(element));
+        profileData.menuGalleryImages ??= [];
+        for (var element in profileData.menuGalleryImages!) {
+          controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
 
@@ -591,6 +598,44 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
+                                NewHelper()
+                                    .videoPicker(
+                                  imageSource: ImageSource.gallery,
+                                )
+                                    .then((value) {
+                                  if (value == null) return;
+                                Get.back();
+                                  if (controller.galleryImages.length < 5) {
+                                    controller.galleryImages.add(value);
+                                    setState(() {});
+                                  }
+                                });
+                              },
+                              height: 58,
+                              elevation: 0,
+                              color: Colors.white,
+                              child: Text(
+                                "Video",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () {
                                 Get.back();
                                 NewHelper()
                                     .addImagePicker(
@@ -790,8 +835,8 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                             e.value.path,
                                             errorBuilder: (_, __, ___) =>
                                                 const Icon(
-                                              Icons.error_outline,
-                                              color: Colors.red,
+                                              Icons.video_collection_rounded,
+                                              color: Colors.blue,
                                             ),
                                           ),
                                         ),
@@ -858,8 +903,8 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 )
                                     .then((value) {
                                   if (value == null) return;
-                                  if (controller.menuImages.length < 5) {
-                                    controller.menuImages.add(value);
+                                  if (controller.menuGallery.length < 5) {
+                                    controller.menuGallery.add(value);
                                     setState(() {});
                                   }
                                 });
@@ -893,8 +938,8 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 NewHelper().multiImagePicker().then((value) {
                                   if (value == null) return;
                                   for (var element in value) {
-                                    if (controller.menuImages.length < 5) {
-                                      controller.menuImages.add(element);
+                                    if (controller.menuGallery.length < 5) {
+                                      controller.menuGallery.add(element);
                                     } else {
                                       break;
                                     }
@@ -984,7 +1029,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               ),
                             ),
                             if (controller.showValidations &&
-                                controller.menuImages.isEmpty)
+                                controller.menuGallery.isEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(left: 5, top: 2),
                                 child: Icon(
@@ -1001,7 +1046,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                           showImagesBottomSheet();
                         },
                         child: Text(
-                          'Choose From Gallery ${controller.menuImages.isNotEmpty ? "${controller.menuImages.length}/5" : ""}',
+                          'Choose From Gallery ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/5" : ""}',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: Colors.orange,
@@ -1012,14 +1057,14 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                     ],
                   ),
                 ),
-                if (controller.menuImages.isNotEmpty) ...[
+                if (controller.menuGallery.isNotEmpty) ...[
                   SizedBox(
                     height: 125,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.only(left: 20),
                       child: Row(
-                        children: controller.menuImages
+                        children: controller.menuGallery
                             .asMap()
                             .entries
                             .map((e) => Padding(
@@ -1028,14 +1073,14 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               onTap: () {
                                 NewHelper.showImagePickerSheet(
                                     gotImage: (value) {
-                                      controller.menuImages[e.key] =
+                                      controller.menuGallery[e.key] =
                                           value;
                                       setState(() {});
                                     },
                                     context: context,
                                     removeOption: true,
                                     removeImage: (fg) {
-                                      controller.menuImages
+                                      controller.menuGallery
                                           .removeAt(e.key);
                                       setState(() {});
                                     });

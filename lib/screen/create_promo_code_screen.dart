@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,9 +18,15 @@ import '../widget/common_text_field.dart';
 
 class CreatePromoCodeScreen extends StatefulWidget {
   final bool isEditMode;
+  final String? promoCodeName;
+  final String? code;
+  final String? discount;
+  final String? startDate;
+  final String? endDate;
+  final String? documentId;
 
   const CreatePromoCodeScreen({super.key,
-    required this.isEditMode,});
+    required this.isEditMode, this.promoCodeName, this.code, this.discount, this.startDate, this.endDate, this.documentId,});
 
   @override
   State<CreatePromoCodeScreen> createState() => _CreatePromoCodeScreenState();
@@ -34,6 +42,8 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   TextEditingController discountController = TextEditingController();
   DateTime? selectedStartDateTime;
   DateTime? selectedEndDateTIme;
+  bool showValidation = false;
+  bool showValidationImg = false;
   final DateFormat selectedDateFormat = DateFormat("dd-MMM-yyyy");
   pickDate(
       {required Function(DateTime gg) onPick,
@@ -54,20 +64,54 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   FirebaseService firebaseService = FirebaseService();
 
   Future<void> addCouponFirestore() async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    await firebaseService
-        .manageCouponCode(
+
+    try {
+      if (widget.isEditMode) {
+        print('object');
+        FirebaseFirestore.instance.collection('Coupon_data')
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection(
+            'Coupon').doc(widget.documentId).
+        update({
+          "promoCodeName": promocodenameController.text,
+          "code": codeController.text,
+          "discount": discountController.text,
+          "startDate": startDateController.text,
+          "endDate": endDateController.text,
+        }).then((value) {
+          Get.to(const PromoCodeList());
+
+          Fluttertoast.showToast(msg: 'Code is Updated');
+        });
+      } else {
+        firebaseService
+            .manageCouponCode(
             promoCodeName: promocodenameController.text.trim(),
             code: codeController.text.trim(),
             discount: discountController.text.trim(),
             startDate: startDateController.text.trim(),
             endDate: endDateController.text.trim())
-        .then((value) {
-      Get.to(const PromoCodeList());
-      Helper.hideLoader(loader);
-      Fluttertoast.showToast(msg: 'Code is created');
-    });
+            .then((value) {
+          Get.to(const PromoCodeList());
+
+          Fluttertoast.showToast(msg: 'Code is created');
+        });
+      }
+    }catch(e){
+      print(e.toString());
+
+
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    promocodenameController.text = widget.promoCodeName ?? "";
+    codeController.text = widget.code ?? "";
+    discountController.text = widget.discount ?? "";
+    startDateController.text = widget.startDate ?? "";
+    endDateController.text = widget.endDate ?? "";
   }
 
   @override
@@ -225,7 +269,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          addCouponFirestore();
+                          if (_formKeySignup.currentState!.validate()) {
+                            addCouponFirestore();
+                          } else {
+                            showValidationImg = true;
+                            showValidation = true;
+                            setState(() {});
+                          }
+
                         },
                         title: 'CREATE COUPON',
                       ),
