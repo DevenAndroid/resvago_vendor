@@ -40,20 +40,35 @@ class _SlotListScreenState extends State<SlotListScreen> {
   //   });
   // }
 
-  CreateSlotData? slotData;
+  // CreateSlotData? slotData;
+  // getSlots() {
+  //   FirebaseFirestore.instance
+  //       .collection('vendor_slot')
+  //       .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
+  //       .get()
+  //       .then((value) {
+  //     var gg = value.data();
+  //     log("Slots$gg");
+  //     slotData = CreateSlotData.fromMap(gg!, value.id);
+  //     log("Slots1$slotData");
+  //     setState(() {});
+  //   });
+  // }
+  bool isDescendingOrder = true;
+  List<CreateSlotData>? slotDataList;
   getSlots() {
-    FirebaseFirestore.instance
-        .collection('vendor_slot')
-        .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-        .get()
-        .then((value) {
-      var gg = value.data();
-      log("Slots$gg");
-      slotData = CreateSlotData.fromMap(gg!, value.id);
-      log("Slots1$slotData");
+    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
+    collection("menus").orderBy('time', descending: isDescendingOrder).get().then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        slotDataList ??= [];
+        slotDataList!.add(CreateSlotData.fromMap(gg,element.id));
+      }
       setState(() {});
     });
   }
+
+
 
 
   @override
@@ -99,67 +114,40 @@ class _SlotListScreenState extends State<SlotListScreen> {
                 ),
               ),
             ),
-            if (slotData != null)
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Start Date",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-                            ),
-                            Text(
-                              slotData!.startDateForLunch.toString(),
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            if (slotData!.endDateForLunch.toString().trim().isEmpty)
-                              const SizedBox()
-                            else
-                              Column(
-                                children: [
-                                  Text(
-                                    "End Date",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-                                  ),
-                                  Text(
-                                    slotData!.endDateForLunch.toString(),
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                            if (slotData!.noOfGuest.toString().trim().isEmpty)
-                              const SizedBox()
-                            else
-                              Column(
-                                children: [
-                                  Text(
-                                    "Total Guest : ${slotData!.noOfGuest}",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-                                  ),
-                                ],
-                              )
-                          ],
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.remove_red_eye_outlined)
-                      ],
-                    ),
-                  ))
+            // if (slotDataList!.isNotEmpty)
+            //  ListView.builder(
+            //    itemCount: slotDataList!.length,
+            //    shrinkWrap: true,
+            //    itemBuilder: (BuildContext context, int index) {
+            //    return  Padding(
+            //        padding: const EdgeInsets.all(8.0),
+            //        child: Container(
+            //          padding: const EdgeInsets.all(14),
+            //          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            //          child: Row(
+            //            children: [
+            //              Column(
+            //                mainAxisAlignment: MainAxisAlignment.start,
+            //                crossAxisAlignment: CrossAxisAlignment.start,
+            //                children: [
+            //                  Text(
+            //                    slotDataList![index].startDateForLunch.toString() + slotDataList![index].endDateForLunch.toString(),
+            //                    style: GoogleFonts.poppins(
+            //                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
+            //                  ),
+            //                  Text(
+            //                    "Total Guest : ${slotDataList![index].endDateForLunch}",
+            //                    style: GoogleFonts.poppins(
+            //                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
+            //                  ),
+            //                ],
+            //              ),
+            //              const Spacer(),
+            //              const Icon(Icons.remove_red_eye_outlined)
+            //            ],
+            //          ),
+            //        ));
+            //  },)
             // StreamBuilder<List<CreateSlotData>>(
             //     stream: getSlots(),
             //     builder: (context, snapshot) {

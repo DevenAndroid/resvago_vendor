@@ -13,8 +13,8 @@ class CreateSlotData {
   dynamic dinnerDuration;
   dynamic noOfGuest;
   dynamic setOffer ;
-  List<dynamic> slot;
-  List<dynamic> dinnerSlot;
+  dynamic slot;
+  dynamic dinnerSlot;
   dynamic time;
 
   CreateSlotData({
@@ -73,8 +73,8 @@ class CreateSlotData {
       dinnerDuration: map["dinnerDuration"],
       noOfGuest: map["noOfGuest"],
       setOffer: map["setOffer"],
-      slot: map["slot"] ?? [],
-      dinnerSlot: map["dinnerSlot"] ?? [],
+      slot: map["slot"],
+      dinnerSlot: map["dinnerSlot"],
       time: map["time"],
     );
   }
