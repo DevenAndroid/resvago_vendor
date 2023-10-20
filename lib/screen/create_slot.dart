@@ -68,9 +68,9 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
   @override
   void initState() {
     super.initState();
-    slotController.startTime.clear();
-    slotController.endTime.clear();
-    slotController.serviceDuration.clear();
+    // slotController.startTime.clear();
+    // slotController.endTime.clear();
+    // slotController.serviceDuration.clear();
   }
 
   @override
@@ -412,9 +412,9 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
   @override
   void initState() {
     super.initState();
-    slotController.dinnerStartTime.clear();
-    slotController.dinnerEndTime.clear();
-    slotController.dinnerServiceDuration.clear();
+    // slotController.dinnerStartTime.clear();
+    // slotController.dinnerEndTime.clear();
+    // slotController.dinnerServiceDuration.clear();
   }
 
   @override
