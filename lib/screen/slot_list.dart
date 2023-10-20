@@ -39,17 +39,17 @@ class _SlotListScreenState extends State<SlotListScreen> {
   // }
   var selectedItem = '';
   CreateSlotData? slotData;
-  getSlots() {
-    return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
-    collection("menus").orderBy('time', descending: isDescendingOrder).get().then((value) {
-      for (var element in value.docs) {
-        var gg = element.data();
-        slotDataList ??= [];
-        slotDataList!.add(CreateSlotData.fromMap(gg,element.id));
-      }
-      setState(() {});
-    });
-  }
+  // getSlots() {
+  //   return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
+  //   collection("menus").orderBy('time', descending: isDescendingOrder).get().then((value) {
+  //     for (var element in value.docs) {
+  //       var gg = element.data();
+  //       slotDataList ??= [];
+  //       slotDataList!.add(CreateSlotData.fromMap(gg,element.id));
+  //     }
+  //     setState(() {});
+  //   });
+  // }
 
 
 
@@ -58,7 +58,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSlots();
+    //getSlots();
     // getData();
   }
 

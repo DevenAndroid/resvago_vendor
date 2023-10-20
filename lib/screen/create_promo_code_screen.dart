@@ -6,6 +6,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_vendor/screen/Promo_code_list.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
@@ -14,7 +15,10 @@ import '../helper.dart';
 import '../widget/common_text_field.dart';
 
 class CreatePromoCodeScreen extends StatefulWidget {
-  const CreatePromoCodeScreen({super.key});
+  final bool isEditMode;
+
+  const CreatePromoCodeScreen({super.key,
+    required this.isEditMode,});
 
   @override
   State<CreatePromoCodeScreen> createState() => _CreatePromoCodeScreenState();
@@ -54,13 +58,13 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
     Overlay.of(context).insert(loader);
     await firebaseService
         .manageCouponCode(
-            promoCodeName: startDateController.text.trim(),
-            code: promocodenameController.text.trim(),
-            discount: codeController.text.trim(),
-            startDate: discountController.text.trim(),
+            promoCodeName: promocodenameController.text.trim(),
+            code: codeController.text.trim(),
+            discount: discountController.text.trim(),
+            startDate: startDateController.text.trim(),
             endDate: endDateController.text.trim())
         .then((value) {
-      Get.back();
+      Get.to(const PromoCodeList());
       Helper.hideLoader(loader);
       Fluttertoast.showToast(msg: 'Code is created');
     });

@@ -12,6 +12,7 @@ import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
+import '../Promo_code_list.dart';
 
 class VendorDashboard extends StatefulWidget {
   const VendorDashboard({Key? key}) : super(key: key);
@@ -145,7 +146,27 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 1;
-                    Get.to(const CreatePromoCodeScreen());
+                    Get.to(const CreatePromoCodeScreen(isEditMode: false,));
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Coupon List',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    Get.to(const PromoCodeList());
                   });
                 },
               ),
