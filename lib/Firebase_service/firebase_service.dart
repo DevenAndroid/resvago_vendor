@@ -20,6 +20,7 @@ class FirebaseService {
     dynamic confirmPassword,
     dynamic image,
     dynamic userID,
+    dynamic aboutUs,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -35,6 +36,7 @@ class FirebaseService {
         "password": password,
         "confirmPassword": confirmPassword,
         "image": image,
+        "aboutUs": aboutUs,
         "userID": "+91${mobileNumber}",
       });
     } catch (e) {
@@ -46,7 +48,8 @@ class FirebaseService {
     dynamic promoCodeName,
     dynamic code,
     dynamic discount,
-    dynamic valetedDate,
+    dynamic startDate,
+    dynamic endDate,
     dynamic userID,
   }) async {
     try {
@@ -57,7 +60,8 @@ class FirebaseService {
         "promoCodeName": promoCodeName,
         "code": code,
         "discount": discount,
-        "valetedDate": valetedDate,
+        "startDate": startDate,
+        "endDate": endDate,
       });
     } catch (e) {
       throw Exception(e);

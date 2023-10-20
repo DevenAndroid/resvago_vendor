@@ -1,5 +1,6 @@
 class ProfileData {
-  String? image;
+  List<String>? restaurantImage;
+  List<String>? menuImage;
   String? password;
   String? address;
   String? restaurantName;
@@ -9,10 +10,15 @@ class ProfileData {
   String? category;
   String? userID;
   String? email;
+  String? aboutUs;
+  String? image;
 
   ProfileData(
-      {this.image,
+      {
+        this.restaurantImage,
+        this.menuImage,
         this.password,
+        this.image,
         this.address,
         this.restaurantName,
         this.docid,
@@ -20,11 +26,14 @@ class ProfileData {
         this.confirmPassword,
         this.category,
         this.userID,
-        this.email});
+        this.email,
+        this.aboutUs});
 
   ProfileData.fromJson(Map<String, dynamic> json) {
-    image = json['image'];
+    restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
+    menuImage = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
+    image = json['image'];
     address = json['address'];
     restaurantName = json['restaurantName'];
     docid = json['docid'];
@@ -33,11 +42,14 @@ class ProfileData {
     category = json['category'];
     userID = json['userID'];
     email = json['email'];
+    aboutUs = json['aboutUs'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['image'] = this.image;
+    data['restaurantImage'] = this.restaurantImage;
+    data['menuImage'] = this.menuImage;
     data['password'] = this.password;
     data['address'] = this.address;
     data['restaurantName'] = this.restaurantName;
@@ -47,6 +59,7 @@ class ProfileData {
     data['category'] = this.category;
     data['userID'] = this.userID;
     data['email'] = this.email;
+    data['aboutUs'] = this.aboutUs;
     return data;
   }
 }
