@@ -3,6 +3,7 @@ import 'package:resvago_vendor/screen/Menu/add_menu.dart';
 import 'package:resvago_vendor/screen/Menu/menu_screen.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/oder_list_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/dashboard_screen.dart';
+import '../Setting screen.dart';
 import '../screen/Promo_code_list.dart';
 import '../screen/add_booking_slot_screen.dart';
 import '../screen/bank_details_screen.dart';
@@ -41,6 +42,7 @@ class MyRouters {
   static var deliveryOderDetailsScreen = "/deliveryOderDetailsScreen";
   static var reviewScreen = "/reviewScreen";
   static var slotViewScreen = "/slotViewScreen";
+  static var settingScreen = "/settingScreen";
   // static var addMenuScreen = "/addMenuScreen";
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -61,7 +63,8 @@ class MyRouters {
     GetPage(name: '/slotListScreen', page: () => const SlotListScreen()),
     GetPage(name: '/deliveryOderDetailsScreen', page: () => const DeliveryOderDetailsScreen()),
     GetPage(name: '/reviewScreen', page: () => const ReviewScreen()),
-    GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),
+    //GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),
+    GetPage(name: '/settingScreen', page: () => const SettingScreen()),
     // GetPage(name: '/addMenuScreen', page: () => const AddMenuScreen()),
   ];
 }

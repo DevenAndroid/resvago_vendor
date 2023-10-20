@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
+import 'package:resvago_vendor/screen/slotViwe%20screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-
+import '../controllers/slot_controller.dart';
+import '../routers/routers.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 import 'add_booking_slot_screen.dart';
@@ -20,6 +22,7 @@ class SlotListScreen extends StatefulWidget {
 }
 
 class _SlotListScreenState extends State<SlotListScreen> {
+  final slotController = Get.put(SlotController());
   // Stream<List<CreateSlotData>> getSlots() {
   //   return FirebaseFirestore.instance
   //       .collection('vendor_slot')
@@ -40,26 +43,42 @@ class _SlotListScreenState extends State<SlotListScreen> {
   var selectedItem = '';
   CreateSlotData? slotData;
   // getSlots() {
-  //   return FirebaseFirestore.instance.collection("vendor_menu").doc(FirebaseAuth.instance.currentUser!.phoneNumber).
-  //   collection("menus").orderBy('time', descending: isDescendingOrder).get().then((value) {
+  //   return FirebaseFirestore.instance
+  //       .collection("vendor_menu")
+  //       .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+  //       .collection("menus")
+  //       .orderBy('time', descending: isDescendingOrder)
+  //       .get()
+  //       .then((value) {
   //     for (var element in value.docs) {
   //       var gg = element.data();
   //       slotDataList ??= [];
-  //       slotDataList!.add(CreateSlotData.fromMap(gg,element.id));
+  //       slotDataList!.add(CreateSlotData.fromMap(gg, element.id));
   //     }
   //     setState(() {});
   //   });
   // }
 
+  bool isDescendingOrder = true;
+  Stream<List<CreateSlotData>> getSlots() {
 
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //getSlots();
-    // getData();
+    return FirebaseFirestore.instance
+        .collection("vendor_slot")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection("slot")
+        .snapshots()
+        .map((querySnapshot) {
+      List<CreateSlotData> slotDataList = [];
+      for (var element in querySnapshot.docs) {
+        var gg = element.data();
+        slotDataList.add(CreateSlotData.fromMap(gg, element.id));
+        // log(slotDataList![0].startDateForLunch.toString());
+        // log(slotDataList![0].endDateForLunch.toString());
+        // log(slotDataList![0].startTimeForDinner.toString());
+        // log(slotDataList![0].endTimeForDinner.toString());
+      }
+      return slotDataList;
+    });
   }
 
   @override
@@ -67,218 +86,216 @@ class _SlotListScreenState extends State<SlotListScreen> {
     return Scaffold(
       appBar: backAppBar(title: "Slot List", context: context),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.to(AddBookingSlot(slotId: DateTime.now().millisecondsSinceEpoch.toString()));
-                  },
-                  child: Container(
-                    height: AddSize.size20 * 2.2,
-                    width: AddSize.size20 * 2.2,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                        child: Icon(
-                      Icons.add,
-                      color: AppTheme.backgroundcolor,
-                      size: AddSize.size25,
-                    )),
-                  ),
+          child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () {
+                slotController.startDate.text = "";
+                slotController.endDate.text = "";
+                slotController.startTime.text = "";
+                slotController.endTime.text = "";
+                slotController.dinnerStartDate.text = "";
+                slotController.dinnerEndDate.text = "";
+                slotController.dinnerStartTime.text = "";
+                slotController.dinnerEndTime.text = "";
+                slotController.serviceDuration.text = "";
+                slotController.dinnerServiceDuration.text = "";
+                slotController.noOfGuest.text = "";
+                slotController.setOffer.text = "";
+                slotController.dateType.value = "date";
+                slotController.slots.clear();
+                slotController.dinnerSlots.clear();
+                Get.to(AddBookingSlot(slotId: DateTime.now().millisecondsSinceEpoch.toString()));
+              },
+              child: Container(
+                height: AddSize.size20 * 2.2,
+                width: AddSize.size20 * 2.2,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Center(
+                    child: Icon(
+                  Icons.add,
+                  color: AppTheme.backgroundcolor,
+                  size: AddSize.size25,
+                )),
               ),
             ),
-            if (slotData != null)
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Start Date",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-                            ),
-                            Text(
-                              slotData!.startDateForLunch.toString(),
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            if (slotData!.endDateForLunch.toString().trim().isEmpty)
-                              const SizedBox()
-                            else
-                              Column(
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+            StreamBuilder(
+              stream: getSlots(),
+              builder: (BuildContext context, AsyncSnapshot<List<CreateSlotData>> snapshot) {
+                if(snapshot.hasData && snapshot.data != null) {
+                  List<CreateSlotData> slotDataList = snapshot.data!;
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: slotDataList.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "End Date",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
+                                  Image.asset(
+                                    AppAssets.calenderImg,
+                                    height: 50,
+                                    fit: BoxFit.cover,
                                   ),
-                                  Text(
-                                    slotData!.endDateForLunch.toString(),
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
+                                  const SizedBox(
+                                    width: 10,
                                   ),
-                                ],
-                              ),
-                            if (slotData!.noOfGuest.toString().trim().isEmpty)
-                              const SizedBox()
-                            else
-                              Column(
-                                children: [
-                                  Text(
-                                    "Total Guest : ${slotData!.noOfGuest}",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${slotDataList[index].startDateForLunch}  To  ${slotDataList[index]
+                                            .endDateForLunch}",
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 13),
+                                      ),
+                                      Text(
+                                        "Total Guest : ${slotDataList[index].noOfGuest.toString()}",
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 13),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              )
-                          ],
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.remove_red_eye_outlined)
-                      ],
-                    ),
-                  )),
+                                  // const Spacer(),
+                                  PopupMenuButton(
+                                      color: Colors.white,
+                                      iconSize: 20,
+                                      icon: const Icon(
+                                        Icons.more_vert,
+                                        color: Colors.grey,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      onSelected: (value) {
+                                        setState(() {
+                                          selectedItem = value.toString();
+                                        });
 
-    ListView.builder(
-                   shrinkWrap: true,
-                   scrollDirection: Axis.vertical,
-                   physics: const NeverScrollableScrollPhysics(),
-                   itemCount:10,
-                   itemBuilder: (context, index) {
-                     return Padding(
-                         padding: const EdgeInsets.all(8.0),
-                         child: Container(
-                           padding: const EdgeInsets.all(14),
-                           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-                           child: Row(
-                             mainAxisAlignment: MainAxisAlignment.start,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: [
-                               Image.asset(AppAssets.calenderImg,height: 50,),
-                               const SizedBox(width: 20,),
-                               Column(
-                                 mainAxisAlignment: MainAxisAlignment.start,
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                                Text("10 Oct 2023 To 12 Oct 2023",
-                                 style: GoogleFonts.poppins(
-                                     color: const Color(0xFF1A2E33), fontWeight: FontWeight.w400, fontSize: 14),
-                               ),
-                                   Text("Total Guest : 25",
-                                     style: GoogleFonts.poppins(
-                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-                                   ),
+                                        Navigator.pushNamed(context, value.toString());
+                                      },
+                                      itemBuilder: (ac) {
+                                        return [
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              slotController.slots.clear();
+                                              slotController.dinnerSlots.clear();
+                                              Get.to(() =>
+                                                  AddBookingSlot(
+                                                      slotId: slotDataList[index].slotId,
+                                                      slotDataList: slotDataList[index]));
+                                            },
+                                            // value: '/Edit',
+                                            child: const Text("Edit"),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              Get.to(() =>
+                                                  SlotViewScreen(
+                                                      slotId: slotDataList[index].slotId,
+                                                      slotDataList: slotDataList[index]));
+                                            },
+                                            // value: '/slotViewScreen',
+                                            child: const Text("View"),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              FirebaseFirestore.instance
+                                                  .collection('vendor_slot')
+                                                  .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                                  .collection("slot")
+                                                  .doc(slotDataList[index].slotId.toString())
+                                                  .delete();
+                                            },
+                                            // value: '/deactivate',
+                                            child: const Text("Delete"),
+                                          )
+                                        ];
+                                      })
+                                ]));
+                      });
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+                },
+            )
+        ]),
+      )
+          // StreamBuilder<List<CreateSlotData>>(
+          //     stream: getSlots(),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return LoadingAnimationWidget.fourRotatingDots(
+          //           color: AppTheme.primaryColor,
+          //           size: 40,
+          //         );
+          //       }
+          //       if (snapshot.hasData) {
+          //         List<CreateSlotData> slot = snapshot.data ?? [];
+          //         log("AAAAA----$slot");
+          //         return slot.isNotEmpty
+          //             ? ListView.builder(
+          //                 shrinkWrap: true,
+          //                 scrollDirection: Axis.vertical,
+          //                 physics: const NeverScrollableScrollPhysics(),
+          //                 itemCount: slot.length,
+          //                 itemBuilder: (context, index) {
+          //                   var slotItem = slot[index];
+          //                   return Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Container(
+          //                         padding: const EdgeInsets.all(14),
+          //                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          //                         child: Row(
+          //                           children: [
+          //                             Column(
+          //                               mainAxisAlignment: MainAxisAlignment.start,
+          //                               crossAxisAlignment: CrossAxisAlignment.start,
+          //                               children: [
+          //                                 Text(
+          //                                   "Start Date",
+          //                                   style: GoogleFonts.poppins(
+          //                                       color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
+          //                                 ),
+          //                                 Text(
+          //                                   "10 Oct 2023",
+          //                                   style: GoogleFonts.poppins(
+          //                                       color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
+          //                                 ),
+          //                               ],
+          //                             ),
+          //                             const Spacer(),
+          //                             const Icon(Icons.remove_red_eye_outlined)
+          //                           ],
+          //                         ),
+          //                       ));
+          //                 })
+          //             : const Center(
+          //                 child: Text("No Slot Created"),
+          //               );
+          //       }
+          //       return const SizedBox.shrink();
+          //     })
 
-                                 ],
-                               ),
-                               const Spacer(),
-                               PopupMenuButton(color: Colors.white,iconSize: 20,icon:const Icon(Icons.more_vert,color: Colors.grey,),padding: EdgeInsets.zero,onSelected: (value) {
-                                 setState(() {
-                                   selectedItem = value.toString();
-                                 });
-
-                                 Navigator.pushNamed(context, value.toString());
-                               }, itemBuilder: ( ac) {
-                                 return  [
-                                   PopupMenuItem(
-                                     onTap: (){},
-                                     value: '/Edit',
-                                     child: const Text("Edit"),
-                                   ),
-                                   PopupMenuItem(
-                                     onTap: (){
-                                       // Get.toNamed(MyRouters.slotViewScreen);
-                                     },
-                                     value: '/slotViewScreen',
-                                     child: const Text("View"),
-                                   ),
-                                   PopupMenuItem(
-                                     onTap: (){},
-                                     value: '/deactivate',
-                                     child: const Text("deactivate"),
-                                   )
-                                 ];
-                               })
-                             ]
-    )));})])
-            // StreamBuilder<List<CreateSlotData>>(
-            //     stream: getSlots(),
-            //     builder: (context, snapshot) {
-            //       if (snapshot.connectionState == ConnectionState.waiting) {
-            //         return LoadingAnimationWidget.fourRotatingDots(
-            //           color: AppTheme.primaryColor,
-            //           size: 40,
-            //         );
-            //       }
-            //       if (snapshot.hasData) {
-            //         List<CreateSlotData> slot = snapshot.data ?? [];
-            //         log("AAAAA----$slot");
-            //         return slot.isNotEmpty
-            //             ? ListView.builder(
-            //                 shrinkWrap: true,
-            //                 scrollDirection: Axis.vertical,
-            //                 physics: const NeverScrollableScrollPhysics(),
-            //                 itemCount: slot.length,
-            //                 itemBuilder: (context, index) {
-            //                   var slotItem = slot[index];
-            //                   return Padding(
-            //                       padding: const EdgeInsets.all(8.0),
-            //                       child: Container(
-            //                         padding: const EdgeInsets.all(14),
-            //                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            //                         child: Row(
-            //                           children: [
-            //                             Column(
-            //                               mainAxisAlignment: MainAxisAlignment.start,
-            //                               crossAxisAlignment: CrossAxisAlignment.start,
-            //                               children: [
-            //                                 Text(
-            //                                   "Start Date",
-            //                                   style: GoogleFonts.poppins(
-            //                                       color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 14),
-            //                                 ),
-            //                                 Text(
-            //                                   "10 Oct 2023",
-            //                                   style: GoogleFonts.poppins(
-            //                                       color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 15),
-            //                                 ),
-            //                               ],
-            //                             ),
-            //                             const Spacer(),
-            //                             const Icon(Icons.remove_red_eye_outlined)
-            //                           ],
-            //                         ),
-            //                       ));
-            //                 })
-            //             : const Center(
-            //                 child: Text("No Slot Created"),
-            //               );
-            //       }
-            //       return const SizedBox.shrink();
-            //     })
-
-
-      ),
+          ),
     );
   }
 }

@@ -68,9 +68,9 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
   @override
   void initState() {
     super.initState();
-    slotController.startTime.clear();
-    slotController.endTime.clear();
-    slotController.serviceDuration.clear();
+    // slotController.startTime.clear();
+    // slotController.endTime.clear();
+    // slotController.serviceDuration.clear();
   }
 
   @override
@@ -412,9 +412,9 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
   @override
   void initState() {
     super.initState();
-    slotController.dinnerStartTime.clear();
-    slotController.dinnerEndTime.clear();
-    slotController.dinnerServiceDuration.clear();
+    // slotController.dinnerStartTime.clear();
+    // slotController.dinnerEndTime.clear();
+    // slotController.dinnerServiceDuration.clear();
   }
 
   @override
@@ -768,13 +768,13 @@ class _SingleSlotUIState extends State<SingleSlotUI> {
               child: Text("${timeFormat.format(slotController.slots.keys.toList()[widget.index].keys.first)} -- "
                   "${timeFormat.format(slotController.slots.keys.toList()[widget.index].values.first)}"),
             ),
-            if (slotController.slots.keys.toList()[widget.index].values.first.millisecondsSinceEpoch >
-                widget.endDateTime.millisecondsSinceEpoch)
-              Text(
-                " Exceeded",
-                style:
-                    GoogleFonts.poppins(color: AppTheme.greycolor, fontWeight: FontWeight.w500, height: 1.8, fontSize: 12),
-              )
+            // if (slotController.slots.keys.toList()[widget.index].values.first.millisecondsSinceEpoch >
+            //     widget.endDateTime.millisecondsSinceEpoch)
+            //   Text(
+            //     " Exceeded",
+            //     style:
+            //         GoogleFonts.poppins(color: AppTheme.greycolor, fontWeight: FontWeight.w500, height: 1.8, fontSize: 12),
+            //   )
           ],
         ));
   }
@@ -812,13 +812,13 @@ class _DinnerSingleSlotUIState extends State<DinnerSingleSlotUI> {
               child: Text("${timeFormat.format(slotController.dinnerSlots.keys.toList()[widget.index].keys.first)} -- "
                   "${timeFormat.format(slotController.dinnerSlots.keys.toList()[widget.index].values.first)}"),
             ),
-            if (slotController.dinnerSlots.keys.toList()[widget.index].values.first.millisecondsSinceEpoch >
-                widget.endDateTime.millisecondsSinceEpoch)
-              Text(
-                " Exceeded",
-                style:
-                GoogleFonts.poppins(color: AppTheme.greycolor, fontWeight: FontWeight.w500, height: 1.8, fontSize: 12),
-              )
+            // if (slotController.dinnerSlots.keys.toList()[widget.index].values.first.millisecondsSinceEpoch >
+            //     widget.endDateTime.millisecondsSinceEpoch)
+            //   Text(
+            //     " Exceeded",
+            //     style:
+            //     GoogleFonts.poppins(color: AppTheme.greycolor, fontWeight: FontWeight.w500, height: 1.8, fontSize: 12),
+            //   )
           ],
         ));
   }

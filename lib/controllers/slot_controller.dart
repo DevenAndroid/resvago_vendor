@@ -7,10 +7,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../helper.dart';
+import '../model/createslot_model.dart';
 import '../model/slot_model.dart';
 
 class SlotController extends GetxController {
-
+  List<CreateSlotData>? slotDataList = [];
   List<String> productDuration = [];
   RxInt refreshInt = 0.obs;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,13 +27,13 @@ class SlotController extends GetxController {
   final DateFormat timeFormatWithoutAMPM = DateFormat("hh:mm");
   List<ServiceTimeSloat> serviceTimeSloat = [];
   bool resetSlots = false;
-  resetValues(){
-    startTime.text = "";
-    endTime.text = "";
-    serviceDuration.text = "";
-    startDate.text = "";
-    endDate.text = "";
-  }
+  // resetValues(){
+  //   startTime.text = "";
+  //   endTime.text = "";
+  //   serviceDuration.text = "";
+  //   startDate.text = "";
+  //   endDate.text = "";
+  // }
 
   List<String> timeslots = [];
   getLunchTimeSlot(){
@@ -66,13 +67,13 @@ class SlotController extends GetxController {
   final DateFormat dinnerTimeFormatWithoutAMPM = DateFormat("hh:mm");
   List<ServiceTimeSloat> dinnerServiceTimeSloat = [];
   bool dinnerResetSlots = false;
-  dinnerResetValues(){
-    dinnerStartTime.text = "";
-    dinnerEndTime.text = "";
-    dinnerServiceDuration.text = "";
-    dinnerStartDate.text = "";
-    dinnerEndDate.text = "";
-  }
+  // dinnerResetValues(){
+  //   dinnerStartTime.text = "";
+  //   dinnerEndTime.text = "";
+  //   dinnerServiceDuration.text = "";
+  //   dinnerStartDate.text = "";
+  //   dinnerEndDate.text = "";
+  // }
   String convertToTime(String gg) {
     return "${gg.split(":")[0]}:${gg.split(":")[1]}";
   }
@@ -96,6 +97,7 @@ class SlotController extends GetxController {
     }
   }
 
+
   @override
   void onInit() {
     super.onInit();
@@ -104,5 +106,6 @@ class SlotController extends GetxController {
     for(var i = 0; i < 100; i++){
       productDuration.add((i+1).toString());
     }
+
   }
 }
