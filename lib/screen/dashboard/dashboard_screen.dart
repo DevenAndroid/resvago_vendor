@@ -171,7 +171,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   setState(() {
                     Get.to(const PromoCodeList());
                     currentDrawer = 2;
-                    Get.to(const CreatePromoCodeScreen());
+                    // Get.to(const CreatePromoCodeScreen());
                   });
                 },
               ),

@@ -6,6 +6,7 @@ import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/bottomnav_bar.dart';
 import 'package:resvago_vendor/screen/dashboard/dashboard_screen.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
+import 'package:resvago_vendor/screen/onboarding_screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'Firebase_service/firebase_service.dart';
 import 'model/signup_model.dart';
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => OnBoardingScreen()),
       );
     }
   }
@@ -50,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var width = MediaQuery.of(context).size.width;
     return  Scaffold(
       backgroundColor: Colors.transparent,
-      body: Image(image: const AssetImage(AppAssets.Resvago),width: double.maxFinite,height: height,),
+      body: Image(image: const AssetImage(AppAssets.splash),width: double.maxFinite,height: height,),
     );
   }
 }
