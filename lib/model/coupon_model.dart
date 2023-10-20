@@ -2,14 +2,16 @@ class CouponData {
   final dynamic promoCodeName;
   final dynamic code;
   final dynamic discount;
-  final dynamic valetedDate;
+  final dynamic startDate;
+  final dynamic endDate;
   final dynamic? docid;
 
   CouponData(
       {required this.promoCodeName,
       this.code,
       this.discount,
-      this.valetedDate,
+      this.startDate,
+      this.endDate,
       this.docid});
 
   Map<String, dynamic> toMap() {
@@ -17,7 +19,8 @@ class CouponData {
       'promoCodeName': promoCodeName,
       'code': code,
       'discount': discount,
-      'valetedDate': valetedDate,
+      'startDate': startDate,
+      'endDate': endDate,
       'docid': docid,
     };
   }
@@ -27,7 +30,8 @@ class CouponData {
       promoCodeName: map['promoCodeName'],
       code: map['code'],
       discount: map['discount'],
-      valetedDate: map['valetedDate'],
+      startDate: map['startDate'],
+      endDate: map['endDate'],
       docid: map['docid'],
     );
   }

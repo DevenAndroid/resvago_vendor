@@ -13,8 +13,9 @@ class CreateSlotData {
   dynamic dinnerDuration;
   dynamic noOfGuest;
   dynamic setOffer ;
-  List<dynamic> slot;
-  List<dynamic> dinnerSlot;
+  dynamic slot;
+  dynamic dinnerSlot;
+  dynamic dateType;
   dynamic time;
 
   CreateSlotData({
@@ -33,6 +34,7 @@ class CreateSlotData {
     this.dinnerDuration,
     this.noOfGuest,
     this.setOffer,
+    this.dateType,
     required this.slot,
     required this.dinnerSlot,
   });
@@ -53,7 +55,8 @@ class CreateSlotData {
       "noOfGuest": noOfGuest,
       "setOffer": setOffer,
       "slot": slot,
-      "dinnerSlot": dinnerSlot
+      "dinnerSlot": dinnerSlot,
+      "dateType": dateType
     };
   }
 
@@ -73,8 +76,9 @@ class CreateSlotData {
       dinnerDuration: map["dinnerDuration"],
       noOfGuest: map["noOfGuest"],
       setOffer: map["setOffer"],
-      slot: map["slot"] ?? [],
-      dinnerSlot: map["dinnerSlot"] ?? [],
+      slot: map["slot"],
+      dinnerSlot: map["dinnerSlot"],
+      dateType: map["dateType"],
       time: map["time"],
     );
   }

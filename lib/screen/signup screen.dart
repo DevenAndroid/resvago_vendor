@@ -6,9 +6,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,7 +47,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Rx<File> image = File("").obs;
   List<CategoryData>? categoryList;
   String? categoryValue;
+  String? _address = "";
+  RxBool showValidation1 = false.obs;
 
+  bool checkValidation(bool bool1, bool2) {
+    if (bool1 == true && bool2 == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   TextEditingController restaurantNameController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -52,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController addressController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
 
   File categoryFile = File("");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -61,14 +74,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
         .where('email', isEqualTo: emailController.text)
-        .where('mobileNumber', isEqualTo: mobileNumberController.text)
         .get();
 
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already exits');
-    } else {
-      addUserToFirestore();
+      return;
     }
+    final QuerySnapshot phoneResult = await FirebaseFirestore.instance
+        .collection('vendor_users')
+        .where('mobileNumber', isEqualTo: mobileNumberController.text)
+        .get();
+
+    if (phoneResult.docs.isNotEmpty) {
+      Fluttertoast.showToast(msg: 'Mobile Number already exits');
+      return;
+    }
+      addUserToFirestore();
   }
 
   Future<void> addUserToFirestore() async {
@@ -85,10 +106,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     await firebaseService
         .manageRegisterUsers(
       restaurantName: restaurantNameController.text.trim(),
-      category: categoryController.text.trim(),
+      category: categoryValue,
       email: emailController.text.trim(),
       mobileNumber: mobileNumberController.text.trim(),
-      address: addressController.text.trim(),
+      address: _address,
       password: passwordController.text.trim(),
       confirmPassword: confirmPasswordController.text.trim(),
       image: imageUrl,
@@ -99,7 +120,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     Get.toNamed(MyRouters.thankYouScreen);
   }
+  bool isDescendingOrder = true;
 
+  getVendorCategories() {
+    FirebaseFirestore.instance
+        .collection("resturent")
+        .orderBy('time', descending: isDescendingOrder).get().then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        categoryList ??= [];
+        categoryList!.add(CategoryData.fromMap(gg));
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getVendorCategories();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -308,102 +348,89 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      RegisterTextFieldWidget(
-                        controller: addressController,
-                        // length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Address '),
-                        keyboardType: TextInputType.streetAddress,
-                        // textInputAction: TextInputAction.next,
-                        hint: 'Street, Zip Code, City',
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "Password",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RegisterTextFieldWidget(
-                        suffix: GestureDetector(
-                            onTap: () {
+                      InkWell(
+                          onTap: () async {
+                            var place = await PlacesAutocomplete.show(
+                                hint: "Location",
+                                context: context,
+                                apiKey: googleApikey,
+                                mode: Mode.overlay,
+                                types: [],
+                                strictbounds: false,
+                                onError: (err) {
+                                  log("error.....   ${err.errorMessage}");
+                                });
+                            if (place != null) {
                               setState(() {
-                                obscureText4 = !obscureText4;
+                                _address = (place.description ?? "Location")
+                                    .toString();
                               });
-                            },
-                            child: obscureText4
-                                ? const Icon(
-                                    Icons.visibility_off,
-                                    color: Color(0xFF8487A1),
-                                  )
-                                : const Icon(Icons.visibility,
-                                    color: Color(0xFF8487A1))),
-                        controller: passwordController,
-                        obscureText: obscureText4,
-                        // length: 10,
-                        validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your password'),
-                          MinLengthValidator(8,
-                              errorText:
-                                  'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                          PatternValidator(
-                              r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                              errorText:
-                                  "Password must be at least with 1 special character & 1 numerical"),
-                        ]),
-                        hint: '************',
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "Confirm Password",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RegisterTextFieldWidget(
-                        suffix: GestureDetector(
-                            onTap: () {
+                              final plist = GoogleMapsPlaces(
+                                apiKey: googleApikey,
+                                apiHeaders: await const GoogleApiHeaders()
+                                    .getHeaders(),
+                              );
+                              print(plist);
+                              String placeid = place.placeId ?? "0";
+                              final detail =
+                              await plist.getDetailsByPlaceId(placeid);
+                              final geometry = detail.result.geometry!;
+                              final lat = geometry.location.lat;
+                              final lang = geometry.location.lng;
                               setState(() {
-                                obscureText3 = !obscureText3;
+                                _address = (place.description ?? "Location")
+                                    .toString();
+                                print("Address iss...$_address");
                               });
-                            },
-                            child: obscureText3
-                                ? const Icon(
-                                    Icons.visibility_off,
-                                    color: Color(0xFF8487A1),
-                                  )
-                                : const Icon(Icons.visibility,
-                                    color: Color(0xFF8487A1))),
-                        controller: confirmPasswordController,
-                        // length: 10,
-                        obscureText: obscureText3,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter your Confirm password';
-                          }
-                          if (value.toString() == passwordController.text) {
-                            return null;
-                          }
-                          return "Confirm password not matching with password";
-                        },
-                        hint: '************',
-                      ),
+                            }
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 55,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: !checkValidation(
+                                              showValidation1.value,
+                                              _address == "")
+                                              ? Colors.grey.shade300
+                                              : Colors.red),
+                                      borderRadius:
+                                      BorderRadius.circular(5.0),
+                                      color: Colors.white),
+                                  // width: MediaQuery.of(context).size.width - 40,
+                                  child: ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(
+                                      _address ?? "Location".toString(),
+                                      style: TextStyle(
+                                          fontSize: AddSize.font14),
+                                    ),
+                                    trailing: const Icon(Icons.search),
+                                    dense: true,
+                                  )),
+                              checkValidation(
+                                  showValidation1.value, _address == "")
+                                  ? Padding(
+                                padding: EdgeInsets.only(
+                                    top: AddSize.size5),
+                                child: Text(
+                                  "      Location is required",
+                                  style: TextStyle(
+                                      color: Colors.red.shade700,
+                                      fontSize: AddSize.font12),
+
+                                ),
+                              )
+                                  : const SizedBox()
+                            ],
+                          )),
+
                       const SizedBox(
                         height: 20,
                       ),
+
                       DottedBorder(
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(20),
