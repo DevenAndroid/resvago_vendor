@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -170,7 +171,7 @@ class FirebaseService {
     dynamic endTimeForDinner,
     dynamic noOfGuest,
     dynamic setOffer,
-    dynamic dateType,
+    required RxString dateType,
     // dynamic slot,
     // dynamic dinnerSlot,
     dynamic time,
@@ -196,7 +197,7 @@ class FirebaseService {
         "dinnerDuration": dinnerDuration,
         "noOfGuest": noOfGuest,
         "setOffer": setOffer,
-        "dateType": dateType,
+        "dateType": dateType.value,
         // "slot": slot,
         // "dinnerSlot": dinnerSlot,
         "time": time,

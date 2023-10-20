@@ -56,7 +56,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
               vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
               noOfGuest: slotController.noOfGuest.text,
               setOffer: slotController.setOffer.text,
-              dateType:slotController.dateType)
+              dateType: slotController.dateType)
           .then((value) {
         Get.back();
         Helper.hideLoader(loader);
@@ -85,7 +85,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
     slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
     slotController.noOfGuest.text = slotDataList!.noOfGuest;
     slotController.setOffer.text = slotDataList!.setOffer;
-    slotController.dateType = slotDataList!.dateType;
+    slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
 
