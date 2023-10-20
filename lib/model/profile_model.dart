@@ -1,6 +1,6 @@
 class ProfileData {
   List<String>? restaurantImage;
-  List<String>? menuImage;
+  List<String>? menuGalleryImages;
   String? password;
   String? address;
   String? restaurantName;
@@ -16,7 +16,7 @@ class ProfileData {
   ProfileData(
       {
         this.restaurantImage,
-        this.menuImage,
+        this.menuGalleryImages,
         this.password,
         this.image,
         this.address,
@@ -31,7 +31,7 @@ class ProfileData {
 
   ProfileData.fromJson(Map<String, dynamic> json) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
-    menuImage = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
+    menuGalleryImages = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
     image = json['image'];
     address = json['address'];
@@ -49,7 +49,7 @@ class ProfileData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['image'] = this.image;
     data['restaurantImage'] = this.restaurantImage;
-    data['menuImage'] = this.menuImage;
+    data['menuImage'] = this.menuGalleryImages;
     data['password'] = this.password;
     data['address'] = this.address;
     data['restaurantName'] = this.restaurantName;

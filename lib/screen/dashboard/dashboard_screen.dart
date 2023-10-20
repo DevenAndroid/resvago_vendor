@@ -161,6 +161,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
+
                 title: Text('Coupon List',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -183,6 +184,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
+
                 title: Text('Promo Code List',
                     style: GoogleFonts.poppins(
                       fontSize: 15,

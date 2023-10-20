@@ -58,6 +58,7 @@ class FirebaseService {
       CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
       var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
 
+
       DocumentReference.set({
         "promoCodeName": promoCodeName,
         "code": code,

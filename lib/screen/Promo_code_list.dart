@@ -21,6 +21,8 @@ class _PromoCodeListState extends State<PromoCodeList> {
   var selectedItem = '';
   String searchQuery = '';
 
+
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -116,9 +118,16 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                         PopupMenuItem(
                                                           child: Text("Edit"),
                                                           onTap: () {
-                                                            Get.to(const CreatePromoCodeScreen(isEditMode: true,));
+                                                            Get.to( CreatePromoCodeScreen(
+                                                              isEditMode: true,
+                                                              promoCodeName: item.promoCodeName,
+                                                              code: item.code,
+                                                              discount: item.discount,
+                                                              startDate: item.startDate,
+                                                              endDate: item.endDate,
+                                                              documentId: item.docid,
+                                                            ));
                                                           },
-                                                          value: '/Edit',
                                                         ),
                                                         PopupMenuItem(
                                                           child: Text("deactivate"),
