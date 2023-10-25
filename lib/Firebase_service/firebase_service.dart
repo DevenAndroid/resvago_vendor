@@ -172,8 +172,8 @@ class FirebaseService {
     dynamic noOfGuest,
     dynamic setOffer,
     required RxString dateType,
-    // dynamic slot,
-    // dynamic dinnerSlot,
+    dynamic slot,
+    dynamic dinnerSlot,
     dynamic time,
   }) async {
     try {
@@ -198,8 +198,8 @@ class FirebaseService {
         "noOfGuest": noOfGuest,
         "setOffer": setOffer,
         "dateType": dateType.value,
-        // "slot": slot,
-        // "dinnerSlot": dinnerSlot,
+        "slot": slot,
+        "dinnerSlot": dinnerSlot,
         "time": time,
       });
       showToast("Slot Added Successfully");
