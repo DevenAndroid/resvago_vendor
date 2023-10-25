@@ -16,6 +16,7 @@ import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../Promo_code_list.dart';
+import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
   const VendorDashboard({Key? key}) : super(key: key);
@@ -258,6 +259,27 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   setState(() {
                     currentDrawer = 6;
                     Get.to(const TotalEarningScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Set Store Time',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 7;
+                    Get.to(const SetTimeScreen());
                   });
                 },
               ),

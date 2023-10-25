@@ -9,7 +9,6 @@ import 'package:resvago_vendor/screen/slotViwe%20screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../controllers/slot_controller.dart';
-import '../routers/routers.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 import 'add_booking_slot_screen.dart';
@@ -23,45 +22,9 @@ class SlotListScreen extends StatefulWidget {
 
 class _SlotListScreenState extends State<SlotListScreen> {
   final slotController = Get.put(SlotController());
-  // Stream<List<CreateSlotData>> getSlots() {
-  //   return FirebaseFirestore.instance
-  //       .collection('vendor_slot')
-  //       .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-  //       .snapshots()
-  //       .map((querySnapshot) {
-  //     List<CreateSlotData> menuList = [];
-  //     try {
-  //       var gg = querySnapshot.data();
-  //       menuList.add(CreateSlotData.fromMap(gg!, querySnapshot.id.toString()));
-  //       log(menuList.toString());
-  //     } catch (e) {
-  //       throw Exception(e.toString());
-  //     }
-  //     return menuList;
-  //   });
-  // }
   var selectedItem = '';
-  CreateSlotData? slotData;
-  // getSlots() {
-  //   return FirebaseFirestore.instance
-  //       .collection("vendor_menu")
-  //       .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-  //       .collection("menus")
-  //       .orderBy('time', descending: isDescendingOrder)
-  //       .get()
-  //       .then((value) {
-  //     for (var element in value.docs) {
-  //       var gg = element.data();
-  //       slotDataList ??= [];
-  //       slotDataList!.add(CreateSlotData.fromMap(gg, element.id));
-  //     }
-  //     setState(() {});
-  //   });
-  // }
-
   bool isDescendingOrder = true;
   Stream<List<CreateSlotData>> getSlots() {
-
     return FirebaseFirestore.instance
         .collection("vendor_slot")
         .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
@@ -72,10 +35,6 @@ class _SlotListScreenState extends State<SlotListScreen> {
       for (var element in querySnapshot.docs) {
         var gg = element.data();
         slotDataList.add(CreateSlotData.fromMap(gg, element.id));
-        // log(slotDataList![0].startDateForLunch.toString());
-        // log(slotDataList![0].endDateForLunch.toString());
-        // log(slotDataList![0].startTimeForDinner.toString());
-        // log(slotDataList![0].endTimeForDinner.toString());
       }
       return slotDataList;
     });
