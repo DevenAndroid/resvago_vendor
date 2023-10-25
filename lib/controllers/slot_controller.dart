@@ -106,6 +106,5 @@ class SlotController extends GetxController {
     for(var i = 0; i < 100; i++){
       productDuration.add((i+1).toString());
     }
-
   }
 }
