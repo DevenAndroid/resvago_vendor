@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -210,6 +212,38 @@ class FirebaseService {
       throw Exception(e);
     }
   }
+
+final controller = Get.put(AddProductController());
+
+  Future manageStoreTime({
+    dynamic storeTimeId,
+    dynamic vendorId,
+    dynamic weekDay,
+    dynamic status,
+    dynamic startTime,
+    dynamic startDateForLunch,
+    dynamic endTime,
+    dynamic time,
+  }) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('vendor_storeTime')
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+      .collection('store_time')
+      .doc(controller.documentId)
+          .update({
+        'weekdays': 'Tue',
+        'status': 'true',
+        'startTime': '09:00',
+        'endTime': '19:00',
+      });
+      showToast("Store Set Time Added Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+
 
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
