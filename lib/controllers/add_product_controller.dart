@@ -11,23 +11,23 @@ class AddProductController extends GetxController {
   bool showValidations = false;
 
 
-  String? documentId;
-  FirebaseService firebaseService = FirebaseService();
-  addSetStoreTime(mobileNumberController) async {
-    CollectionReference collection = FirebaseFirestore.instance
-        .collection('vendor_storeTime')
-        .doc("+91${mobileNumberController}")
-        .collection('store_time');
-    var DocumentReference = collection.doc();
-
-     documentId = DocumentReference.id;
-    for (int i = 0; i < 7; i++) {
-      collection.add({
-        'weekdays': 'Mon',
-        'status': 'true',
-        'startTime': '09:00',
-        'endTime': '19:00',
-      });
-    }
-  }
+  // String? documentId;
+  // FirebaseService firebaseService = FirebaseService();
+  // addSetStoreTime(mobileNumberController) async {
+  //   CollectionReference collection = FirebaseFirestore.instance
+  //       .collection('vendor_storeTime')
+  //       .doc("+91${mobileNumberController}")
+  //       .collection('store_time');
+  //   var DocumentReference = collection.doc();
+  //
+  //    documentId = DocumentReference.id;
+  //   for (int i = 0; i < 7; i++) {
+  //     collection.add({
+  //       'weekdays': 'Mon',
+  //       'status': 'true',
+  //       'startTime': '09:00',
+  //       'endTime': '19:00',
+  //     });
+  //   }
+  // }
 }

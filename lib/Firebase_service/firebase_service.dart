@@ -60,14 +60,13 @@ class FirebaseService {
       CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
       var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
 
-
       DocumentReference.set({
         "promoCodeName": promoCodeName,
         "code": code,
         "discount": discount,
         "startDate": startDate,
         "endDate": endDate,
-        "deactivate" : false,
+        "deactivate": false,
       });
     } catch (e) {
       throw Exception(e);
@@ -188,7 +187,7 @@ class FirebaseService {
           .collection("slot")
           .doc(slotId)
           .set({
-        "slotId":slotId,
+        "slotId": slotId,
         "vendorId": vendorId,
         "startDateForLunch": startDateForLunch,
         "endDateForLunch": endDateForLunch,
@@ -213,7 +212,7 @@ class FirebaseService {
     }
   }
 
-final controller = Get.put(AddProductController());
+// final controller = Get.put(AddProductController());
 
   Future manageStoreTime({
     dynamic storeTimeId,
@@ -226,25 +225,16 @@ final controller = Get.put(AddProductController());
     dynamic time,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('vendor_storeTime')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-      .collection('store_time')
-      .doc(controller.documentId)
-          .update({
-        'weekdays': 'Tue',
-        'status': 'true',
-        'startTime': '09:00',
-        'endTime': '19:00',
+      await FirebaseFirestore.instance.collection('vendor_storeTime').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+        'status': status,
+        'startTime': startTime,
+        'endTime': endTime,
       });
       showToast("Store Set Time Added Successfully");
     } catch (e) {
       throw Exception(e);
     }
   }
-
-
-
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

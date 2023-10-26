@@ -115,7 +115,7 @@ final controller = Get.put(AddProductController());
       image: imageUrl,
     )
         .then((value) {
-      controller.addSetStoreTime(mobileNumberController.text);
+      // controller.addSetStoreTime(mobileNumberController.text);
       Get.back();
       Helper.hideLoader(loader);
     });
