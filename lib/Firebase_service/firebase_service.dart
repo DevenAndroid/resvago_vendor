@@ -19,15 +19,18 @@ class FirebaseService {
     dynamic docid,
     dynamic mobileNumber,
     dynamic address,
+    dynamic latitude,
+    dynamic longitude,
     dynamic password,
     dynamic confirmPassword,
+    dynamic restaurant_position,
     dynamic image,
     dynamic userID,
     dynamic aboutUs,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc("+91${mobileNumber}");
+      var DocumentReference = collection.doc("+91$mobileNumber");
 
       DocumentReference.set({
         "restaurantName": restaurantName,
@@ -36,8 +39,11 @@ class FirebaseService {
         "docid": docid,
         "mobileNumber": mobileNumber,
         "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
         "password": password,
         "confirmPassword": confirmPassword,
+        "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
         "userID": "+91${mobileNumber}",
