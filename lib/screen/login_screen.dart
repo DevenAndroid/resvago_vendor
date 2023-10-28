@@ -11,7 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
-
 import '../helper.dart';
 import '../widget/custom_textfield.dart';
 import 'otp_screen.dart';
