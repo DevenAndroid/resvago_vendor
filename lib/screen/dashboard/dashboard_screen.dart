@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/screen/set_store_time/store_time.dart';
 import 'package:resvago_vendor/screen/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
@@ -279,7 +280,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 7;
-                    Get.to(const SetTimeScreen());
+                    Get.to( const SetTimeScreen());
                   });
                 },
               ),

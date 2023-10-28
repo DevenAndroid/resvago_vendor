@@ -10,12 +10,14 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -49,6 +51,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   List<CategoryData>? categoryList;
   String? categoryValue;
   String? _address = "";
+  dynamic latitude = "";
+  dynamic longitude = "";
   RxBool showValidation1 = false.obs;
 
   bool checkValidation(bool bool1, bool2) {
@@ -91,35 +95,52 @@ final controller = Get.put(AddProductController());
     }
     addUserToFirestore();
   }
+  Geoflutterfire? geo;
 
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String imageUrl = categoryFile.path;
-    UploadTask uploadTask = FirebaseStorage.instance
-        .ref("categoryImages")
-        .child(DateTime.now().millisecondsSinceEpoch.toString())
-        .putFile(categoryFile);
+    try {
+      String imageUrl = categoryFile.path;
+      geo = Geoflutterfire();
+      GeoFirePoint geoFirePoint = geo!.point(
+          latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
+      UploadTask uploadTask = FirebaseStorage.instance
+          .ref("categoryImages")
+          .child(DateTime
+          .now()
+          .millisecondsSinceEpoch
+          .toString())
+          .putFile(categoryFile);
 
-    TaskSnapshot snapshot = await uploadTask;
-    imageUrl = await snapshot.ref.getDownloadURL();
-    await firebaseService
-        .manageRegisterUsers(
-      restaurantName: restaurantNameController.text.trim(),
-      category: categoryValue,
-      email: emailController.text.trim(),
-      mobileNumber: mobileNumberController.text.trim(),
-      address: _address,
-      password: passwordController.text.trim(),
-      confirmPassword: confirmPasswordController.text.trim(),
-      image: imageUrl,
-    )
-        .then((value) {
-      controller.addSetStoreTime(mobileNumberController.text);
-      Get.back();
+      TaskSnapshot snapshot = await uploadTask;
+      imageUrl = await snapshot.ref.getDownloadURL();
+      await firebaseService
+          .manageRegisterUsers(
+          restaurantName: restaurantNameController.text.trim(),
+          category: categoryValue,
+          email: emailController.text.trim(),
+          mobileNumber: mobileNumberController.text.trim(),
+          address: _address,
+          latitude: latitude.toString(),
+          longitude: longitude.toString(),
+          password: passwordController.text.trim(),
+          confirmPassword: confirmPasswordController.text.trim(),
+          image: imageUrl,
+          restaurant_position: geoFirePoint.data.toString()
+      )
+          .then((value) {
+        // controller.addSetStoreTime(mobileNumberController.text);
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+      Get.toNamed(MyRouters.thankYouScreen);
+    } catch(e){
       Helper.hideLoader(loader);
-    });
-    Get.toNamed(MyRouters.thankYouScreen);
+      throw Exception(e);
+    } finally {
+      Helper.hideLoader(loader);
+    }
   }
 
   bool isDescendingOrder = true;
@@ -339,6 +360,8 @@ final controller = Get.put(AddProductController());
                               final lang = geometry.location.lng;
                               setState(() {
                                 _address = (place.description ?? "Location").toString();
+                                latitude = lat;
+                                longitude = lang;
                                 print("Address iss...$_address");
                               });
                             }

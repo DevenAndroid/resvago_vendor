@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:resvago_vendor/widget/apptheme.dart';
+
+
+import '../widget/apptheme.dart';
 
 class Helper {
   static Future addImagePicker({ImageSource imageSource = ImageSource.gallery, int imageQuality = 100}) async {
