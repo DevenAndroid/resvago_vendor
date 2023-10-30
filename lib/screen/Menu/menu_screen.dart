@@ -27,8 +27,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Stream<List<MenuData>> getMenu() {
     return FirebaseFirestore.instance
         .collection("vendor_menu")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .collection("menus")
+        .where("vendorId",isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
         .snapshots()
         .map((querySnapshot) {
       List<MenuData> menuList = [];
@@ -116,7 +115,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
+                      Get.to(() => AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
                     },
                     child: Container(
                       height: AddSize.size20 * 2.2,

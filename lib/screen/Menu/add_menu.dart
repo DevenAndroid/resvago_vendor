@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -19,11 +20,12 @@ import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../helper.dart';
+import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
 class AddMenuScreen extends StatefulWidget {
-   const AddMenuScreen({super.key, required this.menuId,this.menuItemData});
+  const AddMenuScreen({super.key, required this.menuId, this.menuItemData});
   final String menuId;
   final MenuData? menuItemData;
   @override
@@ -31,11 +33,11 @@ class AddMenuScreen extends StatefulWidget {
 }
 
 class _AddMenuScreenState extends State<AddMenuScreen> {
-  TextEditingController dishNameController       = TextEditingController();
-  TextEditingController categoryController       = TextEditingController();
-  TextEditingController priceController          = TextEditingController();
+  TextEditingController dishNameController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
   TextEditingController discountNumberController = TextEditingController();
-  TextEditingController descriptionController    = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   String get menuId => widget.menuId;
   MenuData? get menuItemData => widget.menuItemData;
   String? categoryValue;
@@ -71,7 +73,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       String imageUrl = categoryFile.path;
       if (!categoryFile.path.contains("https")) {
         if (menuItemData != null) {
-          Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
+          Reference gg = FirebaseStorage.instance
+              .refFromURL(menuItemData!.image.toString());
           await gg.delete();
         }
         UploadTask uploadTask = FirebaseStorage.instance
@@ -82,53 +85,56 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
         TaskSnapshot snapshot = await uploadTask;
         imageUrl = await snapshot.ref.getDownloadURL();
       }
-    await firebaseService.manageMenu(
-      menuId: menuId,
-      vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
-      dishName: dishNameController.text.trim(),
-      category: categoryValue,
-      price: priceController.text.trim(),
-      discount: discountNumberController.text.trim(),
-      description: descriptionController.text,
-      booking: delivery == true
-          ? "Delivery"
-          : dining == true
-          ? "Dining"
-          : "",
-      image: imageUrl,
-      time: DateTime.now().millisecondsSinceEpoch,
-    ).then((value) {
-      Get.back();
+      await firebaseService
+          .manageMenu(
+        menuId: menuId,
+        vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
+        dishName: dishNameController.text.trim(),
+        category: categoryValue,
+        price: priceController.text.trim(),
+        discount: discountNumberController.text.trim(),
+        description: descriptionController.text,
+        bookingForDining: dining,
+        bookingForDelivery: delivery,
+        image: imageUrl,
+        time: DateTime.now().millisecondsSinceEpoch,
+      )
+          .then((value) {
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+    } catch (e) {
       Helper.hideLoader(loader);
-    });
-  } catch (e) {
-  Helper.hideLoader(loader);
-  showToast(e.toString());
-  throw Exception(e.toString());
+      showToast(e.toString());
+      throw Exception(e.toString());
+    }
   }
-}
 
-List<CategoryData>? categoryList;
-getVendorCategories() {
+  List<CategoryData> categoryList = [];
+  getVendorCategories() {
     FirebaseFirestore.instance
-    .collection("resturent")
-    .orderBy('time', descending: isDescendingOrder).get().then((value) {
+        .collection("resturent")
+        .get()
+        .then((value) {
+        categoryList ??= [];
+        categoryList!.clear();
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList ??= [];
         categoryList!.add(CategoryData.fromMap(gg));
       }
       setState(() {});
     });
-}
-
+  }
 
   @override
   void initState() {
     super.initState();
     // getCategory();
-    getVendorCategories();
-    if(widget.menuItemData == null)return;
+    print('helloprint');
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      getVendorCategories();
+    });
+    if (widget.menuItemData == null) return;
     dishNameController.text = widget.menuItemData!.dishName ?? "";
     priceController.text = widget.menuItemData!.price ?? "";
     discountNumberController.text = widget.menuItemData!.discount ?? "";
@@ -144,7 +150,8 @@ getVendorCategories() {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(title: "Add Menu", context: context, backgroundColor: Colors.white),
+      appBar: backAppBar(
+          title: "Add Menu", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -168,14 +175,18 @@ getVendorCategories() {
                     children: [
                       Text(
                         "Dish Name",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
                         controller: dishNameController,
-                        validator: RequiredValidator(errorText: 'Please enter your menu name '),
+                        validator: RequiredValidator(
+                            errorText: 'Please enter your menu name '),
                         hint: 'Meat Pasta',
                       ),
                       const SizedBox(
@@ -183,80 +194,98 @@ getVendorCategories() {
                       ),
                       Text(
                         "Category",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      if(categoryList != null)
-                      DropdownButtonFormField<dynamic>(
-                        focusColor: Colors.white,
-                        isExpanded: true,
-                        iconEnabledColor: const Color(0xff97949A),
-                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                        borderRadius: BorderRadius.circular(10),
-                        hint: Text(
-                          "Select category".tr,
-                          style: const TextStyle(
-                              color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
-                          textAlign: TextAlign.justify,
-                        ),
-                        decoration: InputDecoration(
-                          focusColor: const Color(0xFF384953),
-                          hintStyle: GoogleFonts.poppins(
-                            color: const Color(0xFF384953),
-                            textStyle: GoogleFonts.poppins(
+                      if (categoryList != null)
+                        DropdownButtonFormField<dynamic>(
+                          focusColor: Colors.white,
+                          isExpanded: true,
+                          iconEnabledColor: const Color(0xff97949A),
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                          borderRadius: BorderRadius.circular(10),
+                          hint: Text(
+                            "Select category".tr,
+                            style: const TextStyle(
+                                color: Color(0xff2A3B40),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300),
+                            textAlign: TextAlign.justify,
+                          ),
+                          decoration: InputDecoration(
+                            focusColor: const Color(0xFF384953),
+                            hintStyle: GoogleFonts.poppins(
                               color: const Color(0xFF384953),
+                              textStyle: GoogleFonts.poppins(
+                                color: const Color(0xFF384953),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                              ),
                               fontSize: 14,
+                              // fontFamily: 'poppins',
                               fontWeight: FontWeight.w300,
                             ),
-                            fontSize: 14,
-                            // fontFamily: 'poppins',
-                            fontWeight: FontWeight.w300,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(.10),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                          // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red.shade800),
-                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                          border: OutlineInputBorder(
-                              borderSide:
-                              BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
-                              borderRadius: BorderRadius.circular(6.0)),
-                        ),
-                        value: categoryValue,
-                        items: categoryList!.map((items) {
-                          return DropdownMenuItem(
-                            value: items.name.toString(),
-                            child: Text(
-                              items.name.toString(),
-                              style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(.10),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 15),
+                            // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      const Color(0xFF384953).withOpacity(.24)),
+                              borderRadius: BorderRadius.circular(6.0),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          categoryValue = newValue.toString();
-                          log(categoryValue.toString());
-                          setState(() {});
-                        },
-                        validator: (value) {
-                          if (categoryValue == null) {
-                            return 'Please select category';
-                          }
-                          return null;
-                        },
-                      )
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: const Color(0xFF384953)
+                                        .withOpacity(.24)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0))),
+                            errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red.shade800),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0))),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: const Color(0xFF384953)
+                                        .withOpacity(.24),
+                                    width: 3.0),
+                                borderRadius: BorderRadius.circular(6.0)),
+                          ),
+                          value: categoryValue,
+                          items: categoryList!.map((items) {
+                            return DropdownMenuItem(
+                              value: items.name.toString(),
+                              child: Text(
+                                items.name.toString(),
+                                style: TextStyle(
+                                    color: AppTheme.userText,
+                                    fontSize: AddSize.font14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+
+                            setState(() {
+                              categoryValue = newValue.toString();
+                            });
+                          },
+                          validator: (value) {
+                            if (categoryValue == null) {
+                              return 'Please select category';
+                            }
+                            return null;
+                          },
+                        )
                       else
-                        Center(
+                        const Center(
                           child: Text("No Category Available"),
                         ),
                       const SizedBox(
@@ -264,7 +293,10 @@ getVendorCategories() {
                       ),
                       Text(
                         "Price",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -282,7 +314,10 @@ getVendorCategories() {
                       ),
                       Text(
                         "Discount",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -290,7 +325,8 @@ getVendorCategories() {
                       RegisterTextFieldWidget(
                         controller: discountNumberController,
                         length: 10,
-                        validator: RequiredValidator(errorText: 'Please enter discount value'),
+                        validator: RequiredValidator(
+                            errorText: 'Please enter discount value'),
                         keyboardType: TextInputType.number,
                         hint: '%',
                       ),
@@ -299,14 +335,18 @@ getVendorCategories() {
                       ),
                       Text(
                         "Menu Description",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
                         controller: descriptionController,
-                        validator: RequiredValidator(errorText: 'Please enter menu description '),
+                        validator: RequiredValidator(
+                            errorText: 'Please enter menu description '),
                         keyboardType: TextInputType.streetAddress,
                         hint: 'Menu Description',
                       ),
@@ -315,7 +355,10 @@ getVendorCategories() {
                       ),
                       Text(
                         "Upload images",
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -323,8 +366,11 @@ getVendorCategories() {
                       DottedBorder(
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(4),
-                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                        padding: const EdgeInsets.only(
+                            left: 40, right: 40, bottom: 10),
+                        color: showValidationImg == false
+                            ? const Color(0xFFFAAF40)
+                            : Colors.red,
                         dashPattern: const [6],
                         strokeWidth: 1,
                         child: InkWell(
@@ -338,21 +384,27 @@ getVendorCategories() {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
-                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
+                                        image: DecorationImage(
+                                            image: FileImage(profileImage),
+                                            fit: BoxFit.fill),
                                       ),
-                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
-                                          errorBuilder: (_, __, ___) => Image.network(categoryFile.path,
-                                              errorBuilder: (_, __, ___) => const SizedBox())),
+                                          errorBuilder: (_, __, ___) =>
+                                              Image.network(categoryFile.path,
+                                                  errorBuilder: (_, __, ___) =>
+                                                      const SizedBox())),
                                     ),
                                   ],
                                 )
                               : Container(
                                   padding: const EdgeInsets.only(top: 8),
-                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
                                   width: double.maxFinite,
                                   height: 130,
                                   alignment: Alignment.center,
@@ -369,8 +421,10 @@ getVendorCategories() {
                                       ),
                                       const Text(
                                         'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style:
-                                            TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xff141C21),
+                                            fontWeight: FontWeight.w300),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -390,27 +444,30 @@ getVendorCategories() {
                             scale: 1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
+                                  unselectedWidgetColor: showValidation == false
+                                      ? const Color(0xFF64646F)
+                                      : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                   value: delivery,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
                                     setState(() {
                                       delivery = !delivery;
-                                      if (delivery == true) {
-                                        dining = false;
-                                        value = delivery;
-                                        log(value.toString());
-                                      }
+                                      log(delivery.toString());
                                       setState(() {});
                                     });
                                   }),
                             ),
                           ),
                           const Text('Delivery',
-                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.black)),
                         ],
                       ),
                       Row(
@@ -419,27 +476,30 @@ getVendorCategories() {
                             scale: 1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
+                                  unselectedWidgetColor: showValidation == false
+                                      ? const Color(0xFF64646F)
+                                      : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                   value: dining,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
                                     setState(() {
                                       dining = newValue!;
-                                      if (dining == true) {
-                                        delivery = false;
-                                        value = dining;
-                                        log(value.toString());
-                                      }
+                                      log(dining.toString());
                                       setState(() {});
                                     });
                                   }),
                             ),
                           ),
                           const Text('Dining',
-                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -449,14 +509,15 @@ getVendorCategories() {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (delivery == true || dining == true) {
-                              if(categoryFile.path != ""){
+                              if (categoryFile.path != "") {
                                 checkMenuInFirestore();
-                              }
-                              else{
-                                Fluttertoast.showToast(msg: 'Please select image');
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: 'Please select image');
                               }
                             } else {
-                              Fluttertoast.showToast(msg: 'Please select booking type');
+                              Fluttertoast.showToast(
+                                  msg: 'Please select booking type');
                             }
                           }
                         },
@@ -482,12 +543,15 @@ getVendorCategories() {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Picture from',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
+              Helper.addImagePicker(
+                      imageSource: ImageSource.camera, imageQuality: 75)
+                  .then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -524,7 +588,9 @@ getVendorCategories() {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
+              Helper.addImagePicker(
+                      imageSource: ImageSource.gallery, imageQuality: 75)
+                  .then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
