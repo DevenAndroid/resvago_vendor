@@ -256,7 +256,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                 borderSide: BorderSide(
                                     color: const Color(0xFF384953)
                                         .withOpacity(.24),
-                                    width: 3.0),
+                                    width: 3.0),r
                                 borderRadius: BorderRadius.circular(6.0)),
                           ),
                           value: categoryValue,

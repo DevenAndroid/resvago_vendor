@@ -118,54 +118,6 @@ class FirebaseService {
     }
   }
 
-  // Future manageSlot({
-  //   required String slotId,
-  //   dynamic vendorId,
-  //   dynamic lunchDuration,
-  //   dynamic dinnerDuration,
-  //   dynamic startDateForLunch,
-  //   dynamic endDateForLunch,
-  //   dynamic startTimeForLunch,
-  //   dynamic endTimeForLunch,
-  //   dynamic startDateForDinner,
-  //   dynamic endDateForDinner,
-  //   dynamic startTimeForDinner,
-  //   dynamic endTimeForDinner,
-  //   dynamic noOfGuest,
-  //   dynamic setOffer,
-  //   required List<String> slot,
-  //   required List<String> dinnerSlot,
-  //   dynamic time,
-  // }) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('vendor_slot')
-  //         .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-  //         .set({
-  //       "slotId": slotId,
-  //       "vendorId": vendorId,
-  //       "startDateForLunch": startDateForLunch,
-  //       "endDateForLunch": endDateForLunch,
-  //       "startTimeForLunch": startTimeForLunch,
-  //       "endTimeForLunch": endTimeForLunch,
-  //       "startDateForDinner": startDateForDinner,
-  //       "endDateForDinner": endDateForDinner,
-  //       "startTimeForDinner": startTimeForDinner,
-  //       "endTimeForDinner": endTimeForDinner,
-  //       "lunchDuration": lunchDuration,
-  //       "dinnerDuration": dinnerDuration,
-  //       "noOfGuest": noOfGuest,
-  //       "setOffer": setOffer,
-  //       "slot": slot,
-  //       "dinnerSlot": dinnerSlot,
-  //       "time": time,
-  //     });
-  //     showToast("Slot Added Successfully");
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
-
   Future manageSlot({
     required String slotId,
     dynamic vendorId,
