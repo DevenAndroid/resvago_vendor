@@ -105,8 +105,18 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
     );
   }
 
-  late List<Map<dynamic, dynamic>> weekSchedule = [];
-  late List<Map<String, dynamic>> weekSchedule1 = [];
+  List<String> weekDays = [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun",
+  ];
+
+  List<Map<dynamic, dynamic>> weekSchedule = [];
+  List<Map<String, dynamic>> weekSchedule1 = [];
   @override
   void initState() {
     super.initState();
@@ -129,22 +139,19 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
     List<Map<dynamic, dynamic>> weekSchedule = [];
 
     DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 7; i++) {
-      DateTime startTime = DateTime(currentDate.year, currentDate.month, currentDate.day, 9, 0);
-      DateTime endTime = DateTime(currentDate.year, currentDate.month, currentDate.day, 19, 0);
-      String formattedStartTime = DateFormat.Hm().format(startTime);
-      String formattedEndTime = DateFormat.Hm().format(endTime);
-      bool status = false;
-
+    DateTime startTime = DateTime(currentDate.year, currentDate.month, currentDate.day, 9, 0);
+    DateTime endTime = DateTime(currentDate.year, currentDate.month, currentDate.day, 19, 0);
+    String formattedStartTime = DateFormat.Hm().format(startTime);
+    String formattedEndTime = DateFormat.Hm().format(endTime);
+    bool status = false;
+    for (var element in weekDays) {
       weekSchedule.add({
-        'day': DateFormat('EEEE').format(currentDate).substring(0, 3),
+        'day': element,
         'start_time': formattedStartTime,
         'end_time': formattedEndTime,
         'status': status,
       });
-      currentDate = currentDate.add(const Duration(days: 1));
     }
-
     return weekSchedule;
   }
 
@@ -181,6 +188,9 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
   String userId = FirebaseAuth.instance.currentUser!.phoneNumber!; // Replace this with the actual user ID
   @override
   Widget build(BuildContext context) {
+    for(var i = 0; i < 20; i++){
+      print(DateFormat('EEE').format(DateTime.now().add(Duration(days: i))));
+    }
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: backAppBar(title: "Set Store Time", context: context, backgroundColor: Colors.white),

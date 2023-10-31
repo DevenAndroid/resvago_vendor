@@ -23,7 +23,7 @@ import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
 class AddMenuScreen extends StatefulWidget {
-   const AddMenuScreen({super.key, required this.menuId,this.menuItemData});
+  const AddMenuScreen({super.key, required this.menuId, this.menuItemData});
   final String menuId;
   final MenuData? menuItemData;
   @override
@@ -31,11 +31,11 @@ class AddMenuScreen extends StatefulWidget {
 }
 
 class _AddMenuScreenState extends State<AddMenuScreen> {
-  TextEditingController dishNameController       = TextEditingController();
-  TextEditingController categoryController       = TextEditingController();
-  TextEditingController priceController          = TextEditingController();
+  TextEditingController dishNameController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
   TextEditingController discountNumberController = TextEditingController();
-  TextEditingController descriptionController    = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   String get menuId => widget.menuId;
   MenuData? get menuItemData => widget.menuItemData;
   String? categoryValue;
@@ -82,37 +82,37 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
         TaskSnapshot snapshot = await uploadTask;
         imageUrl = await snapshot.ref.getDownloadURL();
       }
-    await firebaseService.manageMenu(
-      menuId: menuId,
-      vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
-      dishName: dishNameController.text.trim(),
-      category: categoryValue,
-      price: priceController.text.trim(),
-      discount: discountNumberController.text.trim(),
-      description: descriptionController.text,
-      booking: delivery == true
-          ? "Delivery"
-          : dining == true
-          ? "Dining"
-          : "",
-      image: imageUrl,
-      time: DateTime.now().millisecondsSinceEpoch,
-    ).then((value) {
-      Get.back();
+      await firebaseService
+          .manageMenu(
+        menuId: menuId,
+        vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
+        dishName: dishNameController.text.trim(),
+        category: categoryValue,
+        price: priceController.text.trim(),
+        discount: discountNumberController.text.trim(),
+        description: descriptionController.text,
+        booking: delivery == true
+            ? "Delivery"
+            : dining == true
+                ? "Dining"
+                : "",
+        image: imageUrl,
+        time: DateTime.now().millisecondsSinceEpoch,
+      )
+          .then((value) {
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+    } catch (e) {
       Helper.hideLoader(loader);
-    });
-  } catch (e) {
-  Helper.hideLoader(loader);
-  showToast(e.toString());
-  throw Exception(e.toString());
+      showToast(e.toString());
+      throw Exception(e.toString());
+    }
   }
-}
 
-List<CategoryData>? categoryList;
-getVendorCategories() {
-    FirebaseFirestore.instance
-    .collection("resturent")
-    .orderBy('time', descending: isDescendingOrder).get().then((value) {
+  List<CategoryData>? categoryList;
+  getVendorCategories() {
+    FirebaseFirestore.instance.collection("resturent").orderBy('time', descending: isDescendingOrder).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         categoryList ??= [];
@@ -120,15 +120,14 @@ getVendorCategories() {
       }
       setState(() {});
     });
-}
-
+  }
 
   @override
   void initState() {
     super.initState();
     // getCategory();
     getVendorCategories();
-    if(widget.menuItemData == null)return;
+    if (widget.menuItemData == null) return;
     dishNameController.text = widget.menuItemData!.dishName ?? "";
     priceController.text = widget.menuItemData!.price ?? "";
     discountNumberController.text = widget.menuItemData!.discount ?? "";
@@ -188,73 +187,71 @@ getVendorCategories() {
                       const SizedBox(
                         height: 10,
                       ),
-                      if(categoryList != null)
-                      DropdownButtonFormField<dynamic>(
-                        focusColor: Colors.white,
-                        isExpanded: true,
-                        iconEnabledColor: const Color(0xff97949A),
-                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                        borderRadius: BorderRadius.circular(10),
-                        hint: Text(
-                          "Select category".tr,
-                          style: const TextStyle(
-                              color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
-                          textAlign: TextAlign.justify,
-                        ),
-                        decoration: InputDecoration(
-                          focusColor: const Color(0xFF384953),
-                          hintStyle: GoogleFonts.poppins(
-                            color: const Color(0xFF384953),
-                            textStyle: GoogleFonts.poppins(
+                      if (categoryList != null)
+                        DropdownButtonFormField<dynamic>(
+                          focusColor: Colors.white,
+                          isExpanded: true,
+                          iconEnabledColor: const Color(0xff97949A),
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                          borderRadius: BorderRadius.circular(10),
+                          hint: Text(
+                            "Select category".tr,
+                            style: const TextStyle(color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
+                            textAlign: TextAlign.justify,
+                          ),
+                          decoration: InputDecoration(
+                            focusColor: const Color(0xFF384953),
+                            hintStyle: GoogleFonts.poppins(
                               color: const Color(0xFF384953),
+                              textStyle: GoogleFonts.poppins(
+                                color: const Color(0xFF384953),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                              ),
                               fontSize: 14,
+                              // fontFamily: 'poppins',
                               fontWeight: FontWeight.w300,
                             ),
-                            fontSize: 14,
-                            // fontFamily: 'poppins',
-                            fontWeight: FontWeight.w300,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(.10),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                          // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(.10),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                            // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                            focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red.shade800),
-                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                          border: OutlineInputBorder(
-                              borderSide:
-                              BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
-                              borderRadius: BorderRadius.circular(6.0)),
-                        ),
-                        value: categoryValue,
-                        items: categoryList!.map((items) {
-                          return DropdownMenuItem(
-                            value: items.name.toString(),
-                            child: Text(
-                              items.name.toString(),
-                              style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
+                              borderRadius: BorderRadius.circular(6.0),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          categoryValue = newValue.toString();
-                          log(categoryValue.toString());
-                          setState(() {});
-                        },
-                        validator: (value) {
-                          if (categoryValue == null) {
-                            return 'Please select category';
-                          }
-                          return null;
-                        },
-                      )
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                                borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red.shade800),
+                                borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
+                                borderRadius: BorderRadius.circular(6.0)),
+                          ),
+                          value: categoryValue,
+                          items: categoryList!.map((items) {
+                            return DropdownMenuItem(
+                              value: items.name.toString(),
+                              child: Text(
+                                items.name.toString(),
+                                style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            categoryValue = newValue.toString();
+                            log(categoryValue.toString());
+                            setState(() {});
+                          },
+                          validator: (value) {
+                            if (categoryValue == null) {
+                              return 'Please select category';
+                            }
+                            return null;
+                          },
+                        )
                       else
                         Center(
                           child: Text("No Category Available"),
@@ -345,8 +342,8 @@ getVendorCategories() {
                                       height: 180,
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
-                                          errorBuilder: (_, __, ___) => Image.network(categoryFile.path,
-                                              errorBuilder: (_, __, ___) => const SizedBox())),
+                                          errorBuilder: (_, __, ___) =>
+                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => const SizedBox())),
                                     ),
                                   ],
                                 )
@@ -369,8 +366,7 @@ getVendorCategories() {
                                       ),
                                       const Text(
                                         'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style:
-                                            TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
+                                        style: TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -438,8 +434,7 @@ getVendorCategories() {
                                   }),
                             ),
                           ),
-                          const Text('Dining',
-                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                          const Text('Dining', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -449,10 +444,9 @@ getVendorCategories() {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (delivery == true || dining == true) {
-                              if(categoryFile.path != ""){
+                              if (categoryFile.path != "") {
                                 checkMenuInFirestore();
-                              }
-                              else{
+                              } else {
                                 Fluttertoast.showToast(msg: 'Please select image');
                               }
                             } else {

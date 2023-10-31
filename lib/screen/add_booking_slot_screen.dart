@@ -110,14 +110,14 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                       height: 30,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10)
-                          .copyWith(bottom: 30),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
                       child: CommonButtonBlue(
                         onPressed: () {
                           if (_formKeyBooking.currentState!.validate()) {
                             slotController.getLunchTimeSlot();
                             slotController.getDinnerTimeSlot();
-                            if(slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty){
+                            if (slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty) {
                               addSlotToFirestore();
                             }
                           }
