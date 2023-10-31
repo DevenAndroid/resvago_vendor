@@ -89,15 +89,14 @@ class FirebaseService {
     dynamic discount,
     dynamic description,
     dynamic image,
-    dynamic booking,
+    dynamic bookingForDining,
+    dynamic bookingForDelivery,
     dynamic time,
     dynamic searchName,
   }) async {
     try {
       await FirebaseFirestore.instance
           .collection('vendor_menu')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .collection("menus")
           .doc(menuId)
           .set({
         "menuId": menuId,
@@ -109,7 +108,8 @@ class FirebaseService {
         "discount": discount,
         "description": description,
         "image": image,
-        "booking": booking,
+        "bookingForDining": bookingForDining,
+        "bookingForDelivery": bookingForDelivery,
         "searchName": searchName,
       });
       showToast("Menu Added Successfully");
