@@ -20,7 +20,6 @@ import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../helper.dart';
-import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
@@ -73,8 +72,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       String imageUrl = categoryFile.path;
       if (!categoryFile.path.contains("https")) {
         if (menuItemData != null) {
-          Reference gg = FirebaseStorage.instance
-              .refFromURL(menuItemData!.image.toString());
+          Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
           await gg.delete();
         }
         UploadTask uploadTask = FirebaseStorage.instance
@@ -112,15 +110,11 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
 
   List<CategoryData> categoryList = [];
   getVendorCategories() {
-    FirebaseFirestore.instance
-        .collection("resturent")
-        .get()
-        .then((value) {
-        categoryList ??= [];
-        categoryList!.clear();
+    FirebaseFirestore.instance.collection("resturent").get().then((value) {
+      categoryList.clear();
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList!.add(CategoryData.fromMap(gg));
+        categoryList.add(CategoryData.fromMap(gg));
       }
       setState(() {});
     });
@@ -129,8 +123,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   @override
   void initState() {
     super.initState();
-    // getCategory();
-    print('helloprint');
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       getVendorCategories();
     });
@@ -150,8 +142,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(
-          title: "Add Menu", context: context, backgroundColor: Colors.white),
+      appBar: backAppBar(title: "Add Menu", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -175,18 +166,14 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                     children: [
                       Text(
                         "Dish Name",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
                         controller: dishNameController,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your menu name '),
+                        validator: RequiredValidator(errorText: 'Please enter your menu name ').call,
                         hint: 'Meat Pasta',
                       ),
                       const SizedBox(
@@ -194,109 +181,81 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       Text(
                         "Category",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      if (categoryList != null)
-                        DropdownButtonFormField<dynamic>(
-                          focusColor: Colors.white,
-                          isExpanded: true,
-                          iconEnabledColor: const Color(0xff97949A),
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                          borderRadius: BorderRadius.circular(10),
-                          hint: Text(
-                            "Select category".tr,
-                            style: const TextStyle(
-                                color: Color(0xff2A3B40),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w300),
-                            textAlign: TextAlign.justify,
-                          ),
-                          decoration: InputDecoration(
-                            focusColor: const Color(0xFF384953),
-                            hintStyle: GoogleFonts.poppins(
+                      DropdownButtonFormField<dynamic>(
+                        focusColor: Colors.white,
+                        isExpanded: true,
+                        iconEnabledColor: const Color(0xff97949A),
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                        borderRadius: BorderRadius.circular(10),
+                        hint: Text(
+                          "Select category".tr,
+                          style: const TextStyle(color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
+                          textAlign: TextAlign.justify,
+                        ),
+                        decoration: InputDecoration(
+                          focusColor: const Color(0xFF384953),
+                          hintStyle: GoogleFonts.poppins(
+                            color: const Color(0xFF384953),
+                            textStyle: GoogleFonts.poppins(
                               color: const Color(0xFF384953),
-                              textStyle: GoogleFonts.poppins(
-                                color: const Color(0xFF384953),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                              ),
                               fontSize: 14,
-                              // fontFamily: 'poppins',
                               fontWeight: FontWeight.w300,
                             ),
-                            filled: true,
-                            fillColor: Colors.white.withOpacity(.10),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 15),
-                            // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      const Color(0xFF384953).withOpacity(.24)),
-                              borderRadius: BorderRadius.circular(6.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: const Color(0xFF384953)
-                                        .withOpacity(.24)),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(6.0))),
-                            errorBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.red.shade800),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(6.0))),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: const Color(0xFF384953)
-                                        .withOpacity(.24),
-                                    width: 3.0),r
-                                borderRadius: BorderRadius.circular(6.0)),
+                            fontSize: 14,
+                            // fontFamily: 'poppins',
+                            fontWeight: FontWeight.w300,
                           ),
-                          value: categoryValue,
-                          items: categoryList!.map((items) {
-                            return DropdownMenuItem(
-                              value: items.name.toString(),
-                              child: Text(
-                                items.name.toString(),
-                                style: TextStyle(
-                                    color: AppTheme.userText,
-                                    fontSize: AddSize.font14),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-
-                            setState(() {
-                              categoryValue = newValue.toString();
-                            });
-                          },
-                          validator: (value) {
-                            if (categoryValue == null) {
-                              return 'Please select category';
-                            }
-                            return null;
-                          },
-                        )
-                      else
-                        const Center(
-                          child: Text("No Category Available"),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(.10),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red.shade800),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
+                              borderRadius: BorderRadius.circular(6.0)),
                         ),
+                        value: categoryValue,
+                        items: categoryList.map((items) {
+                          return DropdownMenuItem(
+                            value: items.name.toString(),
+                            child: Text(
+                              items.name.toString(),
+                              style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            categoryValue = newValue.toString();
+                          });
+                        },
+                        validator: (value) {
+                          if (categoryValue == null) {
+                            return 'Please select category';
+                          }
+                          return null;
+                        },
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
                         "Price",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -305,7 +264,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         controller: priceController,
                         validator: MultiValidator([
                           RequiredValidator(errorText: 'Please enter price'),
-                        ]),
+                        ]).call,
                         keyboardType: TextInputType.number,
                         hint: '\$0.00',
                       ),
@@ -314,10 +273,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       Text(
                         "Discount",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -325,8 +281,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: discountNumberController,
                         length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter discount value'),
+                        validator: RequiredValidator(errorText: 'Please enter discount value').call,
                         keyboardType: TextInputType.number,
                         hint: '%',
                       ),
@@ -335,18 +290,14 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       Text(
                         "Menu Description",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       RegisterTextFieldWidget(
                         controller: descriptionController,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter menu description '),
+                        validator: RequiredValidator(errorText: 'Please enter menu description ').call,
                         keyboardType: TextInputType.streetAddress,
                         hint: 'Menu Description',
                       ),
@@ -355,10 +306,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       Text(
                         "Upload images",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -366,11 +314,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       DottedBorder(
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(4),
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false
-                            ? const Color(0xFFFAAF40)
-                            : Colors.red,
+                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
                         dashPattern: const [6],
                         strokeWidth: 1,
                         child: InkWell(
@@ -384,27 +329,21 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
-                                        image: DecorationImage(
-                                            image: FileImage(profileImage),
-                                            fit: BoxFit.fill),
+                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
                                       ),
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
+                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
                                           errorBuilder: (_, __, ___) =>
-                                              Image.network(categoryFile.path,
-                                                  errorBuilder: (_, __, ___) =>
-                                                      const SizedBox())),
+                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => const SizedBox())),
                                     ),
                                   ],
                                 )
                               : Container(
                                   padding: const EdgeInsets.only(top: 8),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   width: double.maxFinite,
                                   height: 130,
                                   alignment: Alignment.center,
@@ -421,10 +360,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                       ),
                                       const Text(
                                         'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xff141C21),
-                                            fontWeight: FontWeight.w300),
+                                        style: TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -444,14 +380,10 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                             scale: 1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false
-                                      ? const Color(0xFF64646F)
-                                      : Colors.red),
+                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   value: delivery,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
@@ -464,10 +396,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                             ),
                           ),
                           const Text('Delivery',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Colors.black)),
+                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       Row(
@@ -476,14 +405,10 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                             scale: 1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false
-                                      ? const Color(0xFF64646F)
-                                      : Colors.red),
+                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   value: dining,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
@@ -495,11 +420,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                          const Text('Dining',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Colors.black)),
+                          const Text('Dining', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -512,12 +433,10 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                               if (categoryFile.path != "") {
                                 checkMenuInFirestore();
                               } else {
-                                Fluttertoast.showToast(
-                                    msg: 'Please select image');
+                                Fluttertoast.showToast(msg: 'Please select image');
                               }
                             } else {
-                              Fluttertoast.showToast(
-                                  msg: 'Please select booking type');
+                              Fluttertoast.showToast(msg: 'Please select booking type');
                             }
                           }
                         },
@@ -543,15 +462,12 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Picture from',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.camera, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -588,9 +504,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.gallery, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
