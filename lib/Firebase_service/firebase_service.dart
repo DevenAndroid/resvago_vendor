@@ -63,16 +63,14 @@ class FirebaseService {
     dynamic userID,
   }) async {
     try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
-      var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
-
-      DocumentReference.set({
+     FirebaseFirestore.instance.collection('Coupon_data').doc().set({
         "promoCodeName": promoCodeName,
         "code": code,
         "discount": discount,
         "startDate": startDate,
         "endDate": endDate,
-        "deactivate": false,
+        "deactivate" : false,
+        "userID" : FirebaseAuth.instance.currentUser!.phoneNumber,
       });
     } catch (e) {
       throw Exception(e);
