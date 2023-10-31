@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
 
@@ -17,15 +19,18 @@ class FirebaseService {
     dynamic docid,
     dynamic mobileNumber,
     dynamic address,
+    dynamic latitude,
+    dynamic longitude,
     dynamic password,
     dynamic confirmPassword,
+    dynamic restaurant_position,
     dynamic image,
     dynamic userID,
     dynamic aboutUs,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc("+91${mobileNumber}");
+      var DocumentReference = collection.doc("+91$mobileNumber");
 
       DocumentReference.set({
         "restaurantName": restaurantName,
@@ -34,8 +39,11 @@ class FirebaseService {
         "docid": docid,
         "mobileNumber": mobileNumber,
         "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
         "password": password,
         "confirmPassword": confirmPassword,
+        "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
         "userID": "+91${mobileNumber}",
@@ -79,15 +87,14 @@ class FirebaseService {
     dynamic discount,
     dynamic description,
     dynamic image,
-    dynamic booking,
+    dynamic bookingForDining,
+    dynamic bookingForDelivery,
     dynamic time,
     dynamic searchName,
   }) async {
     try {
       await FirebaseFirestore.instance
           .collection('vendor_menu')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .collection("menus")
           .doc(menuId)
           .set({
         "menuId": menuId,
@@ -99,7 +106,8 @@ class FirebaseService {
         "discount": discount,
         "description": description,
         "image": image,
-        "booking": booking,
+        "bookingForDining": bookingForDining,
+        "bookingForDelivery": bookingForDelivery,
         "searchName": searchName,
       });
       showToast("Menu Added Successfully");
@@ -107,54 +115,6 @@ class FirebaseService {
       throw Exception(e);
     }
   }
-
-  // Future manageSlot({
-  //   required String slotId,
-  //   dynamic vendorId,
-  //   dynamic lunchDuration,
-  //   dynamic dinnerDuration,
-  //   dynamic startDateForLunch,
-  //   dynamic endDateForLunch,
-  //   dynamic startTimeForLunch,
-  //   dynamic endTimeForLunch,
-  //   dynamic startDateForDinner,
-  //   dynamic endDateForDinner,
-  //   dynamic startTimeForDinner,
-  //   dynamic endTimeForDinner,
-  //   dynamic noOfGuest,
-  //   dynamic setOffer,
-  //   required List<String> slot,
-  //   required List<String> dinnerSlot,
-  //   dynamic time,
-  // }) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('vendor_slot')
-  //         .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-  //         .set({
-  //       "slotId": slotId,
-  //       "vendorId": vendorId,
-  //       "startDateForLunch": startDateForLunch,
-  //       "endDateForLunch": endDateForLunch,
-  //       "startTimeForLunch": startTimeForLunch,
-  //       "endTimeForLunch": endTimeForLunch,
-  //       "startDateForDinner": startDateForDinner,
-  //       "endDateForDinner": endDateForDinner,
-  //       "startTimeForDinner": startTimeForDinner,
-  //       "endTimeForDinner": endTimeForDinner,
-  //       "lunchDuration": lunchDuration,
-  //       "dinnerDuration": dinnerDuration,
-  //       "noOfGuest": noOfGuest,
-  //       "setOffer": setOffer,
-  //       "slot": slot,
-  //       "dinnerSlot": dinnerSlot,
-  //       "time": time,
-  //     });
-  //     showToast("Slot Added Successfully");
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
 
   Future manageSlot({
     required String slotId,
@@ -172,8 +132,8 @@ class FirebaseService {
     dynamic noOfGuest,
     dynamic setOffer,
     required RxString dateType,
-    // dynamic slot,
-    // dynamic dinnerSlot,
+    dynamic slot,
+    dynamic dinnerSlot,
     dynamic time,
   }) async {
     try {
@@ -183,7 +143,7 @@ class FirebaseService {
           .collection("slot")
           .doc(slotId)
           .set({
-        "slotId":slotId,
+        "slotId": slotId,
         "vendorId": vendorId,
         "startDateForLunch": startDateForLunch,
         "endDateForLunch": endDateForLunch,
@@ -198,8 +158,8 @@ class FirebaseService {
         "noOfGuest": noOfGuest,
         "setOffer": setOffer,
         "dateType": dateType.value,
-        // "slot": slot,
-        // "dinnerSlot": dinnerSlot,
+        "slot": slot,
+        "dinnerSlot": dinnerSlot,
         "time": time,
       });
       showToast("Slot Added Successfully");
@@ -208,6 +168,29 @@ class FirebaseService {
     }
   }
 
+// final controller = Get.put(AddProductController());
+
+  Future manageStoreTime({
+    dynamic storeTimeId,
+    dynamic vendorId,
+    dynamic weekDay,
+    dynamic status,
+    dynamic startTime,
+    dynamic startDateForLunch,
+    dynamic endTime,
+    dynamic time,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('vendor_storeTime').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+        'status': status,
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      showToast("Store Set Time Added Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

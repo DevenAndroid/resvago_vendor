@@ -41,8 +41,8 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
           .manageSlot(
               slotId: widget.slotId,
               time: DateTime.now().millisecondsSinceEpoch,
-              // slot: slotController.dinnerSlots,
-              // dinnerSlot: slotController.dinnerSlots,
+              slot: slotController.timeslots,
+              dinnerSlot: slotController.dinnerTimeslots,
               startDateForLunch: slotController.startDate.text,
               endDateForLunch: slotController.endDate.text,
               startTimeForLunch: slotController.startTime.text,
@@ -110,17 +110,16 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                       height: 30,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10)
-                          .copyWith(bottom: 30),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
                       child: CommonButtonBlue(
                         onPressed: () {
                           if (_formKeyBooking.currentState!.validate()) {
-                            // slotController.getLunchTimeSlot();
-                            // slotController.getDinnerTimeSlot();
-                            // if(slotController.slots.isNotEmpty && slotController.dinnerSlots.isNotEmpty){
-                            //   addSlotToFirestore();
-                            // }
-                            addSlotToFirestore();
+                            slotController.getLunchTimeSlot();
+                            slotController.getDinnerTimeSlot();
+                            if (slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty) {
+                              addSlotToFirestore();
+                            }
                           }
                         },
                         title: 'Create Slot'.toUpperCase(),
