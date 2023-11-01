@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
-import 'package:resvago_vendor/screen/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
@@ -17,6 +16,7 @@ import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../Promo_code_list.dart';
 import '../set_store_time/set_store_time.dart';
+import '../slot_screens/slot_list.dart';
 
 class VendorDashboard extends StatefulWidget {
   const VendorDashboard({Key? key}) : super(key: key);
@@ -216,7 +216,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 4;
-                    Get.to(const SlotListScreen());
+                    Get.to(()=> const SlotListScreen());
                   });
                 },
               ),

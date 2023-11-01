@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/controllers/slot_controller.dart';
 import 'package:resvago_vendor/helper.dart';
-import '../model/createslot_model.dart';
-import '../widget/addsize.dart';
-import '../widget/common_text_field.dart';
-import 'create_slot.dart';
+import '../../model/createslot_model.dart';
+import '../../widget/addsize.dart';
+import '../../widget/common_text_field.dart';
+import '../create_slot.dart';
 
 class BookableUI extends StatefulWidget {
   String title;
@@ -149,7 +149,7 @@ class _BookableUIState extends State<BookableUI> {
                                 },
                                 controller: slotController.startDate,
                                 validator: (value) {
-                                  if (value!.trim().isEmpty) {
+                                  if (slotController.selectedStartDateTime == null) {
                                     return "Start date is required";
                                   }
                                   return null;
@@ -175,7 +175,7 @@ class _BookableUIState extends State<BookableUI> {
                                 key: slotController.endDate.getKey,
                                 // key: endTime.getKey,
                                 validator: (value) {
-                                  if (value!.trim().isEmpty) {
+                                  if (slotController.selectedEndDateTIme == null) {
                                     return "End date is required";
                                   }
                                   return null;

@@ -41,14 +41,12 @@ class SlotController extends GetxController {
       timeslots = serviceTimeSloat
           .map((e) => "${convertToTime(e.timeSloat.toString())},${convertToTime(e.timeSloatEnd.toString())}")
           .toList();
-      log(timeslots.toString());
     } else if (slots.isNotEmpty) {
       timeslots = slots.entries
           .where((element) => element.value == true)
           .map((e) =>
       "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
           .toList();
-      log(timeslots.toString());
     }
   }
 
@@ -86,14 +84,12 @@ class SlotController extends GetxController {
       dinnerTimeslots = dinnerServiceTimeSloat
           .map((e) => "${convertToTime(e.timeSloat.toString())},${convertToTime(e.timeSloatEnd.toString())}")
           .toList();
-      log(dinnerTimeslots.toString());
     } else if (dinnerSlots.isNotEmpty) {
       dinnerTimeslots = dinnerSlots.entries
           .where((element) => element.value == true)
           .map((e) =>
       "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
           .toList();
-      log(dinnerTimeslots.toString());
     }
   }
 

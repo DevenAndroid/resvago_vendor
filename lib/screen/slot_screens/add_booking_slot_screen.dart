@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
-import 'package:resvago_vendor/screen/slot.dart';
-import '../Firebase_service/firebase_service.dart';
-import '../controllers/slot_controller.dart';
-import '../helper.dart';
-import '../widget/addsize.dart';
-import '../widget/apptheme.dart';
-import '../widget/common_text_field.dart';
-import '../widget/custom_textfield.dart';
+import 'package:resvago_vendor/screen/slot_screens/slot.dart';
+import '../../Firebase_service/firebase_service.dart';
+import '../../controllers/slot_controller.dart';
+import '../../helper.dart';
+import '../../widget/addsize.dart';
+import '../../widget/apptheme.dart';
+import '../../widget/common_text_field.dart';
+import '../../widget/custom_textfield.dart';
 
 class AddBookingSlot extends StatefulWidget {
   final String slotId;
@@ -37,29 +37,19 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   Future<void> addSlotToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+
     try {
       await firebaseService
           .manageSlot(
-              slotId: widget.slotId,
-              time: DateTime.now().millisecondsSinceEpoch,
-              slot: slotController.timeslots,
-              dinnerSlot: slotController.dinnerTimeslots,
-              startDateForLunch: slotController.startDate.text,
-              endDateForLunch: slotController.endDate.text,
-              startTimeForLunch: slotController.startTime.text,
-              endTimeForLunch: slotController.endTime.text,
-              startDateForDinner: slotController.dinnerStartDate.text,
-              endDateForDinner: slotController.dinnerEndDate.text,
-              startTimeForDinner: slotController.dinnerStartTime.text,
-              endTimeForDinner: slotController.dinnerEndTime.text,
-              dinnerDuration: slotController.dinnerServiceDuration.text,
-              lunchDuration: slotController.serviceDuration.text,
-              vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
-              noOfGuest: slotController.noOfGuest.text,
-              setOffer: slotController.setOffer.text,
-              dateType: slotController.dateType)
+        setOffer: slotController.setOffer.text,
+              seats: slotController.noOfGuest.text,
+              startDate: slotController.selectedStartDateTime!,
+              endDate: slotController.selectedEndDateTIme,
+              eveningSlots: slotController.dinnerTimeslots,
+              morningSlots: slotController.timeslots
+      )
           .then((value) {
-        // Get.back();
+        Get.back();
         Helper.hideLoader(loader);
       });
     } catch (e) {
@@ -74,25 +64,24 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   void initState() {
     super.initState();
     if (widget.slotDataList == null) return;
-    slotController.startDate.text = slotDataList!.startDateForLunch;
-    slotController.endDate.text = slotDataList!.endDateForLunch;
-    slotController.startTime.text = slotDataList!.startTimeForLunch;
-    slotController.endTime.text = slotDataList!.endTimeForLunch;
-    slotController.dinnerStartDate.text = slotDataList!.startDateForDinner;
-    slotController.dinnerEndDate.text = slotDataList!.endDateForDinner;
-    slotController.dinnerStartTime.text = slotDataList!.startTimeForDinner;
-    slotController.dinnerEndTime.text = slotDataList!.endTimeForDinner;
-    slotController.serviceDuration.text = slotDataList!.lunchDuration;
-    slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
-    slotController.noOfGuest.text = slotDataList!.noOfGuest;
-    slotController.setOffer.text = slotDataList!.setOffer;
-    slotController.dateType.value = slotDataList!.dateType ?? "date";
+    // slotController.startDate.text = slotDataList!.startDateForLunch;
+    // slotController.endDate.text = slotDataList!.endDateForLunch;
+    // slotController.startTime.text = slotDataList!.startTimeForLunch;
+    // slotController.endTime.text = slotDataList!.endTimeForLunch;
+    // slotController.dinnerStartDate.text = slotDataList!.startDateForDinner;
+    // slotController.dinnerEndDate.text = slotDataList!.endDateForDinner;
+    // slotController.dinnerStartTime.text = slotDataList!.startTimeForDinner;
+    // slotController.dinnerEndTime.text = slotDataList!.endTimeForDinner;
+    // slotController.serviceDuration.text = slotDataList!.lunchDuration;
+    // slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
+    // slotController.noOfGuest.text = slotDataList!.noOfGuest;
+    // slotController.setOffer.text = slotDataList!.setOffer;
+    // slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
         appBar: backAppBar(title: "Create Slot", context: context, backgroundColor: Colors.white),
@@ -127,6 +116,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                       ),
                     ),
                   ]))),
-        ));
+        )
+    );
   }
 }
