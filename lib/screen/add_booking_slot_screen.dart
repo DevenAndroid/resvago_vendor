@@ -17,7 +17,8 @@ import '../widget/custom_textfield.dart';
 class AddBookingSlot extends StatefulWidget {
   final String slotId;
   CreateSlotData? slotDataList;
-  AddBookingSlot({super.key, required this.slotId, this.slotDataList});
+  final List<DateTime> slotsDate;
+  AddBookingSlot({super.key, required this.slotId, this.slotDataList, required this.slotsDate});
 
   @override
   State<AddBookingSlot> createState() => _AddBookingSlotState();
@@ -58,7 +59,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
               setOffer: slotController.setOffer.text,
               dateType: slotController.dateType)
           .then((value) {
-        Get.back();
+        // Get.back();
         Helper.hideLoader(loader);
       });
     } catch (e) {
@@ -104,20 +105,20 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                     const SizedBox(
                       height: 8,
                     ),
-                    BookableUI(title: "Lunch"),
-                    BookableUI(title: "Dinner"),
+                    BookableUI(title: "Lunch",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
+                    BookableUI(title: "Dinner",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
                     const SizedBox(
                       height: 30,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10)
-                          .copyWith(bottom: 30),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
                       child: CommonButtonBlue(
                         onPressed: () {
                           if (_formKeyBooking.currentState!.validate()) {
                             slotController.getLunchTimeSlot();
                             slotController.getDinnerTimeSlot();
-                            if(slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty){
+                            if (slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty) {
                               addSlotToFirestore();
                             }
                           }

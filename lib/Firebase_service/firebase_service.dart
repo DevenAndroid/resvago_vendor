@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:intl/intl.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
+import '../screen/slot_list.dart';
 
 class FirebaseService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -63,16 +65,14 @@ class FirebaseService {
     dynamic userID,
   }) async {
     try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('Coupon_data');
-      var DocumentReference = collection.doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection('Coupon').doc();
-
-      DocumentReference.set({
+      FirebaseFirestore.instance.collection('Coupon_data').doc().set({
         "promoCodeName": promoCodeName,
         "code": code,
         "discount": discount,
         "startDate": startDate,
         "endDate": endDate,
         "deactivate": false,
+        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
       });
     } catch (e) {
       throw Exception(e);
@@ -95,10 +95,7 @@ class FirebaseService {
     dynamic searchName,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('vendor_menu')
-          .doc(menuId)
-          .set({
+      await FirebaseFirestore.instance.collection('vendor_menu').doc(menuId).set({
         "menuId": menuId,
         "vendorId": vendorId,
         "dishName": dishName,
@@ -117,54 +114,6 @@ class FirebaseService {
       throw Exception(e);
     }
   }
-
-  // Future manageSlot({
-  //   required String slotId,
-  //   dynamic vendorId,
-  //   dynamic lunchDuration,
-  //   dynamic dinnerDuration,
-  //   dynamic startDateForLunch,
-  //   dynamic endDateForLunch,
-  //   dynamic startTimeForLunch,
-  //   dynamic endTimeForLunch,
-  //   dynamic startDateForDinner,
-  //   dynamic endDateForDinner,
-  //   dynamic startTimeForDinner,
-  //   dynamic endTimeForDinner,
-  //   dynamic noOfGuest,
-  //   dynamic setOffer,
-  //   required List<String> slot,
-  //   required List<String> dinnerSlot,
-  //   dynamic time,
-  // }) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('vendor_slot')
-  //         .doc("${FirebaseAuth.instance.currentUser!.phoneNumber}slots")
-  //         .set({
-  //       "slotId": slotId,
-  //       "vendorId": vendorId,
-  //       "startDateForLunch": startDateForLunch,
-  //       "endDateForLunch": endDateForLunch,
-  //       "startTimeForLunch": startTimeForLunch,
-  //       "endTimeForLunch": endTimeForLunch,
-  //       "startDateForDinner": startDateForDinner,
-  //       "endDateForDinner": endDateForDinner,
-  //       "startTimeForDinner": startTimeForDinner,
-  //       "endTimeForDinner": endTimeForDinner,
-  //       "lunchDuration": lunchDuration,
-  //       "dinnerDuration": dinnerDuration,
-  //       "noOfGuest": noOfGuest,
-  //       "setOffer": setOffer,
-  //       "slot": slot,
-  //       "dinnerSlot": dinnerSlot,
-  //       "time": time,
-  //     });
-  //     showToast("Slot Added Successfully");
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
 
   Future manageSlot({
     required String slotId,
@@ -187,6 +136,47 @@ class FirebaseService {
     dynamic time,
   }) async {
     try {
+      var kk = DateFormat("dd-MMM-yyyy");
+      List<String> deleteSlotIds = [];
+      if (startDateForLunch.toString().isNotEmpty && endDateForLunch.toString().isNotEmpty) {
+        for (var element in slotDataList) {
+          if(element.startDateForLunch.toString().isNotEmpty && element.endDateForLunch.toString().isNotEmpty) {
+            if (element.startDateForLunch
+                .toString()
+                .formatDate
+                .isAfter(startDateForLunch
+                .toString()
+                .formatDate) &&
+                element.endDateForLunch
+                    .toString()
+                    .formatDate
+                    .isBefore(endDateForLunch
+                    .toString()
+                    .formatDate)) {
+              deleteSlotIds.add(element.slotId);
+            }
+          } else {
+            if(element.startDateForLunch.toString().isNotEmpty && element.endDateForLunch.toString().isEmpty){
+              if (element.startDateForLunch
+                  .toString()
+                  .formatDate
+                  .isAfter(startDateForLunch
+                  .toString()
+                  .formatDate) &&
+                  element.startDateForLunch
+                      .toString()
+                      .formatDate
+                      .isBefore(endDateForLunch
+                      .toString()
+                      .formatDate)) {
+                deleteSlotIds.add(element.slotId);
+              }
+
+            }
+          }
+        }
+      }
+
       await FirebaseFirestore.instance
           .collection('vendor_slot')
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
@@ -212,6 +202,14 @@ class FirebaseService {
         "dinnerSlot": dinnerSlot,
         "time": time,
       });
+      for (var element in deleteSlotIds) {
+        await FirebaseFirestore.instance
+            .collection('vendor_slot')
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+            .collection("slot")
+            .doc(element)
+            .delete();
+      }
       showToast("Slot Added Successfully");
     } catch (e) {
       throw Exception(e);

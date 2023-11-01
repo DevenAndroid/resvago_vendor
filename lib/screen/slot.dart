@@ -3,19 +3,24 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/controllers/slot_controller.dart';
+import 'package:resvago_vendor/helper.dart';
+import '../model/createslot_model.dart';
 import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
 import 'create_slot.dart';
 
 class BookableUI extends StatefulWidget {
   String title;
-  BookableUI({super.key, required this.title});
+  List<DateTime> slotsDate;
+  CreateSlotData? slotDataList;
+  BookableUI({super.key, required this.title, required this.slotsDate, this.slotDataList});
 
   @override
   State<BookableUI> createState() => _BookableUIState();
 }
 
 class _BookableUIState extends State<BookableUI> {
+
   final slotController = Get.put(SlotController());
   final DateFormat selectedDateFormat = DateFormat("dd-MMM-yyyy");
   pickDate({required Function(DateTime gg) onPick, DateTime? initialDate, DateTime? firstDate, DateTime? lastDate}) async {
@@ -40,7 +45,7 @@ class _BookableUIState extends State<BookableUI> {
     );
   }
 
-   productAvailability() {
+  productAvailability() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -57,144 +62,155 @@ class _BookableUIState extends State<BookableUI> {
                   children: [
                     Flexible(
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Obx(() {
-                              return Radio<String>(
-                                  value: "date",
-                                  groupValue: slotController.dateType.value,
-                                  visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                                  onChanged: (v) {
-                                    if (v == null) return;
-                                    slotController.dateType.value = v;
-                                    // updateValues();
-                                  });
-                            }),
-                            Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  slotController.dateType.value = "date";
-                                  // updateValues();
-                                },
-                                behavior: HitTestBehavior.translucent,
-                                child: Text(
-                                  "Single Date",
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
-                                ),
-                              ),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Obx(() {
+                          return Radio<String>(
+                              value: "date",
+                              groupValue: slotController.dateType.value,
+                              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                              onChanged: (v) {
+                                if (v == null) return;
+                                slotController.dateType.value = v;
+                                // updateValues();
+                              });
+                        }),
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              slotController.dateType.value = "date";
+                              // updateValues();
+                            },
+                            behavior: HitTestBehavior.translucent,
+                            child: Text(
+                              "Single Date",
+                              style:
+                                  GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
                             ),
-                          ],
-                        )),
+                          ),
+                        ),
+                      ],
+                    )),
                     const SizedBox(
                       width: 16,
                     ),
                     Flexible(
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Obx(() {
-                              return Radio<String>(
-                                  value: "range",
-                                  groupValue: slotController.dateType.value,
-                                  visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                                  onChanged: (v) {
-                                    if (v == null) return;
-                                    slotController.dateType.value = v;
-                                    // updateValues();
-                                  });
-                            }),
-                            Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  slotController.dateType.value = "range";
-                                  // updateValues();
-                                },
-                                behavior: HitTestBehavior.translucent,
-                                child: Text(
-                                  "Date Range",
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
-                                ),
-                              ),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Obx(() {
+                          return Radio<String>(
+                              value: "range",
+                              groupValue: slotController.dateType.value,
+                              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                              onChanged: (v) {
+                                if (v == null) return;
+                                slotController.dateType.value = v;
+                                // updateValues();
+                              });
+                        }),
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              slotController.dateType.value = "range";
+                              // updateValues();
+                            },
+                            behavior: HitTestBehavior.translucent,
+                            child: Text(
+                              "Date Range",
+                              style:
+                                  GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
                             ),
-                          ],
-                        )),
+                          ),
+                        ),
+                      ],
+                    )),
                   ],
                 ),
                 Obx(() {
                   return slotController.dateType.value == "range"
                       ? Column(
-                    children: [
-                      RegisterTextFieldWidget(
-                          readOnly: true,
-                          hint: "Start Date",
-                          onTap: () {
-                            pickDate(
-                                onPick: (DateTime gg) {
-                                  slotController.startDate.text = selectedDateFormat.format(gg);
-                                  slotController.selectedStartDateTime = gg;
+                          children: [
+                            RegisterTextFieldWidget(
+                                readOnly: true,
+                                hint: "Start Date",
+                                onTap: () {
+                                  pickDate(
+                                      onPick: (DateTime gg) {
+                                        if(widget.slotsDate.contains(gg)){
+                                          showToast("Slots for this day is already added");
+                                          return;
+                                        }
+                                        slotController.startDate.text = selectedDateFormat.format(gg);
+                                        slotController.selectedStartDateTime = gg;
+                                      },
+                                      initialDate: slotController.selectedStartDateTime,
+                                      lastDate: slotController.selectedEndDateTIme);
                                 },
-                                initialDate: slotController.selectedStartDateTime,
-                                lastDate: slotController.selectedEndDateTIme);
-                          },
-                          controller: slotController.startDate,
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "Start date is required";
-                            }
-                            return null;
-                          }),
-                      const SizedBox(height: 10),
-                      RegisterTextFieldWidget(
-                          readOnly: true,
-                          hint: "End Date",
-                          onTap: () {
-                            pickDate(
-                                onPick: (DateTime gg) {
-                                  slotController.endDate.text = selectedDateFormat.format(gg);
-                                  slotController.selectedEndDateTIme = gg;
+                                controller: slotController.startDate,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "Start date is required";
+                                  }
+                                  return null;
+                                }),
+                            const SizedBox(height: 10),
+                            RegisterTextFieldWidget(
+                                readOnly: true,
+                                hint: "End Date",
+                                onTap: () {
+                                  pickDate(
+                                      onPick: (DateTime gg) {
+                                        if(widget.slotsDate.contains(gg)){
+                                          showToast("Slots for this day is already added");
+                                          return;
+                                        }
+                                        slotController.endDate.text = selectedDateFormat.format(gg);
+                                        slotController.selectedEndDateTIme = gg;
+                                      },
+                                      initialDate: slotController.selectedEndDateTIme ?? slotController.selectedStartDateTime,
+                                      firstDate: slotController.selectedStartDateTime);
                                 },
-                                initialDate:
-                                slotController.selectedEndDateTIme ?? slotController.selectedStartDateTime,
-                                firstDate: slotController.selectedStartDateTime);
-                          },
-                          controller: slotController.endDate,
-                          key: slotController.endDate.getKey,
-                          // key: endTime.getKey,
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "End date is required";
-                            }
-                            return null;
-                          }),
-                    ],
-                  )
+                                controller: slotController.endDate,
+                                key: slotController.endDate.getKey,
+                                // key: endTime.getKey,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "End date is required";
+                                  }
+                                  return null;
+                                }),
+                          ],
+                        )
                       : Column(
-                    children: [
-                      RegisterTextFieldWidget(
-                          readOnly: true,
-                          hint: "Start Date",
-                          onTap: () {
-                            pickDate(
-                              onPick: (DateTime gg) {
-                                slotController.startDate.text = selectedDateFormat.format(gg);
-                                slotController.selectedStartDateTime = gg;
-                              },
-                              initialDate: slotController.selectedStartDateTime,
-                            );
-                          },
-                          controller: slotController.startDate,
-                          key: slotController.startDate.getKey,
-                          // key: startTime.getKey,
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "Single date is required";
-                            }
-                            return null;
-                          }),
-                    ],
-                  );
+                          children: [
+                            RegisterTextFieldWidget(
+                                readOnly: true,
+                                hint: "Start Date",
+                                onTap: () {
+                                  pickDate(
+                                    onPick: (DateTime gg) {
+                                      if(widget.slotsDate.contains(gg)){
+                                        showToast("Slots for this day is already added");
+                                        return;
+                                      }
+                                      slotController.startDate.text = selectedDateFormat.format(gg);
+                                      slotController.selectedStartDateTime = gg;
+                                    },
+                                    initialDate: slotController.selectedStartDateTime,
+                                  );
+                                },
+                                controller: slotController.startDate,
+                                key: slotController.startDate.getKey,
+                                // key: startTime.getKey,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "Single date is required";
+                                  }
+                                  return null;
+                                }),
+                          ],
+                        );
                 }),
               ],
             ),

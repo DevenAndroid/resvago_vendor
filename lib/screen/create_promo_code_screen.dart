@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -13,7 +11,6 @@ import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
-import '../helper.dart';
 import '../widget/common_text_field.dart';
 
 class CreatePromoCodeScreen extends StatefulWidget {
@@ -25,8 +22,16 @@ class CreatePromoCodeScreen extends StatefulWidget {
   final String? endDate;
   final String? documentId;
 
-  const CreatePromoCodeScreen({super.key,
-    required this.isEditMode, this.promoCodeName, this.code, this.discount, this.startDate, this.endDate, this.documentId,});
+  const CreatePromoCodeScreen({
+    super.key,
+    required this.isEditMode,
+    this.promoCodeName,
+    this.code,
+    this.discount,
+    this.startDate,
+    this.endDate,
+    this.documentId,
+  });
 
   @override
   State<CreatePromoCodeScreen> createState() => _CreatePromoCodeScreenState();
@@ -64,14 +69,15 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   FirebaseService firebaseService = FirebaseService();
 
   Future<void> addCouponFirestore() async {
-
     try {
       if (widget.isEditMode) {
         print('object');
-        FirebaseFirestore.instance.collection('Coupon_data')
-            .doc(FirebaseAuth.instance.currentUser!.phoneNumber).collection(
-            'Coupon').doc(widget.documentId).
-        update({
+        FirebaseFirestore.instance
+            .collection('Coupon_data')
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+            .collection('Coupon')
+            .doc(widget.documentId)
+            .update({
           "promoCodeName": promocodenameController.text,
           "code": codeController.text,
           "discount": discountController.text,
@@ -85,21 +91,19 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
       } else {
         firebaseService
             .manageCouponCode(
-            promoCodeName: promocodenameController.text.trim(),
-            code: codeController.text.trim(),
-            discount: discountController.text.trim(),
-            startDate: startDateController.text.trim(),
-            endDate: endDateController.text.trim())
+                promoCodeName: promocodenameController.text.trim(),
+                code: codeController.text.trim(),
+                discount: discountController.text.trim(),
+                startDate: startDateController.text.trim(),
+                endDate: endDateController.text.trim())
             .then((value) {
           Get.to(const PromoCodeList());
 
           Fluttertoast.showToast(msg: 'Code is created');
         });
       }
-    }catch(e){
+    } catch (e) {
       print(e.toString());
-
-
     }
   }
 
@@ -276,7 +280,6 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                             showValidation = true;
                             setState(() {});
                           }
-
                         },
                         title: 'CREATE COUPON',
                       ),
