@@ -146,10 +146,14 @@ final controller = Get.put(AddProductController());
   bool isDescendingOrder = true;
 
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").orderBy('time', descending: isDescendingOrder).get().then((value) {
+    FirebaseFirestore.instance
+        .collection("resturent")
+        .get()
+        .then((value) {
+      categoryList ??= [];
+      categoryList!.clear();
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList ??= [];
         categoryList!.add(CategoryData.fromMap(gg));
       }
       setState(() {});
