@@ -39,8 +39,6 @@ class _SettingScreenState extends State<SettingScreen> {
       "time": DateTime.now(),
       "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
     }).then((value) {
-      Get.to(const ThankYouScreen());
-
       Fluttertoast.showToast(msg: 'Setting Updated');
     });
   }

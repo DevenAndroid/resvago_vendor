@@ -489,8 +489,10 @@ final controller = Get.put(AddProductController());
                                   }),
                             ),
                           ),
-                          const Text('I do not wish to receive via sms form This app',
-                              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF64646F))),
+                          const Expanded(
+                            child: Text('Yes I understand and agree to the Terms And Conditions',
+                                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF64646F))),
+                          ),
                         ],
                       ),
                       const SizedBox(

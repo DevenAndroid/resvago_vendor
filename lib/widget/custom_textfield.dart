@@ -142,6 +142,7 @@ AppBar backAppBar(
     Color? backgroundColor = AppTheme.backgroundcolor,
     Color? textColor = Colors.black,
     Widget? icon,
+      Widget? icon2,
     disposeController}) {
   return AppBar(
     toolbarHeight: 60,
@@ -153,6 +154,9 @@ AppBar backAppBar(
       title,
       style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
     ),
+    actions: [
+      icon2 ?? SizedBox.shrink()
+    ],
     leading: Padding(
       padding: EdgeInsets.only(left: AddSize.padding10),
       child: GestureDetector(
