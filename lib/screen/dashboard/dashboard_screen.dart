@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/screen/login_screen.dart';
+import 'package:resvago_vendor/screen/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
@@ -16,7 +18,6 @@ import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../Promo_code_list.dart';
 import '../set_store_time/set_store_time.dart';
-import '../slot_screens/slot_list.dart';
 
 class VendorDashboard extends StatefulWidget {
   const VendorDashboard({Key? key}) : super(key: key);
@@ -48,6 +49,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
           width: MediaQuery.sizeOf(context).width * .70,
           child: ListView(
             padding: EdgeInsets.zero,
+
             children: [
               SizedBox(
                 height: 230,
@@ -141,50 +143,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
-                title: Text('Create Coupon',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 1;
-                    Get.to(const CreatePromoCodeScreen(isEditMode: false,));
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
-
-                title: Text('Coupon List',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    Get.to(const PromoCodeList());
-                    currentDrawer = 2;
-                    // Get.to(const CreatePromoCodeScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
 
                 title: Text('Promo Code List',
                     style: GoogleFonts.poppins(
@@ -216,7 +174,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 4;
-                    Get.to(()=> const SlotListScreen());
+                    Get.to(const SlotListScreen());
                   });
                 },
               ),
@@ -283,6 +241,26 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   });
                 },
               ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.countertops_outlined),
+                title: Text('Log Out',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Get.offAll(const LoginScreen());
+                },
+              ),
+              SizedBox(height: 100,),
             ],
           ),
         ),

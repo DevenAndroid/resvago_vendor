@@ -146,10 +146,14 @@ final controller = Get.put(AddProductController());
   bool isDescendingOrder = true;
 
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").orderBy('time', descending: isDescendingOrder).get().then((value) {
+    FirebaseFirestore.instance
+        .collection("resturent")
+        .get()
+        .then((value) {
+      categoryList ??= [];
+      categoryList!.clear();
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList ??= [];
         categoryList!.add(CategoryData.fromMap(gg));
       }
       setState(() {});
@@ -485,8 +489,10 @@ final controller = Get.put(AddProductController());
                                   }),
                             ),
                           ),
-                          const Text('I do not wish to receive via sms form This app',
-                              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF64646F))),
+                          const Expanded(
+                            child: Text('Yes I understand and agree to the Terms And Conditions',
+                                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF64646F))),
+                          ),
                         ],
                       ),
                       const SizedBox(
