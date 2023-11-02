@@ -20,6 +20,7 @@ class CreatePromoCodeScreen extends StatefulWidget {
   final String? discount;
   final String? startDate;
   final String? endDate;
+  final String? maxDiscount;
   final String? documentId;
 
   const CreatePromoCodeScreen({
@@ -28,6 +29,7 @@ class CreatePromoCodeScreen extends StatefulWidget {
     this.promoCodeName,
     this.code,
     this.discount,
+    this.maxDiscount,
     this.startDate,
     this.endDate,
     this.documentId,
@@ -45,6 +47,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   TextEditingController promocodenameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController discountController = TextEditingController();
+  TextEditingController maxDiscountController = TextEditingController();
   DateTime? selectedStartDateTime;
   DateTime? selectedEndDateTIme;
   bool showValidation = false;
@@ -74,12 +77,11 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
         print('object');
         FirebaseFirestore.instance
             .collection('Coupon_data')
-            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-            .collection('Coupon')
             .doc(widget.documentId)
             .update({
           "promoCodeName": promocodenameController.text,
           "code": codeController.text,
+          "cmaxDiscountode": maxDiscountController.text,
           "discount": discountController.text,
           "startDate": startDateController.text,
           "endDate": endDateController.text,
@@ -93,6 +95,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
             .manageCouponCode(
                 promoCodeName: promocodenameController.text.trim(),
                 code: codeController.text.trim(),
+                maxDiscount: maxDiscountController.text.trim(),
                 discount: discountController.text.trim(),
                 startDate: startDateController.text.trim(),
                 endDate: endDateController.text.trim())
@@ -116,6 +119,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
     discountController.text = widget.discount ?? "";
     startDateController.text = widget.startDate ?? "";
     endDateController.text = widget.endDate ?? "";
+    maxDiscountController.text = widget.maxDiscount ?? "";
   }
 
   @override
@@ -201,7 +205,27 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         keyboardType: TextInputType.number,
                         validator: RequiredValidator(
                             errorText: 'Please enter your Discount '),
-                        hint: '10.00',
+                        hint: '%',
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Max Discount",
+                        style: GoogleFonts.poppins(
+                            color: AppTheme.registortext,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      RegisterTextFieldWidget(
+                        controller: maxDiscountController,
+                        keyboardType: TextInputType.number,
+                        validator: RequiredValidator(
+                            errorText: 'Please enter your Discount '),
+                        hint: '%',
                       ),
                       const SizedBox(
                         height: 20,

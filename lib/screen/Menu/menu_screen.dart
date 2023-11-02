@@ -285,8 +285,6 @@ class _MenuScreenState extends State<MenuScreen> {
                                             onTap: () {
                                               FirebaseFirestore.instance
                                                   .collection("vendor_menu")
-                                                  .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-                                                  .collection("menus")
                                                   .doc(menuItem.menuId)
                                                   .delete()
                                                   .then((value) {

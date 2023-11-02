@@ -4,6 +4,7 @@ class CouponData {
   final dynamic discount;
   final dynamic startDate;
   final dynamic endDate;
+  final dynamic maxDiscount;
   final dynamic? docid;
   final bool deactivate;
 
@@ -13,6 +14,7 @@ class CouponData {
       this.code,
       this.discount,
       this.startDate,
+      this.maxDiscount,
         required this.deactivate,
       this.endDate,
       this.docid});
@@ -24,6 +26,7 @@ class CouponData {
       'discount': discount,
       'startDate': startDate,
       'endDate': endDate,
+      'maxDiscount': maxDiscount,
       'docid': docid,
       'deactivate': deactivate,
     };
@@ -35,6 +38,7 @@ class CouponData {
       deactivate: map['deactivate'],
       code: map['code'],
       discount: map['discount'],
+      maxDiscount: map['maxDiscount'],
       startDate: map['startDate'],
       endDate: map['endDate'],
       docid: map['docid'],

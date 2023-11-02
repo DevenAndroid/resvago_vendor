@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/model/setting_model.dart';
 import 'package:resvago_vendor/screen/thankyou_screen.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
@@ -42,7 +45,27 @@ class _SettingScreenState extends State<SettingScreen> {
       Fluttertoast.showToast(msg: 'Setting Updated');
     });
   }
+  Future<void> getData() async {
+    final users = FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.phoneNumber);
+    await users.get().then((value) {
+      if(value.exists){
+        SettingModel model = SettingModel.fromMap(value.data()!);
+        preparationTimeController.text = model.preparationTime ?? "";
+        averageMealForMemberController.text = model.averageMealForMember ?? "";
+        state = model.setDelivery == true;
+        state1 = model.cancellation == true;
+        state2 = model.menuSelection == true;
+        setState(() {
 
+        });
+      }
+    });
+  }
+   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -122,7 +122,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
@@ -149,7 +149,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                   ),
                 ],
               ),
-              // const Spacer(),
+               const Spacer(),
               PopupMenuButton(
                   color: Colors.white,
                   iconSize: 20,

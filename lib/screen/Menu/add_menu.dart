@@ -133,8 +133,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     descriptionController.text = widget.menuItemData!.description ?? "";
     categoryFile = File(widget.menuItemData!.image ?? "");
     categoryValue = widget.menuItemData!.category ?? "";
-    delivery = widget.menuItemData!.booking == "Delivery" ? true : false;
-    dining = widget.menuItemData!.booking == "Dining" ? true : false;
+    delivery = widget.menuItemData!.bookingForDelivery;
+    dining = widget.menuItemData!.bookingForDining;
   }
 
   @override

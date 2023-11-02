@@ -32,7 +32,7 @@ class SettingModel {
     };
   }
 
-  factory SettingModel.fromMap(Map<String, dynamic> map, String menuId) {
+  factory SettingModel.fromMap(Map<String, dynamic> map) {
     return SettingModel(
       preparationTime: map['preparationTime'],
       averageMealForMember: map['averageMealForMember'],

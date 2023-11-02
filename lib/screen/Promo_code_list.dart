@@ -120,19 +120,13 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                             context)
                                                         .style,
                                                     children: <TextSpan>[
-                                                      TextSpan(
-                                                          text: item.deactivate
-                                                              ? "  Deactivate"
-                                                              : "",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.red)),
+
                                                     ],
                                                   ),
                                                 ),
+                                                item.deactivate
+                                                    ? Icon(Icons.block,color: Colors.red,)
+                                                    : const SizedBox(),
                                                 PopupMenuButton(
                                                     color: Colors.white,
                                                     iconSize: 20,
@@ -163,29 +157,36 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                                   .startDate,
                                                               endDate:
                                                                   item.endDate,
+                                                              maxDiscount: item.maxDiscount,
                                                               documentId:
                                                                   item.docid,
                                                             ));
                                                           },
                                                         ),
+
                                                         PopupMenuItem(
-                                                          child: Text(
-                                                              "deactivate"),
+                                                          child: Text(item.deactivate
+                                                              ? "Activate"
+                                                              : "Deactivate"),
                                                           onTap: () {
+                                                            item.deactivate ?
                                                             FirebaseFirestore
                                                                 .instance
                                                                 .collection(
                                                                     'Coupon_data')
-                                                                .doc(FirebaseAuth
-                                                                    .instance
-                                                                    .currentUser!
-                                                                    .phoneNumber)
+                                                                .doc(item.docid)
+                                                                .update({
+                                                              "deactivate": false
+                                                            }) :
+                                                            FirebaseFirestore
+                                                                .instance
                                                                 .collection(
-                                                                    'Coupon')
+                                                                'Coupon_data')
                                                                 .doc(item.docid)
                                                                 .update({
                                                               "deactivate": true
                                                             });
+                                                            setState(() {});
                                                           },
                                                         )
                                                       ];
@@ -358,6 +359,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                   deactivate: doc.data()['deactivate'],
                   promoCodeName: doc.data()['promoCodeName'],
                   startDate: doc.data()['startDate'],
+                  maxDiscount: doc.data()['maxDiscount'],
                   endDate: doc.data()['endDate'],
                 ))
             .toList());

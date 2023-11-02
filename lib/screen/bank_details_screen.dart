@@ -5,6 +5,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:resvago_vendor/helper.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
+import '../model/bankdetails_model.dart';
 import '../widget/addsize.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
@@ -39,6 +40,29 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     });
   }
 
+  Future<void> getBankData() async {
+    final users = FirebaseFirestore.instance.collection('BankDetails').doc(FirebaseAuth.instance.currentUser!.phoneNumber);
+    await users.get().then((value) {
+      if(value.exists){
+        BankData model = BankData.fromMap(value.data()!);
+        bankAccountNumber.text = model.bankAccountNumber ?? "";
+        bankName.text = model.bankName ?? "";
+        accountHolderName.text = model.accountHolderName ?? "";
+        iFSCCode.text = model.ifscCode ?? "";
+
+        setState(() {
+
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBankData();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
