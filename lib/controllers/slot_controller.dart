@@ -27,6 +27,10 @@ class SlotController extends GetxController {
   final DateFormat timeFormatWithoutAMPM = DateFormat("hh:mm");
   List<ServiceTimeSloat> serviceTimeSloat = [];
   bool resetSlots = false;
+
+
+  bool editLunch = false;
+  bool editDinner = false;
   // resetValues(){
   //   startTime.text = "";
   //   endTime.text = "";
@@ -102,5 +106,12 @@ class SlotController extends GetxController {
     for(var i = 0; i < 100; i++){
       productDuration.add((i+1).toString());
     }
+  }
+
+  void clearAll() {
+    editDinner = false;
+    editLunch = false;
+    slots.clear();
+    dinnerSlots.clear();
   }
 }

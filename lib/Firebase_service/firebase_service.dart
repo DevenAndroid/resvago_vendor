@@ -221,4 +221,6 @@ class FirebaseService {
     }
     return vendorModel;
   }
+
+
 }

@@ -162,9 +162,10 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         return [
                                           PopupMenuItem(
                                             onTap: () {
+                                              final slotController = Get.put(SlotController());
+                                              slotController.clearAll();
                                               Get.to(() => EditSlotsScreen(
                                                     createSlotData: item,
-                                                    slotsDate: const [],
                                                   ));
                                               // slotController.slots.clear();
                                               // slotController.dinnerSlots.clear();
