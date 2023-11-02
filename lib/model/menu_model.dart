@@ -10,8 +10,10 @@ class MenuData {
    dynamic image;
    dynamic booking;
    dynamic time;
+   dynamic bookingForDining;
+   dynamic bookingForDelivery;
 
-  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId});
+  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId,this.bookingForDelivery,this.bookingForDining});
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,7 +27,9 @@ class MenuData {
       "description": description,
       "image": image,
       "booking": booking,
-      "time": time
+      "time": time,
+      "bookingForDining": bookingForDining,
+      "bookingForDelivery": bookingForDelivery
     };
   }
 
@@ -42,6 +46,8 @@ class MenuData {
       image: map['image'],
       booking: map['booking'],
       time: map['time'],
+      bookingForDining: map['bookingForDining'],
+      bookingForDelivery: map['bookingForDelivery'],
     );
   }
 }

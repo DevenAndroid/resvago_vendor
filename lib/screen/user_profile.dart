@@ -314,7 +314,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             controller: restaurantController,
                             validator: RequiredValidator(
                                 errorText:
-                                    'Please enter your Restaurant Name '),
+                                    'Please enter your Restaurant Name ').call,
                             hint: profileData.restaurantName == null
                                 ? "email"
                                 : profileData.restaurantName.toString(),
@@ -335,7 +335,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: categoryController,
                             validator: RequiredValidator(
-                                errorText: 'Please enter your Category '),
+                                errorText: 'Please enter your Category ').call,
                             // keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
                             hint: profileData.category == null
@@ -362,7 +362,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   errorText: 'Please enter your email'),
                               EmailValidator(
                                   errorText: 'Enter a valid email address'),
-                            ]),
+                            ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
                             hint: profileData.email == null
@@ -386,7 +386,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             controller: mobileController,
                             length: 10,
                             validator: RequiredValidator(
-                                errorText: 'Please enter your Mobile Number '),
+                                errorText: 'Please enter your Mobile Number ').call,
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
                             hint: profileData.mobileNumber == null
@@ -500,8 +500,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             controller: aboutUsController,
                             minLines: 5,
                             maxLines: 5,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter about yourself '),
+                            validator: MultiValidator([
+                              RequiredValidator(
+                                  errorText: 'Please enter about yourself'),
+                              EmailValidator(
+                                  errorText: 'Enter a valid email address'),
+                            ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
                           ),

@@ -8,7 +8,7 @@ import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
-import 'package:resvago_vendor/screen/slot_list.dart';
+import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';

@@ -7,13 +7,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
+import 'package:resvago_vendor/screen/slot_screens/add_booking_slot_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slotViwe%20screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-import '../../controllers/slot_controller.dart';
-import '../../widget/addsize.dart';
-import '../../widget/apptheme.dart';
-import 'add_booking_slot_screen.dart';
+import '../../../controllers/slot_controller.dart';
+import '../../../widget/addsize.dart';
+import '../../../widget/apptheme.dart';
 import 'edit_slots_screen.dart';
 
 class SlotListScreen extends StatefulWidget {
@@ -162,9 +162,10 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         return [
                                           PopupMenuItem(
                                             onTap: () {
-                                              // Get.to(() => EditSlotsScreen(
-                                              //       createSlotData: item,
-                                              //     ));
+                                              Get.to(() => EditSlotsScreen(
+                                                    createSlotData: item,
+                                                    slotsDate: const [],
+                                                  ));
                                               // slotController.slots.clear();
                                               // slotController.dinnerSlots.clear();
                                               // Get.to(() => AddBookingSlot(
@@ -177,8 +178,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                           ),
                                           PopupMenuItem(
                                             onTap: () {
-                                              Get.to(() => SlotViewScreen(
-                                                 slotDataList: item));
+                                              Get.to(() => SlotViewScreen(slotDataList: item));
                                             },
                                             // value: '/slotViewScreen',
                                             child: const Text("View"),
