@@ -13,8 +13,9 @@ import '../../widget/common_text_field.dart';
 import '../../widget/custom_textfield.dart';
 
 class EditSlotsScreen extends StatefulWidget {
-   EditSlotsScreen({super.key, required this.createSlotData});
+   EditSlotsScreen({super.key, required this.createSlotData, required this.refreshValues});
   CreateSlotData? createSlotData;
+   final Function() refreshValues;
   @override
   State<EditSlotsScreen> createState() => _EditSlotsScreenState();
 }
@@ -91,13 +92,15 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                             print(slotController.timeslots);
                             print(slotController.dinnerTimeslots);
                             await firebaseService.manageSlot(
-                                setOffer: widget.createSlotData!.setOffer??"",
-                                seats: "50" ??"",
+                                setOffer: widget.createSlotData!.setOffer ?? "",
+                                seats: slotController.setOffer.text,
                                 startDate: widget.createSlotData!.slotId!,
                                 endDate: null,
                                 eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
                                 morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
                             );
+                            widget.refreshValues();
+                            Get.back();
                           }
                         },
                         title: 'Update Slot'.toUpperCase(),

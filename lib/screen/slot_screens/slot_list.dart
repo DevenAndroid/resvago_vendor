@@ -29,8 +29,6 @@ class _SlotListScreenState extends State<SlotListScreen> {
   bool isDescendingOrder = true;
   int pagination = 0;
   Future<List<CreateSlotData>> getSlots() async {
-    log("ashdasd      "+(30+pagination).toString());
-    log("ashdasd      "+(5+pagination).toString());
     final item = await FirebaseFirestore.instance
         .collection("vendor_slot")
         .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
@@ -44,11 +42,18 @@ class _SlotListScreenState extends State<SlotListScreen> {
   List<CreateSlotData>? slotsList;
   bool paginationWorking = false;
 
-  getSlotsWithPagination() {
+  getSlotsWithPagination({bool? reset}) {
+    if(reset == true){
+      paginationWorking = false;
+      pagination = 0;
+    }
     if(paginationWorking)return;
     if(pagination == -1)return;
     paginationWorking = true;
     getSlots().then((value) {
+      if(reset == true){
+        slotsList = [];
+      }
       pagination = pagination + 35;
       if(value.isNotEmpty){
         slotsList ??= [];
@@ -69,7 +74,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   @override
   void initState() {
     super.initState();
-    getSlotsWithPagination();
+    getSlotsWithPagination(reset: true);
     scrollController.addListener(() {
       if(scrollController.position.pixels > (scrollController.position.maxScrollExtent - 10)){
         getSlotsWithPagination();
@@ -105,6 +110,9 @@ class _SlotListScreenState extends State<SlotListScreen> {
                 slotController.dinnerSlots.clear();
                 Get.to(() => AddBookingSlot(
                       slotId: DateTime.now().millisecondsSinceEpoch.toString(),
+                      refreshValues: (){
+                        getSlotsWithPagination(reset: true);
+                      },
                       slotsDate: const [],
                     ));
               },
@@ -196,6 +204,9 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         slotController.clearAll();
                                         Get.to(() => EditSlotsScreen(
                                           createSlotData: item,
+                                          refreshValues: (){
+                                            getSlotsWithPagination(reset: true);
+                                          },
                                         ));
                                         // slotController.slots.clear();
                                         // slotController.dinnerSlots.clear();

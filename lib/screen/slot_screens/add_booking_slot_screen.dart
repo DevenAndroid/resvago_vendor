@@ -18,7 +18,8 @@ class AddBookingSlot extends StatefulWidget {
   final String slotId;
   CreateSlotData? slotDataList;
   final List<DateTime> slotsDate;
-  AddBookingSlot({super.key, required this.slotId, this.slotDataList, required this.slotsDate});
+  final Function() refreshValues;
+  AddBookingSlot({super.key, required this.slotId, this.slotDataList, required this.slotsDate, required this.refreshValues});
 
   @override
   State<AddBookingSlot> createState() => _AddBookingSlotState();
@@ -50,6 +51,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
       )
           .then((value) {
         Get.back();
+        widget.refreshValues();
         Helper.hideLoader(loader);
       });
     } catch (e) {

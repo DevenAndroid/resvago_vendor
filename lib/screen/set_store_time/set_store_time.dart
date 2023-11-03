@@ -407,7 +407,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                   if(weekSchedule1.isNotEmpty){
                     uploadWeekSchedule(FirebaseAuth.instance.currentUser!.phoneNumber!, weekSchedule1);
                   }
-                  getWeekSchedule(userId);
+                  // getWeekSchedule(userId);
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
