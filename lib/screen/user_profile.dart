@@ -154,7 +154,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         print(profileData.address.toString());
-        aboutUsController.text = (profileData.aboutUs??"").toString();
+        aboutUsController.text = profileData.aboutUs.toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
@@ -503,6 +503,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             validator: MultiValidator([
                               RequiredValidator(
                                   errorText: 'Please enter about yourself'),
+                              EmailValidator(
+                                  errorText: 'Enter a valid email address'),
                             ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
