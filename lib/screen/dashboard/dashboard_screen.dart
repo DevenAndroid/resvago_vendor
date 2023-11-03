@@ -366,51 +366,54 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 )),
           ),
           actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AddSize.padding10,
-              ),
-              child: Stack(
-                children: [
-                  GestureDetector(
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: GestureDetector(
                     onTap: () {
                       Get.to(const UserProfileScreen());
                     },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 30,
-                      child: Container(
-                          height: AddSize.size45,
-                          width: AddSize.size45,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white)),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl:profileData.image.toString(),
-                               height: AddSize.size20,
-                            width: AddSize.size20,
-                            errorWidget: (_, __, ___) => const Icon(Icons.person),
-                            placeholder: (_, __) => const SizedBox(),
-                          )),
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          height: 45,
+                          width: 45,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white,width: 2),
+                                shape: BoxShape.circle
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl:profileData.image.toString(),
+                                errorWidget: (_, __, ___) => const Icon(Icons.person),
+                                placeholder: (_, __) => const SizedBox(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                            top: 2,
+                            left: 0,
+                            child: Container(
+                              height: 13,
+                              width: 13,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                color: AppTheme.userActive,
+                                border: Border.all(color: AppTheme.backgroundcolor, width: 2),
+                                borderRadius: BorderRadius.circular(50),
+                                // color: Colors.brown
+                              ),
+                            ))
+                      ],
                     ),
                   ),
-                  Positioned(
-                      top: 10,
-                      left: 06,
-                      child: Container(
-                        height: 12,
-                        width: 12,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          color: AppTheme.userActive,
-                          border: Border.all(color: AppTheme.backgroundcolor, width: 1),
-                          borderRadius: BorderRadius.circular(50),
-                          // color: Colors.brown
-                        ),
-                      ))
-                ],
-              ),
+                ),
+              ],
             )
           ],
         ),

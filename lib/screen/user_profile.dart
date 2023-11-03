@@ -154,7 +154,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         print(profileData.address.toString());
-        aboutUsController.text = profileData.aboutUs.toString();
+        aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
