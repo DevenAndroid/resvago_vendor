@@ -230,7 +230,9 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                   ];
                                 })
                           ]));
-                }) : const Center(child: Text("Slots are not created yet"),) : const Center(child: CircularProgressIndicator(),),
+                }) :
+            const Center(child: Text("Slots are not created yet"),) :
+            const Center(child: Text("Slots are not created yet"),),
           )
         ]),
       ),

@@ -42,7 +42,7 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
           }
         }
         return Text(
-          "Open",
+          "Closed",
           style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: AppTheme.primaryColor,),
         );
       },

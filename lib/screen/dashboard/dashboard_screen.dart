@@ -311,7 +311,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
           // toolbarHeight: 100,
           elevation: 0,
           leadingWidth: 45,
-          backgroundColor: const Color(0xffF5F5F5),
+          automaticallyImplyLeading: false,
+          //backgroundColor: const Color(0xffF5F5F5),
           title: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,17 +356,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
             ],
           ),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: Image.asset(
-                  AppAssets.back,
-                  height: AddSize.size15,
-                )),
-          ),
+
           actions: [
             Column(
               children: [
