@@ -14,6 +14,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/model/profile_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
@@ -71,6 +72,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
+  File categoryFile = File("");
 
   Future<void> updateProfileToFirestore() async {
     if (controller.galleryImages.isEmpty) {
@@ -82,6 +84,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     try {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
+      String imageUrlProfile = categoryFile.path;
+      if(!categoryFile.path.contains("http")){
+
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref(
+            "profileImage/${FirebaseAuth.instance.currentUser!
+                .phoneNumber}")
+            .child("image")
+            .putFile(categoryFile);
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrlProfile = await snapshot.ref.getDownloadURL();
+      }
       for (var element in controller.galleryImages.asMap().entries) {
         if (element.value.path.contains("http")) {
           imagesLink.add(element.value.path);
@@ -97,7 +111,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imagesLink.add(imageUrl);
         }
       }
-          for (var element in controller.menuGallery.asMap().entries) {
+      for (var element in controller.menuGallery.asMap().entries) {
             if (element.value.path.contains("http")) {
               menuPhotoLink.add(element.value.path);
             } else {
@@ -124,6 +138,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "category": categoryController.text.trim(),
         "restaurantImage": imagesLink,
         "menuImage": menuPhotoLink,
+        "image" : imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
         "confirmPassword": confirmPassController.text.trim()
@@ -148,13 +163,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
+        categoryFile = File(profileData.image.toString());
         mobileController.text = profileData.mobileNumber.toString();
         restaurantController.text = profileData.restaurantName.toString();
         categoryController.text = profileData.category.toString();
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         print(profileData.address.toString());
-        aboutUsController.text = profileData.aboutUs.toString();
+        aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
@@ -215,57 +231,71 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10000),
-                                child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFAAF40),
-                                    border: Border.all(
-                                        color: const Color(0xff3B5998),
-                                        width: 6),
-                                    borderRadius: BorderRadius.circular(5000),
-                                    // color: Colors.brown
-                                  ),
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: profileData.image == null
-                                        ? "image"
-                                        : profileData.image.toString(),
-                                    height: AddSize.size30,
-                                    width: AddSize.size30,
-                                    errorWidget: (_, __, ___) => const Icon(
-                                      Icons.person,
-                                      size: 60,
+                              SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10000),
+                                      child: Container(
+                                        height: 100,
+                                        width: 100,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffFAAF40),
+                                          border: Border.all(
+                                              color: const Color(0xff3B5998),
+                                              width: 6),
+                                          borderRadius: BorderRadius.circular(5000),
+                                          // color: Colors.brown
+                                        ),
+                                        child: Image.file(
+                                          categoryFile,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_,__,___)=> CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            imageUrl: categoryFile.path,
+                                            height: AddSize.size30,
+                                            width: AddSize.size30,
+                                            errorWidget: (_, __, ___) => const Icon(
+                                              Icons.person,
+                                              size: 60,
+                                            ),
+                                            placeholder: (_, __) => const SizedBox(),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    placeholder: (_, __) => const SizedBox(),
-                                  ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          showActionSheet(context);
+                                        },
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xff04666E),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                          child: const Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.white,
+                                            size: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Positioned(
-                          top: 150,
-                          left: 210,
-                          right: 122,
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff04666E),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 15,
-                            ),
-                          ),
-                        )
                       ],
                     ),
                     Align(
@@ -503,8 +533,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             validator: MultiValidator([
                               RequiredValidator(
                                   errorText: 'Please enter about yourself'),
-                              EmailValidator(
-                                  errorText: 'Enter a valid email address'),
                             ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
@@ -561,6 +589,106 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
+  void showActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text(
+          'Select Picture from',
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(
+                  imageSource: ImageSource.camera, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
+            },
+            child: const Text("Camera"),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(
+                  imageSource: ImageSource.gallery, imageQuality: 75)
+                  .then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
+            },
+            child: const Text('Gallery'),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 class ProductGalleryImages extends StatefulWidget {
