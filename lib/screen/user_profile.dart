@@ -22,6 +22,7 @@ import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
 import '../controllers/add_product_controller.dart';
 import '../helper.dart';
+import '../model/category_model.dart';
 import '../utils/helper.dart';
 import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
@@ -73,7 +74,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
   File categoryFile = File("");
+  List<CategoryData>? categoryList;
+  String? categoryValue;
 
+  getVendorCategories() {
+    FirebaseFirestore.instance.collection("resturent").get().then((value) {
+      categoryList ??= [];
+      categoryList!.clear();
+      for (var element in value.docs) {
+        var gg = element.data();
+        categoryList!.add(CategoryData.fromMap(gg));
+      }
+      setState(() {});
+    });
+  }
   Future<void> updateProfileToFirestore() async {
     if (controller.galleryImages.isEmpty) {
       showToast("Please select menu images");
@@ -135,7 +149,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "address": _address,
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
-        "category": categoryController.text.trim(),
+        "category": categoryValue,
         "restaurantImage": imagesLink,
         "menuImage": menuPhotoLink,
         "image" : imageUrlProfile,
@@ -166,7 +180,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         categoryFile = File(profileData.image.toString());
         mobileController.text = profileData.mobileNumber.toString();
         restaurantController.text = profileData.restaurantName.toString();
-        categoryController.text = profileData.category.toString();
+        categoryValue = profileData.category;
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         print(profileData.address.toString());
@@ -193,6 +207,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       fetchdata();
     });
+    getVendorCategories();
   }
 
   @override
@@ -362,16 +377,91 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             height: 10,
                           ),
-                          RegisterTextFieldWidget(
-                            controller: categoryController,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter your Category ').call,
-                            // keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.next,
-                            hint: profileData.category == null
-                                ? "email"
-                                : profileData.category.toString(),
-                          ),
+                          if (categoryList != null)
+                            DropdownButtonFormField<dynamic>(
+                              focusColor: Colors.white,
+                              isExpanded: true,
+                              iconEnabledColor: const Color(0xff97949A),
+                              icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                              borderRadius: BorderRadius.circular(10),
+                              hint: Text(
+                                "Select category".tr,
+                                style: const TextStyle(
+                                    color: Color(0xff2A3B40),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300),
+                                textAlign: TextAlign.justify,
+                              ),
+                              decoration: InputDecoration(
+                                focusColor: const Color(0xFF384953),
+                                hintStyle: GoogleFonts.poppins(
+                                  color: const Color(0xFF384953),
+                                  textStyle: GoogleFonts.poppins(
+                                    color: const Color(0xFF384953),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  fontSize: 14,
+                                  // fontFamily: 'poppins',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(.10),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 15),
+                                // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color:
+                                      const Color(0xFF384953).withOpacity(.24)),
+                                  borderRadius: BorderRadius.circular(6.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF384953)
+                                            .withOpacity(.24)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(6.0))),
+                                errorBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.red.shade800),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(6.0))),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF384953)
+                                            .withOpacity(.24),
+                                        width: 3.0),
+                                    borderRadius: BorderRadius.circular(6.0)),
+                              ),
+                              value: categoryValue,
+                              items: categoryList!.map((items) {
+                                return DropdownMenuItem(
+                                  value: items.name.toString(),
+                                  child: Text(
+                                    items.name.toString(),
+                                    style: TextStyle(
+                                        color: AppTheme.userText,
+                                        fontSize: AddSize.font14),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                categoryValue = newValue.toString();
+                                log(categoryValue.toString());
+                                setState(() {});
+                              },
+                              validator: (value) {
+                                if (categoryValue == null) {
+                                  return 'Please select category';
+                                }
+                                return null;
+                              },
+                            )
+                          else
+                            const Center(
+                              child: Text("No Category Available"),
+                            ),
                           const SizedBox(
                             height: 20,
                           ),

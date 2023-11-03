@@ -335,7 +335,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                     ),
-                    Expanded(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
+                    Flexible(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
                     SizedBox(
                       width: AddSize.size5,
                     ),
@@ -416,6 +416,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AddSize.padding16,
+              vertical: AddSize.padding18,
             ),
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -437,7 +438,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                     children: List.generate(
                       4,
                       (index) => Container(
-                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding16),
+                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding05),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppTheme.backgroundcolor),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
