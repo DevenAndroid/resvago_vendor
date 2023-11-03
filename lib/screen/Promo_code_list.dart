@@ -223,7 +223,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                       fontSize: 16),
                                                 ),
                                                 Text(
-                                                  "\%${item.discount.toString()}",
+                                                  "${item.discount.toString()}\%",
                                                   style: GoogleFonts.poppins(
                                                       color: Colors.grey,
                                                       fontWeight:

@@ -188,7 +188,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
+                leading: const Icon(Icons.line_style),
                 title: Text('Slot List',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -207,30 +207,10 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 color: Color(0xffEFEFEF),
                 thickness: 1,
               ),
+
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
-                title: Text('Setting',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 5;
-                    Get.to(const SettingScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
+                leading: const Icon(Icons.monetization_on),
                 title: Text('Total Earning',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -251,7 +231,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
+                leading: const Icon(Icons.access_time),
                 title: Text('Set Store Time',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -272,7 +252,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
+                leading: const Icon(Icons.food_bank),
                 title: Text('Bank Details',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -290,7 +270,28 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
+                leading: const Icon(Icons.settings),
+                title: Text('Setting',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const SettingScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.logout),
                 title: Text('Log Out',
                     style: GoogleFonts.poppins(
                       fontSize: 15,

@@ -225,7 +225,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         keyboardType: TextInputType.number,
                         validator: RequiredValidator(
                             errorText: 'Please enter your Discount '),
-                        hint: '%',
+                        hint: '100',
                       ),
                       const SizedBox(
                         height: 20,
