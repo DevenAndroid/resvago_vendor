@@ -233,6 +233,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                             .collection("slot")
                                             .doc(item.slotId.toString())
                                             .delete();
+                                        slotsList!.removeAt(index);
                                         setState(() {});
                                       },
                                       // value: '/deactivate',

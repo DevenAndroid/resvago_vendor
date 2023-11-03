@@ -631,7 +631,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Restaurant Image",
+                            "Upload Restaurant Images or Videos",
                             style: GoogleFonts.poppins(
                                 color: AppTheme.registortext,
                                 fontWeight: FontWeight.w500,
@@ -645,7 +645,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Menu Image",
+                            "Upload Restaurant Menu Card",
                             style: GoogleFonts.poppins(
                                 color: AppTheme.registortext,
                                 fontWeight: FontWeight.w500,
