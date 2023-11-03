@@ -1,35 +1,47 @@
-class StoreTimeData {
-  dynamic storeTimeId;
-  dynamic vendorId;
-  dynamic weekDay;
-  dynamic startTime;
-  dynamic endTime;
-  dynamic status;
-  dynamic time;
+class ModelStoreTime {
+  List<Schedule>? schedule;
 
-  StoreTimeData({this.endTime,this.startTime,this.weekDay,this.time,this.status,this.vendorId,this.storeTimeId});
+  ModelStoreTime({this.schedule});
 
-  Map<String, dynamic> toMap() {
-    return {
-      "storeTimeId": storeTimeId,
-      "vendorId": vendorId,
-      "weekdays": weekDay,
-      "startTime": startTime,
-      "endTime": endTime,
-      "status": status,
-      "time": time
-    };
+  ModelStoreTime.fromJson(Map<String, dynamic> json) {
+    if (json['schedule'] != null) {
+      schedule = <Schedule>[];
+      json['schedule'].forEach((v) {
+        schedule!.add(Schedule.fromJson(v));
+      });
+    }
   }
 
-  factory StoreTimeData.fromMap(Map<String, dynamic> map, String storeTimeId,) {
-    return StoreTimeData(
-      storeTimeId: map['storeTimeId'],
-      vendorId: map['vendorId'],
-      weekDay: map['weekdays'],
-      startTime: map['startTime'],
-      endTime: map["endTime"],
-      status: map["status"],
-      time: map['time'],
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (schedule != null) {
+      data['schedule'] = schedule!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Schedule {
+  String? startTime;
+  String? endTime;
+  String? day;
+  bool? status;
+
+  Schedule({this.startTime, this.endTime, this.day, this.status});
+
+  Schedule.fromJson(Map<String, dynamic> json) {
+    startTime = json['start_time'];
+    endTime = json['end_time'];
+    day = json['day'];
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['start_time'] = startTime;
+    data['end_time'] = endTime;
+    data['day'] = day;
+    data['status'] = status;
+    return data;
   }
 }

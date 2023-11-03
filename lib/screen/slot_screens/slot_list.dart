@@ -38,6 +38,12 @@ class _SlotListScreenState extends State<SlotListScreen> {
     return item.docs.map((e) => CreateSlotData.fromMap(e.data())).toList();
   }
 
+  List<CreateSlotData>? slotsList;
+
+  getSlotsWithPagination() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +161,6 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         setState(() {
                                           selectedItem = value.toString();
                                         });
-
                                         Navigator.pushNamed(context, value.toString());
                                       },
                                       itemBuilder: (ac) {

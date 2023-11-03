@@ -133,7 +133,17 @@ class FirebaseService {
       for (var element in eveningSlots) {
         eveningMapSlots[element] = int.tryParse(seats) ?? 0;
       }
-
+      print({
+        "slotId": startDate.toString(),
+        "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "slot_date": startDate.millisecondsSinceEpoch,
+        "morning_slots": morningMapSlots,
+        "evening_slots": eveningMapSlots,
+        "noOfGuest": seats,
+        "setOffer": setOffer,
+        "created_time": DateTime.now().millisecondsSinceEpoch,
+      });
+// return;
       if(endDate == null){
         await FirebaseFirestore.instance
             .collection('vendor_slot')

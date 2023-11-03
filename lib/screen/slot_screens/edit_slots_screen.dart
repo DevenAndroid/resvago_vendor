@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot.dart';
@@ -11,18 +13,46 @@ import '../../widget/common_text_field.dart';
 import '../../widget/custom_textfield.dart';
 
 class EditSlotsScreen extends StatefulWidget {
-  const EditSlotsScreen({super.key, required this.createSlotData});
-  final CreateSlotData createSlotData;
+   EditSlotsScreen({super.key, required this.createSlotData});
+  CreateSlotData? createSlotData;
   @override
   State<EditSlotsScreen> createState() => _EditSlotsScreenState();
 }
 
 class _EditSlotsScreenState extends State<EditSlotsScreen> {
-  CreateSlotData get slotsInfo => widget.createSlotData;
+  CreateSlotData get slotsInfo => widget.createSlotData!;
   final formKey = GlobalKey<FormState>();
   final slotController = Get.put(SlotController());
 
   FirebaseService firebaseService = FirebaseService();
+  bool apiLoaded = false;
+
+  getData(){
+    // widget.createSlotData = null;
+    FirebaseFirestore.instance
+        .collection('vendor_slot')
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection("slot")
+        .doc(widget.createSlotData!.slotId.toString()).get().then((value) {
+      widget.createSlotData = CreateSlotData.fromMap(value.data()!);
+      apiLoaded = true;
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    if (widget.createSlotData == null) return;
+    slotController.startDate.text = widget.createSlotData!.slotDate.toString();
+    // slotController.serviceDuration.text = slotDataList!.lunchDuration;
+    // slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
+    slotController.noOfGuest.text = widget.createSlotData!.noOfGuest.toString();
+    slotController.setOffer.text = widget.createSlotData!.setOffer.toString();
+    // slotController.dateType.value = slotDataList!.dateType ?? "date";
+    setState(() {});
+  }
 
 
   @override
@@ -30,7 +60,8 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
         appBar: backAppBar(title: "Edit Slot", context: context, backgroundColor: Colors.white),
-        body: Theme(
+        body: apiLoaded ?
+        Theme(
           data: ThemeData(useMaterial3: true),
           child: SingleChildScrollView(
               child: Form(
@@ -53,19 +84,19 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
                       child: CommonButtonBlue(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             slotController.getLunchTimeSlot();
                             slotController.getDinnerTimeSlot();
                             print(slotController.timeslots);
                             print(slotController.dinnerTimeslots);
-                            firebaseService.manageSlot(
-                                setOffer: widget.createSlotData.setOffer??"",
+                            await firebaseService.manageSlot(
+                                setOffer: widget.createSlotData!.setOffer??"",
                                 seats: "50" ??"",
-                                startDate: widget.createSlotData.slotId!,
+                                startDate: widget.createSlotData!.slotId!,
                                 endDate: null,
-                                eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData.eveningSlots!.entries.map((e) => e.key).toList(),
-                                morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData.morningSlots!.entries.map((e) => e.key).toList(),
+                                eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
+                                morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
                             );
                           }
                         },
@@ -73,6 +104,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                       ),
                     ),
                   ]))),
-        ));
+        ) : const Center(child: CircularProgressIndicator(),)
+    );
   }
 }

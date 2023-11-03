@@ -40,52 +40,6 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
 
   FirebaseService firebaseService = FirebaseService();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  StoreTimeData modelStoreAvailability = StoreTimeData();
-  Future<void> addStoreTimeToFirestore() async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    List<String> start = [];
-    List<String> end = [];
-    List<String> status = [];
-    storeTimeList!.map((item) {
-      start.add(item.startTime.toString().normalTime);
-      end.add(item.endTime.toString().normalTime);
-      status.add(item.status == true ? "1" : "0");
-    });
-
-    try {
-      await firebaseService
-          .manageStoreTime(
-        storeTimeId: DateTime.now().microsecondsSinceEpoch,
-        vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
-        time: DateTime.now().millisecondsSinceEpoch,
-        status: status,
-        startTime: start,
-        endTime: end,
-      )
-          .then((value) {
-        Get.back();
-        Helper.hideLoader(loader);
-      });
-    } catch (e) {
-      Helper.hideLoader(loader);
-      showToast(e.toString());
-      log(e.toString());
-      throw Exception(e.toString());
-    }
-  }
-
-  List<StoreTimeData>? storeTimeList;
-  getVendorCategories() {
-    FirebaseFirestore.instance.collection("vendor_storeTime").get().then((value) {
-      for (var element in value.docs) {
-        var gg = element.data();
-        storeTimeList ??= [];
-        storeTimeList!.add(StoreTimeData.fromMap(gg, element.id.toString()));
-      }
-      setState(() {});
-    });
-  }
 
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -120,7 +74,6 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
   @override
   void initState() {
     super.initState();
-    getVendorCategories();
     weekSchedule.clear();
     weekSchedule = generateWeekSchedule();
     log(weekSchedule.toString());
@@ -152,6 +105,9 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
         'status': status,
       });
     }
+    setState(() {
+
+    });
     return weekSchedule;
   }
 
@@ -176,6 +132,9 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
         List<Map<String, dynamic>> weekSchedule = List.from(data['schedule']);
         weekSchedule1 = weekSchedule;
         log(weekSchedule1.toString());
+        setState(() {
+
+        });
         return weekSchedule;
       } else {
         return [];
@@ -443,7 +402,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                 onPressed: () {
                   if(weekSchedule.isNotEmpty){
                     uploadWeekSchedule(FirebaseAuth.instance.currentUser!.phoneNumber!, weekSchedule);
-                    weekSchedule.clear();
+                    // weekSchedule.clear();
                   }
                   if(weekSchedule1.isNotEmpty){
                     uploadWeekSchedule(FirebaseAuth.instance.currentUser!.phoneNumber!, weekSchedule1);

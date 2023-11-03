@@ -64,19 +64,6 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   void initState() {
     super.initState();
     if (widget.slotDataList == null) return;
-    // slotController.startDate.text = slotDataList!.startDateForLunch;
-    // slotController.endDate.text = slotDataList!.endDateForLunch;
-    // slotController.startTime.text = slotDataList!.startTimeForLunch;
-    // slotController.endTime.text = slotDataList!.endTimeForLunch;
-    // slotController.dinnerStartDate.text = slotDataList!.startDateForDinner;
-    // slotController.dinnerEndDate.text = slotDataList!.endDateForDinner;
-    // slotController.dinnerStartTime.text = slotDataList!.startTimeForDinner;
-    // slotController.dinnerEndTime.text = slotDataList!.endTimeForDinner;
-    // slotController.serviceDuration.text = slotDataList!.lunchDuration;
-    // slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
-    // slotController.noOfGuest.text = slotDataList!.noOfGuest;
-    // slotController.setOffer.text = slotDataList!.setOffer;
-    // slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
 
