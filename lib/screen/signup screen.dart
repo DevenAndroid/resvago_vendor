@@ -580,7 +580,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         );
                                       },
                                     text: 'Terms And Conditions',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         color: Colors.red)),
                               ],

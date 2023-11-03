@@ -20,6 +20,7 @@ import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../helper.dart';
+import '../../model/menu_item_modal.dart';
 import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
@@ -108,14 +109,17 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     }
   }
 
-  List<CategoryData> categoryList = [];
+  List<MenuItemData> menuItemList = [];
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").get().then((value) {
-      categoryList.clear();
+    FirebaseFirestore.instance.collection("menuItemsList").get().then((value) {
+      menuItemList.clear();
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList.add(CategoryData.fromMap(gg));
+
+        menuItemList.add(MenuItemData.fromMap(gg));
       }
+      print(value.docs);
+
       setState(() {});
     });
   }
@@ -229,7 +233,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                               borderRadius: BorderRadius.circular(6.0)),
                         ),
                         value: categoryValue,
-                        items: categoryList.map((items) {
+                        items: menuItemList.map((items) {
                           return DropdownMenuItem(
                             value: items.name.toString(),
                             child: Text(
