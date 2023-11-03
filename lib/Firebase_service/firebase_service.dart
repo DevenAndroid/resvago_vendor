@@ -162,7 +162,7 @@ class FirebaseService {
           "setOffer": setOffer,
           "created_time": DateTime.now().millisecondsSinceEpoch,
         });
-        showToast("Slot Added Successfully");
+        showToast("Slot Updated Successfully");
         return;
       }
 
@@ -173,7 +173,6 @@ class FirebaseService {
         startDate = startDate.add(const Duration(days: 1));
       }
 
-      // Get a new write batch
       final batch = firestore.batch();
       for (var element in slotsDate) {
         batch.set(firestore.collection('vendor_slot')

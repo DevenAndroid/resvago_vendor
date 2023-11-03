@@ -198,6 +198,9 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                         if (value!.trim().isEmpty) {
                           return "End time is required";
                         }
+                        if(endDuration<=startDuration){
+                          return  "Start time is less than end time";
+                        }
                         return null;
                       }),
                 ),
@@ -541,6 +544,9 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return "End time is required";
+                        }
+                        if(endDuration<=startDuration){
+                          return  "Start time is less than end time";
                         }
                         return null;
                       }),
