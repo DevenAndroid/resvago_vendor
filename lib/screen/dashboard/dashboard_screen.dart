@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,11 +8,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
-import 'package:resvago_vendor/screen/slot_list.dart';
+import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
+import '../../model/profile_model.dart';
 import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
@@ -39,6 +42,27 @@ class _VendorDashboardState extends State<VendorDashboard> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentDrawer = 0;
   FirebaseService service = FirebaseService();
+  ProfileData profileData = ProfileData();
+  void restaurantData() {
+    FirebaseFirestore.instance
+        .collection("vendor_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    restaurantData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -74,8 +98,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               color: Colors.white,
                             ),
                             child: CachedNetworkImage(
-                              imageUrl:
-                                  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                              imageUrl:profileData.image.toString(),
                               height: screenSize.height * 0.12,
                               width: screenSize.height * 0.12,
                               errorWidget: (_, __, ___) => const SizedBox(),
@@ -83,13 +106,13 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Text("TestVendor",
+                          Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 color: const Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w600,
                               )),
-                          Text("TestVendor@gmail.com",
+                          Text(profileData.email ?? "",
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 color: const Color(0xFFFFFFFF),
@@ -293,13 +316,13 @@ class _VendorDashboardState extends State<VendorDashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Hi, Demo",
+                "Hi, ${profileData.restaurantName}",
                 style: GoogleFonts.ibmPlexSansArabic(
                     fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
               ),
               GestureDetector(
                 onTap: () {
-                  // Get.toNamed(SetTimeScreen.setTimeScreen);
+                  Get.to( const SetTimeScreen());
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -310,11 +333,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                     ),
-                    Text(
-                      "  25/12/2023",
-                      style: GoogleFonts.ibmPlexSansArabic(
-                          fontWeight: FontWeight.w400, fontSize: AddSize.font14, color: AppTheme.primaryColor),
-                    ),
+                    Expanded(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
                     SizedBox(
                       width: AddSize.size5,
                     ),
@@ -368,9 +387,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white)),
                           child: CachedNetworkImage(
                             fit: BoxFit.cover,
-                            imageUrl:FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                               height: AddSize.size30,
-                            width: AddSize.size30,
+                            imageUrl:profileData.image.toString(),
+                               height: AddSize.size20,
+                            width: AddSize.size20,
                             errorWidget: (_, __, ___) => const Icon(Icons.person),
                             placeholder: (_, __) => const SizedBox(),
                           )),

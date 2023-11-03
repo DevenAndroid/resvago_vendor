@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../model/signup_model.dart';
-import '../screen/slot_list.dart';
+import '../screen/slot_screens/slot_list.dart';
 
 class FirebaseService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -118,100 +118,79 @@ class FirebaseService {
   }
 
   Future manageSlot({
-    required String slotId,
-    dynamic vendorId,
-    dynamic lunchDuration,
-    dynamic dinnerDuration,
-    dynamic startDateForLunch,
-    dynamic endDateForLunch,
-    dynamic startTimeForLunch,
-    dynamic endTimeForLunch,
-    dynamic startDateForDinner,
-    dynamic endDateForDinner,
-    dynamic startTimeForDinner,
-    dynamic endTimeForDinner,
-    dynamic noOfGuest,
-    dynamic setOffer,
-    required RxString dateType,
-    dynamic slot,
-    dynamic dinnerSlot,
-    dynamic time,
+    required DateTime startDate,
+    required DateTime? endDate,
+    required String seats,
+    required String setOffer,
+    required List<String> morningSlots,
+    required List<String> eveningSlots,
   }) async {
     try {
-      var kk = DateFormat("dd-MMM-yyyy");
-      List<String> deleteSlotIds = [];
-      if (startDateForLunch.toString().isNotEmpty && endDateForLunch.toString().isNotEmpty) {
-        for (var element in slotDataList) {
-          if(element.startDateForLunch.toString().isNotEmpty && element.endDateForLunch.toString().isNotEmpty) {
-            if (element.startDateForLunch
-                .toString()
-                .formatDate
-                .isAfter(startDateForLunch
-                .toString()
-                .formatDate) &&
-                element.endDateForLunch
-                    .toString()
-                    .formatDate
-                    .isBefore(endDateForLunch
-                    .toString()
-                    .formatDate)) {
-              deleteSlotIds.add(element.slotId);
-            }
-          } else {
-            if(element.startDateForLunch.toString().isNotEmpty && element.endDateForLunch.toString().isEmpty){
-              if (element.startDateForLunch
-                  .toString()
-                  .formatDate
-                  .isAfter(startDateForLunch
-                  .toString()
-                  .formatDate) &&
-                  element.startDateForLunch
-                      .toString()
-                      .formatDate
-                      .isBefore(endDateForLunch
-                      .toString()
-                      .formatDate)) {
-                deleteSlotIds.add(element.slotId);
-              }
-
-            }
-          }
-        }
+      Map<String, int> morningMapSlots = {};
+      for (var element in morningSlots) {
+        morningMapSlots[element] = int.tryParse(seats) ?? 0;
       }
 
-      await FirebaseFirestore.instance
-          .collection('vendor_slot')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .collection("slot")
-          .doc(slotId)
-          .set({
-        "slotId": slotId,
-        "vendorId": vendorId,
-        "startDateForLunch": startDateForLunch,
-        "endDateForLunch": endDateForLunch,
-        "startTimeForLunch": startTimeForLunch,
-        "endTimeForLunch": endTimeForLunch,
-        "startDateForDinner": startDateForDinner,
-        "endDateForDinner": endDateForDinner,
-        "startTimeForDinner": startTimeForDinner,
-        "endTimeForDinner": endTimeForDinner,
-        "lunchDuration": lunchDuration,
-        "dinnerDuration": dinnerDuration,
-        "noOfGuest": noOfGuest,
+      Map<String, int> eveningMapSlots = {};
+      for (var element in eveningSlots) {
+        eveningMapSlots[element] = int.tryParse(seats) ?? 0;
+      }
+      print({
+        "slotId": startDate.toString(),
+        "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "slot_date": startDate.millisecondsSinceEpoch,
+        "morning_slots": morningMapSlots,
+        "evening_slots": eveningMapSlots,
+        "noOfGuest": seats,
         "setOffer": setOffer,
-        "dateType": dateType.value,
-        "slot": slot,
-        "dinnerSlot": dinnerSlot,
-        "time": time,
+        "created_time": DateTime.now().millisecondsSinceEpoch,
       });
-      for (var element in deleteSlotIds) {
+// return;
+      if(endDate == null){
         await FirebaseFirestore.instance
             .collection('vendor_slot')
             .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
             .collection("slot")
-            .doc(element)
-            .delete();
+            .doc(startDate.toString())
+            .set({
+          "slotId": startDate.toString(),
+          "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+          "slot_date": startDate.millisecondsSinceEpoch,
+          "morning_slots": morningMapSlots,
+          "evening_slots": eveningMapSlots,
+          "noOfGuest": seats,
+          "setOffer": setOffer,
+          "created_time": DateTime.now().millisecondsSinceEpoch,
+        });
+        showToast("Slot Added Successfully");
+        return;
       }
+
+      List<DateTime> slotsDate = [];
+
+      while (startDate.isBefore(endDate.add(const Duration(days: 1)))) {
+        slotsDate.add(startDate);
+        startDate = startDate.add(const Duration(days: 1));
+      }
+
+      // Get a new write batch
+      final batch = firestore.batch();
+      for (var element in slotsDate) {
+        batch.set(firestore.collection('vendor_slot')
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+            .collection("slot")
+            .doc(element.toString()), {
+          "slotId": element.toString(),
+          "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+          "slot_date": element.millisecondsSinceEpoch,
+          "morning_slots": morningMapSlots,
+          "evening_slots": eveningMapSlots,
+          "noOfGuest": seats,
+          "setOffer": setOffer,
+          "created_time": DateTime.now().millisecondsSinceEpoch,
+        });
+      }
+      await batch.commit();
       showToast("Slot Added Successfully");
     } catch (e) {
       throw Exception(e);
@@ -254,4 +233,6 @@ class FirebaseService {
     }
     return vendorModel;
   }
+
+
 }

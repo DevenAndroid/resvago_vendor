@@ -27,6 +27,10 @@ class SlotController extends GetxController {
   final DateFormat timeFormatWithoutAMPM = DateFormat("hh:mm");
   List<ServiceTimeSloat> serviceTimeSloat = [];
   bool resetSlots = false;
+
+
+  bool editLunch = false;
+  bool editDinner = false;
   // resetValues(){
   //   startTime.text = "";
   //   endTime.text = "";
@@ -41,14 +45,12 @@ class SlotController extends GetxController {
       timeslots = serviceTimeSloat
           .map((e) => "${convertToTime(e.timeSloat.toString())},${convertToTime(e.timeSloatEnd.toString())}")
           .toList();
-      log(timeslots.toString());
     } else if (slots.isNotEmpty) {
       timeslots = slots.entries
           .where((element) => element.value == true)
           .map((e) =>
       "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
           .toList();
-      log(timeslots.toString());
     }
   }
 
@@ -86,14 +88,12 @@ class SlotController extends GetxController {
       dinnerTimeslots = dinnerServiceTimeSloat
           .map((e) => "${convertToTime(e.timeSloat.toString())},${convertToTime(e.timeSloatEnd.toString())}")
           .toList();
-      log(dinnerTimeslots.toString());
     } else if (dinnerSlots.isNotEmpty) {
       dinnerTimeslots = dinnerSlots.entries
           .where((element) => element.value == true)
           .map((e) =>
       "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
           .toList();
-      log(dinnerTimeslots.toString());
     }
   }
 
@@ -106,5 +106,12 @@ class SlotController extends GetxController {
     for(var i = 0; i < 100; i++){
       productDuration.add((i+1).toString());
     }
+  }
+
+  void clearAll() {
+    editDinner = false;
+    editLunch = false;
+    slots.clear();
+    dinnerSlots.clear();
   }
 }

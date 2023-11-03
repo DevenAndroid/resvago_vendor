@@ -1,11 +1,9 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:resvago_vendor/screen/Menu/add_menu.dart';
 import 'package:resvago_vendor/screen/Menu/menu_screen.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/oder_list_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/dashboard_screen.dart';
 import '../Setting screen.dart';
 import '../screen/Promo_code_list.dart';
-import '../screen/add_booking_slot_screen.dart';
 import '../screen/bank_details_screen.dart';
 import '../screen/bottom_nav_bar/bottomnav_bar.dart';
 import '../screen/bottom_nav_bar/menu_list_screen.dart';
@@ -16,8 +14,6 @@ import '../screen/oder_details_screen.dart';
 import '../screen/onboarding_screen.dart';
 import '../screen/reviwe_screen.dart';
 import '../screen/signup screen.dart';
-import '../screen/slotViwe screen.dart';
-import '../screen/slot_list.dart';
 import '../screen/thankyou_screen.dart';
 import '../splash_screen.dart';
 
@@ -60,7 +56,6 @@ class MyRouters {
     GetPage(name: '/oderDetailsScreen', page: () => const OderDetailsScreen()),
     GetPage(name: '/bankDetailsScreen', page: () => const BankDetailsScreen()),
     GetPage(name: '/promoCodeList', page: () => const PromoCodeList()),
-    GetPage(name: '/slotListScreen', page: () => const SlotListScreen()),
     GetPage(name: '/deliveryOderDetailsScreen', page: () => const DeliveryOderDetailsScreen()),
     GetPage(name: '/reviewScreen', page: () => const ReviewScreen()),
     //GetPage(name: '/slotViewScreen', page: () => const SlotViewScreen()),

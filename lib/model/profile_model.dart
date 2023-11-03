@@ -1,17 +1,17 @@
 class ProfileData {
   List<String>? restaurantImage;
   List<String>? menuGalleryImages;
-  String? password;
-  String? address;
-  String? restaurantName;
-  Null? docid;
-  String? mobileNumber;
-  String? confirmPassword;
-  String? category;
-  String? userID;
-  String? email;
-  String? aboutUs;
-  String? image;
+  dynamic password;
+  dynamic address;
+  dynamic restaurantName;
+  dynamic docid;
+  dynamic mobileNumber;
+  dynamic confirmPassword;
+  dynamic category;
+  dynamic userID;
+  dynamic email;
+  dynamic aboutUs;
+  dynamic image;
 
   ProfileData(
       {
