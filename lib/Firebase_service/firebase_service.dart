@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -11,8 +13,9 @@ import '../helper.dart';
 import '../model/signup_model.dart';
 import '../screen/slot_screens/slot_list.dart';
 
-class FirebaseService {
+class FirebaseService{
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 
   Future manageRegisterUsers({
     dynamic restaurantName,
@@ -233,5 +236,35 @@ class FirebaseService {
     return vendorModel;
   }
 
+  updateFirebaseToken() async {
+    try {
+      String? fcm = await FirebaseMessaging.instance.getToken();
+      final ref = firebaseDatabase.ref(
+          "vendor_users/${FirebaseAuth.instance.currentUser!.phoneNumber.toString()}");
+      await ref.update({
+        fcm.toString(): fcm.toString()
+      });
+    } catch(e){
+      throw Exception(e);
+    }
+  }
+
+  sendNotifications(){
+      log("message.....       ${"value.children.map((e) => e.value)"}");
+      List<String> fcmTokenList = [];
+    final ref = firebaseDatabase.ref("users/");
+    ref.get().then((DataSnapshot value) {
+      for (var element in value.children) {
+          Map map = element.value as Map;
+          for (var e in map.entries) {
+            fcmTokenList.add(e.value);
+          }
+
+      }
+      log("message.....       ${fcmTokenList}");
+    }).catchError((e){
+
+    });
+  }
 
 }

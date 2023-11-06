@@ -434,7 +434,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         width: 3.0),
                                     borderRadius: BorderRadius.circular(6.0)),
                               ),
-                              value: categoryValue,
+                              //value: categoryValue,
                               items: categoryList!.map((items) {
                                 return DropdownMenuItem(
                                   value: items.name.toString(),

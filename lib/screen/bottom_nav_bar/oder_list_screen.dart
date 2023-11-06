@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -6,8 +7,10 @@ import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
+import '../../model/order_details_modal.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
+import '../oder_details_screen.dart';
 
 class OderListScreen extends StatefulWidget {
   const OderListScreen({super.key});
@@ -19,6 +22,8 @@ class OderListScreen extends StatefulWidget {
 class _OderListScreenState extends State<OderListScreen> {
   RxString dropDownValue1 = ''.obs;
   RxString dropDownValue2 = ''.obs;
+  String searchQuery = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -383,203 +388,75 @@ class _OderListScreenState extends State<OderListScreen> {
                             thickness: 1,
                             color: Colors.black12.withOpacity(0.09),
                           ),
-                          const SizedBox(height: 10,),
-                          InkWell(
-                            onTap: (){
-                              Get.toNamed(MyRouters.oderDetailsScreen);
+                          StreamBuilder<List<MyOrderModel>>(
+                            stream: getOrdersStreamFromFirestore(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(child: CircularProgressIndicator()); // Show a loading indicator while data is being fetched
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                List<MyOrderModel> users = snapshot.data ?? [];
+                                final filteredUsers = filterUsers(users, searchQuery); // Apply the search filter
+
+                                return filteredUsers.isNotEmpty
+                                    ? ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: filteredUsers.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      final item = filteredUsers[index];
+
+                                      return InkWell(
+                                        onTap: (){
+                                          Get.to(()=> OderDetailsScreen(myOrderModel: item,));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(item.orderId.toString(), style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF454B5C),
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 14),),
+                                                    Text(item.time.toString(), style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF8C9BB2),
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 11),),
+                                                  ],
+                                                ),
+                                                Text(item.orderStatus, style: GoogleFonts.poppins(
+                                                    color: const Color(0xFFFFB26B),
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12),),
+                                                Text("\$450.00", style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF454B5C),
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12),),
+                                              ],
+                                            ),
+                                            Divider(
+                                              thickness: 1,
+                                              color: Colors.black12.withOpacity(0.09),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    })
+                                    : const Center(
+                                  child: Text("No User Found"),
+                                );
+                              }
+                              return const CircularProgressIndicator();
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("#1234", style: GoogleFonts.poppins(
-                                        color: const Color(0xFF454B5C),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14),),
-                                    Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                        color: const Color(0xFF8C9BB2),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 11),),
-                                  ],
-                                ),
-                                Text("Processing", style: GoogleFonts.poppins(
-                                    color: const Color(0xFFFFB26B),
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12),),
-                                Text("\$450.00", style: GoogleFonts.poppins(
-                                    color: const Color(0xFF454B5C),
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12),),
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Completed", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF65CD90),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Reject", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFF557E),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Processing", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFFB26B),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Processing", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFFB26B),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 10,), Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("#1234", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF454B5C),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),),
-                                  Text("2 June, 2021 - 11:57PM", style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8C9BB2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11),),
-                                ],
-                              ),
-                              Text("Processing", style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFFB26B),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                              Text("\$450.00", style: GoogleFonts.poppins(
-                                  color: const Color(0xFF454B5C),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12),),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black12.withOpacity(0.09),
-                          ),
-                          const SizedBox(height: 40,),
+                          )
+
+
 
 
 
@@ -826,5 +703,35 @@ class _OderListScreenState extends State<OderListScreen> {
             ],
           ),
         ));
+  }
+  List<MyOrderModel> filterUsers(List<MyOrderModel> users, String query) {
+    if (query.isEmpty) {
+      return users;
+    } else {
+      return users.where((user) {
+        if (user.orderId is String) {
+          return user.orderId!.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
+  }
+  Stream<List<MyOrderModel>> getOrdersStreamFromFirestore() {
+    return FirebaseFirestore.instance
+        .collection('order')
+        .snapshots()
+        .map((querySnapshot) {
+      List<MyOrderModel> orders = [];
+      print(orders);
+      try {
+        for (var doc in querySnapshot.docs) {
+          orders.add(MyOrderModel.fromJson(doc.data()));
+        }
+      } catch (e) {
+        print(e.toString());
+        throw Exception(e.toString());
+      }
+      return orders;
+    });
   }
 }

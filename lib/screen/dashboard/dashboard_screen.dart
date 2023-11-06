@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
-import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
@@ -24,13 +23,15 @@ import '../bank_details_screen.dart';
 import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
-  const VendorDashboard({Key? key}) : super(key: key);
+  const VendorDashboard({super.key});
   static var vendorDashboard = "/vendorDashboard";
   @override
   State<VendorDashboard> createState() => _VendorDashboardState();
 }
 
 class _VendorDashboardState extends State<VendorDashboard> {
+
+  final FirebaseService firebaseService = FirebaseService();
   DateTime? time;
   DateTime? time1;
   List imgList = [
@@ -39,10 +40,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
     AppAssets.dashBoardImage3,
     AppAssets.dashBoardImage4,
   ];
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentDrawer = 0;
   FirebaseService service = FirebaseService();
   ProfileData profileData = ProfileData();
+
   void restaurantData() {
     FirebaseFirestore.instance
         .collection("vendor_users")
@@ -61,10 +64,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void initState() {
     super.initState();
     restaurantData();
+    firebaseService.updateFirebaseToken();
   }
 
   @override
   Widget build(BuildContext context) {
+    firebaseService.sendNotifications();
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         key: _scaffoldKey,
@@ -108,13 +113,13 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           ),
                           Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
-                                fontSize: 18,
+                                fontSize: 15,
                                 color: const Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w600,
                               )),
                           Text(profileData.email ?? "",
                               style: GoogleFonts.poppins(
-                                fontSize: 15,
+                                fontSize: 12,
                                 color: const Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w400,
                               )),
@@ -303,7 +308,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   Get.offAll(const LoginScreen());
                 },
               ),
-              SizedBox(height: 100,),
+              const SizedBox(height: 100,),
             ],
           ),
         ),
@@ -361,7 +366,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
             Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                     onTap: () {
                       Get.to(const UserProfileScreen());
@@ -470,7 +475,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: AddSize.font14,
+                                      fontSize: AddSize.font12,
                                       color: const Color(0xff8C9BB2)),
                                 ),
                                 Padding(
@@ -481,7 +486,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                         height: 1.5,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font14,
+                                        fontSize: AddSize.font12,
                                         color: Colors.green),
                                   ),
                                 ),

@@ -60,7 +60,10 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   percent_indicator: ^4.2.3
   geoflutterfire: ^3.0.3
-
+  firebase_database: ^10.3.3
+  firebase_messaging: ^14.7.3
+  flutter_local_notifications: ^16.1.0
+  app_settings: ^5.1.1
 
 
 
