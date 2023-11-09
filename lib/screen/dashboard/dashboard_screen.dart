@@ -9,6 +9,7 @@ import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
+import 'package:resvago_vendor/screen/reviwe_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
@@ -286,6 +287,48 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   setState(() {
                     currentDrawer = 5;
                     Get.to(const SettingScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.settings),
+                title: Text('FeedBack',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const ReviewScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.settings),
+                title: Text('Total Earning',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const TotalEarningScreen());
                   });
                 },
               ),
