@@ -17,7 +17,8 @@ class RegisterData {
       required this.address,
       required this.password,
       required this.confirmPassword,
-      required this.image,  this.docid});
+      required this.image,
+      this.docid});
 
   Map<String, dynamic> toMap() {
     return {

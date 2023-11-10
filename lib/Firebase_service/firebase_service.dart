@@ -29,6 +29,11 @@ class FirebaseService {
     dynamic image,
     dynamic userID,
     dynamic aboutUs,
+    dynamic preparationTime,
+    dynamic averageMealForMember,
+    dynamic setDelivery,
+    dynamic cancellation,
+    dynamic menuSelection,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -48,7 +53,13 @@ class FirebaseService {
         "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
-        "userID": "+91${mobileNumber}",
+        "preparationTime": preparationTime,
+        "averageMealForMember": averageMealForMember,
+        "setDelivery": setDelivery,
+        "cancellation": cancellation,
+        "menuSelection": menuSelection,
+        "time": DateTime.now(),
+        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
       });
     } catch (e) {
       throw Exception(e);
@@ -145,7 +156,6 @@ class FirebaseService {
         "setOffer": setOffer,
         "created_time": DateTime.now().millisecondsSinceEpoch,
       });
-// return;
       if(endDate == null){
         await FirebaseFirestore.instance
             .collection('vendor_slot')

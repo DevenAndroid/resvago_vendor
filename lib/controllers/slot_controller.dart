@@ -43,7 +43,7 @@ class SlotController extends GetxController {
       timeslots = slots.entries
           .where((element) => element.value == true)
           .map((e) =>
-      "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
+      "${timeFormat.format(e.key.keys.first)},${timeFormat.format(e.key.values.first)}")
           .toList();
     }
   }
@@ -86,10 +86,11 @@ class SlotController extends GetxController {
       dinnerTimeslots = dinnerSlots.entries
           .where((element) => element.value == true)
           .map((e) =>
-      "${timeFormatWithoutAMPM.format(e.key.keys.first)},${timeFormatWithoutAMPM.format(e.key.values.first)}")
+      "${timeFormat.format(e.key.keys.first)},${timeFormat.format(e.key.values.first)}")
           .toList();
     }
   }
+  final DateFormat timeFormat = DateFormat("hh:mm a");
 
 
   @override

@@ -112,12 +112,14 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                 color: const Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w600,
                               )),
-                          Text(profileData.email ?? "",
-                              style: GoogleFonts.poppins(
-                                fontSize: 15,
-                                color: const Color(0xFFFFFFFF),
-                                fontWeight: FontWeight.w400,
-                              )),
+                          Expanded(
+                            child: Text(profileData.email ?? "",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  color: const Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.w400,
+                                )),
+                          ),
                         ],
                       ),
                     )),
@@ -308,7 +310,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
           ),
         ),
         appBar: AppBar(
-          // toolbarHeight: 100,
+           // toolbarHeight: 80,
           elevation: 0,
           leadingWidth: 45,
           automaticallyImplyLeading: false,
@@ -422,7 +424,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               slivers: <Widget>[
                 const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [],
