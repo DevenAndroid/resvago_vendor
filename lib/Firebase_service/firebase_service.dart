@@ -38,7 +38,7 @@ class FirebaseService{
     dynamic cancellation,
     dynamic menuSelection,
   }) async {
-    try {
+    // try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
       var DocumentReference = collection.doc(mobileNumber);
 
@@ -62,11 +62,11 @@ class FirebaseService{
         "cancellation": cancellation,
         "menuSelection": menuSelection,
         "time": DateTime.now(),
-        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "userID": mobileNumber,
       });
-    } catch (e) {
-      throw Exception(e);
-    }
+    // } catch (e) {
+    //   throw Exception(e);
+    // }
   }
 
   Future manageCouponCode({
