@@ -40,7 +40,7 @@ class FirebaseService{
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc("+91$mobileNumber");
+      var DocumentReference = collection.doc(mobileNumber);
 
       DocumentReference.set({
         "restaurantName": restaurantName,

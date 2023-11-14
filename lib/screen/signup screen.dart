@@ -17,6 +17,7 @@ import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
@@ -55,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   dynamic latitude = "";
   dynamic longitude = "";
   RxBool showValidation1 = false.obs;
-
+  String code = "+91";
   bool checkValidation(bool bool1, bool2) {
     if (bool1 == true && bool2 == true) {
       return true;
@@ -122,7 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               restaurantName: restaurantNameController.text.trim(),
               category: categoryValue,
               email: emailController.text.trim(),
-              mobileNumber: mobileNumberController.text.trim(),
+              mobileNumber: code+mobileNumberController.text.trim(),
               address: _address,
               latitude: latitude.toString(),
               longitude: longitude.toString(),
@@ -350,15 +351,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      RegisterTextFieldWidget(
+
+                      IntlPhoneField(
+                        flagsButtonPadding: const EdgeInsets.all(8),
+                        dropdownIconPosition: IconPosition.trailing,
                         controller: mobileNumberController,
-                        length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Mobile Number '),
-                        keyboardType: TextInputType.number,
-                        // textInputAction: TextInputAction.next,
-                        hint: '987-654-3210',
+                        decoration: const InputDecoration(
+                          labelText: 'Phone Number',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                          ),
+                        ),
+                        initialCountryCode: 'IN',
+
+                        onChanged: (phone) {
+                          code = phone.toString();
+                        },
                       ),
+
                       const SizedBox(
                         height: 20,
                       ),
