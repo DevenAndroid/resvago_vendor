@@ -79,20 +79,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FirebaseService firebaseService = FirebaseService();
   final controller = Get.put(AddProductController());
   void checkEmailInFirestore() async {
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('vendor_users')
-        .where('email', isEqualTo: emailController.text)
-        .get();
-
+    final QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
     final QuerySnapshot phoneResult = await FirebaseFirestore.instance
         .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: mobileNumberController.text)
+        .where('mobileNumber', isEqualTo: code+mobileNumberController.text)
         .get();
-
     if (phoneResult.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Mobile Number already exits');
       return;
@@ -101,16 +97,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Geoflutterfire? geo;
-
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
+    // Overlay.of(context).insert(loader);
+    // try {
       String imageUrl = categoryFile.path;
       geo = Geoflutterfire();
-      GeoFirePoint geoFirePoint = geo!.point(
-          latitude: double.tryParse(latitude.toString()) ?? 0,
-          longitude: double.tryParse(longitude.toString()) ?? 0);
+      GeoFirePoint geoFirePoint =
+          geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
       UploadTask uploadTask = FirebaseStorage.instance
           .ref("categoryImages")
           .child(DateTime.now().millisecondsSinceEpoch.toString())
@@ -123,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               restaurantName: restaurantNameController.text.trim(),
               category: categoryValue,
               email: emailController.text.trim(),
-              mobileNumber: code+mobileNumberController.text.trim(),
+              mobileNumber: code + mobileNumberController.text.trim(),
               address: _address,
               latitude: latitude.toString(),
               longitude: longitude.toString(),
@@ -133,16 +127,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               restaurant_position: geoFirePoint.data.toString())
           .then((value) {
         // controller.addSetStoreTime(mobileNumberController.text);
-        Get.back();
+        // Get.back();
         Helper.hideLoader(loader);
       });
       Get.toNamed(MyRouters.thankYouScreen);
-    } catch (e) {
-      Helper.hideLoader(loader);
-      throw Exception(e);
-    } finally {
-      Helper.hideLoader(loader);
-    }
+    // } catch (e) {
+    //   Helper.hideLoader(loader);
+    //   throw Exception(e);
+    // } finally {
+    //   Helper.hideLoader(loader);
+    // }
   }
 
   bool isDescendingOrder = true;
@@ -170,10 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(
-          title: "Restaurant Registration",
-          context: context,
-          backgroundColor: Colors.white),
+      appBar: backAppBar(title: "Restaurant Registration", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: _formKeySignup,
@@ -197,10 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         "Restaurant Name",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -208,8 +196,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: restaurantNameController,
                         // length: 10,
-                        validator: RequiredValidator(
-                            errorText: 'Please enter your Restaurant Name '),
+                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name '),
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -219,10 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Category",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -236,10 +220,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           hint: Text(
                             "Select category".tr,
-                            style: const TextStyle(
-                                color: Color(0xff2A3B40),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w300),
+                            style: const TextStyle(color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
                             textAlign: TextAlign.justify,
                           ),
                           decoration: InputDecoration(
@@ -257,31 +238,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             filled: true,
                             fillColor: Colors.white.withOpacity(.10),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 15),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                             // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      const Color(0xFF384953).withOpacity(.24)),
+                              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
                               borderRadius: BorderRadius.circular(6.0),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: const Color(0xFF384953)
-                                        .withOpacity(.24)),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(6.0))),
+                                borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                                borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                             errorBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.red.shade800),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(6.0))),
+                                borderSide: BorderSide(color: Colors.red.shade800),
+                                borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: const Color(0xFF384953)
-                                        .withOpacity(.24),
-                                    width: 3.0),
+                                borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
                                 borderRadius: BorderRadius.circular(6.0)),
                           ),
                           value: categoryValue,
@@ -290,9 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               value: items.name.toString(),
                               child: Text(
                                 items.name.toString(),
-                                style: TextStyle(
-                                    color: AppTheme.userText,
-                                    fontSize: AddSize.font14),
+                                style: TextStyle(color: AppTheme.userText, fontSize: AddSize.font14),
                               ),
                             );
                           }).toList(),
@@ -317,10 +285,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Email",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -329,10 +294,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: emailController,
                         // length: 10,
                         validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your email'),
-                          EmailValidator(
-                              errorText: 'Enter a valid email address'),
+                          RequiredValidator(errorText: 'Please enter your email'),
+                          EmailValidator(errorText: 'Enter a valid email address'),
                         ]),
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
@@ -343,15 +306,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         "Mobile Number",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-
                       IntlPhoneField(
                         flagsButtonPadding: const EdgeInsets.all(8),
                         dropdownIconPosition: IconPosition.trailing,
@@ -363,21 +322,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         initialCountryCode: 'IN',
-
                         onChanged: (phone) {
-                          code = phone.toString();
+                          code = phone.countryCode.toString();
+                          setState(() {
+
+                          });
                         },
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
                         "Address",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -396,24 +353,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 });
                             if (place != null) {
                               setState(() {
-                                _address = (place.description ?? "Location")
-                                    .toString();
+                                _address = (place.description ?? "Location").toString();
                               });
                               final plist = GoogleMapsPlaces(
                                 apiKey: googleApikey,
-                                apiHeaders:
-                                    await const GoogleApiHeaders().getHeaders(),
+                                apiHeaders: await const GoogleApiHeaders().getHeaders(),
                               );
                               print(plist);
                               String placeid = place.placeId ?? "0";
-                              final detail =
-                                  await plist.getDetailsByPlaceId(placeid);
+                              final detail = await plist.getDetailsByPlaceId(placeid);
                               final geometry = detail.result.geometry!;
                               final lat = geometry.location.lat;
                               final lang = geometry.location.lng;
                               setState(() {
-                                _address = (place.description ?? "Location")
-                                    .toString();
+                                _address = (place.description ?? "Location").toString();
                                 latitude = lat;
                                 longitude = lang;
                                 print("Address iss...$_address");
@@ -427,9 +380,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   height: 55,
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: !checkValidation(
-                                                  showValidation1.value,
-                                                  _address == "")
+                                          color: !checkValidation(showValidation1.value, _address == "")
                                               ? Colors.grey.shade300
                                               : Colors.red),
                                       borderRadius: BorderRadius.circular(5.0),
@@ -439,22 +390,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     leading: const Icon(Icons.location_on),
                                     title: Text(
                                       _address ?? "Location".toString(),
-                                      style:
-                                          TextStyle(fontSize: AddSize.font14),
+                                      style: TextStyle(fontSize: AddSize.font14),
                                     ),
                                     trailing: const Icon(Icons.search),
                                     dense: true,
                                   )),
-                              checkValidation(
-                                      showValidation1.value, _address == "")
+                              checkValidation(showValidation1.value, _address == "")
                                   ? Padding(
-                                      padding:
-                                          EdgeInsets.only(top: AddSize.size5),
+                                      padding: EdgeInsets.only(top: AddSize.size5),
                                       child: Text(
                                         "      Location is required",
-                                        style: TextStyle(
-                                            color: Colors.red.shade700,
-                                            fontSize: AddSize.font12),
+                                        style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
                                       ),
                                     )
                                   : const SizedBox()
@@ -466,11 +412,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       DottedBorder(
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(20),
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false
-                            ? const Color(0xFFFAAF40)
-                            : Colors.red,
+                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
                         dashPattern: const [6],
                         strokeWidth: 1,
                         child: InkWell(
@@ -484,27 +427,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
-                                        image: DecorationImage(
-                                            image: FileImage(profileImage),
-                                            fit: BoxFit.fill),
+                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
                                       ),
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
+                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
                                           errorBuilder: (_, __, ___) =>
-                                              Image.network(categoryFile.path,
-                                                  errorBuilder: (_, __, ___) =>
-                                                      SizedBox())),
+                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => SizedBox())),
                                     ),
                                   ],
                                 )
                               : Container(
                                   padding: const EdgeInsets.only(top: 8),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   width: double.maxFinite,
                                   height: 130,
                                   alignment: Alignment.center,
@@ -521,9 +458,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                       const Text(
                                         'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black54),
+                                        style: TextStyle(fontSize: 16, color: Colors.black54),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -543,14 +478,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             scale: 1.1,
                             child: Theme(
                               data: ThemeData(
-                                  unselectedWidgetColor: showValidation == false
-                                      ? const Color(0xFF64646F)
-                                      : Colors.red),
+                                  unselectedWidgetColor: showValidation == false ? const Color(0xFF64646F) : Colors.red),
                               child: Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   value: value,
                                   activeColor: const Color(0xFF355EB3),
                                   onChanged: (newValue) {
@@ -579,20 +510,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           builder: (BuildContext context) {
                                             // Return the dialog box widget
                                             return const AlertDialog(
-                                              title:
-                                                  Text('Terms And Conditions'),
+                                              title: Text('Terms And Conditions'),
                                               content: Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
-                                                      'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
+                                                  'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
                                               actions: <Widget>[],
                                             );
                                           },
                                         );
                                       },
                                     text: 'Terms And Conditions',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.red)),
+                                    style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.red)),
                               ],
                             ),
                           )),
@@ -603,9 +531,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (_formKeySignup.currentState!.validate() &&
-                              categoryFile.path != "" &&
-                              value == true) {
+                          if (_formKeySignup.currentState!.validate() && categoryFile.path != "" && value == true) {
                             checkEmailInFirestore();
                           } else {
                             showValidationImg = true;
@@ -635,15 +561,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Picture from',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.camera, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -680,9 +603,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                      imageSource: ImageSource.gallery, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
