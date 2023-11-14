@@ -7,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
-import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
+import 'package:resvago_vendor/screen/reviwe_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
@@ -24,13 +24,15 @@ import '../bank_details_screen.dart';
 import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
-  const VendorDashboard({Key? key}) : super(key: key);
+  const VendorDashboard({super.key});
   static var vendorDashboard = "/vendorDashboard";
   @override
   State<VendorDashboard> createState() => _VendorDashboardState();
 }
 
 class _VendorDashboardState extends State<VendorDashboard> {
+
+  final FirebaseService firebaseService = FirebaseService();
   DateTime? time;
   DateTime? time1;
   List imgList = [
@@ -39,10 +41,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
     AppAssets.dashBoardImage3,
     AppAssets.dashBoardImage4,
   ];
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentDrawer = 0;
   FirebaseService service = FirebaseService();
   ProfileData profileData = ProfileData();
+
   void restaurantData() {
     FirebaseFirestore.instance
         .collection("vendor_users")
@@ -61,10 +65,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void initState() {
     super.initState();
     restaurantData();
+    firebaseService.updateFirebaseToken();
   }
 
   @override
   Widget build(BuildContext context) {
+    firebaseService.sendNotifications();
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         key: _scaffoldKey,
@@ -108,7 +114,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           ),
                           Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
-                                fontSize: 18,
+                                fontSize: 15,
                                 color: const Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w600,
                               )),
@@ -293,6 +299,48 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.settings),
+                title: Text('FeedBack',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const ReviewScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.settings),
+                title: Text('Total Earning',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 5;
+                    Get.to(const TotalEarningScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.logout),
                 title: Text('Log Out',
                     style: GoogleFonts.poppins(
@@ -305,7 +353,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   Get.offAll(const LoginScreen());
                 },
               ),
-              SizedBox(height: 100,),
+              const SizedBox(height: 100,),
             ],
           ),
         ),
@@ -337,7 +385,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                     ),
-                    Expanded(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
+                    Flexible(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
                     SizedBox(
                       width: AddSize.size5,
                     ),
@@ -363,7 +411,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
             Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                     onTap: () {
                       Get.to(const UserProfileScreen());
@@ -418,6 +466,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AddSize.padding16,
+              vertical: AddSize.padding18,
             ),
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -439,7 +488,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                     children: List.generate(
                       4,
                       (index) => Container(
-                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding16),
+                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding05),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppTheme.backgroundcolor),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +520,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: AddSize.font14,
+                                      fontSize: AddSize.font12,
                                       color: const Color(0xff8C9BB2)),
                                 ),
                                 Padding(
@@ -482,7 +531,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                         height: 1.5,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font14,
+                                        fontSize: AddSize.font12,
                                         color: Colors.green),
                                   ),
                                 ),

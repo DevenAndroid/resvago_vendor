@@ -232,7 +232,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                               borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
                               borderRadius: BorderRadius.circular(6.0)),
                         ),
-                        value: categoryValue,
+                        //value: categoryValue,
                         items: menuItemList.map((items) {
                           return DropdownMenuItem(
                             value: items.name.toString(),
