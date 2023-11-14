@@ -12,6 +12,11 @@ class ProfileData {
   dynamic email;
   dynamic aboutUs;
   dynamic image;
+  dynamic preparationTime;
+  dynamic averageMealForMember;
+  dynamic setDelivery;
+  dynamic cancellation;
+  dynamic menuSelection;
 
   ProfileData(
       {
@@ -27,7 +32,13 @@ class ProfileData {
         this.category,
         this.userID,
         this.email,
-        this.aboutUs});
+        this.aboutUs,
+        this.preparationTime,
+        this.averageMealForMember,
+        this.setDelivery,
+        this.cancellation,
+        this.menuSelection,
+      });
 
   ProfileData.fromJson(Map<String, dynamic> json) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
@@ -42,24 +53,34 @@ class ProfileData {
     category = json['category'];
     userID = json['userID'];
     email = json['email'];
+    preparationTime = json['preparationTime'];
+    averageMealForMember = json['averageMealForMember'];
+    setDelivery = json['setDelivery'];
+    cancellation = json['cancellation'];
+    menuSelection = json['menuSelection'];
     aboutUs = json['aboutUs'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['image'] = this.image;
-    data['restaurantImage'] = this.restaurantImage;
-    data['menuImage'] = this.menuGalleryImages;
-    data['password'] = this.password;
-    data['address'] = this.address;
-    data['restaurantName'] = this.restaurantName;
-    data['docid'] = this.docid;
-    data['mobileNumber'] = this.mobileNumber;
-    data['confirmPassword'] = this.confirmPassword;
-    data['category'] = this.category;
-    data['userID'] = this.userID;
-    data['email'] = this.email;
-    data['aboutUs'] = this.aboutUs;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['image'] = image;
+    data['restaurantImage'] = restaurantImage;
+    data['menuImage'] = menuGalleryImages;
+    data['password'] = password;
+    data['address'] = address;
+    data['restaurantName'] = restaurantName;
+    data['docid'] = docid;
+    data['mobileNumber'] = mobileNumber;
+    data['confirmPassword'] = confirmPassword;
+    data['category'] = category;
+    data['userID'] = userID;
+    data['email'] = email;
+    data['aboutUs'] = aboutUs;
+    data['preparationTime'] = preparationTime;
+    data['averageMealForMember'] = averageMealForMember;
+    data['setDelivery'] = setDelivery;
+    data['cancellation'] = cancellation;
+    data['menuSelection'] = menuSelection;
     return data;
   }
 }

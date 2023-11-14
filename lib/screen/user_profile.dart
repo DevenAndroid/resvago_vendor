@@ -69,7 +69,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController aboutUsController = TextEditingController();
-
+  dynamic preparationTime;
+  dynamic averageMealForMember;
+  dynamic setDelivery;
+  dynamic cancellation;
+  dynamic menuSelection;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
@@ -99,12 +103,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
       String imageUrlProfile = categoryFile.path;
-      if(!categoryFile.path.contains("http")){
-
+      if (!categoryFile.path.contains("http")) {
         UploadTask uploadTask = FirebaseStorage.instance
-            .ref(
-            "profileImage/${FirebaseAuth.instance.currentUser!
-                .phoneNumber}")
+            .ref("profileImage/${FirebaseAuth.instance.currentUser!.phoneNumber}")
             .child("image")
             .putFile(categoryFile);
         TaskSnapshot snapshot = await uploadTask;
@@ -115,9 +116,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imagesLink.add(element.value.path);
         } else {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref(
-              "restaurant_images/${FirebaseAuth.instance.currentUser!
-                  .phoneNumber}")
+              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
               .child("${element.key}image")
               .putFile(element.value);
           TaskSnapshot snapshot = await uploadTask;
@@ -126,12 +125,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         }
       }
       for (var element in controller.menuGallery.asMap().entries) {
-            if (element.value.path.contains("http")) {
-              menuPhotoLink.add(element.value.path);
-            } else {
+        if (element.value.path.contains("http")) {
+          menuPhotoLink.add(element.value.path);
+        } else {
           UploadTask uploadMenuImage = FirebaseStorage.instance
-              .ref(
-              "menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .ref("menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
               .child("${element.key}image")
               .putFile(element.value);
 
@@ -141,10 +139,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         }
       }
 
-      await FirebaseFirestore.instance
-          .collection("vendor_users")
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .update({
+      await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _address,
         "password": passwordController.text.trim(),
@@ -152,10 +147,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "category": categoryValue,
         "restaurantImage": imagesLink,
         "menuImage": menuPhotoLink,
-        "image" : imageUrlProfile,
+        "image": imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
-        "confirmPassword": confirmPassController.text.trim()
+        "confirmPassword": confirmPassController.text.trim(),
+        "preparationTime": preparationTime,
+        "averageMealForMember": averageMealForMember,
+        "setDelivery": setDelivery,
+        "cancellation": cancellation,
+        "menuSelection": menuSelection,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       Get.back();
       Helpers.hideLoader(loader);
@@ -169,11 +169,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   ProfileData profileData = ProfileData();
   void fetchdata() {
-    FirebaseFirestore.instance
-        .collection("vendor_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -183,7 +179,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         categoryValue = profileData.category;
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
-        print(profileData.address.toString());
+        preparationTime = (profileData.preparationTime ?? "").toString();
+        averageMealForMember = (profileData.averageMealForMember ?? "").toString();
+        setDelivery = (profileData.setDelivery ?? "").toString();
+        cancellation = (profileData.cancellation ?? "").toString();
+        menuSelection = (profileData.menuSelection ?? "").toString();
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
@@ -195,7 +195,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
-
         setState(() {});
       }
     });
@@ -236,8 +235,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         Container(
                             padding: const EdgeInsets.only(bottom: 50),
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white)),
+                            decoration: BoxDecoration(border: Border.all(color: Colors.white)),
                             child: Image.asset('assets/images/Group.png')),
                         Positioned(
                           top: 90,
@@ -259,16 +257,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         clipBehavior: Clip.antiAlias,
                                         decoration: BoxDecoration(
                                           color: const Color(0xffFAAF40),
-                                          border: Border.all(
-                                              color: const Color(0xff3B5998),
-                                              width: 6),
+                                          border: Border.all(color: const Color(0xff3B5998), width: 6),
                                           borderRadius: BorderRadius.circular(5000),
                                           // color: Colors.brown
                                         ),
                                         child: Image.file(
                                           categoryFile,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_,__,___)=> CachedNetworkImage(
+                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
                                             fit: BoxFit.cover,
                                             imageUrl: categoryFile.path,
                                             height: AddSize.size30,
@@ -286,7 +282,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       bottom: 0,
                                       right: 0,
                                       child: GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           showActionSheet(context);
                                         },
                                         child: Container(
@@ -316,25 +312,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        profileData.restaurantName == null
-                            ? "email"
-                            : profileData.restaurantName.toString(),
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        profileData.restaurantName == null ? "email" : profileData.restaurantName.toString(),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        profileData.category == null
-                            ? "email"
-                            : profileData.category.toString(),
-                        style: GoogleFonts.poppins(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12),
+                        profileData.category == null ? "email" : profileData.category.toString(),
+                        style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
                     const SizedBox(
@@ -347,32 +333,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           Text(
                             'Restaurant Name',
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
                             controller: restaurantController,
-                            validator: RequiredValidator(
-                                errorText:
-                                    'Please enter your Restaurant Name ').call,
-                            hint: profileData.restaurantName == null
-                                ? "email"
-                                : profileData.restaurantName.toString(),
+                            validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
+                            hint: profileData.restaurantName == null ? "email" : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Category",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -467,10 +443,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Email",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -478,26 +451,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: emailController,
                             validator: MultiValidator([
-                              RequiredValidator(
-                                  errorText: 'Please enter your email'),
-                              EmailValidator(
-                                  errorText: 'Enter a valid email address'),
+                              RequiredValidator(errorText: 'Please enter your email'),
+                              EmailValidator(errorText: 'Enter a valid email address'),
                             ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
-                            hint: profileData.email == null
-                                ? "email"
-                                : profileData.email.toString(),
+                            hint: profileData.email == null ? "email" : profileData.email.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Mobile Number",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -505,23 +471,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: mobileController,
                             length: 10,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter your Mobile Number ').call,
+                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number ').call,
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
-                            hint: profileData.mobileNumber == null
-                                ? "email"
-                                : profileData.mobileNumber.toString(),
+                            hint: profileData.mobileNumber == null ? "email" : profileData.mobileNumber.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Address",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -540,25 +500,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     });
                                 if (place != null) {
                                   setState(() {
-                                    _address = (place.description ?? "Location")
-                                        .toString();
+                                    _address = (place.description ?? "Location").toString();
                                   });
                                   final plist = GoogleMapsPlaces(
                                     apiKey: googleApikey,
-                                    apiHeaders: await const GoogleApiHeaders()
-                                        .getHeaders(),
+                                    apiHeaders: await const GoogleApiHeaders().getHeaders(),
                                   );
                                   print(plist);
                                   String placeid = place.placeId ?? "0";
-                                  final detail =
-                                      await plist.getDetailsByPlaceId(placeid);
+                                  final detail = await plist.getDetailsByPlaceId(placeid);
                                   final geometry = detail.result.geometry!;
                                   final lat = geometry.location.lat;
                                   final lang = geometry.location.lng;
                                   setState(() {
-                                    _address = (place.description ?? "Location")
-                                        .toString();
-                                    print("Address iss...$_address");
+                                    _address = (place.description ?? "Location").toString();
                                   });
                                 }
                               },
@@ -569,35 +524,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       height: 55,
                                       decoration: BoxDecoration(
                                           border: Border.all(
-                                              color: !checkValidation(
-                                                      showValidation1.value,
-                                                      _address == "")
+                                              color: !checkValidation(showValidation1.value, _address == "")
                                                   ? Colors.grey.shade300
                                                   : Colors.red),
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
+                                          borderRadius: BorderRadius.circular(5.0),
                                           color: Colors.white),
                                       // width: MediaQuery.of(context).size.width - 40,
                                       child: ListTile(
                                         leading: const Icon(Icons.location_on),
                                         title: Text(
                                           _address ?? "Location".toString(),
-                                          style: TextStyle(
-                                              fontSize: AddSize.font14),
+                                          style: TextStyle(fontSize: AddSize.font14),
                                         ),
                                         trailing: const Icon(Icons.search),
                                         dense: true,
                                       )),
-                                  checkValidation(
-                                          showValidation1.value, _address == "")
+                                  checkValidation(showValidation1.value, _address == "")
                                       ? Padding(
-                                          padding: EdgeInsets.only(
-                                              top: AddSize.size5),
+                                          padding: EdgeInsets.only(top: AddSize.size5),
                                           child: Text(
                                             "      Location is required",
-                                            style: TextStyle(
-                                                color: Colors.red.shade700,
-                                                fontSize: AddSize.font12),
+                                            style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
                                           ),
                                         )
                                       : const SizedBox()
@@ -608,10 +555,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "About Us",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -621,8 +565,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             minLines: 5,
                             maxLines: 5,
                             validator: MultiValidator([
-                              RequiredValidator(
-                                  errorText: 'Please enter about yourself'),
+                              RequiredValidator(errorText: 'Please enter about yourself'),
                             ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
@@ -679,21 +622,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
+
   void showActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text(
           'Select Picture from',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                  imageSource: ImageSource.camera, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -730,9 +671,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(
-                  imageSource: ImageSource.gallery, imageQuality: 75)
-                  .then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -778,7 +717,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
-
 }
 
 class ProductGalleryImages extends StatefulWidget {
@@ -811,8 +749,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                   color: Colors.white,
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Column(
                     children: [
                       Row(
@@ -826,7 +763,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 )
                                     .then((value) {
                                   if (value == null) return;
-                                Get.back();
+                                  Get.back();
                                   if (controller.galleryImages.length < 5) {
                                     controller.galleryImages.add(value);
                                     setState(() {});
@@ -841,10 +778,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
-                                    .copyWith(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                    .copyWith(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ),
                           ),
@@ -879,10 +813,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
-                                    .copyWith(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                    .copyWith(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ),
                           ),
@@ -917,10 +848,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
-                                    .copyWith(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                    .copyWith(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ),
                           ),
@@ -937,19 +865,14 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               minimumSize: const Size(double.maxFinite, 60),
                               backgroundColor: Colors.orange,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              textStyle: GoogleFonts.poppins(
-                                  fontSize: 20, fontWeight: FontWeight.w600)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              textStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)),
                           child: Text(
                             "Submit",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
-                                .copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18),
+                                .copyWith(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
                           )),
                     ],
                   ),
@@ -990,8 +913,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 ),
                               ),
                             ),
-                            if (controller.showValidations &&
-                                controller.galleryImages.isEmpty)
+                            if (controller.showValidations && controller.galleryImages.isEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(left: 5, top: 2),
                                 child: Icon(
@@ -1035,28 +957,23 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                       onTap: () {
                                         NewHelper.showImagePickerSheet(
                                             gotImage: (value) {
-                                              controller.galleryImages[e.key] =
-                                                  value;
+                                              controller.galleryImages[e.key] = value;
                                               setState(() {});
                                             },
                                             context: context,
                                             removeOption: true,
                                             removeImage: (fg) {
-                                              controller.galleryImages
-                                                  .removeAt(e.key);
+                                              controller.galleryImages.removeAt(e.key);
                                               setState(() {});
                                             });
                                       },
                                       child: Container(
-                                        constraints: const BoxConstraints(
-                                            minWidth: 50, minHeight: 125),
+                                        constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
                                         child: Image.file(
                                           e.value,
-                                          errorBuilder: (_, __, ___) =>
-                                              Image.network(
+                                          errorBuilder: (_, __, ___) => Image.network(
                                             e.value.path,
-                                            errorBuilder: (_, __, ___) =>
-                                                const Icon(
+                                            errorBuilder: (_, __, ___) => const Icon(
                                               Icons.video_collection_rounded,
                                               color: Colors.blue,
                                             ),
@@ -1109,8 +1026,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                   color: Colors.white,
                 ),
                 child: Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Column(
                     children: [
                       Row(
@@ -1139,10 +1055,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
-                                    .copyWith(
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    .copyWith(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ),
                           ),
@@ -1177,10 +1090,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
-                                    .copyWith(
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    .copyWith(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ),
                           ),
@@ -1197,19 +1107,14 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               minimumSize: const Size(double.maxFinite, 60),
                               backgroundColor: Colors.orange,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              textStyle: GoogleFonts.poppins(
-                                  fontSize: 20, fontWeight: FontWeight.w600)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              textStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)),
                           child: Text(
                             "Submit",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
-                                .copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
+                                .copyWith(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
                           )),
                     ],
                   ),
@@ -1250,8 +1155,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 ),
                               ),
                             ),
-                            if (controller.showValidations &&
-                                controller.menuGallery.isEmpty)
+                            if (controller.showValidations && controller.menuGallery.isEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(left: 5, top: 2),
                                 child: Icon(
@@ -1290,40 +1194,35 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                             .asMap()
                             .entries
                             .map((e) => Padding(
-                          padding: const EdgeInsets.only(right: 18),
-                          child: GestureDetector(
-                              onTap: () {
-                                NewHelper.showImagePickerSheet(
-                                    gotImage: (value) {
-                                      controller.menuGallery[e.key] =
-                                          value;
-                                      setState(() {});
-                                    },
-                                    context: context,
-                                    removeOption: true,
-                                    removeImage: (fg) {
-                                      controller.menuGallery
-                                          .removeAt(e.key);
-                                      setState(() {});
-                                    });
-                              },
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                    minWidth: 50, minHeight: 125),
-                                child: Image.file(
-                                  e.value,
-                                  errorBuilder: (_, __, ___) =>
-                                      Image.network(
-                                        e.value.path,
-                                        errorBuilder: (_, __, ___) =>
-                                        const Icon(
-                                          Icons.error_outline,
-                                          color: Colors.red,
+                                  padding: const EdgeInsets.only(right: 18),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        NewHelper.showImagePickerSheet(
+                                            gotImage: (value) {
+                                              controller.menuGallery[e.key] = value;
+                                              setState(() {});
+                                            },
+                                            context: context,
+                                            removeOption: true,
+                                            removeImage: (fg) {
+                                              controller.menuGallery.removeAt(e.key);
+                                              setState(() {});
+                                            });
+                                      },
+                                      child: Container(
+                                        constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
+                                        child: Image.file(
+                                          e.value,
+                                          errorBuilder: (_, __, ___) => Image.network(
+                                            e.value.path,
+                                            errorBuilder: (_, __, ___) => const Icon(
+                                              Icons.error_outline,
+                                              color: Colors.red,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                ),
-                              )),
-                        ))
+                                      )),
+                                ))
                             .toList(),
                       ),
                     ),
