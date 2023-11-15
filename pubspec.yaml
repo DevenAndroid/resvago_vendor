@@ -66,6 +66,7 @@ dependencies:
   app_settings: ^5.1.1
   url_launcher: ^6.2.1
   intl_phone_field: ^3.2.0
+  email_otp: ^2.1.1
 
 
 
