@@ -33,8 +33,8 @@ class _SlotListScreenState extends State<SlotListScreen> {
         .collection("vendor_slot")
         .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
         .collection("slot")
-        .where("slot_date", isLessThan: DateTime.now().add(Duration(days: 30+pagination)).millisecondsSinceEpoch)
-        .where("slot_date", isGreaterThan: DateTime.now().add(Duration(days: pagination-5)).millisecondsSinceEpoch)
+        .where("slot_date", isLessThan: DateTime.now().add(Duration(days: 30 + pagination)).millisecondsSinceEpoch)
+        .where("slot_date", isGreaterThan: DateTime.now().add(Duration(days: pagination - 5)).millisecondsSinceEpoch)
         .get();
     return item.docs.map((e) => CreateSlotData.fromMap(e.data())).toList();
   }
@@ -43,19 +43,19 @@ class _SlotListScreenState extends State<SlotListScreen> {
   bool paginationWorking = false;
 
   getSlotsWithPagination({bool? reset}) {
-    if(reset == true){
+    if (reset == true) {
       paginationWorking = false;
       pagination = 0;
     }
-    if(paginationWorking)return;
-    if(pagination == -1)return;
+    if (paginationWorking) return;
+    if (pagination == -1) return;
     paginationWorking = true;
     getSlots().then((value) {
-      if(reset == true){
+      if (reset == true) {
         slotsList = [];
       }
       pagination = pagination + 35;
-      if(value.isNotEmpty){
+      if (value.isNotEmpty) {
         slotsList ??= [];
         slotsList!.addAll(value);
       } else {
@@ -64,7 +64,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
       log("pagination....       $pagination");
       setState(() {});
       paginationWorking = false;
-    }).catchError((e){
+    }).catchError((e) {
       paginationWorking = false;
     });
   }
@@ -76,7 +76,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
     super.initState();
     getSlotsWithPagination(reset: true);
     scrollController.addListener(() {
-      if(scrollController.position.pixels > (scrollController.position.maxScrollExtent - 10)){
+      if (scrollController.position.pixels > (scrollController.position.maxScrollExtent - 10)) {
         getSlotsWithPagination();
       }
     });
@@ -110,7 +110,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                 slotController.dinnerSlots.clear();
                 Get.to(() => AddBookingSlot(
                       slotId: DateTime.now().millisecondsSinceEpoch.toString(),
-                      refreshValues: (){
+                      refreshValues: () {
                         getSlotsWithPagination(reset: true);
                       },
                       slotsDate: const [],
@@ -136,115 +136,161 @@ class _SlotListScreenState extends State<SlotListScreen> {
             height: 10,
           ),
           Expanded(
-            child: slotsList != null ?
-            slotsList!.isNotEmpty ?
-            ListView.builder(
-                shrinkWrap: true,
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                itemCount: slotsList!.length,
-                itemBuilder: (context, index) {
-                  final item = slotsList![index];
-                  return Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.calenderImg,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    DateFormat("dd-MMM-yyyy").format(DateTime.fromMillisecondsSinceEpoch(item.slotDate!)),
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 13),
-                                  ),
-                                  Text(
-                                    "Total Guest : ${item.noOfGuest}",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 13),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // const Spacer(),
-                            PopupMenuButton(
-                                color: Colors.white,
-                                iconSize: 20,
-                                icon: const Icon(
-                                  Icons.more_vert,
-                                  color: Colors.grey,
-                                ),
-                                padding: EdgeInsets.zero,
-                                onSelected: (value) {
-                                  setState(() {
-                                    selectedItem = value.toString();
-                                  });
-                                  Navigator.pushNamed(context, value.toString());
-                                },
-                                itemBuilder: (ac) {
-                                  return [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        final slotController = Get.put(SlotController());
-                                        slotController.clearAll();
-                                        Get.to(() => EditSlotsScreen(
-                                          createSlotData: item,
-                                          refreshValues: (){
-                                            getSlotsWithPagination(reset: true);
-                                          },
-                                        ));
-                                        // slotController.slots.clear();
-                                        // slotController.dinnerSlots.clear();
-                                        // Get.to(() => AddBookingSlot(
-                                        //   slotId: slotDataList[index].slotId, slotDataList: slotDataList[index],
-                                        //   slotsDate: slotDataList.where((element) => element.slotId.toString() != slotDataList[index].slotId).toList().totalDates,
-                                        // ));
-                                      },
-                                      // value: '/Edit',
-                                      child: const Text("Edit"),
+            child: slotsList != null
+                ? slotsList!.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        controller: scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: slotsList!.length,
+                        itemBuilder: (context, index) {
+                          final item = slotsList![index];
+                          return Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      AppAssets.calenderImg,
+                                      height: 50,
+                                      fit: BoxFit.cover,
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Get.to(() => SlotViewScreen(slotDataList: item));
-                                      },
-                                      // value: '/slotViewScreen',
-                                      child: const Text("View"),
+                                    const SizedBox(
+                                      width: 15,
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        FirebaseFirestore.instance
-                                            .collection('vendor_slot')
-                                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-                                            .collection("slot")
-                                            .doc(item.slotId.toString())
-                                            .delete();
-                                        slotsList!.removeAt(index);
-                                        setState(() {});
-                                      },
-                                      // value: '/deactivate',
-                                      child: const Text("Delete"),
-                                    )
-                                  ];
-                                })
-                          ]));
-                }) :
-            const Center(child: Text("Slots are not created yet"),) :
-            const Center(child: Text("Slots are not created yet"),),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            DateFormat("dd-MMM-yyyy").format(DateTime.fromMillisecondsSinceEpoch(item.slotDate!)),
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 13),
+                                          ),
+                                          Text(
+                                            "Total Guest : ${item.noOfGuest}",
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 13),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // const Spacer(),
+                                    PopupMenuButton(
+                                        color: Colors.white,
+                                        iconSize: 20,
+                                        icon: const Icon(
+                                          Icons.more_vert,
+                                          color: Colors.grey,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onSelected: (value) {
+                                          setState(() {
+                                            selectedItem = value.toString();
+                                          });
+                                          Navigator.pushNamed(context, value.toString());
+                                        },
+                                        itemBuilder: (ac) {
+                                          return [
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                final slotController = Get.put(SlotController());
+                                                slotController.clearAll();
+                                                Get.to(() => EditSlotsScreen(
+                                                      createSlotData: item,
+                                                      refreshValues: () {
+                                                        getSlotsWithPagination(reset: true);
+                                                      },
+                                                    ));
+                                                // slotController.slots.clear();
+                                                // slotController.dinnerSlots.clear();
+                                                // Get.to(() => AddBookingSlot(
+                                                //   slotId: slotDataList[index].slotId, slotDataList: slotDataList[index],
+                                                //   slotsDate: slotDataList.where((element) => element.slotId.toString() != slotDataList[index].slotId).toList().totalDates,
+                                                // ));
+                                              },
+                                              // value: '/Edit',
+                                              child: const Text("Edit"),
+                                            ),
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                Get.to(() => SlotViewScreen(slotDataList: item));
+                                              },
+                                              // value: '/slotViewScreen',
+                                              child: const Text("View"),
+                                            ),
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (ctx) => AlertDialog(
+                                                    title: const Text("Delete Slot"),
+                                                    content: const Text("Are you sure you want to delete this slot"),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.red, borderRadius: BorderRadius.circular(11)),
+                                                          width: 100,
+                                                          padding: const EdgeInsets.all(14),
+                                                          child: const Center(
+                                                              child: Text(
+                                                            "Cancel",
+                                                            style: TextStyle(color: Colors.white),
+                                                          )),
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          FirebaseFirestore.instance
+                                                              .collection('vendor_slot')
+                                                              .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                                              .collection("slot")
+                                                              .doc(item.slotId.toString())
+                                                              .delete();
+                                                          slotsList!.removeAt(index);
+                                                          setState(() {});
+                                                          Get.back();
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.green, borderRadius: BorderRadius.circular(11)),
+                                                          width: 100,
+                                                          padding: const EdgeInsets.all(14),
+                                                          child: const Center(
+                                                              child: Text(
+                                                            "okay",
+                                                            style: TextStyle(color: Colors.white),
+                                                          )),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                                setState(() {});
+                                              },
+                                              // value: '/deactivate',
+                                              child: const Text("Delete"),
+                                            )
+                                          ];
+                                        })
+                                  ]));
+                        })
+                    : const Center(
+                        child: Text("Slots are not created yet"),
+                      )
+                : const Center(
+                    child: Text("Slots are not created yet"),
+                  ),
           )
         ]),
       ),

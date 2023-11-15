@@ -285,7 +285,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: discountNumberController,
                         length: 10,
-                        validator: RequiredValidator(errorText: 'Please enter discount value').call,
+                        // validator: RequiredValidator(errorText: 'Please enter discount value').call,
                         keyboardType: TextInputType.number,
                         hint: '%',
                       ),

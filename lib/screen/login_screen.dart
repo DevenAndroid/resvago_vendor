@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
@@ -30,24 +28,19 @@ class _LoginScreenState extends State<LoginScreen> {
   String verificationId = "";
 
   fetchingFcmToken() {
-    FirebaseDatabase.instance
-        .reference()
-        .child("users")
-        .child(FirebaseAuth.instance.currentUser!.phoneNumber.toString())
-        .get();
+    FirebaseDatabase.instance.reference().child("users").child(FirebaseAuth.instance.currentUser!.phoneNumber.toString()).get();
   }
 
   void checkPhoneNumberInFirestore() async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: loginController.mobileController.text)
+        .where('mobileNumber', isEqualTo: '+91${loginController.mobileController.text.trim()}')
         .get();
-
+    log(result.docs.toString());
     if (result.docs.isNotEmpty) {
       login();
     } else {
-      Fluttertoast.showToast(
-          msg: 'Phone Number not register yet Please Signup');
+      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
   }
 
@@ -55,8 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      final String phoneNumber =
-          '+91${loginController.mobileController.text}'; // Include the country code
+      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {},
@@ -86,9 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
             child: Container(
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
+                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 4),
                   child: Form(
@@ -126,8 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 38),
+                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 38),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -144,9 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 CommonTextFieldWidget(
                                   controller: loginController.mobileController,
                                   length: 10,
-                                  validator: RequiredValidator(
-                                      errorText:
-                                          'Please enter your phone number '),
+                                  validator: RequiredValidator(errorText: 'Please enter your phone number '),
                                   keyboardType: TextInputType.number,
                                   // textInputAction: TextInputAction.next,
                                   hint: 'Enter your Mobile Number',
@@ -167,10 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 Text(
                                   'Customer Booking?',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
+                                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -178,16 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Text(
                                   'Signup as a customer',
                                   style: GoogleFonts.poppins(
-                                      color: Color(0xFF1877F2),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
+                                      color: const Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       height: 1,
@@ -195,8 +176,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: const Color(0xFFD2D8DC),
                                     ),
                                     //SizedBox(width: 10,),
-                                    Text('Or Login with',
-                                        style: const TextStyle(
+                                    const Text('Or Login with',
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
@@ -213,22 +194,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 20,
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       width: 152,
                                       height: 60,
                                       decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(.10),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: Colors.white
-                                                  .withOpacity(.35))),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: Colors.white.withOpacity(.35))),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
                                             AppAssets.facebook,
@@ -240,9 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Text(
                                             'Facebook',
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white),
+                                                fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                           )
                                         ],
                                       ),
@@ -253,16 +227,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: 152,
                                         height: 60,
                                         decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(.10),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                                color: Colors.white
-                                                    .withOpacity(.35))),
+                                            color: Colors.white.withOpacity(.10),
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: Colors.white.withOpacity(.35))),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Image.asset(
                                               AppAssets.google,
@@ -274,9 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             Text(
                                               'Google',
                                               style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white),
+                                                  fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
                                           ],
                                         ),
@@ -292,10 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: [
                                     Text(
                                       "Don't Have an Account?",
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14),
+                                      style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -304,9 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: Text(
                                         ' Signup',
                                         style: GoogleFonts.poppins(
-                                            color: Color(0xFF1877F2),
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14),
+                                            color: const Color(0xFF1877F2), fontWeight: FontWeight.w600, fontSize: 14),
                                       ),
                                     )
                                   ],

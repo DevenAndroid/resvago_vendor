@@ -196,7 +196,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: restaurantNameController,
                         // length: 10,
-                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name '),
+                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -296,7 +296,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: MultiValidator([
                           RequiredValidator(errorText: 'Please enter your email'),
                           EmailValidator(errorText: 'Enter a valid email address'),
-                        ]),
+                        ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
                         hint: 'MacRestaurant@gmail.com',
@@ -632,7 +632,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   categoryFile = File(croppedFile.path);
                   setState(() {});
                 }
-
                 Get.back();
               });
             },

@@ -305,7 +305,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                             setState(() {});
                           }
                         },
-                        title: 'CREATE COUPON',
+                        title: widget.isEditMode == true?"UPDATE COUPON":'CREATE COUPON',
                       ),
                       const SizedBox(
                         height: 20,
