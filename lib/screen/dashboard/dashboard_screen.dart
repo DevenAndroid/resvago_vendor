@@ -50,7 +50,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void restaurantData() {
     FirebaseFirestore.instance
         .collection("vendor_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       if (value.exists) {

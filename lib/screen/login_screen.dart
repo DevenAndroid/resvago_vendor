@@ -335,6 +335,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   else
                                     TextFormField(
                                       controller: otpController,
+                                      keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
                                         labelText: 'Enter OTP',
                                         hintText: 'Enter Otp',
@@ -397,7 +398,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           content: Text("OTP is verified"),
                                         ));
                                         Navigator.push(context,
-                                            MaterialPageRoute(builder: (context) => const Homepgae()));
+                                            MaterialPageRoute(builder: (context) => const BottomNavbar()));
                                       } else {
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                           content: Text("Invalid OTP"),
