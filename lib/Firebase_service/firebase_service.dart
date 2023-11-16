@@ -27,7 +27,7 @@ class FirebaseService{
     dynamic latitude,
     dynamic longitude,
     dynamic password,
-    dynamic confirmPassword,
+    //dynamic confirmPassword,
     dynamic restaurant_position,
     dynamic image,
     dynamic userID,
@@ -38,11 +38,10 @@ class FirebaseService{
     dynamic cancellation,
     dynamic menuSelection,
   }) async {
-    // try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc(mobileNumber);
-
-      DocumentReference.set({
+    try {
+      CollectionReference collection = FirebaseFirestore.instance.collection('temp_users');
+      var documentReference = collection.doc(mobileNumber);
+      documentReference.set({
         "restaurantName": restaurantName,
         "category": category,
         "email": email,
@@ -52,7 +51,7 @@ class FirebaseService{
         "latitude": latitude,
         "longitude": longitude,
         "password": password,
-        "confirmPassword": confirmPassword,
+        //"confirmPassword": confirmPassword,
         "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
@@ -64,9 +63,9 @@ class FirebaseService{
         "time": DateTime.now(),
         "userID": mobileNumber,
       });
-    // } catch (e) {
-    //   throw Exception(e);
-    // }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future manageCouponCode({

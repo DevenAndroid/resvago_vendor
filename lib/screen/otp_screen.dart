@@ -25,7 +25,7 @@ class _OtpScreenState extends State<OtpScreen> {
   String verificationId = "";
   reSend() async {
     try {
-      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      final String phoneNumber = widget.code+loginController.mobileController.text; // Include the country code
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {},

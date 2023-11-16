@@ -102,8 +102,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Geoflutterfire? geo;
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
-    // Overlay.of(context).insert(loader);
-    // try {
+    Overlay.of(context).insert(loader);
+    try {
     String imageUrl = categoryFile.path;
     geo = Geoflutterfire();
     GeoFirePoint geoFirePoint = geo!.point(
@@ -118,7 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     imageUrl = await snapshot.ref.getDownloadURL();
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(
-        email: emailController.text.trim(), password: passwordController.text.trim());
+        email: emailController.text.trim(), password: "123456");
     await firebaseService
         .manageRegisterUsers(
             restaurantName: restaurantNameController.text.trim(),
@@ -128,23 +128,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
             address: _address,
             latitude: latitude.toString(),
             longitude: longitude.toString(),
-            password: passwordController.text.trim(),
-            confirmPassword: confirmPasswordController.text.trim(),
+            password: "123456",
             image: imageUrl,
             restaurant_position: geoFirePoint.data.toString())
         .then((value) {
 
       // controller.addSetStoreTime(mobileNumberController.text);
-      // Get.back();
+      Get.back();
       Helper.hideLoader(loader);
     });
     Get.toNamed(MyRouters.thankYouScreen);
-    // } catch (e) {
-    //   Helper.hideLoader(loader);
-    //   throw Exception(e);
-    // } finally {
-    //   Helper.hideLoader(loader);
-    // }
+    } catch (e) {
+      Helper.hideLoader(loader);
+      throw Exception(e);
+    } finally {
+      Helper.hideLoader(loader);
+    }
   }
 
   bool isDescendingOrder = true;
@@ -211,7 +210,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: restaurantNameController,
                         // length: 10,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Restaurant Name '),
+                            errorText: 'Please enter your Restaurant Name ').call,
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -343,25 +342,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        "Password",
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RegisterTextFieldWidget(
-                        controller: passwordController,
-                         length: 10,
-                        keyboardType: TextInputType.visiblePassword,
-                        hint: 'MacRestaurant@12',
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      // Text(
+                      //   "Password",
+                      //   style: GoogleFonts.poppins(
+                      //       color: AppTheme.registortext,
+                      //       fontWeight: FontWeight.w500,
+                      //       fontSize: 15),
+                      // ),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // RegisterTextFieldWidget(
+                      //   controller: passwordController,
+                      //    length: 10,
+                      //   keyboardType: TextInputType.visiblePassword,
+                      //   hint: 'MacRestaurant@12',
+                      // ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
                       Text(
                         "Mobile Number",
                         style: GoogleFonts.poppins(
