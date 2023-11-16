@@ -50,12 +50,14 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void restaurantData() {
     FirebaseFirestore.instance
         .collection("vendor_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       if (value.exists) {
+        log("fgdfgdgfdfg");
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
+        log("fgdfgdgfdfg${profileData.restaurantName}");
         setState(() {});
       }
     });

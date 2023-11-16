@@ -139,6 +139,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     categoryValue = widget.menuItemData!.category ?? "";
     delivery = widget.menuItemData!.bookingForDelivery;
     dining = widget.menuItemData!.bookingForDining;
+    log("rhgfhf"+widget.menuItemData!.category);
+    log("rhgfhf"+categoryValue.toString());
   }
 
   @override

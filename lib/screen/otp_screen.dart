@@ -11,7 +11,8 @@ import 'dashboard/dashboard_chart.dart';
 
 class OtpScreen extends StatefulWidget {
   String verificationId;
-   OtpScreen({super.key, required this.verificationId});
+  String code;
+   OtpScreen({super.key, required this.verificationId, required this.code});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -24,7 +25,7 @@ class _OtpScreenState extends State<OtpScreen> {
   String verificationId = "";
   reSend() async {
     try {
-      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      final String phoneNumber = widget.code+loginController.mobileController.text; // Include the country code
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {},
@@ -35,7 +36,7 @@ class _OtpScreenState extends State<OtpScreen> {
           // Update the parameter to accept nullable int
           log("Code Sent: $verificationId");
           this.verificationId = verificationId;
-          Get.to(() => OtpScreen(verificationId: verificationId));
+          Get.to(() => OtpScreen(verificationId: verificationId,code: widget.code,));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           log("Auto Retrieval Timeout: $verificationId");

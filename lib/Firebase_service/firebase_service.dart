@@ -27,7 +27,7 @@ class FirebaseService{
     dynamic latitude,
     dynamic longitude,
     dynamic password,
-    dynamic confirmPassword,
+    //dynamic confirmPassword,
     dynamic restaurant_position,
     dynamic image,
     dynamic userID,
@@ -39,9 +39,8 @@ class FirebaseService{
     dynamic menuSelection,
   }) async {
     try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('temp_user');
+      CollectionReference collection = FirebaseFirestore.instance.collection('temp_users');
       var documentReference = collection.doc(mobileNumber);
-
       documentReference.set({
         "restaurantName": restaurantName,
         "category": category,
@@ -52,7 +51,7 @@ class FirebaseService{
         "latitude": latitude,
         "longitude": longitude,
         "password": password,
-        "confirmPassword": confirmPassword,
+        //"confirmPassword": confirmPassword,
         "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
