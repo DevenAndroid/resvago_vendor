@@ -42,41 +42,44 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginOption loginOption = LoginOption.Mobile;
 
   fetchingFcmToken() {
-    FirebaseDatabase.instance
-        .reference()
-        .child("users")
-        .child(FirebaseAuth.instance.currentUser!.uid.toString())
-        .get();
+    FirebaseDatabase.instance.reference().child("users").child(FirebaseAuth.instance.currentUser!.uid.toString()).get();
   }
 
   void checkPhoneNumberInFirestore() async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
-        .where('mobileNumber',
-            isEqualTo: code + loginController.mobileController.text)
+        .where('mobileNumber', isEqualTo: code + loginController.mobileController.text)
         .get();
     log(result.docs.toString());
     if (result.docs.isNotEmpty) {
-      login();
+      print(result.docs.first.data());
+      Map kk = result.docs.first.data() as Map;
+      print(kk["email"]);
+      login(kk["email"].toString());
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
   }
 
-  login() async {
+  login(String email) async {
+    await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email, password: "123456");
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
       final String phoneNumber = code + loginController.mobileController.text;
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationCompleted: (PhoneAuthCredential credential) {
+          log("Verification credential: $credential");
+          },
         verificationFailed: (FirebaseAuthException e) {
           log("Verification Failed: $e");
         },
         codeSent: (String verificationId, [int? resendToken]) {
           log("Code Sent: $verificationId");
-          this.verificationId = verificationId;
+          verificationId = verificationId;
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
                 code: code,
@@ -92,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String code = "+91";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -166,8 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text("Login With Email Address",
-                                  style: TextStyle(color: Colors.white)),
+                              const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -189,32 +190,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   IntlPhoneField(
                                     flagsButtonPadding: const EdgeInsets.all(8),
                                     dropdownIconPosition: IconPosition.trailing,
-                                    controller:
-                                        loginController.mobileController,
+                                    controller: loginController.mobileController,
                                     style: const TextStyle(color: Colors.white),
-                                    dropdownTextStyle:
-                                        TextStyle(color: Colors.white),
+                                    dropdownTextStyle: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
                                       hintText: 'Enter your Mobile number',
-                                      hintStyle:
-                                          const TextStyle(color: Colors.white),
+                                      hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       enabled: true,
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0x63ffffff))),
-                                      focusedBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0x63ffffff))),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
                                       iconColor: Colors.white,
-                                      errorBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1)),
-                                      fillColor:
-                                          Color(0x63ffffff).withOpacity(.2),
+                                      errorBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
+                                      fillColor: const Color(0x63ffffff).withOpacity(.2),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: const BorderSide(
-                                            width: 1, color: Color(0x63ffffff)),
+                                        borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
                                       ),
                                     ),
                                     initialCountryCode: 'IN',
@@ -241,8 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
-                                      hintStyle:
-                                          const TextStyle(color: Colors.white),
+                                      hintStyle: const TextStyle(color: Colors.white),
                                       suffix: GestureDetector(
                                         onTap: () async {
                                           myauth.setConfig(
@@ -252,141 +242,90 @@ class _LoginScreenState extends State<LoginScreen> {
                                               otpLength: 4,
                                               otpType: OTPType.digitsOnly);
                                           if (await myauth.sendOTP() == true) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content:
-                                                  Text("OTP has been sent"),
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              content: Text("OTP has been sent"),
                                             ));
                                           } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content:
-                                                  Text("Oops, OTP send failed"),
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              content: Text("Oops, OTP send failed"),
                                             ));
                                           }
                                           setState(() {
                                             showOtpField = true;
                                           });
                                         },
-                                        child: Text('send'),
+                                        child: const Text('send'),
                                       ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 16),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
                                       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: const Color(0xFFffffff)
-                                                .withOpacity(.24)),
-                                        borderRadius:
-                                            BorderRadius.circular(6.0),
+                                        borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                        borderRadius: BorderRadius.circular(6.0),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: const Color(0xFFffffff)
-                                                  .withOpacity(.24)),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(6.0))),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: const Color(0xFFffffff)
-                                                  .withOpacity(.24),
-                                              width: 3.0),
-                                          borderRadius:
-                                              BorderRadius.circular(6.0)),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderRadius: BorderRadius.circular(6.0)),
                                     ),
                                     validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText: 'Please enter your email'),
-                                      EmailValidator(
-                                          errorText:
-                                              'Enter a valid email address'),
+                                      RequiredValidator(errorText: 'Please enter your email'),
+                                      EmailValidator(errorText: 'Enter a valid email address'),
                                     ]).call,
                                     keyboardType: TextInputType.emailAddress,
                                     // textInputAction: TextInputAction.next,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   if (!showOtpField)
                                     TextFormField(
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                       controller: passwordController,
                                       decoration: InputDecoration(
                                         filled: true,
                                         hintText: 'Enter Otp',
-                                        hintStyle: const TextStyle(
-                                            color: Colors.white),
-                                        fillColor:
-                                            Colors.white.withOpacity(.10),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 16),
+                                        hintStyle: const TextStyle(color: Colors.white),
+                                        fillColor: Colors.white.withOpacity(.10),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
                                         // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: const Color(0xFFffffff)
-                                                  .withOpacity(.24)),
-                                          borderRadius:
-                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: BorderRadius.circular(6.0),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: const Color(0xFFffffff)
-                                                    .withOpacity(.24)),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(6.0))),
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                         border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: const Color(0xFFffffff)
-                                                    .withOpacity(.24),
-                                                width: 3.0),
-                                            borderRadius:
-                                                BorderRadius.circular(6.0)),
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                            borderRadius: BorderRadius.circular(6.0)),
                                       ),
                                     )
                                   else
                                     TextFormField(
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                       controller: otpController,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
                                         hintText: 'Enter Otp',
-                                        hintStyle: const TextStyle(
-                                            color: Colors.white),
+                                        hintStyle: const TextStyle(color: Colors.white),
                                         filled: true,
-                                        fillColor:
-                                            Colors.white.withOpacity(.10),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 16),
+                                        fillColor: Colors.white.withOpacity(.10),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
                                         // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: const Color(0xFFffffff)
-                                                  .withOpacity(.24)),
-                                          borderRadius:
-                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: BorderRadius.circular(6.0),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: const Color(0xFFffffff)
-                                                    .withOpacity(.24)),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(6.0))),
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                         border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: const Color(0xFFffffff)
-                                                    .withOpacity(.24),
-                                                width: 3.0),
-                                            borderRadius:
-                                                BorderRadius.circular(6.0)),
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                            borderRadius: BorderRadius.circular(6.0)),
                                       ),
                                     ),
                                 ],
@@ -403,38 +342,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                           if (!showOtpField) {
                                             FirebaseAuth.instance
                                                 .signInWithEmailAndPassword(
-                                              email:
-                                                  emailController.text.trim(),
+                                              email: emailController.text.trim(),
                                               password: "123456",
                                             )
                                                 .then((value) {
-                                              Get.to(
-                                                  () => const BottomNavbar());
+                                              Get.to(() => const BottomNavbar());
                                               log(value.toString());
                                             });
                                           } else {
-                                            if (await myauth.verifyOTP(
-                                                    otp: otpController.text) ==
-                                                true) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                content:
-                                                    Text("OTP is verified"),
+                                            if (await myauth.verifyOTP(otp: otpController.text) == true) {
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                content: Text("OTP is verified"),
                                               ));
-                                              FirebaseAuth.instance
-                                                  .signInWithEmailAndPassword(
-                                                email:
-                                                    emailController.text.trim(),
+                                              FirebaseAuth.instance.signInWithEmailAndPassword(
+                                                email: emailController.text.trim(),
                                                 password: "123456",
                                               );
                                               Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const BottomNavbar()));
+                                                  context, MaterialPageRoute(builder: (context) => const BottomNavbar()));
                                             } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text("Invalid OTP"),
                                               ));
                                             }
@@ -444,8 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       )
                                     : CommonButton(
                                         onPressed: () async {
-                                          if (_formKey.currentState!
-                                              .validate()) {
+                                          if (_formKey.currentState!.validate()) {
                                             checkPhoneNumberInFirestore();
                                           }
                                         },
@@ -464,9 +390,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Text(
                                   'Signup as a customer',
                                   style: GoogleFonts.poppins(
-                                      color: const Color(0xFF1877F2),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
+                                      color: const Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 20,
@@ -576,10 +500,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: Text(
                                         ' Signup',
                                         style: GoogleFonts.poppins(
-                                            color: const Color(0xFF1877F2),
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14),
-
+                                            color: const Color(0xFF1877F2), fontWeight: FontWeight.w600, fontSize: 14),
                                       ),
                                     )
                                   ],

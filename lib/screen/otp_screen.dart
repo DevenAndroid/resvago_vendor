@@ -52,9 +52,10 @@ class _OtpScreenState extends State<OtpScreen> {
         verificationId: widget.verificationId,
         smsCode: otpController.text.trim(),
       );
-      final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
-      final User? user = authResult.user;
-      log('Successfully signed in with phone number: ${user!.phoneNumber}');
+      UserCredential userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
+      // final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
+      // final User? user = authResult.user;
+      log('Successfully signed in with phone number: ${userCredential.credential}');
       Get.offAllNamed(MyRouters.bottomNavbar);
     } catch (e) {
       log("Error: $e");
