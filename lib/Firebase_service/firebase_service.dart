@@ -39,8 +39,8 @@ class FirebaseService{
     dynamic menuSelection,
   }) async {
     try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('temp_users');
-      var documentReference = collection.doc(mobileNumber);
+      CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
+      var documentReference = collection.doc(FirebaseAuth.instance.currentUser!.uid);
       documentReference.set({
         "restaurantName": restaurantName,
         "category": category,

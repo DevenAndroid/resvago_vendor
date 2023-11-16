@@ -115,27 +115,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     TaskSnapshot snapshot = await uploadTask;
     imageUrl = await snapshot.ref.getDownloadURL();
-    FirebaseAuth.instance
+    await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
         email: emailController.text.trim(), password: "123456");
-    await firebaseService
-        .manageRegisterUsers(
-            restaurantName: restaurantNameController.text.trim(),
-            category: categoryValue,
-            email: emailController.text.trim(),
-            mobileNumber: code + mobileNumberController.text.trim(),
-            address: _address,
-            latitude: latitude.toString(),
-            longitude: longitude.toString(),
-            password: "123456",
-            image: imageUrl,
-            restaurant_position: geoFirePoint.data.toString())
-        .then((value) {
-
-      // controller.addSetStoreTime(mobileNumberController.text);
-      Get.back();
-      Helper.hideLoader(loader);
-    });
+    if(FirebaseAuth.instance.currentUser != null){
+      await firebaseService
+          .manageRegisterUsers(
+          restaurantName: restaurantNameController.text.trim(),
+          category: categoryValue,
+          email: emailController.text.trim(),
+          mobileNumber: code + mobileNumberController.text.trim(),
+          address: _address,
+          latitude: latitude.toString(),
+          longitude: longitude.toString(),
+          password: "123456",
+          image: imageUrl,
+          restaurant_position: geoFirePoint.data.toString(),
+      ).then((value) {
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+    }
     Get.toNamed(MyRouters.thankYouScreen);
     } catch (e) {
       Helper.hideLoader(loader);

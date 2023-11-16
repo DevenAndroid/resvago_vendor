@@ -56,12 +56,14 @@ class _VendorDashboardState extends State<VendorDashboard> {
       if (value.exists) {
         log("fgdfgdgfdfg");
         if (value.data() == null) return;
+
         profileData = ProfileData.fromJson(value.data()!);
         log("fgdfgdgfdfg${profileData.restaurantName}");
         setState(() {});
       }
     });
   }
+
 
   @override
   void initState() {
