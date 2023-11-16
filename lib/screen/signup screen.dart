@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,7 +19,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
-import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -40,6 +38,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
   File profileImage = File("");
   bool showValidation = false;
   bool showValidationImg = false;
@@ -372,24 +371,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       IntlPhoneField(
-                        flagsButtonPadding: const EdgeInsets.all(8),
-                        dropdownIconPosition: IconPosition.trailing,
-                        controller: mobileNumberController,
-                        dropdownTextStyle: const TextStyle(color: Colors.black),
+                        cursorColor: Colors.black,
                         dropdownIcon: const Icon(
                           Icons.arrow_drop_down_rounded,
                           color: Colors.black,
                         ),
+                        dropdownTextStyle: const TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
+                        flagsButtonPadding: const EdgeInsets.all(8),
+                        dropdownIconPosition: IconPosition.trailing,
+                        controller: mobileNumberController,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: const BorderSide(),
-                            ),
-                            hintText: "Enter phone number",
-                            hintStyle: const TextStyle(
-                                color: Colors.black,
+                            hintStyle: GoogleFonts.poppins(
+                              color: const Color(0xFF384953),
+                              textStyle: GoogleFonts.poppins(
+                                color: const Color(0xFF384953),
                                 fontSize: 14,
-                                fontWeight: FontWeight.w300)),
+                                fontWeight: FontWeight.w300,
+                              ),
+                              fontSize: 14,
+                              // fontFamily: 'poppins',
+                              fontWeight: FontWeight.w300,
+                            ),
+                            hintText: 'Phone Number',
+                            // labelStyle: TextStyle(color: Colors.black),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(),
+                            ),
+                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
                         initialCountryCode: 'IN',
                         keyboardType: TextInputType.number,
                         onChanged: (phone) {
@@ -739,7 +749,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   categoryFile = File(croppedFile.path);
                   setState(() {});
                 }
-
                 Get.back();
               });
             },

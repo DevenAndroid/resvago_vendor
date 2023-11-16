@@ -81,10 +81,6 @@ class _SettingScreenState extends State<SettingScreen> {
   File categoryFile = File("");
   final controller = Get.put(AddProductController());
   Future<void> updateProfileToFirestore() async {
-    if (controller.galleryImages.isEmpty) {
-      showToast("Please select menu images");
-      return;
-    }
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -171,10 +167,9 @@ class _SettingScreenState extends State<SettingScreen> {
         _address = profileData.address.toString();
         preparationTimeController.text = (profileData.preparationTime ?? "").toString();
         averageMealForMemberController.text = (profileData.averageMealForMember ?? "").toString();
-        state = profileData.setDelivery ?? false;
-        state1 = profileData.cancellation ?? false;
-        state2 = profileData.menuSelection ?? false;
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
+        log("aboutUs------${aboutUsController.text}");
+        log("aboutUs------${aboutUsController.text}");
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
@@ -185,6 +180,10 @@ class _SettingScreenState extends State<SettingScreen> {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
+        state = profileData.setDelivery;
+        state1 = profileData.cancellation;
+        state2 = profileData.menuSelection;
+        log("aboutUs------${aboutUsController.text}");
         setState(() {});
       }
     });

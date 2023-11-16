@@ -119,16 +119,15 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                     style: DefaultTextStyle.of(
                                                             context)
                                                         .style,
-                                                    children: <TextSpan>[
+                                                    children: const <TextSpan>[
 
                                                     ],
                                                   ),
                                                 ),
                                                 item.deactivate
-                                                    ? Icon(Icons.block,color: Colors.red,)
+                                                    ? const Icon(Icons.block,color: Colors.red,)
                                                     : const SizedBox(),
                                                 PopupMenuButton(
-                                                    color: Colors.white,
                                                     iconSize: 20,
                                                     onSelected: (value) {
                                                       setState(() {
@@ -143,7 +142,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                     itemBuilder: (ac) {
                                                       return [
                                                         PopupMenuItem(
-                                                          child: Text("Edit"),
+                                                          child: const Text("Edit"),
                                                           onTap: () {
                                                             Get.to(
                                                                 CreatePromoCodeScreen(
@@ -223,7 +222,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                       fontSize: 16),
                                                 ),
                                                 Text(
-                                                  "${item.discount.toString()}\%",
+                                                  "${item.discount.toString()}%",
                                                   style: GoogleFonts.poppins(
                                                       color: Colors.grey,
                                                       fontWeight:

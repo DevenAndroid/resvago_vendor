@@ -93,10 +93,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
   Future<void> updateProfileToFirestore() async {
-    if (controller.galleryImages.isEmpty) {
-      showToast("Please select menu images");
-      return;
-    }
+    // if (controller.galleryImages.isEmpty) {
+    //   showToast("Please select menu images");
+    //   return;
+    // }
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -173,17 +173,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
+        log(profileData.toJson().toString());
         categoryFile = File(profileData.image.toString());
         mobileController.text = profileData.mobileNumber.toString();
         restaurantController.text = profileData.restaurantName.toString();
-        categoryValue = profileData.category;
+        categoryValue = profileData.category.toString();
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
         preparationTime = (profileData.preparationTime ?? "").toString();
         averageMealForMember = (profileData.averageMealForMember ?? "").toString();
-        setDelivery = (profileData.setDelivery ?? "").toString();
-        cancellation = (profileData.cancellation ?? "").toString();
-        menuSelection = (profileData.menuSelection ?? "").toString();
+        setDelivery = (profileData.setDelivery);
+        cancellation = (profileData.cancellation);
+        menuSelection = (profileData.menuSelection);
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
         for (var element in profileData.restaurantImage!) {
@@ -194,6 +195,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         for (var element in profileData.menuGalleryImages!) {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+        }
+        if (!categoryList!
+            .map((e) => e.name.toString())
+            .toList()
+            .contains(profileData.category)) {
+          categoryValue = "";
         }
         setState(() {});
       }
@@ -208,7 +215,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
     getVendorCategories();
   }
-
+  String code = "+91";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -341,7 +348,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: restaurantController,
                             validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
-                            hint: profileData.restaurantName == null ? "email" : profileData.restaurantName.toString(),
+                            hint: profileData.restaurantName == null ? "restaurant name" : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
@@ -410,14 +417,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         width: 3.0),
                                     borderRadius: BorderRadius.circular(6.0)),
                               ),
-                              //value: categoryValue,
+                               value:  categoryValue == ""
+                                   ? null
+                                   : categoryValue,
                               items: categoryList!.map((items) {
                                 return DropdownMenuItem(
                                   value: items.name.toString(),
                                   child: Text(
                                     items.name.toString(),
                                     style: TextStyle(
-                                        color: AppTheme.userText,
+                                        color: const Color(0xFF384953),
                                         fontSize: AddSize.font14),
                                   ),
                                 );
@@ -449,6 +458,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
+                            readOnly: true,
                             controller: emailController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your email'),
@@ -469,12 +479,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
+                            readOnly: true,
                             controller: mobileController,
                             length: 10,
                             validator: RequiredValidator(errorText: 'Please enter your Mobile Number ').call,
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
-                            hint: profileData.mobileNumber == null ? "email" : profileData.mobileNumber.toString(),
+                            hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
                           ),
                           const SizedBox(
                             height: 20,
@@ -634,7 +645,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
@@ -671,7 +682,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: value.path,
                   aspectRatioPresets: [
