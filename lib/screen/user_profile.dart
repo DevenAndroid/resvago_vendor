@@ -458,6 +458,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
+                            readOnly: true,
                             controller: emailController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your email'),
@@ -478,6 +479,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
+                            readOnly: true,
                             controller: mobileController,
                             length: 10,
                             validator: RequiredValidator(errorText: 'Please enter your Mobile Number ').call,

@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void checkPhoneNumberInFirestore() async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: '+91${loginController.mobileController.text.trim()}')
+        .where('mobileNumber', isEqualTo: code + loginController.mobileController.text)
         .get();
     log(result.docs.toString());
     if (result.docs.isNotEmpty) {
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      final String phoneNumber = code + loginController.mobileController.text;
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {},
@@ -71,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String code = "+91";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -130,13 +132,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(
                                   height: 5,
                                 ),
-                                CommonTextFieldWidget(
+                                IntlPhoneField(
+                                  cursorColor: Colors.white,
+                                  dropdownIcon: const Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  dropdownTextStyle: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
+                                  flagsButtonPadding: const EdgeInsets.all(8),
+                                  dropdownIconPosition: IconPosition.trailing,
                                   controller: loginController.mobileController,
-                                  length: 10,
-                                  validator: RequiredValidator(errorText: 'Please enter your phone number '),
-                                  keyboardType: TextInputType.number,
-                                  // textInputAction: TextInputAction.next,
-                                  hint: 'Enter your Mobile Number',
+                                  decoration: const InputDecoration(
+                                      hintStyle: TextStyle(color: Colors.white),
+                                      labelText: 'Phone Number',
+                                      labelStyle: TextStyle(color: Colors.white),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+                                  initialCountryCode: 'IN',
+                                  onChanged: (phone) {
+                                    code = phone.countryCode.toString();
+                                    setState(() {});
+                                  },
                                 ),
                                 const SizedBox(
                                   height: 15,

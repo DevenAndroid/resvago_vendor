@@ -320,27 +320,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.settings),
-                title: Text('Total Earning',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 5;
-                    Get.to(const TotalEarningScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.logout),
                 title: Text('Log Out',
                     style: GoogleFonts.poppins(

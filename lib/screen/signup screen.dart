@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,7 +18,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
-import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -39,6 +37,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
   File profileImage = File("");
   bool showValidation = false;
   bool showValidationImg = false;
@@ -87,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
     final QuerySnapshot phoneResult = await FirebaseFirestore.instance
         .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: code+mobileNumberController.text)
+        .where('mobileNumber', isEqualTo: code + mobileNumberController.text)
         .get();
     if (phoneResult.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Mobile Number already exits');
@@ -99,44 +98,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Geoflutterfire? geo;
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
-    // Overlay.of(context).insert(loader);
-    // try {
-      String imageUrl = categoryFile.path;
-      geo = Geoflutterfire();
-      GeoFirePoint geoFirePoint =
-          geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref("categoryImages")
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
-          .putFile(categoryFile);
+    Overlay.of(context).insert(loader);
+    try {
+    String imageUrl = categoryFile.path;
+    geo = Geoflutterfire();
+    GeoFirePoint geoFirePoint =
+        geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
+    UploadTask uploadTask = FirebaseStorage.instance
+        .ref("categoryImages")
+        .child(DateTime.now().millisecondsSinceEpoch.toString())
+        .putFile(categoryFile);
 
-      TaskSnapshot snapshot = await uploadTask;
-      imageUrl = await snapshot.ref.getDownloadURL();
-      await firebaseService
-          .manageRegisterUsers(
-              restaurantName: restaurantNameController.text.trim(),
-              category: categoryValue,
-              email: emailController.text.trim(),
-              mobileNumber: code + mobileNumberController.text.trim(),
-              address: _address,
-              latitude: latitude.toString(),
-              longitude: longitude.toString(),
-              password: passwordController.text.trim(),
-              confirmPassword: confirmPasswordController.text.trim(),
-              image: imageUrl,
-              restaurant_position: geoFirePoint.data.toString())
-          .then((value) {
-        // controller.addSetStoreTime(mobileNumberController.text);
-        // Get.back();
-        Helper.hideLoader(loader);
-      });
-      Get.toNamed(MyRouters.thankYouScreen);
-    // } catch (e) {
-    //   Helper.hideLoader(loader);
-    //   throw Exception(e);
-    // } finally {
-    //   Helper.hideLoader(loader);
-    // }
+    TaskSnapshot snapshot = await uploadTask;
+    imageUrl = await snapshot.ref.getDownloadURL();
+    await firebaseService
+        .manageRegisterUsers(
+            restaurantName: restaurantNameController.text.trim(),
+            category: categoryValue,
+            email: emailController.text.trim(),
+            mobileNumber: code + mobileNumberController.text.trim(),
+            address: _address,
+            latitude: latitude.toString(),
+            longitude: longitude.toString(),
+            password: passwordController.text.trim(),
+            confirmPassword: confirmPasswordController.text.trim(),
+            image: imageUrl,
+            restaurant_position: geoFirePoint.data.toString(),
+    ).then((value) {
+      Get.back();
+      Helper.hideLoader(loader);
+    });
+    Get.toNamed(MyRouters.thankYouScreen);
+    } catch (e) {
+      Helper.hideLoader(loader);
+      throw Exception(e);
+    } finally {
+      Helper.hideLoader(loader);
+    }
   }
 
   bool isDescendingOrder = true;
@@ -312,21 +310,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       IntlPhoneField(
+                        cursorColor: Colors.black,
+                        dropdownIcon: const Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: Colors.black,
+                        ),
+                        dropdownTextStyle: const TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         flagsButtonPadding: const EdgeInsets.all(8),
                         dropdownIconPosition: IconPosition.trailing,
                         controller: mobileNumberController,
-                        decoration: const InputDecoration(
-                          labelText: 'Phone Number',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(),
-                          ),
-                        ),
+                        decoration: InputDecoration(
+                            hintStyle: GoogleFonts.poppins(
+                              color: const Color(0xFF384953),
+                              textStyle: GoogleFonts.poppins(
+                                color: const Color(0xFF384953),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                              ),
+                              fontSize: 14,
+                              // fontFamily: 'poppins',
+                              fontWeight: FontWeight.w300,
+                            ),
+                            hintText: 'Phone Number',
+                            // labelStyle: TextStyle(color: Colors.black),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(),
+                            ),
+                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
                         initialCountryCode: 'IN',
                         onChanged: (phone) {
                           code = phone.countryCode.toString();
-                          setState(() {
-
-                          });
+                          setState(() {});
                         },
                       ),
                       const SizedBox(
@@ -435,7 +451,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       alignment: Alignment.center,
                                       child: Image.file(categoryFile,
                                           errorBuilder: (_, __, ___) =>
-                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => SizedBox())),
+                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => const SizedBox())),
                                     ),
                                   ],
                                 )
@@ -500,7 +516,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             softWrap: true,
                             text: TextSpan(
                               text: 'Yes I understand and agree to the ',
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
                                     recognizer: TapGestureRecognizer()

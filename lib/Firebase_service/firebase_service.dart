@@ -38,11 +38,11 @@ class FirebaseService{
     dynamic cancellation,
     dynamic menuSelection,
   }) async {
-    // try {
-      CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
-      var DocumentReference = collection.doc(mobileNumber);
+    try {
+      CollectionReference collection = FirebaseFirestore.instance.collection('temp_user');
+      var documentReference = collection.doc(mobileNumber);
 
-      DocumentReference.set({
+      documentReference.set({
         "restaurantName": restaurantName,
         "category": category,
         "email": email,
@@ -64,9 +64,9 @@ class FirebaseService{
         "time": DateTime.now(),
         "userID": mobileNumber,
       });
-    // } catch (e) {
-    //   throw Exception(e);
-    // }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future manageCouponCode({

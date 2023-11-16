@@ -27,8 +27,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Stream<List<MenuData>> getMenu() {
     return FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId",
-            isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
         .snapshots()
         .map((querySnapshot) {
       List<MenuData> menuList = [];
@@ -65,8 +64,7 @@ class _MenuScreenState extends State<MenuScreen> {
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AddSize.padding16, vertical: AddSize.padding10),
+            padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10),
             child: Column(children: [
               Row(
                 // mainAxisSize: MainAxisSize.min,
@@ -74,15 +72,13 @@ class _MenuScreenState extends State<MenuScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                          color: AppTheme.backgroundcolor,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.shade300,
-                                // offset: Offset(2, 2),
-                                blurRadius: 05)
-                          ]),
+                      decoration:
+                          BoxDecoration(color: AppTheme.backgroundcolor, borderRadius: BorderRadius.circular(10), boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade300,
+                            // offset: Offset(2, 2),
+                            blurRadius: 05)
+                      ]),
                       child: TextField(
                         maxLines: 1,
                         style: const TextStyle(fontSize: 17),
@@ -104,18 +100,11 @@ class _MenuScreenState extends State<MenuScreen> {
                               ),
                             ),
                             border: const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                                borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(10))),
                             fillColor: Colors.white,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: AddSize.padding20,
-                                vertical: AddSize.padding10),
-                            hintText: 'Find for food or restaurant...',
-                            hintStyle: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF9DA4BB),
-                                fontWeight: FontWeight.w400)),
+                            contentPadding: EdgeInsets.symmetric(horizontal: AddSize.padding20, vertical: AddSize.padding10),
+                            hintText: 'Find for food...',
+                            hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9DA4BB), fontWeight: FontWeight.w400)),
                       ),
                     ),
                   ),
@@ -124,10 +113,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => AddMenuScreen(
-                          menuId: DateTime.now()
-                              .millisecondsSinceEpoch
-                              .toString()));
+                      Get.to(() => AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
                     },
                     child: Container(
                       height: AddSize.size20 * 2.2,
@@ -172,11 +158,9 @@ class _MenuScreenState extends State<MenuScreen> {
                               return Stack(
                                 children: [
                                   Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: AddSize.size10),
+                                      padding: EdgeInsets.symmetric(vertical: AddSize.size10),
                                       child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
@@ -190,8 +174,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                               ),
                                             ],
                                             color: AppTheme.backgroundcolor,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           child: Row(
                                             children: [
@@ -199,15 +182,11 @@ class _MenuScreenState extends State<MenuScreen> {
                                                 height: AddSize.size80,
                                                 width: AddSize.size80,
                                                 child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
+                                                  borderRadius: BorderRadius.circular(20),
                                                   child: CachedNetworkImage(
-                                                    imageUrl: menuItem.image
-                                                        .toString(),
-                                                    errorWidget: (_, __, ___) =>
-                                                        const SizedBox(),
-                                                    placeholder: (_, __) =>
-                                                        const SizedBox(),
+                                                    imageUrl: menuItem.image.toString(),
+                                                    errorWidget: (_, __, ___) => const SizedBox(),
+                                                    placeholder: (_, __) => const SizedBox(),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -217,28 +196,19 @@ class _MenuScreenState extends State<MenuScreen> {
                                               ),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            menuItem.dishName ??
-                                                                "".toString(),
+                                                            menuItem.dishName ?? "".toString(),
                                                             style: const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
+                                                                fontWeight: FontWeight.w500,
                                                                 fontSize: 18,
-                                                                color: AppTheme
-                                                                    .blackcolor),
+                                                                color: AppTheme.blackcolor),
                                                           ),
                                                         ),
                                                       ],
@@ -247,23 +217,15 @@ class _MenuScreenState extends State<MenuScreen> {
                                                       height: 5,
                                                     ),
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          menuItem.category
-                                                              .toString(),
+                                                          menuItem.category.toString(),
                                                           style: const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w300,
+                                                              fontWeight: FontWeight.w300,
                                                               fontSize: 14,
-                                                              color: Color(
-                                                                  0xFF8C9BB2)),
+                                                              color: Color(0xFF8C9BB2)),
                                                         ),
                                                       ],
                                                     ),
@@ -271,24 +233,16 @@ class _MenuScreenState extends State<MenuScreen> {
                                                       height: 5,
                                                     ),
                                                     Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
                                                             "\$${menuItem.price.toString()}",
                                                             // '20.00',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
+                                                            style: const TextStyle(
+                                                              fontWeight: FontWeight.w400,
                                                               fontSize: 16,
-                                                              color: AppTheme
-                                                                  .lightBlueColor,
+                                                              color: AppTheme.lightBlueColor,
                                                             ),
                                                           )
                                                         ]),
@@ -313,16 +267,13 @@ class _MenuScreenState extends State<MenuScreen> {
                                                 height: 24,
                                                 width: 24,
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                      const Color(0xFFDFE8F6),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
+                                                  color: const Color(0xFFDFE8F6),
+                                                  borderRadius: BorderRadius.circular(4),
                                                 ),
                                                 child: Center(
                                                   child: Icon(
                                                     Icons.edit,
-                                                    color:
-                                                        AppTheme.lightBlueColor,
+                                                    color: AppTheme.lightBlueColor,
                                                     size: AddSize.size15,
                                                   ),
                                                 )),
@@ -333,10 +284,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                               showDialog(
                                                 context: context,
                                                 builder: (ctx) => AlertDialog(
-                                                  title: const Text(
-                                                      "Delete Menu"),
-                                                  content: const Text(
-                                                      "Are you sure you want to delete this Menu"),
+                                                  title: const Text("Delete Menu"),
+                                                  content: const Text("Are you sure you want to delete this Menu"),
                                                   actions: <Widget>[
                                                     TextButton(
                                                       onPressed: () {
@@ -344,32 +293,21 @@ class _MenuScreenState extends State<MenuScreen> {
                                                       },
                                                       child: Container(
                                                         decoration: BoxDecoration(
-                                                            color: Colors.red,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        11)),
+                                                            color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(14),
+                                                        padding: const EdgeInsets.all(14),
                                                         child: const Center(
                                                             child: Text(
                                                           "Cancel",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
+                                                          style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                "vendor_menu")
-                                                            .doc(
-                                                                menuItem.menuId)
+                                                        FirebaseFirestore.instance
+                                                            .collection("vendor_menu")
+                                                            .doc(menuItem.menuId)
                                                             .delete()
                                                             .then((value) {
                                                           setState(() {});
@@ -378,21 +316,13 @@ class _MenuScreenState extends State<MenuScreen> {
                                                       },
                                                       child: Container(
                                                         decoration: BoxDecoration(
-                                                            color: Colors.green,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        11)),
+                                                            color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(14),
+                                                        padding: const EdgeInsets.all(14),
                                                         child: const Center(
                                                             child: Text(
                                                           "okay",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
+                                                          style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
                                                     ),
@@ -404,10 +334,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                                 height: 24,
                                                 width: 24,
                                                 decoration: BoxDecoration(
-                                                  color: Colors.red
-                                                      .withOpacity(.2),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
+                                                  color: Colors.red.withOpacity(.2),
+                                                  borderRadius: BorderRadius.circular(4),
                                                 ),
                                                 child: Center(
                                                   child: Icon(
