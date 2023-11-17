@@ -52,9 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .get();
     log(result.docs.toString());
     if (result.docs.isNotEmpty) {
-      print(result.docs.first.data());
       Map kk = result.docs.first.data() as Map;
-      print(kk["email"]);
       login(kk["email"].toString());
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
@@ -62,9 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   login(String email) async {
-    await FirebaseAuth.instance.signOut();
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email, password: "123456");
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -82,7 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
           verificationId = verificationId;
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
-                code: code, email: email,
+                code: code,
+            email: email,
               ));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
