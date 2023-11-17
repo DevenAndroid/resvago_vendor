@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +13,8 @@ import '../../widget/apptheme.dart';
 import 'add_menu.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({Key? key}) : super(key: key);
+  String back;
+   MenuScreen({super.key,required this.back});
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -60,7 +60,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: backAppBar(title: "Menu List", context: context),
+        appBar: backAppBar(title: "Menu List", context: context,dispose: widget.back),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(

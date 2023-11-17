@@ -14,7 +14,8 @@ import '../../widget/appassets.dart';
 import '../oder_details_screen.dart';
 
 class OderListScreen extends StatefulWidget {
-  const OderListScreen({super.key});
+  String back;
+   OderListScreen({super.key,required this.back});
 
   @override
   State<OderListScreen> createState() => _OderListScreenState();
@@ -31,7 +32,6 @@ class _OderListScreenState extends State<OderListScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.transparent,
-
         body: DefaultTabController(
           length: 2,
           child: Column(
@@ -52,17 +52,17 @@ class _OderListScreenState extends State<OderListScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0),
-                        child: GestureDetector(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Image.asset(
-                              AppAssets.backWhite,
-                              height: AddSize.size25,
-                            )),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 0),
+                      //   child: GestureDetector(
+                      //       onTap: () {
+                      //         Get.back();
+                      //       },
+                      //       child: Image.asset(
+                      //         AppAssets.backWhite,
+                      //         height: AddSize.size25,
+                      //       )),
+                      // ),
                       const SizedBox(
                         width: 20,
                       ),
