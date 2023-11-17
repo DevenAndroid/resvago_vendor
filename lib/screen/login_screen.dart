@@ -45,6 +45,36 @@ class _LoginScreenState extends State<LoginScreen> {
     FirebaseDatabase.instance.reference().child("users").child(FirebaseAuth.instance.currentUser!.uid.toString()).get();
   }
 
+  void checkEmailInFirestore() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('vendor_users')
+        .where('email', isEqualTo: emailController.text)
+        .get();
+    if (result.docs.isNotEmpty) {
+      myauth.setConfig(
+          appEmail: "contact@hdevcoder.com",
+          appName: "Email OTP",
+          userEmail: emailController.text,
+          otpLength: 4,
+          otpType: OTPType.digitsOnly);
+      if (await myauth.sendOTP() == true) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("OTP has been sent"),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Oops, OTP send failed"),
+        ));
+      }
+      setState(() {
+        showOtpField = true;
+      });      return;
+    }else{
+      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
+
+    }
+
+  }
   void checkPhoneNumberInFirestore() async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
@@ -230,29 +260,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TextFormField(
                                     controller: emailController,
                                     style: const TextStyle(color: Colors.white),
+                                    validator: MultiValidator([
+                                      RequiredValidator(
+                                          errorText: 'Please enter your email'),
+                                      EmailValidator(
+                                          errorText: 'Enter a valid email address'),
+                                    ]).call,
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
                                       hintStyle: const TextStyle(color: Colors.white),
                                       suffix: GestureDetector(
                                         onTap: () async {
-                                          myauth.setConfig(
-                                              appEmail: "contact@hdevcoder.com",
-                                              appName: "Email OTP",
-                                              userEmail: emailController.text,
-                                              otpLength: 4,
-                                              otpType: OTPType.digitsOnly);
-                                          if (await myauth.sendOTP() == true) {
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                              content: Text("OTP has been sent"),
-                                            ));
-                                          } else {
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                              content: Text("Oops, OTP send failed"),
-                                            ));
-                                          }
-                                          setState(() {
-                                            showOtpField = true;
-                                          });
+                                          checkEmailInFirestore();
+
                                         },
                                         child: const Text('send'),
                                       ),
@@ -271,10 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
-                                    validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your email'),
-                                      EmailValidator(errorText: 'Enter a valid email address'),
-                                    ]).call,
+
                                     keyboardType: TextInputType.emailAddress,
                                     // textInputAction: TextInputAction.next,
                                   ),

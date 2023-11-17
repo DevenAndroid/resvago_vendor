@@ -74,20 +74,18 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
   Future<void> addCouponFirestore() async {
     try {
       if (widget.isEditMode) {
-        print('object');
         FirebaseFirestore.instance
             .collection('Coupon_data')
             .doc(widget.documentId)
             .update({
           "promoCodeName": promocodenameController.text,
           "code": codeController.text,
-          "cmaxDiscountode": maxDiscountController.text,
+          "maxDiscount": maxDiscountController.text,
           "discount": discountController.text,
           "startDate": startDateController.text,
           "endDate": endDateController.text,
         }).then((value) {
           Get.to(const PromoCodeList());
-
           Fluttertoast.showToast(msg: 'Code is Updated');
         });
       } else {
