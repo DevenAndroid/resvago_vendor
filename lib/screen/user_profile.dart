@@ -105,7 +105,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       String imageUrlProfile = categoryFile.path;
       if (!categoryFile.path.contains("http")) {
         UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profileImage/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
             .child("image")
             .putFile(categoryFile);
         TaskSnapshot snapshot = await uploadTask;
@@ -116,7 +116,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imagesLink.add(element.value.path);
         } else {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
               .child("${element.key}image")
               .putFile(element.value);
           TaskSnapshot snapshot = await uploadTask;
@@ -129,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           menuPhotoLink.add(element.value.path);
         } else {
           UploadTask uploadMenuImage = FirebaseStorage.instance
-              .ref("menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
               .child("${element.key}image")
               .putFile(element.value);
 
@@ -139,7 +139,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         }
       }
 
-      await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
+      await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _address,
         "password": passwordController.text.trim(),
@@ -169,7 +169,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   ProfileData profileData = ProfileData();
   void fetchdata() {
-    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);

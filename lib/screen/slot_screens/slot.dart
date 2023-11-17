@@ -43,7 +43,20 @@ class _BookableUIState extends State<BookableUI> {
     );
   }
 
+  final DateFormat timeFormat = DateFormat("hh:mm a");
   productAvailability() {
+    List<String> morningSlots = widget.slotDataList!.morningSlots!.entries.map((e) => e.key).toList();
+    morningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
+    // widget.slotDataList!.morningSlots!.entries.toList().sort((a, b) {
+    //   final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a.key));
+    //   final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.key));
+    //   return (timeA.hour * 60 + timeA.minute) - (timeB.hour * 60 + timeB.minute);
+    // });
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -232,11 +245,11 @@ class _BookableUIState extends State<BookableUI> {
                 if (widget.slotDataList == null || slotController.editLunch == true)
                   const CreateSlotsScreen()
                 else
-                  ...widget.slotDataList!.morningSlots!.entries.map((e) => Row(
+                  ...morningSlots.map((e) => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            e.key.replaceAll(",", " - "),
+                            e.replaceAll(",", " - "),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -244,7 +257,7 @@ class _BookableUIState extends State<BookableUI> {
                           ),
                           InkWell(
                               onTap: () {
-                                widget.slotDataList!.morningSlots!.remove(e.key);
+                                widget.slotDataList!.morningSlots!.remove(e);
                                 setState(() {});
                               },
                               child: const Icon(
@@ -262,6 +275,13 @@ class _BookableUIState extends State<BookableUI> {
   }
 
   productAvailability1() {
+    List<String> eveningSlots = widget.slotDataList!.eveningSlots!.entries.map((e) => e.key).toList();
+    eveningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
+
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -291,11 +311,11 @@ class _BookableUIState extends State<BookableUI> {
             if (widget.slotDataList == null || slotController.editDinner == true)
               const DinnerCreateSlotsScreen()
             else
-              ...widget.slotDataList!.eveningSlots!.entries.map((e) => Row(
+              ...eveningSlots.map((e) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        e.key.replaceAll(",", " - "),
+                        e.replaceAll(",", " - "),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -303,7 +323,7 @@ class _BookableUIState extends State<BookableUI> {
                       ),
                       InkWell(
                           onTap: () {
-                            widget.slotDataList!.eveningSlots!.remove(e.key);
+                            widget.slotDataList!.eveningSlots!.remove(e);
                             setState(() {});
                           },
                           child: const Icon(

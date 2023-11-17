@@ -36,21 +36,21 @@ class _SettingScreenState extends State<SettingScreen> {
   bool state2 = false;
 
   // addSetting() {
-  //   FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+  //   FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.uid).set({
   //     "preparationTime": preparationTimeController.text,
   //     "averageMealForMember": averageMealForMemberController.text,
   //     "setDelivery": state,
   //     "cancellation": state1,
   //     "menuSelection": state2,
   //     "time": DateTime.now(),
-  //     "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+  //     "userID": FirebaseAuth.instance.currentUser!.uid,
   //   }).then((value) {
   //     Fluttertoast.showToast(msg: 'Setting Updated');
   //   });
   // }
 
   // Future<void> getData() async {
-  //   final users = FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.phoneNumber);
+  //   final users = FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.uid);
   //   await users.get().then((value) {
   //     if (value.exists) {
   //       SettingModel model = SettingModel.fromMap(value.data()!);
@@ -89,7 +89,7 @@ class _SettingScreenState extends State<SettingScreen> {
       String imageUrlProfile = categoryFile.path;
       if (!categoryFile.path.contains("http")) {
         UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profileImage/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
             .child("image")
             .putFile(categoryFile);
         TaskSnapshot snapshot = await uploadTask;
@@ -100,7 +100,7 @@ class _SettingScreenState extends State<SettingScreen> {
           imagesLink.add(element.value.path);
         } else {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
               .child("${element.key}image")
               .putFile(element.value);
           TaskSnapshot snapshot = await uploadTask;
@@ -113,7 +113,7 @@ class _SettingScreenState extends State<SettingScreen> {
           menuPhotoLink.add(element.value.path);
         } else {
           UploadTask uploadMenuImage = FirebaseStorage.instance
-              .ref("menu_images/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+              .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
               .child("${element.key}image")
               .putFile(element.value);
 
@@ -123,7 +123,7 @@ class _SettingScreenState extends State<SettingScreen> {
         }
       }
 
-      await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
+      await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _address,
         "password": passwordController.text.trim(),
@@ -140,7 +140,7 @@ class _SettingScreenState extends State<SettingScreen> {
         "setDelivery": state,
         "cancellation": state1,
         "menuSelection": state2,
-        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "userID": FirebaseAuth.instance.currentUser!.uid,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       Get.back();
       Helpers.hideLoader(loader);
@@ -154,7 +154,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   ProfileData profileData = ProfileData();
   void fetchData() {
-    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);

@@ -37,6 +37,7 @@ class _OtpScreenState extends State<OtpScreen> {
           // Update the parameter to accept nullable int
           log("Code Sent: $verificationId");
           this.verificationId = verificationId;
+          Get.to(() => OtpScreen(verificationId: verificationId,code: widget.code, email: widget.email,));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           log("Auto Retrieval Timeout: $verificationId");
@@ -46,6 +47,7 @@ class _OtpScreenState extends State<OtpScreen> {
       log("Error: $e");
     }
   }
+
   verifyOtp() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -60,10 +62,10 @@ class _OtpScreenState extends State<OtpScreen> {
         log('Successfully signed in with phone number: ${userCredential.credential}');
         Get.offAllNamed(MyRouters.bottomNavbar);
       } else {
-      final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
-      final User? user = authResult.user;
-      log('Successfully signed in with phone number: $user');
-      Get.offAllNamed(MyRouters.bottomNavbar);
+        final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
+        final User? user = authResult.user;
+        log('Successfully signed in with phone number: $user');
+        Get.offAllNamed(MyRouters.bottomNavbar);
       }
     } catch (e) {
       log("Error: $e");

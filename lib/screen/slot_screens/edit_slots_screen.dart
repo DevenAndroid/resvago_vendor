@@ -32,7 +32,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
     // widget.createSlotData = null;
     FirebaseFirestore.instance
         .collection('vendor_slot')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("slot")
         .doc(widget.createSlotData!.slotId.toString()).get().then((value) {
       widget.createSlotData = CreateSlotData.fromMap(value.data()!);
@@ -93,7 +93,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                             print(slotController.dinnerTimeslots);
                             await firebaseService.manageSlot(
                                 setOffer: widget.createSlotData!.setOffer ?? "",
-                                seats: slotController.setOffer.text,
+                                seats: slotController.noOfGuest.text,
                                 startDate: widget.createSlotData!.slotId!,
                                 endDate: null,
                                 eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),

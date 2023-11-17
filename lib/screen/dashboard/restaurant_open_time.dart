@@ -22,7 +22,7 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("week_schedules").doc(FirebaseAuth.instance.currentUser!.phoneNumber).snapshots(),
+      stream: FirebaseFirestore.instance.collection("week_schedules").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.hasData && snapshot.data!.data() != null){
           ModelStoreTime modelStoreTime = ModelStoreTime.fromJson(snapshot.data!.data()!);

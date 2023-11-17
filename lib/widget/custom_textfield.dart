@@ -54,7 +54,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white),
       onTap: onTap,
       onChanged: onChanged,
       readOnly: readOnly!,
@@ -118,7 +118,6 @@ class CommonButton extends StatelessWidget {
           onPressed: onPressed,
           onLongPress: null,
           style: ElevatedButton.styleFrom(
-
             minimumSize: Size(AddSize.screenWidth, AddSize.size50 * 1.2),
             backgroundColor: Colors.white,
 
@@ -142,7 +141,7 @@ AppBar backAppBar(
     Color? backgroundColor = AppTheme.backgroundcolor,
     Color? textColor = Colors.black,
     Widget? icon,
-      Widget? icon2,
+    Widget? icon2,
     disposeController}) {
   return AppBar(
     toolbarHeight: 60,
@@ -154,20 +153,20 @@ AppBar backAppBar(
       title,
       style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
     ),
-    actions: [
-      icon2 ?? SizedBox.shrink()
-    ],
-    leading: Padding(
-      padding: EdgeInsets.only(left: AddSize.padding10),
-      child: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: icon ??
-              Image.asset(
-                AppAssets.back,
-                height: AddSize.size15,
-              )),
-    ),
+    actions: [icon2 ?? const SizedBox.shrink()],
+    leading: dispose == "Back"
+        ? Padding(
+            padding: EdgeInsets.only(left: AddSize.padding10),
+            child: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: icon ??
+                    Image.asset(
+                      AppAssets.back,
+                      height: AddSize.size15,
+                    )),
+          )
+        : Padding(padding: EdgeInsets.only(left: AddSize.padding10)),
   );
 }

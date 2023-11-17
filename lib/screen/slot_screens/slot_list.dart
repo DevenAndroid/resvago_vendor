@@ -31,7 +31,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   Future<List<CreateSlotData>> getSlots() async {
     final item = await FirebaseFirestore.instance
         .collection("vendor_slot")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("slot")
         .where("slot_date", isLessThan: DateTime.now().add(Duration(days: 30 + pagination)).millisecondsSinceEpoch)
         .where("slot_date", isGreaterThan: DateTime.now().add(Duration(days: pagination - 5)).millisecondsSinceEpoch)
@@ -253,7 +253,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                         onPressed: () {
                                                           FirebaseFirestore.instance
                                                               .collection('vendor_slot')
-                                                              .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                                              .doc(FirebaseAuth.instance.currentUser!.uid)
                                                               .collection("slot")
                                                               .doc(item.slotId.toString())
                                                               .delete();

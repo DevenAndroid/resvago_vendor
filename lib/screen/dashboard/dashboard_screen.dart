@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/Setting%20screen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/screen/bottom_nav_bar/menu_list_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/login_screen.dart';
 import 'package:resvago_vendor/screen/reviwe_screen.dart';
@@ -19,6 +20,7 @@ import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
+import '../Menu/menu_screen.dart';
 import '../Promo_code_list.dart';
 import '../bank_details_screen.dart';
 import '../set_store_time/set_store_time.dart';
@@ -56,9 +58,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
       if (value.exists) {
         log("fgdfgdgfdfg");
         if (value.data() == null) return;
-
         profileData = ProfileData.fromJson(value.data()!);
-        log("fgdfgdgfdfg${profileData.restaurantName}");
+        log(profileData.toJson().toString());
+        firebaseService.updateFirebaseToken();
         setState(() {});
       }
     });
@@ -69,7 +71,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void initState() {
     super.initState();
     restaurantData();
-    firebaseService.updateFirebaseToken();
   }
 
   @override
@@ -82,9 +83,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
         drawer: Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           width: MediaQuery.sizeOf(context).width * .70,
-          child: ListView(
+          child: profileData != null?
+          ListView(
             padding: EdgeInsets.zero,
-
             children: [
               SizedBox(
                 height: 230,
@@ -167,7 +168,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 1;
-                    Get.toNamed(MyRouters.menuScreen);
+                    Get.to(()=> MenuScreen(back: 'Back',));
                   });
                 },
               ),
@@ -338,7 +339,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               const SizedBox(height: 100,),
             ],
-          ),
+          ):SizedBox(),
         ),
         appBar: AppBar(
            // toolbarHeight: 80,
@@ -449,7 +450,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AddSize.padding16,
-              vertical: AddSize.padding18,
             ),
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),

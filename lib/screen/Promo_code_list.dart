@@ -348,7 +348,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
     return FirebaseFirestore.instance
         .collection('Coupon_data')
         .where('userID',
-            isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => CouponData(
