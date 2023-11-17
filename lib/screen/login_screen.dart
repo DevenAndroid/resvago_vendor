@@ -46,10 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void checkEmailInFirestore() async {
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('vendor_users')
-        .where('email', isEqualTo: emailController.text)
-        .get();
+    final QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
       myauth.setConfig(
           appEmail: "contact@hdevcoder.com",
@@ -68,13 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       setState(() {
         showOtpField = true;
-      });      return;
-    }else{
+      });
+      return;
+    } else {
       Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
-
     }
-
   }
+
   void checkPhoneNumberInFirestore() async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
@@ -84,6 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result.docs.isNotEmpty) {
       Map kk = result.docs.first.data() as Map;
       login(kk["email"].toString());
+    } else if (loginController.mobileController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'Please enter phone number');
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
           log("Verification credential: $credential");
-          },
+        },
         verificationFailed: (FirebaseAuthException e) {
           log("Verification Failed: $e");
         },
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
                 code: code,
-            email: email,
+                email: email,
               ));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
@@ -218,6 +218,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     dropdownIconPosition: IconPosition.trailing,
                                     controller: loginController.mobileController,
                                     style: const TextStyle(color: Colors.white),
+                                    validator: MultiValidator([
+                                      RequiredValidator(errorText: 'Please enter your phone number'),
+                                    ]).call,
                                     dropdownTextStyle: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
                                       hintText: 'Enter your Mobile number',
@@ -257,10 +260,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: emailController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText: 'Please enter your email'),
-                                      EmailValidator(
-                                          errorText: 'Enter a valid email address'),
+                                      RequiredValidator(errorText: 'Please enter your email'),
+                                      EmailValidator(errorText: 'Enter a valid email address'),
                                     ]).call,
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
@@ -268,7 +269,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       suffix: GestureDetector(
                                         onTap: () async {
                                           checkEmailInFirestore();
-
                                         },
                                         child: const Text('send'),
                                       ),
@@ -352,25 +352,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 loginOption == LoginOption.EmailPassword
                                     ? CommonButton(
                                         onPressed: () async {
-                                          if(_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!.validate()) {
                                             if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text("OTP is verified"),
                                               ));
-                                              FirebaseAuth.instance.signInWithEmailAndPassword(
+                                              FirebaseAuth.instance
+                                                  .signInWithEmailAndPassword(
                                                 email: emailController.text.trim(),
                                                 password: "123456",
-                                              ).then((value) {
-                                                Navigator.push(
-                                                    context, MaterialPageRoute(
-                                                    builder: (
-                                                        context) => const BottomNavbar()));
+                                              )
+                                                  .then((value) {
+                                                Get.offAllNamed(MyRouters.bottomNavbar);
                                               });
-                                            }
-                                            else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
+                                            } else {
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text("Invalid OTP"),
                                               ));
                                             }

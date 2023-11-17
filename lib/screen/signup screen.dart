@@ -376,6 +376,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Icons.arrow_drop_down_rounded,
                           color: Colors.black,
                         ),
+                        validator: MultiValidator([
+                          RequiredValidator(errorText: 'Please enter your phone number'),
+                        ]).call,
                         dropdownTextStyle: const TextStyle(color: Colors.black),
                         style: const TextStyle(color: Colors.black),
                         flagsButtonPadding: const EdgeInsets.all(8),

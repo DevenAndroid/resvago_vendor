@@ -151,22 +151,24 @@ AppBar backAppBar(
     surfaceTintColor: AppTheme.backgroundcolor,
     title: Text(
       title,
-      style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
+      style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
     ),
     actions: [icon2 ?? const SizedBox.shrink()],
-    leading: dispose == "Back"
-        ? Padding(
-            padding: EdgeInsets.only(left: AddSize.padding10),
-            child: GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: icon ??
-                    Image.asset(
-                      AppAssets.back,
-                      height: AddSize.size15,
-                    )),
-          )
-        : Padding(padding: EdgeInsets.only(left: AddSize.padding10)),
+    leading: Padding(
+      padding: EdgeInsets.only(left: AddSize.padding10),
+      child: GestureDetector(
+          onTap: () {
+            if (dispose == "Back") {
+              null;
+            } else {
+              Get.back();
+            }
+          },
+          child: icon ??
+              Image.asset(
+                AppAssets.back,
+                height: AddSize.size15,
+              )),
+    ),
   );
 }
