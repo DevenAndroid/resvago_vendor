@@ -87,7 +87,7 @@ class FirebaseService{
         "startDate": startDate,
         "endDate": endDate,
         "deactivate": false,
-        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "userID": FirebaseAuth.instance.currentUser!.uid,
       });
     } catch (e) {
       throw Exception(e);
@@ -150,7 +150,7 @@ class FirebaseService{
       }
       print({
         "slotId": startDate.toString(),
-        "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "vendorId": FirebaseAuth.instance.currentUser!.uid,
         "slot_date": startDate.millisecondsSinceEpoch,
         "morning_slots": morningMapSlots,
         "evening_slots": eveningMapSlots,
@@ -161,12 +161,12 @@ class FirebaseService{
       if(endDate == null){
         await FirebaseFirestore.instance
             .collection('vendor_slot')
-            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+            .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection("slot")
             .doc(startDate.toString())
             .set({
           "slotId": startDate.toString(),
-          "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+          "vendorId": FirebaseAuth.instance.currentUser!.uid,
           "slot_date": startDate.millisecondsSinceEpoch,
           "morning_slots": morningMapSlots,
           "evening_slots": eveningMapSlots,
@@ -188,11 +188,11 @@ class FirebaseService{
       final batch = firestore.batch();
       for (var element in slotsDate) {
         batch.set(firestore.collection('vendor_slot')
-            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+            .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection("slot")
             .doc(element.toString()), {
           "slotId": element.toString(),
-          "vendorId": FirebaseAuth.instance.currentUser!.phoneNumber,
+          "vendorId": FirebaseAuth.instance.currentUser!.uid,
           "slot_date": element.millisecondsSinceEpoch,
           "morning_slots": morningMapSlots,
           "evening_slots": eveningMapSlots,
@@ -221,7 +221,7 @@ class FirebaseService{
     dynamic time,
   }) async {
     try {
-      await FirebaseFirestore.instance.collection('vendor_storeTime').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+      await FirebaseFirestore.instance.collection('vendor_storeTime').doc(FirebaseAuth.instance.currentUser!.uid).set({
         'status': status,
         'startTime': startTime,
         'endTime': endTime,
@@ -249,7 +249,7 @@ class FirebaseService{
     try {
       String? fcm = await FirebaseMessaging.instance.getToken();
       final ref = firebaseDatabase.ref(
-          "vendor_users/${FirebaseAuth.instance.currentUser!.phoneNumber.toString()}");
+          "vendor_users/${FirebaseAuth.instance.currentUser!.uid.toString()}");
       await ref.update({
         fcm.toString(): fcm.toString()
       });

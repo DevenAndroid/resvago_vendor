@@ -27,7 +27,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Stream<List<MenuData>> getMenu() {
     return FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((querySnapshot) {
       List<MenuData> menuList = [];

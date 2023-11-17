@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
@@ -582,6 +581,7 @@ class _OderListScreenState extends State<OderListScreen> {
   Stream<List<MyOrderModel>> getOrdersStreamFromFirestore() {
     return FirebaseFirestore.instance
         .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((querySnapshot) {
       List<MyOrderModel> orders = [];
@@ -600,16 +600,15 @@ class _OderListScreenState extends State<OderListScreen> {
   Stream<List<MyDiningOrderModel>> getDiningOrdersStreamFromFirestore() {
     return FirebaseFirestore.instance
         .collection('dining_order')
+         .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((querySnapshot) {
       List<MyDiningOrderModel> diningOrders = [];
-      print(diningOrders);
       try {
         for (var doc in querySnapshot.docs) {
           diningOrders.add(MyDiningOrderModel.fromJson(doc.data(),doc.id));
         }
       } catch (e) {
-        print(e.toString());
         throw Exception(e.toString());
       }
       return diningOrders;

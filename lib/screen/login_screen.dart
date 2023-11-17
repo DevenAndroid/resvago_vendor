@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
           verificationId = verificationId;
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
-                code: code,
+                code: code, email: email,
               ));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
@@ -339,29 +339,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                 loginOption == LoginOption.EmailPassword
                                     ? CommonButton(
                                         onPressed: () async {
-                                          if (!showOtpField) {
-                                            FirebaseAuth.instance
-                                                .signInWithEmailAndPassword(
-                                              email: emailController.text.trim(),
-                                              password: "123456",
-                                            )
-                                                .then((value) {
-                                              Get.to(() => const BottomNavbar());
-                                              log(value.toString());
-                                            });
-                                          } else {
+                                          if(_formKey.currentState!.validate()) {
                                             if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
                                                 content: Text("OTP is verified"),
                                               ));
                                               FirebaseAuth.instance.signInWithEmailAndPassword(
                                                 email: emailController.text.trim(),
                                                 password: "123456",
-                                              );
-                                              Navigator.push(
-                                                  context, MaterialPageRoute(builder: (context) => const BottomNavbar()));
-                                            } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              ).then((value) {
+                                                Navigator.push(
+                                                    context, MaterialPageRoute(
+                                                    builder: (
+                                                        context) => const BottomNavbar()));
+                                              });
+                                            }
+                                            else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
                                                 content: Text("Invalid OTP"),
                                               ));
                                             }

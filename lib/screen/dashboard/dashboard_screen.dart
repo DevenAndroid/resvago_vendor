@@ -56,9 +56,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
       if (value.exists) {
         log("fgdfgdgfdfg");
         if (value.data() == null) return;
-
         profileData = ProfileData.fromJson(value.data()!);
-        log("fgdfgdgfdfg${profileData.restaurantName}");
+        log(profileData.toJson().toString());
+        firebaseService.updateFirebaseToken();
         setState(() {});
       }
     });
@@ -69,7 +69,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void initState() {
     super.initState();
     restaurantData();
-    firebaseService.updateFirebaseToken();
   }
 
   @override
@@ -82,9 +81,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
         drawer: Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           width: MediaQuery.sizeOf(context).width * .70,
-          child: ListView(
+          child: profileData != null?
+          ListView(
             padding: EdgeInsets.zero,
-
             children: [
               SizedBox(
                 height: 230,
@@ -338,7 +337,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
               const SizedBox(height: 100,),
             ],
-          ),
+          ):SizedBox(),
         ),
         appBar: AppBar(
            // toolbarHeight: 80,

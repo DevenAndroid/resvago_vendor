@@ -28,20 +28,20 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   addbankToFirebase() {
     FirebaseFirestore.instance
         .collection('BankDetails')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .set({
       "bankName": bankName.text,
       "bankAccountNumber": bankAccountNumber.text,
       "accountHolderName": accountHolderName.text,
       "ifscCode": iFSCCode.text,
-      "userID" : FirebaseAuth.instance.currentUser!.phoneNumber
+      "userID" : FirebaseAuth.instance.currentUser!.uid
     }).then((value) {
       showToast("Bnak details Added");
     });
   }
 
   Future<void> getBankData() async {
-    final users = FirebaseFirestore.instance.collection('BankDetails').doc(FirebaseAuth.instance.currentUser!.phoneNumber);
+    final users = FirebaseFirestore.instance.collection('BankDetails').doc(FirebaseAuth.instance.currentUser!.uid);
     await users.get().then((value) {
       if(value.exists){
         BankData model = BankData.fromMap(value.data()!);

@@ -12,7 +12,8 @@ import 'dashboard/dashboard_chart.dart';
 class OtpScreen extends StatefulWidget {
   String verificationId;
   String code;
-   OtpScreen({super.key, required this.verificationId, required this.code});
+  final String email;
+   OtpScreen({super.key, required this.verificationId, required this.code, required this.email});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -36,7 +37,7 @@ class _OtpScreenState extends State<OtpScreen> {
           // Update the parameter to accept nullable int
           log("Code Sent: $verificationId");
           this.verificationId = verificationId;
-          Get.to(() => OtpScreen(verificationId: verificationId,code: widget.code,));
+          Get.to(() => OtpScreen(verificationId: verificationId,code: widget.code, email: widget.email,));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           log("Auto Retrieval Timeout: $verificationId");
@@ -46,17 +47,26 @@ class _OtpScreenState extends State<OtpScreen> {
       log("Error: $e");
     }
   }
+
   verifyOtp() async {
     try {
+      await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: widget.email, password: "123456");
       PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
         verificationId: widget.verificationId,
         smsCode: otpController.text.trim(),
       );
-      UserCredential userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
-      // final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
-      // final User? user = authResult.user;
-      log('Successfully signed in with phone number: ${userCredential.credential}');
-      Get.offAllNamed(MyRouters.bottomNavbar);
+      if(FirebaseAuth.instance.currentUser!.phoneNumber == null){
+        UserCredential userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
+        log('Successfully signed in with phone number: ${userCredential.credential}');
+        Get.offAllNamed(MyRouters.bottomNavbar);
+      } else {
+        final UserCredential authResult = await _auth.signInWithCredential(phoneAuthCredential);
+        final User? user = authResult.user;
+        log('Successfully signed in with phone number: $user');
+        Get.offAllNamed(MyRouters.bottomNavbar);
+      }
     } catch (e) {
       log("Error: $e");
     }

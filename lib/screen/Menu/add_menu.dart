@@ -87,7 +87,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       await firebaseService
           .manageMenu(
         menuId: menuId,
-        vendorId: FirebaseAuth.instance.currentUser!.phoneNumber,
+        vendorId: FirebaseAuth.instance.currentUser!.uid,
         dishName: dishNameController.text.trim(),
         category: categoryValue,
         price: priceController.text.trim(),

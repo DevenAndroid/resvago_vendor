@@ -144,7 +144,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
     }
   }
 
-  String userId = FirebaseAuth.instance.currentUser!.phoneNumber!; // Replace this with the actual user ID
+  String userId = FirebaseAuth.instance.currentUser!.uid!; // Replace this with the actual user ID
   @override
   Widget build(BuildContext context) {
     for(var i = 0; i < 20; i++){
@@ -401,11 +401,11 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
             ElevatedButton(
                 onPressed: () {
                   if(weekSchedule.isNotEmpty){
-                    uploadWeekSchedule(FirebaseAuth.instance.currentUser!.phoneNumber!, weekSchedule);
+                    uploadWeekSchedule(FirebaseAuth.instance.currentUser!.uid!, weekSchedule);
                     // weekSchedule.clear();
                   }
                   if(weekSchedule1.isNotEmpty){
-                    uploadWeekSchedule(FirebaseAuth.instance.currentUser!.phoneNumber!, weekSchedule1);
+                    uploadWeekSchedule(FirebaseAuth.instance.currentUser!.uid!, weekSchedule1);
                   }
                   // getWeekSchedule(userId);
                 },

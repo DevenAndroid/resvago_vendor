@@ -597,12 +597,13 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 clearSlots();
               },
               keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value!.trim().isEmpty) {
-                  return "Offer is required";
-                }
-                return null;
-              }),
+              // validator: (value) {
+              //   if (value!.trim().isEmpty) {
+              //     return "Offer is required";
+              //   }
+              //   return null;
+              // }
+              ),
           const SizedBox(height: 10,),
           Row(
             children: [

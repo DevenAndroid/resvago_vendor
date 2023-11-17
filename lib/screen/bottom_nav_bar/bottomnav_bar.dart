@@ -42,8 +42,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-
-
         body: pages.elementAt(bottomController.pageIndex.value),
         extendBody: true,
         // extendBodyBehindAppBar: true,
