@@ -48,7 +48,6 @@ class MyRouters {
     GetPage(name: '/bottomNavbar', page: () => const BottomNavbar()),
     GetPage(name: '/thankYouScreen', page: () => const ThankYouScreen()),
     GetPage(name: '/vendorDashboard', page: () => const VendorDashboard()),
-    GetPage(name: '/walletScreen', page: () => const WalletScreen()),
     // GetPage(name: '/addBookingSlot', page: () => const AddBookingSlot()),
     GetPage(name: '/bankDetailsScreen', page: () => const BankDetailsScreen()),
     GetPage(name: '/promoCodeList', page: () => const PromoCodeList()),

@@ -168,7 +168,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 1;
-                    Get.to(()=> MenuScreen(back: 'Back',));
+                    Get.to(()=> MenuScreen(back: '',));
                   });
                 },
               ),

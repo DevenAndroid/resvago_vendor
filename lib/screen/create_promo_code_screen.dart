@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -85,7 +86,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
           "startDate": startDateController.text,
           "endDate": endDateController.text,
         }).then((value) {
-          Get.to(const PromoCodeList());
+          Get.back();
           Fluttertoast.showToast(msg: 'Code is Updated');
         });
       } else {
@@ -98,13 +99,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                 startDate: startDateController.text.trim(),
                 endDate: endDateController.text.trim())
             .then((value) {
-          Get.to(const PromoCodeList());
-
+          Get.back();
           Fluttertoast.showToast(msg: 'Code is created');
         });
       }
     } catch (e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -126,7 +128,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: backAppBar(
-          title: "Create promo code",
+          title: widget.isEditMode == true?"Update promo code":"Create promo code",
           context: context,
           backgroundColor: Colors.white),
       body: SingleChildScrollView(

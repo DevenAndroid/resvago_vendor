@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
-
 import '../model/coupon_model.dart';
 import '../widget/addsize.dart';
 import '../widget/custom_textfield.dart';

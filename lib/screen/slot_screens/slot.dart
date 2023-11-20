@@ -45,7 +45,8 @@ class _BookableUIState extends State<BookableUI> {
 
   final DateFormat timeFormat = DateFormat("hh:mm a");
   productAvailability() {
-    List<String> morningSlots = widget.slotDataList!.morningSlots!.entries.map((e) => e.key).toList();
+    List<String> morningSlots =
+        widget.slotDataList != null ? widget.slotDataList!.morningSlots!.entries.map((e) => e.key).toList() : [];
     morningSlots.sort((a, b) {
       final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a));
       final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b));
@@ -56,7 +57,6 @@ class _BookableUIState extends State<BookableUI> {
     //   final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.key));
     //   return (timeA.hour * 60 + timeA.minute) - (timeB.hour * 60 + timeB.minute);
     // });
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,13 +275,13 @@ class _BookableUIState extends State<BookableUI> {
   }
 
   productAvailability1() {
-    List<String> eveningSlots = widget.slotDataList!.eveningSlots!.entries.map((e) => e.key).toList();
+    List<String> eveningSlots =
+        widget.slotDataList != null ? widget.slotDataList!.eveningSlots!.entries.map((e) => e.key).toList() : [];
     eveningSlots.sort((a, b) {
       final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a));
       final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b));
       return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
     });
-
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,

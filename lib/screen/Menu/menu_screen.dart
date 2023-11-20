@@ -14,7 +14,7 @@ import 'add_menu.dart';
 
 class MenuScreen extends StatefulWidget {
   String back;
-   MenuScreen({super.key,required this.back});
+  MenuScreen({super.key, required this.back});
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -60,7 +60,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: backAppBar(title: "Menu List", context: context,dispose: widget.back),
+        appBar: backAppBar(title: "Menu List", context: context, dispose: widget.back),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(

@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
-
 import '../../model/dining_order_modal.dart';
 import '../../model/order_details_modal.dart';
 import '../../widget/addsize.dart';
