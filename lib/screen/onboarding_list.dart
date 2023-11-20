@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+
+import '../widget/app_strings_file.dart';
 import '../widget/appassets.dart';
 
 
@@ -12,22 +15,21 @@ class OnBoarding {
 
 List<OnBoarding> page1 = [
   OnBoarding(
-    title: "You first",
+    title: AppStrings.youFirst.tr,
     img: "assets/images/onboarding2.png",
-
-    description: 'We don’t charge you order fees. We don’t spy on you. We just help you enjoy your meals ',
+    description: AppStrings.weDontChargeYou.tr,
 
   ),
   OnBoarding(
-    title: "Beautifully-designed menus",
+    title: AppStrings.beautifullyDesigned.tr,
     img: "assets/images/onboarding.png",
-    description: 'Every menu item is manually reviewed by our team',
+    description: AppStrings.everyMenuItemIs.tr,
 
   ),
   OnBoarding(
-    title: "Unbeatable rates",
+    title: AppStrings.unbeatableRates.tr,
     img: "assets/images/onbording2.png",
-    description: 'We don’t charge any order fees. Delivery fees go where they belong.',
+    description: AppStrings.weDontChargeAnyOrder.tr,
 
   ),
 
@@ -48,21 +50,21 @@ class OnBoardModelResponse {
 List<OnBoardModelResponse> OnBoardingData = [
   OnBoardModelResponse(
     image: AppAssets.onboarding,
-    title: "You first",
+    title: AppStrings.youFirst.tr,
 
-    description: 'We don’t charge you order fees. We don’t spy on you. We just help you enjoy your meals',
+    description:  AppStrings.weDontChargeYou.tr,
 
   ),
   OnBoardModelResponse(
     image: AppAssets.onboarding1,
-    title: "Beautifully-designed menus",
-    description: 'Every menu item is manually reviewed by our team',
+    title: AppStrings.beautifullyDesigned.tr,
+    description: AppStrings.everyMenuItemIs.tr,
 
   ),
   OnBoardModelResponse(
     image: AppAssets.onboarding2,
-    title: "Unbeatable rates",
-    description: 'We don’t charge any order fees. Delivery fees go where they belong.',
+    title: AppStrings.unbeatableRates.tr,
+    description: AppStrings.weDontChargeAnyOrder.tr,
 
   )
 ];

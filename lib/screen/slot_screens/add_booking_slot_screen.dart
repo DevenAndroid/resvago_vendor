@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/slot_controller.dart';
 import '../../helper.dart';
@@ -73,7 +74,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
-        appBar: backAppBar(title: "Create Slot", context: context, backgroundColor: Colors.white),
+        appBar: backAppBar(title: AppStrings.createSlots.tr, context: context, backgroundColor: Colors.white),
         body: Theme(
           data: ThemeData(useMaterial3: true),
           child: SingleChildScrollView(
@@ -101,7 +102,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                             }
                           }
                         },
-                        title: 'Create Slot'.toUpperCase(),
+                        title: AppStrings.createSlots.tr.toUpperCase(),
                       ),
                     ),
                   ]))),

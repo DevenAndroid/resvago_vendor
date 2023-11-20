@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/model/setting_model.dart';
 import 'package:resvago_vendor/utils/helper.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -199,7 +200,7 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Setting", context: context),
+      appBar: backAppBar(title: AppStrings.setting.tr, context: context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -215,7 +216,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Set Delivery",
+                        AppStrings.setDelivery.tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -242,7 +243,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Cancellation",
+                        AppStrings.cancellation.tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -269,7 +270,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Menu selection",
+                        AppStrings.menuSelection.tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -289,7 +290,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 20,
               ),
               Text(
-                "Preparation time",
+                  AppStrings.preparationTime.tr,
                 style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
               ),
               const SizedBox(
@@ -298,16 +299,16 @@ class _SettingScreenState extends State<SettingScreen> {
               RegisterTextFieldWidget(
                 controller: preparationTimeController,
                 validator: MultiValidator([
-                  RequiredValidator(errorText: 'Please enter your preparation Time'),
+                  RequiredValidator(errorText:  AppStrings.enterYourPreparationTime.tr),
                 ]).call,
                 keyboardType: TextInputType.number,
-                hint: '20 Mint',
+                hint:  AppStrings.mint.tr,
               ),
               const SizedBox(
                 height: 20,
               ),
               Text(
-                "Average meal for 1 Member",
+                  AppStrings.averageMealFor.tr,
                 style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
               ),
               const SizedBox(
@@ -316,7 +317,7 @@ class _SettingScreenState extends State<SettingScreen> {
               RegisterTextFieldWidget(
                 controller: averageMealForMemberController,
                 validator: MultiValidator([
-                  RequiredValidator(errorText: 'Please enter your average Meal For 1 Member'),
+                  RequiredValidator(errorText:  AppStrings.enterYourAverageMealFor.tr),
                 ]).call,
                 keyboardType: TextInputType.number,
                 hint: '100',
@@ -325,7 +326,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 170,
               ),
               CommonButtonBlue(
-                title: "Submit",
+                title:   AppStrings.submit.tr,
                 onPressed: () {
                   updateProfileToFirestore();
                 },

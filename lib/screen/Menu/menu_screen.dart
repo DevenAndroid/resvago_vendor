@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_vendor/helper.dart';
 import 'package:resvago_vendor/model/menu_model.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../widget/addsize.dart';
 import '../../widget/apptheme.dart';
@@ -60,7 +61,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: backAppBar(title: "Menu List", context: context, dispose: widget.back),
+        appBar: backAppBar(title: AppStrings.menuList.tr, context: context, dispose: widget.back),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
@@ -103,7 +104,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(10))),
                             fillColor: Colors.white,
                             contentPadding: EdgeInsets.symmetric(horizontal: AddSize.padding20, vertical: AddSize.padding10),
-                            hintText: 'Find for food...',
+                            hintText: AppStrings.findForFood.tr,
                             hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9DA4BB), fontWeight: FontWeight.w400)),
                       ),
                     ),
@@ -284,8 +285,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                               showDialog(
                                                 context: context,
                                                 builder: (ctx) => AlertDialog(
-                                                  title: const Text("Delete Menu"),
-                                                  content: const Text("Are you sure you want to delete this Menu"),
+                                                  title:  Text(AppStrings.deleteMenu.tr),
+                                                  content:  Text(AppStrings.areYouSure.tr),
                                                   actions: <Widget>[
                                                     TextButton(
                                                       onPressed: () {
@@ -296,9 +297,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child: const Center(
+                                                        child:  Center(
                                                             child: Text(
-                                                          "Cancel",
+                                                           AppStrings.cancel.tr,
                                                           style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
@@ -319,9 +320,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child: const Center(
+                                                        child:  Center(
                                                             child: Text(
-                                                          "okay",
+                                                          AppStrings.okay.tr,
                                                           style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
@@ -350,8 +351,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ],
                               );
                             })
-                        : const Center(
-                            child: Text("No Menu Created"),
+                        :  Center(
+                            child: Text(AppStrings.noMenuCreated.tr),
                           );
                   }
                   return const SizedBox.shrink();

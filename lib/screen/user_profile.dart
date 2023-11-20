@@ -17,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/model/profile_model.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
@@ -339,7 +340,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Restaurant Name',
+                            AppStrings.restaurantName.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -347,14 +348,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                             controller: restaurantController,
-                            validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
+                            validator: RequiredValidator(errorText: AppStrings.enterUrResName.tr).call,
                             hint: profileData.restaurantName == null ? "restaurant name" : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Category",
+                           AppStrings.category.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -368,7 +369,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               icon: const Icon(Icons.keyboard_arrow_down_rounded),
                               borderRadius: BorderRadius.circular(10),
                               hint: Text(
-                                "Select category".tr,
+                               AppStrings.selectCategory.tr,
                                 style: const TextStyle(
                                     color: Color(0xff2A3B40),
                                     fontSize: 13,
@@ -438,20 +439,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               },
                               validator: (value) {
                                 if (categoryValue == null) {
-                                  return 'Please select category';
+                                  return AppStrings.pleaseSelectCategory.tr;
                                 }
                                 return null;
                               },
                             )
                           else
-                            const Center(
-                              child: Text("No Category Available"),
+                             Center(
+                              child: Text(AppStrings.noCategoryAv.tr),
                             ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Email",
+                           AppStrings.email.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -461,8 +462,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             readOnly: true,
                             controller: emailController,
                             validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your email'),
-                              EmailValidator(errorText: 'Enter a valid email address'),
+                              RequiredValidator(errorText:    AppStrings.pleaseEnterYrMail.tr),
+                              EmailValidator(errorText:  AppStrings.enterAValidEmail.tr),
                             ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
@@ -472,7 +473,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Mobile Number",
+                            AppStrings.mobileNumber.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -482,7 +483,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             readOnly: true,
                             controller: mobileController,
                             length: 10,
-                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number ').call,
+                            validator: RequiredValidator(errorText: AppStrings.enterYourMobileNb.tr).call,
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
                             hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
@@ -491,7 +492,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Address",
+                            AppStrings.address.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -565,7 +566,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "About Us",
+                            AppStrings.aboutUs.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -576,16 +577,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             minLines: 5,
                             maxLines: 5,
                             validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter about yourself'),
+                              RequiredValidator(errorText: AppStrings.enterAboutYourSelf.tr),
                             ]).call,
                             keyboardType: TextInputType.text,
-                            hint: 'About Us',
+                            hint: AppStrings.aboutUs.tr,
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Upload Restaurant Images or Videos",
+                            AppStrings.uploadRestaurantImages.tr,
                             style: GoogleFonts.poppins(
                                 color: AppTheme.registortext,
                                 fontWeight: FontWeight.w500,
@@ -599,7 +600,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Upload Restaurant Menu Card",
+                           AppStrings.uploadRestaurantMenu.tr,
                             style: GoogleFonts.poppins(
                                 color: AppTheme.registortext,
                                 fontWeight: FontWeight.w500,
@@ -616,7 +617,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             onPressed: () {
                               updateProfileToFirestore();
                             },
-                            title: 'Save',
+                            title:  AppStrings.save.tr,
                           ),
                         ],
                       ),
@@ -916,7 +917,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                           children: [
                             Flexible(
                               child: Text(
-                                'Image Gallery',
+                            AppStrings.imageGallery.tr,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -941,7 +942,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                           showImagesBottomSheet();
                         },
                         child: Text(
-                          'Choose From Gallery ${controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/5" : ""}',
+                          '${AppStrings.chooseFromGallery.tr} ${controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/5" : ""}',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: Colors.orange,
@@ -1158,7 +1159,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                           children: [
                             Flexible(
                               child: Text(
-                                'Image Gallery',
+                                AppStrings.imageGallery.tr,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -1183,7 +1184,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                           showImagesBottomSheet();
                         },
                         child: Text(
-                          'Choose From Gallery ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/5" : ""}',
+                          '${AppStrings.chooseFromGallery.tr} ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/5" : ""}',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: Colors.orange,

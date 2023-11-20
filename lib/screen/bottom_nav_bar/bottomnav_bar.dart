@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/wallet_screen.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../../controllers/bottomnavbar_controller.dart';
 import '../../widget/apptheme.dart';
@@ -90,12 +91,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 6,
                           ),
                           bottomController.pageIndex.value == 0
-                              ? const Text(
-                                  " Dashboard",
+                              ?  Text(
+                                  AppStrings.dashBoard.tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  " Dashboard",
+                              :  Text(
+                                 AppStrings.dashBoard.tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -126,12 +127,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
-                              ? const Text(
-                                  "Menu",
+                              ?  Text(
+                            AppStrings.menu.tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Menu",
+                              :  Text(
+                            AppStrings.menu.tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -159,12 +160,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
-                              ? const Text(
-                                  "Oders",
+                              ?  Text(
+                            AppStrings.orders.tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Oders",
+                              :  Text(
+                            AppStrings.orders.tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -192,12 +193,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
-                              ? const Text(
-                                  "Wallet",
+                              ?  Text(
+                            AppStrings.wallet.tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Wallet",
+                              :  Text(
+                            AppStrings.wallet.tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],

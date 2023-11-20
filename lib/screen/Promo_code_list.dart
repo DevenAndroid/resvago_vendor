@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import '../model/coupon_model.dart';
 import '../widget/addsize.dart';
 import '../widget/custom_textfield.dart';
@@ -25,7 +26,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: backAppBar(
-            title: "Promo code List",
+            title: AppStrings.promoCodeList.tr,
             context: context,
             icon2: GestureDetector(
               onTap: (){
@@ -55,7 +56,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
               } else if (snapshot.hasError) {
                 return Center(child: Text("Error: ${snapshot.error}"));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("No Coupon Found"));
+                return  Center(child: Text(AppStrings.noCouponFound.tr));
               } else {
                 List<CouponData>? users = snapshot.data;
                 final filteredUsers = filterUsers(users!, searchQuery);

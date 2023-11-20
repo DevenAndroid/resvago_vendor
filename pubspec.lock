@@ -398,14 +398,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0-beta.1"
-  flutter_lints:
-    dependency: "direct dev"
-    description:
-      name: flutter_lints
-      sha256: ad76540d21c066228ee3f9d1dad64a9f7e46530e8bb7c85011a88bc1fd874bc5
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -496,14 +488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  geoflutterfire:
-    dependency: "direct main"
-    description:
-      name: geoflutterfire
-      sha256: e1eb5350145f61230e7cf8e241b143068b3c1d4ca84325f0bf9b357e7f2d5a89
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   get:
     dependency: "direct main"
     description:
@@ -728,14 +712,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.1"
-  lints:
-    dependency: transitive
-    description:
-      name: lints
-      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   listenable_stream:
     dependency: transitive
     description:

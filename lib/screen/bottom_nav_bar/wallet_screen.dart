@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -23,7 +24,7 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Withdrawal Money", context: context,dispose: widget.back),
+      appBar: backAppBar(title: AppStrings.withdrawalMoney.tr, context: context,dispose: widget.back),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -37,7 +38,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         Column(
                           children: [
                             Text(
-                              "My Balance",
+                              AppStrings.myBalance.tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w400, fontSize: 16),
                             ),
@@ -90,7 +91,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           height: 25,
                         ),
                         CommonButtonBlue(
-                          title: "Withdrawal",
+                          title: AppStrings.withdrawal.tr,
                           onPressed: () {
                             Get.toNamed(MyRouters.bankDetailsScreen);
                           },
@@ -108,16 +109,16 @@ class _WalletScreenState extends State<WalletScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Amount",
+                          AppStrings.amount.tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         // const SizedBox(width: 0,),
                         Text(
-                          "Date",
+                          AppStrings.date.tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         Text(
-                          "Status",
+                          AppStrings.status.tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                       ],

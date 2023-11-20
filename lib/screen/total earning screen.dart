@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
@@ -49,7 +51,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "TOTAL EARNING",
+                             AppStrings.totalEarning.tr.toUpperCase(),
                               style: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w400),
                             ),
                             Image.asset(
@@ -76,7 +78,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                     textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                 onPressed: () {},
                                 child: Text(
-                                  "Withdrawal Amount",
+                                  AppStrings.withdrawalAmount.tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
                                 )),
                           ),
@@ -119,7 +121,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                     borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(10))),
                                 fillColor: Colors.white,
                                 contentPadding: EdgeInsets.symmetric(horizontal: AddSize.padding20, vertical: AddSize.padding10),
-                                hintText: 'Search',
+                                hintText: AppStrings.search.tr,
                                 hintStyle: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w300)),
                           ),
                         ),
@@ -163,7 +165,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Order ID:",
+                                            AppStrings.orderId.tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
@@ -171,7 +173,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             height: 3,
                                           ),
                                           Text(
-                                            "Amount:",
+                                            AppStrings.amount.tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
@@ -179,7 +181,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             height: 3,
                                           ),
                                           Text(
-                                            "Admin Commission:",
+                                            AppStrings.adminCommission.tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
@@ -187,7 +189,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             height: 3,
                                           ),
                                           Text(
-                                            "Earning:",
+                                            AppStrings.earning.tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),

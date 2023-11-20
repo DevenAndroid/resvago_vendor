@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 
 import '../widget/addsize.dart';
@@ -22,7 +23,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: 'Feedback', context: context),
+      appBar: backAppBar(title: AppStrings.feedback.tr, context: context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
@@ -60,9 +61,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         },
                       ),
                       SizedBox(height: 3,),
-                      const Padding(
+                       Padding(
                         padding:  EdgeInsets.symmetric(horizontal: 4.0),
-                        child:  Text('basad on 23 reviews',style: TextStyle(
+                        child:  Text(AppStrings.basedOn23Review.tr,style: TextStyle(
                           color: Color(0xFF969AA3),
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
@@ -78,7 +79,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Excellent        ',style: TextStyle(
+                       Text(AppStrings.excellent.tr,style: TextStyle(
                         color: Color(0xFF969AA3),
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -101,7 +102,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Good               ',style: TextStyle(
+                       Text(AppStrings.good.tr ,style: TextStyle(
                         color: Color(0xFF969AA3),
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -123,7 +124,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Average          ',style: TextStyle(
+                       Text(AppStrings.average.tr,style: TextStyle(
                         color: Color(0xFF969AA3),
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -146,7 +147,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Below Average',style: TextStyle(
+                       Text(AppStrings.belowAverage.tr,style: TextStyle(
                         color: Color(0xFF969AA3),
                         fontSize: 12,
                         fontWeight: FontWeight.w400,

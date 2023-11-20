@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/utils/helper.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../helper.dart';
 import '../../model/menu_model.dart';
@@ -152,7 +153,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
     }
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: backAppBar(title: "Set Store Time", context: context, backgroundColor: Colors.white),
+        appBar: backAppBar(title: AppStrings.setStoreTime.tr, context: context, backgroundColor: Colors.white),
         body: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 10),
@@ -418,7 +419,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Text(
-                    "Continue".toUpperCase(),
+                   AppStrings.continues.tr,
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                 )),

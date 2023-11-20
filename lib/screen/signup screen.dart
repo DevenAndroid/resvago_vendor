@@ -11,7 +11,7 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
+// import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +28,7 @@ import '../helper.dart';
 import '../model/category_model.dart';
 import '../routers/routers.dart';
 import '../widget/addsize.dart';
+import '../widget/app_strings_file.dart';
 import '../widget/common_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -84,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .where('email', isEqualTo: emailController.text)
         .get();
     if (result.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Email already exits');
+      Fluttertoast.showToast(msg: AppStrings.emailAlreadyEx.tr);
       return;
     }
     final QuerySnapshot phoneResult = await FirebaseFirestore.instance
@@ -92,58 +93,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .where('mobileNumber', isEqualTo: code + mobileNumberController.text)
         .get();
     if (phoneResult.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Mobile Number already exits');
+      Fluttertoast.showToast(msg: AppStrings.mobileAlreadyEx.tr);
       return;
     }
-    addUserToFirestore();
+    // addUserToFirestore();
   }
 
-  Geoflutterfire? geo;
-  Future<void> addUserToFirestore() async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
-    String imageUrl = categoryFile.path;
-    geo = Geoflutterfire();
-    GeoFirePoint geoFirePoint = geo!.point(
-        latitude: double.tryParse(latitude.toString()) ?? 0,
-        longitude: double.tryParse(longitude.toString()) ?? 0);
-    UploadTask uploadTask = FirebaseStorage.instance
-        .ref("categoryImages")
-        .child(DateTime.now().millisecondsSinceEpoch.toString())
-        .putFile(categoryFile);
-
-    TaskSnapshot snapshot = await uploadTask;
-    imageUrl = await snapshot.ref.getDownloadURL();
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-        email: emailController.text.trim(), password: "123456");
-    if(FirebaseAuth.instance.currentUser != null){
-      await firebaseService
-          .manageRegisterUsers(
-          restaurantName: restaurantNameController.text.trim(),
-          category: categoryValue,
-          email: emailController.text.trim(),
-          mobileNumber: code + mobileNumberController.text.trim(),
-          address: _address,
-          latitude: latitude.toString(),
-          longitude: longitude.toString(),
-          password: "123456",
-          image: imageUrl,
-          restaurant_position: geoFirePoint.data.toString(),
-      ).then((value) {
-        Get.back();
-        Helper.hideLoader(loader);
-      });
-    }
-    Get.toNamed(MyRouters.thankYouScreen);
-    } catch (e) {
-      Helper.hideLoader(loader);
-      throw Exception(e);
-    } finally {
-      Helper.hideLoader(loader);
-    }
-  }
+  // Geoflutterfire? geo;
+  // Future<void> addUserToFirestore() async {
+  //   OverlayEntry loader = Helper.overlayLoader(context);
+  //   Overlay.of(context).insert(loader);
+  //   try {
+  //   String imageUrl = categoryFile.path;
+  //   geo = Geoflutterfire();
+  //   GeoFirePoint geoFirePoint = geo!.point(
+  //       latitude: double.tryParse(latitude.toString()) ?? 0,
+  //       longitude: double.tryParse(longitude.toString()) ?? 0);
+  //   UploadTask uploadTask = FirebaseStorage.instance
+  //       .ref("categoryImages")
+  //       .child(DateTime.now().millisecondsSinceEpoch.toString())
+  //       .putFile(categoryFile);
+  //
+  //   TaskSnapshot snapshot = await uploadTask;
+  //   imageUrl = await snapshot.ref.getDownloadURL();
+  //   await FirebaseAuth.instance
+  //       .createUserWithEmailAndPassword(
+  //       email: emailController.text.trim(), password: "123456");
+  //   if(FirebaseAuth.instance.currentUser != null){
+  //     await firebaseService
+  //         .manageRegisterUsers(
+  //         restaurantName: restaurantNameController.text.trim(),
+  //         category: categoryValue,
+  //         email: emailController.text.trim(),
+  //         mobileNumber: code + mobileNumberController.text.trim(),
+  //         address: _address,
+  //         latitude: latitude.toString(),
+  //         longitude: longitude.toString(),
+  //         password: "123456",
+  //         image: imageUrl,
+  //         restaurant_position: geoFirePoint.data.toString(),
+  //     ).then((value) {
+  //       Get.back();
+  //       Helper.hideLoader(loader);
+  //     });
+  //   }
+  //   Get.toNamed(MyRouters.thankYouScreen);
+  //   } catch (e) {
+  //     Helper.hideLoader(loader);
+  //     throw Exception(e);
+  //   } finally {
+  //     Helper.hideLoader(loader);
+  //   }
+  // }
 
   bool isDescendingOrder = true;
 
@@ -171,7 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: backAppBar(
-          title: "Restaurant Registration",
+          title: AppStrings.restaurantRegistration.tr,
           context: context,
           backgroundColor: Colors.white),
       body: SingleChildScrollView(
@@ -196,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Restaurant Name",
+                        AppStrings.restaurantName.tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -209,7 +210,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: restaurantNameController,
                         // length: 10,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Restaurant Name ').call,
+                            errorText: AppStrings.enterUrResName.tr).call,
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -218,7 +219,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Category",
+                        AppStrings.category.tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -235,7 +236,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           icon: const Icon(Icons.keyboard_arrow_down_rounded),
                           borderRadius: BorderRadius.circular(10),
                           hint: Text(
-                            "Select category".tr,
+                            AppStrings.selectCategory.tr,
                             style: const TextStyle(
                                 color: Color(0xff2A3B40),
                                 fontSize: 13,
@@ -303,20 +304,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           validator: (value) {
                             if (categoryValue == null) {
-                              return 'Please select category';
+                              return AppStrings.pleaseSelectCategory.tr;
                             }
                             return null;
                           },
                         )
                       else
-                        const Center(
-                          child: Text("No Category Available"),
+                         Center(
+                          child: Text(AppStrings.noCategoryAv.tr),
                         ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Email",
+                        AppStrings.email.tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -330,9 +331,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         // length: 10,
                         validator: MultiValidator([
                           RequiredValidator(
-                              errorText: 'Please enter your email'),
+                              errorText: AppStrings.pleaseEnterYrMail.tr),
                           EmailValidator(
-                              errorText: 'Enter a valid email address'),
+                              errorText: AppStrings.enterAValidEmail.tr),
                         ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
@@ -361,7 +362,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //   height: 20,
                       // ),
                       Text(
-                        "Mobile Number",
+                        AppStrings.mobileNumber.tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -377,7 +378,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: Colors.black,
                         ),
                         validator: MultiValidator([
-                          RequiredValidator(errorText: 'Please enter your phone number'),
+                          RequiredValidator(errorText: AppStrings.enterYourMobileNb.tr),
                         ]).call,
                         dropdownTextStyle: const TextStyle(color: Colors.black),
                         style: const TextStyle(color: Colors.black),
@@ -396,7 +397,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // fontFamily: 'poppins',
                               fontWeight: FontWeight.w300,
                             ),
-                            hintText: 'Phone Number',
+                            hintText: AppStrings.phoneNumber.tr,
                             // labelStyle: TextStyle(color: Colors.black),
                             border: const OutlineInputBorder(
                               borderSide: BorderSide(),
@@ -414,7 +415,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 5,
                       ),
                       Text(
-                        "Address",
+                        AppStrings.address.tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -426,7 +427,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       InkWell(
                           onTap: () async {
                             var place = await PlacesAutocomplete.show(
-                                hint: "Location",
+                                hint: AppStrings.location.tr,
                                 context: context,
                                 apiKey: googleApikey,
                                 mode: Mode.overlay,
@@ -479,7 +480,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   child: ListTile(
                                     leading: const Icon(Icons.location_on),
                                     title: Text(
-                                      _address ?? "Location".toString(),
+                                      _address ?? AppStrings.location.tr.toString(),
                                       style:
                                           TextStyle(fontSize: AddSize.font14),
                                     ),
@@ -560,8 +561,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       const SizedBox(
                                         height: 5,
                                       ),
-                                      const Text(
-                                        'Accepted file types: JPEG, Doc, PDF, PNG',
+                                       Text(
+                                        AppStrings.acceptedFileTypes.tr,
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black54),
@@ -609,7 +610,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textDirection: TextDirection.rtl,
                             softWrap: true,
                             text: TextSpan(
-                              text: 'Yes I understand and agree to the ',
+                              text: AppStrings.yesIUnderstand.tr,
                               style: const TextStyle(color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
@@ -619,18 +620,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             // Return the dialog box widget
-                                            return const AlertDialog(
+                                            return  AlertDialog(
                                               title:
-                                                  Text('Terms And Conditions'),
-                                              content: Text(
-                                                  'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
-                                                  'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
+                                                  Text(AppStrings.termsAndCon.tr),
+                                              content: Text(AppStrings.termsAndConDescription.tr),
                                               actions: <Widget>[],
                                             );
                                           },
                                         );
                                       },
-                                    text: 'Terms And Conditions',
+                                    text: AppStrings.termsAndCon.tr,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         color: Colors.red)),
@@ -654,7 +653,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() {});
                           }
                         },
-                        title: 'Save',
+                        title: AppStrings.save.tr,
                       ),
                       const SizedBox(
                         height: 20,

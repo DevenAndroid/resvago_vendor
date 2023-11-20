@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 
+import '../widget/app_strings_file.dart';
 import '../widget/appassets.dart';
 
 class ThankYouScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'THANK YOU ',
+                                 AppStrings.thankYou.tr,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
@@ -63,7 +64,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'your account has been successfully created',
+                                  AppStrings.yourAccSuccessfullyCreate.tr,
                                   style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -79,7 +80,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                 padding: const EdgeInsets.only(
                                     left: 10.0, right: 10),
                                 child: CommonButtonBlue(
-                                  title: "CONTINUE",
+                                  title: AppStrings.continues.tr,
                                   onPressed: () {
                                     Get.toNamed(MyRouters.loginScreen);
                                   },

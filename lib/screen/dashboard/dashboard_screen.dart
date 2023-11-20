@@ -18,6 +18,7 @@ import '../../Firebase_service/firebase_service.dart';
 import '../../model/profile_model.dart';
 import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
+import '../../widget/app_strings_file.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../Menu/menu_screen.dart';
@@ -138,7 +139,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.dashboard),
-                title: Text('Dashboard',
+                title: Text(AppStrings.dashBoard.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -159,7 +160,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.restaurant_menu_sharp),
-                title: Text('Menu',
+                title: Text(AppStrings.menu.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -181,7 +182,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
 
-                title: Text('Promo Code List',
+                title: Text(AppStrings.promoCodeList.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -202,7 +203,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.line_style),
-                title: Text('Slot List',
+                title: Text(AppStrings.slotList.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -224,7 +225,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.monetization_on),
-                title: Text('Total Earning',
+                title: Text(AppStrings.totalEarning.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -245,7 +246,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.access_time),
-                title: Text('Set Store Time',
+                title: Text(AppStrings.setStoreTime.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -266,7 +267,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.food_bank),
-                title: Text('Bank Details',
+                title: Text(AppStrings.bankDetails.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -284,7 +285,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.settings),
-                title: Text('Setting',
+                title: Text(AppStrings.setting.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -305,7 +306,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.settings),
-                title: Text('FeedBack',
+                title: Text(AppStrings.feedback.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -326,7 +327,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.logout),
-                title: Text('Log Out',
+                title: Text(AppStrings.logOut.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -352,7 +353,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Hi, ${profileData.restaurantName}",
+                "${AppStrings.hi.tr} , ${profileData.restaurantName}",
                 style: GoogleFonts.ibmPlexSansArabic(
                     fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
               ),
@@ -365,7 +366,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Restaurant Time:",
+                      AppStrings.restaurantTime.tr,
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                     ),
@@ -494,12 +495,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               children: [
                                 Text(
                                   index == 0
-                                      ? "Gross Sales"
+                                      ? AppStrings.grossSales.tr
                                       : index == 1
-                                          ? "Earning"
+                                          ? AppStrings.earning.tr
                                           : index == 2
-                                              ? "Sold items"
-                                              : "Order Received",
+                                              ? AppStrings.soldItems.tr
+                                              : AppStrings.orderReceived.tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -540,7 +541,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Latest Sales".tr,
+                                    AppStrings.latestSales.tr,
                                     style: GoogleFonts.ibmPlexSansArabic(
                                         height: 1.5,
                                         color: const Color(0xff454B5C),
@@ -553,7 +554,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                         //     .vendorOrderList);
                                       },
                                       child: Text(
-                                        "See All".tr,
+                                        AppStrings.seeAll.tr,
                                         style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                             decoration: TextDecoration.underline,
                                             height: 1.5,
@@ -567,7 +568,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Order No.".tr,
+                                    AppStrings.orderNo.tr,
                                     style: GoogleFonts.ibmPlexSansArabic(
                                         height: 1.5,
                                         color: const Color(0xff65CD90),
@@ -576,7 +577,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                   ),
                                   const SizedBox(width: 20),
                                   Text(
-                                    "Status".tr,
+                                    AppStrings.status.tr,
                                     style: GoogleFonts.ibmPlexSansArabic(
                                         height: 1.5,
                                         color: const Color(0xff65CD90),
@@ -584,7 +585,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                         fontSize: AddSize.font16),
                                   ),
                                   Text(
-                                    "Earning".tr,
+                                    AppStrings.earning.tr,
                                     style: GoogleFonts.ibmPlexSansArabic(
                                         height: 1.5,
                                         color: const Color(0xff65CD90),

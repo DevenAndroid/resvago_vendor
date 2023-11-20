@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../../model/dining_order_modal.dart';
 import '../../model/order_details_modal.dart';
@@ -66,7 +67,7 @@ class _OderListScreenState extends State<OderListScreen> {
                         width: 20,
                       ),
                       Text(
-                        "Oder List",
+                       AppStrings.orderList.tr,
                         style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -100,7 +101,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                   fontSize: 28),
                             ),
                             Text(
-                              "Your earning this month",
+                             AppStrings.yourEarningMonth.tr,
                               style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -118,7 +119,7 @@ class _OderListScreenState extends State<OderListScreen> {
                           ),
                           onPressed: () {},
                           child: Text(
-                            "Withdrawal",
+                            AppStrings.withdrawal.tr,
                             style: GoogleFonts.poppins(
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.w600,
@@ -156,7 +157,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                     onTap: () {
                                       dropDownValue1.value = 'No';
                                     },
-                                    child: const Text('No',
+                                    child:  Text(AppStrings.no.tr,
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: Colors.blueGrey,
@@ -173,7 +174,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                         dropDownValue1.value = 'Yes';
                                       });
                                     },
-                                    child: const Text('Yes',
+                                    child:  Text(AppStrings.yes.tr,
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: Colors.blueGrey,
@@ -204,7 +205,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                             dropDownValue1.value
                                                     .toString()
                                                     .isEmpty
-                                                ? "Filter"
+                                                ? AppStrings.filter.tr
                                                 : dropDownValue1.value.toString(),
                                             style: const TextStyle(
                                                 fontSize: 15,
@@ -246,7 +247,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                     dropDownValue2.value = 'False';
                                     Get.back();
                                   },
-                                  child: const Text('False',
+                                  child:  Text(AppStrings.falseString.tr,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blueGrey,
@@ -264,7 +265,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                       Get.back();
                                     });
                                   },
-                                  child: const Text('True',
+                                  child:  Text(AppStrings.trueString.tr,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blueGrey,
@@ -327,7 +328,7 @@ class _OderListScreenState extends State<OderListScreen> {
                     ),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        hintText: "Search",
+                        hintText: AppStrings.search.tr,
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.only(left: 10),
                         focusColor: Colors.white,
@@ -350,14 +351,14 @@ class _OderListScreenState extends State<OderListScreen> {
               ]),
             ),
           ),
-              const TabBar(
+               TabBar(
                   labelColor: Color(0xFF454B5C),
 
                   indicatorColor: Color(0xFF3B5998),
                   indicatorWeight: 4,
                   tabs: [
-                Tab(text: "Dining Orders",),
-                Tab(text: "Delivery Orders",),
+                Tab(text: AppStrings.diningOrders.tr),
+                Tab(text: AppStrings.DeliveryOrders.tr,),
               ]),
               Expanded(
                 child: TabBarView(children: [
@@ -369,16 +370,16 @@ class _OderListScreenState extends State<OderListScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Order No.", style: GoogleFonts.poppins(
+                              Text(AppStrings.orderNo.tr, style: GoogleFonts.poppins(
                                   color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
                               const SizedBox(width: 1,),
-                              Text("Status", style: GoogleFonts.poppins(
+                              Text(AppStrings.status.tr, style: GoogleFonts.poppins(
                                   color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
-                              Text("Earning", style: GoogleFonts.poppins(
+                              Text(AppStrings.earning.tr, style: GoogleFonts.poppins(
                                   color: const Color(0xFF3B5998),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12),),
@@ -449,8 +450,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         ),
                                       );
                                     })
-                                    : const Center(
-                                  child: Text("No User Found"),
+                                    :  Center(
+                                  child: Text(AppStrings.noUserFound.tr),
                                 );
                               }
                               return const CircularProgressIndicator();

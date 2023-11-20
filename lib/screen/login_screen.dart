@@ -15,6 +15,7 @@ import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/bottomnav_bar.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../helper.dart';
+import '../widget/app_strings_file.dart';
 import '../widget/common_text_field.dart';
 import '../widget/custom_textfield.dart';
 import 'otp_screen.dart';
@@ -143,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'WELCOME ',
+                              AppStrings.welcome.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -157,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Login your account.',
+                              AppStrings.loginYourAcc.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 13,
@@ -176,8 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text(
-                                "Login With Mobile Number",
+                               Text(
+                                AppStrings.loginWithMb.tr,
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -194,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
+                               Text(AppStrings.loginWithMail.tr, style: TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -204,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Enter Mobile Number',
+                                    AppStrings.enterMobileNumber.tr,
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -219,11 +220,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: loginController.mobileController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your phone number'),
+                                      RequiredValidator(errorText: AppStrings.enterYourMobileNb.tr),
                                     ]).call,
                                     dropdownTextStyle: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
-                                      hintText: 'Enter your Mobile number',
+                                      hintText:  AppStrings.enterYourMobileNb.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       enabled: true,
@@ -260,17 +261,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: emailController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your email'),
-                                      EmailValidator(errorText: 'Enter a valid email address'),
+                                      RequiredValidator(errorText: AppStrings.pleaseEnterYrMail.tr),
+                                      EmailValidator(errorText: AppStrings.enterAValidEmail.tr),
                                     ]).call,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Email',
+                                      hintText: AppStrings.enterEmail.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       suffix: GestureDetector(
                                         onTap: () async {
                                           checkEmailInFirestore();
                                         },
-                                        child: const Text('send'),
+                                        child:  Text(AppStrings.send.tr),
                                       ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -300,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller: passwordController,
                                       decoration: InputDecoration(
                                         filled: true,
-                                        hintText: 'Enter Otp',
+                                        hintText: AppStrings.enterOtp.tr,
                                         hintStyle: const TextStyle(color: Colors.white),
                                         fillColor: Colors.white.withOpacity(.10),
                                         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
@@ -323,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller: otpController,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
-                                        hintText: 'Enter Otp',
+                                        hintText: AppStrings.enterOtp.tr,
                                         hintStyle: const TextStyle(color: Colors.white),
                                         filled: true,
                                         fillColor: Colors.white.withOpacity(.10),
@@ -354,8 +355,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("OTP is verified"),
+                                              ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                                content: Text(AppStrings.otpIsVerified.tr),
                                               ));
                                               FirebaseAuth.instance
                                                   .signInWithEmailAndPassword(
@@ -366,13 +367,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 Get.offAllNamed(MyRouters.bottomNavbar);
                                               });
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("Invalid OTP"),
+                                              ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                                content: Text(AppStrings.invalidOtp.tr),
                                               ));
                                             }
                                           }
                                         },
-                                        title: 'Login',
+                                        title: AppStrings.login.tr,
                                       )
                                     : CommonButton(
                                         onPressed: () async {
@@ -380,20 +381,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                             checkPhoneNumberInFirestore();
                                           }
                                         },
-                                        title: 'Login',
+                                        title:  AppStrings.login.tr,
                                       ),
                                 const SizedBox(
                                   height: 20,
                                 ),
                                 Text(
-                                  'Customer Booking?',
+                                  AppStrings.cusBooking.tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
-                                  'Signup as a customer',
+                                  AppStrings.signupAsCus.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
@@ -411,7 +412,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     //SizedBox(width: 10,),
-                                    const Text('Or Login with',
+                                     Text(AppStrings.orLoginWith.tr,
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
@@ -451,7 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'Facebook',
+                                            AppStrings.facebook.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                           )
@@ -478,7 +479,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               width: 10,
                                             ),
                                             Text(
-                                              'Google',
+                                              AppStrings.google.tr,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
@@ -495,7 +496,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Don't Have an Account?",
+                                      AppStrings.dontHaveAnAcc.tr,
                                       style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     InkWell(
@@ -503,7 +504,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Get.toNamed(MyRouters.signUpScreen);
                                       },
                                       child: Text(
-                                        ' Signup',
+                                       AppStrings.signup.tr,
                                         style: GoogleFonts.poppins(
                                             color: const Color(0xFF1877F2), fontWeight: FontWeight.w600, fontSize: 14),
                                       ),

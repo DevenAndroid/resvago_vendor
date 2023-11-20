@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:resvago_vendor/helper.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
 import '../model/bankdetails_model.dart';
@@ -67,7 +69,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: backAppBar(title: "Bank Details", context: context),
+      appBar: backAppBar(title: AppStrings.bankDetails.tr, context: context),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -101,7 +103,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                             hint: "HDFC Bank",
                             validator: MultiValidator([
                               RequiredValidator(
-                                  errorText: "Please enter bank account Name")
+                                  errorText: AppStrings.enterBankAccName.tr)
                             ]).call,
                           ),
                           SizedBox(
@@ -110,10 +112,10 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                           RegisterTextFieldWidget(
                             controller: bankName,
                             keyboardType: TextInputType.number,
-                            hint: "Bank Account Number",
+                            hint: AppStrings.bankAccNumber.tr,
                             validator: MultiValidator([
                               RequiredValidator(
-                                  errorText: "Please enter bank account number")
+                                  errorText: AppStrings.enterBankAccNo.tr)
                             ]).call,
                           ),
                           SizedBox(
@@ -121,10 +123,10 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                           ),
                           RegisterTextFieldWidget(
                             controller: accountHolderName,
-                            hint: "Account Holder Name",
+                            hint: AppStrings.accHolderName.tr,
                             validator: MultiValidator([
                               RequiredValidator(
-                                  errorText: "Please enter account holder name")
+                                  errorText: AppStrings.enterAccountHolderName.tr)
                             ]).call,
                           ),
                           SizedBox(
@@ -132,17 +134,17 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                           ),
                           RegisterTextFieldWidget(
                             controller: iFSCCode,
-                            hint: "IFSC Code",
+                            hint: AppStrings.ifscCode.tr,
                             validator: MultiValidator([
                               RequiredValidator(
-                                  errorText: "Please enter IFSC code")
+                                  errorText: AppStrings.enterIfscCode.tr)
                             ]).call,
                           ),
                           SizedBox(
                             height: AddSize.size20,
                           ),
                           CommonButtonBlue(
-                              title: "ADD ACCOUNT",
+                              title: AppStrings.addAccount.tr,
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   addbankToFirebase();

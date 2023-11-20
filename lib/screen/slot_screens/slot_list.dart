@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
 import 'package:resvago_vendor/screen/slot_screens/add_booking_slot_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slotViwe%20screen.dart';
+import 'package:resvago_vendor/widget/app_strings_file.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../../controllers/slot_controller.dart';
@@ -85,7 +86,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Slot List", context: context),
+      appBar: backAppBar(title: AppStrings.slotList.tr, context: context),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(children: [
@@ -285,11 +286,11 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         })
                                   ]));
                         })
-                    : const Center(
-                        child: Text("Slots are not created yet"),
+                    :  Center(
+                        child: Text(AppStrings.slotsAreNotCreated.tr),
                       )
-                : const Center(
-                    child: Text("Slots are not created yet"),
+                :  Center(
+                    child: Text(AppStrings.slotsAreNotCreated.tr),
                   ),
           )
         ]),
