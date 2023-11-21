@@ -15,6 +15,7 @@ class MyDiningOrderModel {
   dynamic total;
   dynamic docid;
   dynamic orderType;
+  dynamic address;
 
   MyDiningOrderModel(
       {this.date,
@@ -32,6 +33,7 @@ class MyDiningOrderModel {
         this.time,
         this.total,
         this.docid,
+        this.address,
         this.orderType});
 
   MyDiningOrderModel.fromJson(Map<String, dynamic> json,docid1) {
@@ -43,6 +45,7 @@ class MyDiningOrderModel {
       });
     }
     orderId = json['orderId'];
+    address = json['address'];
     vendorId = json['vendorId'];
     slot = json['slot'];
     docid = docid1;
@@ -68,6 +71,7 @@ class MyDiningOrderModel {
       data['menuList'] = menuList!.map((v) => v.toJson()).toList();
     }
     data['orderId'] = orderId;
+    data['address'] = address;
     data['vendorId'] = vendorId;
     data['slot'] = slot;
     data['userId'] = userId;

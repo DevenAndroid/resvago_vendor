@@ -4,6 +4,8 @@ class ProfileData {
   dynamic password;
   dynamic address;
   dynamic restaurantName;
+  dynamic latitude;
+  dynamic longitude;
   dynamic docid;
   dynamic mobileNumber;
   dynamic confirmPassword;
@@ -38,6 +40,9 @@ class ProfileData {
         this.setDelivery,
         this.cancellation,
         this.menuSelection,
+        this.latitude,
+        this.longitude,
+
       });
 
   ProfileData.fromJson(Map<String, dynamic> json) {
@@ -59,6 +64,8 @@ class ProfileData {
     cancellation = json['cancellation'];
     menuSelection = json['menuSelection'];
     aboutUs = json['aboutUs'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +88,8 @@ class ProfileData {
     data['setDelivery'] = setDelivery;
     data['cancellation'] = cancellation;
     data['menuSelection'] = menuSelection;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
     return data;
   }
 }

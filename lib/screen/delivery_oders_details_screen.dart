@@ -17,8 +17,7 @@ class DeliveryOderDetailsScreen extends StatefulWidget {
   final MyOrderModel model;
 
   @override
-  State<DeliveryOderDetailsScreen> createState() =>
-      _DeliveryOderDetailsScreenState();
+  State<DeliveryOderDetailsScreen> createState() => _DeliveryOderDetailsScreenState();
 }
 
 class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
@@ -65,57 +64,44 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                   padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SvgPicture.asset(
                         AppAssets.details,
                         height: 23,
                       ),
                       const SizedBox(
-                        width: 20,
+                        width: 10,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Order ID: ${myOrderModel!.orderId}",
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF423E5E),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15),
+                            "Order ID: ${myOrderModel!.orderId.toString()}",
+                            style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                           ),
                           Text(
-                            DateFormat("dd-mm-yy hh:mm a").format(
-                                DateTime.parse(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                            myOrderModel!.time)
-                                        .toLocal()
-                                        .toString())),
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF303C5E),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 11),
+                            DateFormat.yMMMMd().format(
+                                DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
+                            style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                           ),
                         ],
                       ),
                       const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 7),
-                        decoration: BoxDecoration(
-                          color: getStatusColor(myOrderModel!.orderStatus),
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        child: Text(
-                          myOrderModel!.orderStatus,
-                          style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 11),
+                      FittedBox(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF65CD90),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: Text(
+                            myOrderModel!.orderStatus.toString(),
+                            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
+                          ),
                         ),
                       )
                     ],
@@ -126,19 +112,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Selected Items",
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 11,
@@ -146,90 +127,75 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                           if (myOrderModel!.orderDetails!.menuList != null)
                             ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: myOrderModel!
-                                    .orderDetails!.menuList!.length,
+                                itemCount: myOrderModel!.orderDetails!.menuList!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  final item = myOrderModel!
-                                      .orderDetails!.menuList![index];
+                                  final item = myOrderModel!.orderDetails!.menuList![index];
                                   print("manish ${item.dishName}");
                                   return InkWell(
                                     onTap: () {},
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Image.network(
-                                              item.image,
-                                              height: 50,
-                                              width: 50,
-                                            ),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                            Expanded(
+                                              child: Row(
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        item.dishName
-                                                            .toString(),
-                                                        style: GoogleFonts.poppins(
-                                                            color: const Color(
-                                                                0xFF1A2E33),
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 15),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 150,
-                                                      ),
-                                                      Text(
-                                                        "\$${item.price}",
-                                                        style: GoogleFonts.poppins(
-                                                            color: const Color(
-                                                                0xFF384953),
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ],
+                                                  ClipRRect(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    child: Image.network(
+                                                      item.image.toString(),
+                                                      height: 60,
+                                                      width: 60,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                   const SizedBox(
-                                                    height: 6,
+                                                    width: 15,
                                                   ),
-                                                  Text(
-                                                    "QTY: ${item.qty}",
-                                                    style: GoogleFonts.poppins(
-                                                        color: const Color(
-                                                            0xFF384953),
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        fontSize: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          item.dishName,
+                                                          style: GoogleFonts.poppins(
+                                                              color: const Color(0xFF1A2E33),
+                                                              fontWeight: FontWeight.w600,
+                                                              fontSize: 15),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        Text(
+                                                          "Qty: ${item.qty}",
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w300,
+                                                              color: const Color(0xFF3B5998)),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            )
+                                            ),
+                                            const SizedBox(width: 10,),
+                                            Text(
+                                              "\$${item.price}",
+                                              style: GoogleFonts.poppins(
+                                                  color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 15),
+                                            ),
                                           ],
                                         ),
                                         Divider(
                                           thickness: 1,
-                                          color:
-                                              Colors.black12.withOpacity(0.09),
+                                          color: Colors.black12.withOpacity(0.09),
                                         ),
                                       ],
                                     ),
@@ -241,19 +207,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Customer Details",
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 6,
@@ -276,16 +237,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     Text(
                                       "Customer Name",
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF486769),
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14),
+                                          color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
                                       myOrderModel!.customerData!.userName,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF21283D),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
+                                          color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -315,24 +272,19 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     Text(
                                       "Customer Number",
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF486769),
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14),
+                                          color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
                                       myOrderModel!.customerData!.mobileNumber,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF21283D),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
+                                          color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
                                   ],
                                 ),
                                 const Spacer(),
                                 GestureDetector(
                                   onTap: () {
-                                    String phoneNumber = myOrderModel!
-                                        .customerData!
+                                    String phoneNumber = myOrderModel!.customerData!
                                         .mobileNumber; // Replace with the actual phone number retrieved from your API
                                     launchPhoneCall(phoneNumber);
                                   },
@@ -358,27 +310,27 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                             padding: const EdgeInsets.only(left: 8.0, right: 8),
                             child: Row(
                               children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Customer Address",
-                                      style: GoogleFonts.poppins(
-                                          color: const Color(0xFF486769),
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14),
-                                    ),
-                                    Text(
-                                      myOrderModel!.address.toString(),
-                                      style: GoogleFonts.poppins(
-                                          color: const Color(0xFF21283D),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Customer Address",
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
+                                      ),
+                                      Text(
+                                        myOrderModel!.address.toString(),
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                const Spacer(),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 Image.asset(
                                   AppAssets.location,
                                   height: 40,
@@ -392,9 +344,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         children: [
                           Row(
@@ -403,16 +353,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Subtotal",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
+                                    color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                               ),
                               Text(
-                                "\$12.99",
+                                "\$${myOrderModel!.total.toString()}",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
@@ -425,16 +371,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Service Fees",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
+                                    color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                               ),
                               Text(
-                                "\$5.00",
+                                "\$0.00",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
@@ -447,16 +389,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Meat Pasta",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
+                                    color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                               ),
                               Text(
-                                "\$3.00",
+                                "\$0.00",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
@@ -473,16 +411,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Total",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                               Text(
                                 "\$${myOrderModel!.total.toString()}",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
@@ -500,15 +434,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: Colors.blue,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Order Completed",
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Accepted")
@@ -526,10 +459,8 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         sendPushNotification(
                             body: myOrderModel!.orderDetails.toString(),
                             deviceToken: myOrderModel!.fcmToken,
-                            image:
-                                "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                            title:
-                                "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
+                            image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                            title: "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
                             orderID: myOrderModel!.orderId);
 
                         showToast("Order is Completed");
@@ -538,15 +469,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: const Color(0xFFFF6559),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Delivery Order",
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Rejected")
@@ -558,15 +488,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: const Color(0xFFFF6559),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Order Rejected",
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus != "Order Accepted" &&
@@ -589,10 +518,8 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               sendPushNotification(
                                   body: myOrderModel!.orderDetails.toString(),
                                   deviceToken: myOrderModel!.fcmToken,
-                                  image:
-                                      "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                  title:
-                                      "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
+                                  image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                  title: "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
                                   orderID: myOrderModel!.orderId);
 
                               showToast("Order is Accepted");
@@ -601,18 +528,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               minimumSize: const Size(double.maxFinite, 50),
                               primary: Colors.green,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: Text(
                               "Accept Order",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                      color: AppTheme.backgroundcolor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: AddSize.font18),
+                              style: Theme.of(context).textTheme.headline5!.copyWith(
+                                  color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                             )),
                       ),
                       const SizedBox(
@@ -631,10 +552,8 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                 sendPushNotification(
                                     body: myOrderModel!.orderDetails.toString(),
                                     deviceToken: myOrderModel!.fcmToken,
-                                    image:
-                                        "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                    title:
-                                        "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                    image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                    title: "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
                                     orderID: myOrderModel!.orderId);
 
                                 showToast("Order is Rejected");
@@ -643,18 +562,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                 minimumSize: const Size(double.maxFinite, 50),
                                 primary: const Color(0xFFFF6559),
                                 elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               ),
                               child: Text(
                                 "Reject Order",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                        color: AppTheme.backgroundcolor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: AddSize.font18),
+                                style: Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                               )))
                     ],
                   ),

@@ -7,7 +7,6 @@ import 'package:resvago_vendor/model/dining_order_modal.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../Firebase_service/notification_api.dart';
 import '../helper.dart';
 import '../widget/addsize.dart';
@@ -37,8 +36,18 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
         return Colors.blue; // Default color for unknown statuses
     }
   }
-  void launchPhoneCall(String phoneNumber) async {
-    final url = 'tel:$phoneNumber';
+
+  // _makingPhoneCall(call) async {
+  //   var url = Uri.parse(call);
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  void _makingPhoneCall(phoneNumber) async {
+    final url = "tel:$phoneNumber";
 
     if (await canLaunch(url)) {
       await launch(url);
@@ -46,6 +55,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
       throw 'Could not launch $url';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     widget.myDiningOrderModel.fcmToken;
@@ -58,9 +68,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
               padding: const EdgeInsets.all(10.0),
               child: Container(
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   // crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,38 +86,27 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       children: [
                         Text(
                           "Order ID: ${myDiningOrderModel!.orderId.toString()}",
-                          style: GoogleFonts.poppins(
-                              color: const Color(0xFF423E5E),
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15),
+                          style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                         ),
-                        Text(DateFormat("dd-mm-yy hh:mm a").format(
-                            DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
-                          style: GoogleFonts.poppins(
-                              color: const Color(0xFF303C5E),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 11),
+                        Text(
+                          DateFormat("dd-mm-yy hh:mm a").format(
+                              DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
+                          style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                         ),
                       ],
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {
-
-                      },
+                      onTap: () {},
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 7),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
                         decoration: BoxDecoration(
                           color: getStatusColor(myDiningOrderModel!.orderStatus),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
                           myDiningOrderModel!.orderStatus,
-                          style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 11),
+                          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
                         ),
                       ),
                     )
@@ -253,50 +250,51 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
             Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child:
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Selected Items",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1A2E33),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16),
-                            ),
-                            const SizedBox(
-                              height: 11,
-                            ),
-                            ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount:
-                                myDiningOrderModel!.menuList!.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  final item = myDiningOrderModel!.menuList![index];
-                                  return InkWell(
-                                    onTap: () {},
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Selected Items",
+                        style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: myDiningOrderModel!.menuList!.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final item = myDiningOrderModel!.menuList![index];
+                            return InkWell(
+                              onTap: () {},
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Row(
                                           children: [
-                                            Image.network(item.image,height: 50,width: 50,),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(10),
+                                              child: Image.network(
+                                                item.image.toString(),
+                                                height: 60,
+                                                width: 60,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
                                             const SizedBox(
                                               width: 15,
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 8.0),
+                                            Expanded(
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     item.dishName,
@@ -306,48 +304,57 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                         fontSize: 15),
                                                   ),
                                                   const SizedBox(
-                                                    height: 6,
+                                                    height: 4,
                                                   ),
                                                   Text(
-                                                    "\$${item.price}",
+                                                    "Qty: ${item.qty}",
                                                     style: GoogleFonts.poppins(
-                                                        color: const Color(0xFF384953),
+                                                        fontSize: 12,
                                                         fontWeight: FontWeight.w300,
-                                                        fontSize: 15),
+                                                        color: const Color(0xFF3B5998)),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 4,
                                                   ),
                                                 ],
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
-                                        Divider(
-                                          thickness: 1,
-                                          color: Colors.black12.withOpacity(0.09),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ],
-                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "\$${item.price}",
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(
+                                    thickness: 1,
+                                    color: Colors.black12.withOpacity(0.09),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                    ],
+                  ),
                 )),
             Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                     padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Customer Details",
-                          style: GoogleFonts.poppins(
-                              color: const Color(0xFF1A2E33),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16),
+                          style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                         ),
                         const SizedBox(
                           height: 6,
@@ -370,16 +377,12 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   Text(
                                     "Customer Name",
                                     style: GoogleFonts.poppins(
-                                        color: const Color(0xFF486769),
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14),
+                                        color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                   ),
                                   Text(
                                     myDiningOrderModel!.customerData!.userName,
                                     style: GoogleFonts.poppins(
-                                        color: const Color(0xFF21283D),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                        color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -409,24 +412,19 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   Text(
                                     "Customer Number",
                                     style: GoogleFonts.poppins(
-                                        color: const Color(0xFF486769),
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14),
+                                        color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                   ),
                                   Text(
-                                      myDiningOrderModel!.customerData!.mobileNumber,
+                                    myDiningOrderModel!.customerData!.mobileNumber,
                                     style: GoogleFonts.poppins(
-                                        color: const Color(0xFF21283D),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                        color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
                                 ],
                               ),
                               const Spacer(),
                               GestureDetector(
-                                onTap: (){
-                                  String phoneNumber = myDiningOrderModel!.customerData!.mobileNumber; // Replace with the actual phone number retrieved from your API
-                                  launchPhoneCall(phoneNumber);
+                                onTap: () {
+                                  _makingPhoneCall(myDiningOrderModel!.customerData!.mobileNumber);
                                 },
                                 child: Image.asset(
                                   AppAssets.call,
@@ -484,9 +482,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                     padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                     child: Column(
                       children: [
                         Row(
@@ -494,17 +490,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           children: [
                             Text(
                               "Subtotal",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1E2538),
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
                             Text(
-                              "\$12.99",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF3A3A3A),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
+                              "\$${myDiningOrderModel!.total}",
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -516,17 +508,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           children: [
                             Text(
                               "Service Fees",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1E2538),
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
                             Text(
-                              "\$5.00",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF3A3A3A),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
+                              "\$0.00",
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -538,17 +526,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           children: [
                             Text(
                               "Meat Pasta",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF1E2538),
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
                             Text(
-                              "\$3.00",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF3A3A3A),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
+                              "\0.00",
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -564,17 +548,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           children: [
                             Text(
                               "Total",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF3A3A3A),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             Text(
                               "\$${myDiningOrderModel!.total}",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF3A3A3A),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -590,17 +570,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.maxFinite, 50),
-                      primary:  Colors.blue,
+                      primary: Colors.blue,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
                       "Order Completed",
-                      style: Theme.of(context).textTheme.headline5!.copyWith(
-                          color: AppTheme.backgroundcolor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: AddSize.font18),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                     )),
               ),
             if (myDiningOrderModel!.orderStatus == "Order Accepted")
@@ -619,8 +598,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           body: myDiningOrderModel!.orderType.toString(),
                           deviceToken: myDiningOrderModel!.fcmToken,
                           image: myDiningOrderModel!.restaurantInfo!.image,
-                          title:
-                          "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
+                          title: "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
                           orderID: myDiningOrderModel!.orderId);
 
                       showToast("Order is Completed");
@@ -629,15 +607,14 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       minimumSize: const Size(double.maxFinite, 50),
                       primary: const Color(0xFFFF6559),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
                       "Complete Order",
-                      style: Theme.of(context).textTheme.headline5!.copyWith(
-                          color: AppTheme.backgroundcolor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: AddSize.font18),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                     )),
               ),
             if (myDiningOrderModel!.orderStatus == "Order Rejected")
@@ -649,15 +626,14 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       minimumSize: const Size(double.maxFinite, 50),
                       primary: const Color(0xFFFF6559),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
                       "Order Rejected",
-                      style: Theme.of(context).textTheme.headline5!.copyWith(
-                          color: AppTheme.backgroundcolor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: AddSize.font18),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                     )),
               ),
             if (myDiningOrderModel!.orderStatus != "Order Accepted" &&
@@ -680,30 +656,24 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             sendPushNotification(
                                 body: myDiningOrderModel!.orderType.toString(),
                                 deviceToken: myDiningOrderModel!.fcmToken,
-                                image:
-                                "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                title:
-                                "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
+                                image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                title: "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
                                 orderID: myDiningOrderModel!.orderId);
 
                             showToast("Order is Accepted");
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.maxFinite, 50),
-                            primary:  Colors.green,
+                            primary: Colors.green,
                             elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           child: Text(
                             "Accept Order",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline5!
-                                .copyWith(
-                                color: AppTheme.backgroundcolor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: AddSize.font18),
+                                .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                           )),
                     ),
                     const SizedBox(
@@ -722,10 +692,8 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               sendPushNotification(
                                   body: myDiningOrderModel!.orderType.toString(),
                                   deviceToken: myDiningOrderModel!.fcmToken,
-                                  image:
-                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                  title:
-                                  "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
+                                  image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                  title: "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
                                   orderID: myDiningOrderModel!.orderId);
 
                               showToast("Order is Rejected");
@@ -734,18 +702,12 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               minimumSize: const Size(double.maxFinite, 50),
                               primary: const Color(0xFFFF6559),
                               elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: Text(
                               "Reject Order",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                  color: AppTheme.backgroundcolor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: AddSize.font18),
+                              style: Theme.of(context).textTheme.headline5!.copyWith(
+                                  color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                             )))
                   ],
                 ),

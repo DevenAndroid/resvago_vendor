@@ -237,6 +237,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                         borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
                                       ),
                                     ),
+                                    onCountryChanged: (phone){
+                                      setState(() {
+                                        code = "+${phone.dialCode}";
+                                        log(code.toString());
+                                      });
+                                    },
                                     initialCountryCode: 'IN',
                                     cursorColor: Colors.white,
                                     keyboardType: TextInputType.number,
