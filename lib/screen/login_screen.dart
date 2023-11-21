@@ -57,12 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
           otpLength: 4,
           otpType: OTPType.digitsOnly);
       if (await myauth.sendOTP() == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OTP has been sent"),
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Text(AppStrings.otpHasBeen.tr),
         ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Oops, OTP send failed"),
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Text(AppStrings.oopsOtpSend.tr),
         ));
       }
       setState(() {
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       return;
     } else {
-      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
+      Fluttertoast.showToast(msg: AppStrings.emailNotRegYet.tr);
     }
   }
 
@@ -84,9 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
       Map kk = result.docs.first.data() as Map;
       login(kk["email"].toString());
     } else if (loginController.mobileController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Please enter phone number');
+      Fluttertoast.showToast(msg:  AppStrings.pleaseEnterPh);
     } else {
-      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
+      Fluttertoast.showToast(msg: AppStrings.phNoNotReg);
     }
   }
 

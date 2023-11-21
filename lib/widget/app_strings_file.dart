@@ -18,6 +18,11 @@ class AppStrings{
   static String loginWithMail = "Login With Email Address";
   static String enterMobileNumber = 'Enter Mobile Number';
   static String enterYourMobileNb = 'Please enter your phone number';
+  static String pleaseEnterPh = 'Please enter phone number';
+  static String phNoNotReg = 'Phone Number not register yet Please Signup';
+  static String otpHasBeen = "OTP has been sent";
+  static String oopsOtpSend = "Oops, OTP send failed";
+  static String emailNotRegYet = 'Email not register yet Please Signup';
   static String pleaseEnterYrMail = 'Please enter your email';
   static String enterAValidEmail = 'Enter a valid email address';
   static String enterEmail = 'Enter Email';
