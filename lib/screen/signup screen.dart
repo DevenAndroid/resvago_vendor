@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   dynamic latitude = "";
   dynamic longitude = "";
   RxBool showValidation1 = false.obs;
-  String code = "+91";
+  String code = "+353";
   bool checkValidation(bool bool1, bool2) {
     if (bool1 == true && bool2 == true) {
       return true;
@@ -143,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isDescendingOrder = true;
 
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").get().then((value) {
+    FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         categoryList ??= [];
@@ -156,7 +156,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    getVendorCategories();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getVendorCategories();
+    });
   }
 
   @override
@@ -225,22 +227,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                content: ListView.builder(
-                                  physics: const AlwaysScrollableScrollPhysics(),
-                                  itemCount: categoryList!.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return InkWell(
-                                        onTap: () {
-                                          categoryController.text = categoryList![index].name;
-                                          Get.back();
-                                          setState(() {});
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                          child: Text(categoryList![index].name),
-                                        ));
-                                  },
+                                content: SizedBox(
+                                  height: 400,
+                                  width: double.maxFinite,
+                                  child: ListView.builder(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    itemCount: categoryList!.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return InkWell(
+                                          onTap: () {
+                                            categoryController.text = categoryList![index].name;
+                                            Get.back();
+                                            setState(() {});
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                            child: Text(categoryList![index].name),
+                                          ));
+                                    },
+                                  ),
                                 ),
                               ),
                             );
@@ -270,7 +276,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
-                        hint: 'MacRestaurant@gmail.com',
+                        hint: 'Enter your email',
                       ),
                       const SizedBox(
                         height: 20,
@@ -334,12 +340,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
                             focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
-                        initialCountryCode: 'IN',
+                        initialCountryCode: 'IE',
                         keyboardType: TextInputType.number,
-                        onCountryChanged: (phone){
+                        onCountryChanged: (phone) {
                           setState(() {
                             code = "+${phone.dialCode}";
-                            log(code.toString());
+                            log(phone.code.toString());
                           });
                         },
                         onChanged: (phone) {

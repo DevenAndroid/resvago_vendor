@@ -83,7 +83,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   dynamic latitude = "";
   dynamic longitude = "";
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").where("deactivate", isNotEqualTo: true).get().then((value) {
+    FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       categoryList ??= [];
       categoryList!.clear();
       for (var element in value.docs) {
@@ -141,7 +141,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "address": _address,
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
-        "category": categoryValue,
+        "category": categoryController.text.trim(),
         "restaurantImage": imagesLink,
         "menuImage": menuPhotoLink,
         "image": imageUrlProfile,
@@ -176,7 +176,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         categoryFile = File(profileData.image.toString());
         mobileController.text = profileData.mobileNumber.toString();
         restaurantController.text = profileData.restaurantName.toString();
-        categoryValue = profileData.category.toString();
+        categoryController.text = profileData.category.toString();
         emailController.text = profileData.email.toString();
         latitude = profileData.latitude.toString();
         longitude = profileData.longitude.toString();
@@ -318,14 +318,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                         profileData.restaurantName.toString(),
+                        restaurantController.text.toString(),
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                       profileData.category.toString(),
+                        emailController.text.toString(),
                         style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
@@ -360,74 +360,49 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           if (categoryList != null)
-                            DropdownButtonFormField<dynamic>(
-                              focusColor: Colors.white,
-                              isExpanded: true,
-                              iconEnabledColor: const Color(0xff97949A),
-                              icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                              borderRadius: BorderRadius.circular(10),
-                              hint: Text(
-                                "Select category".tr,
-                                style: const TextStyle(color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
-                                textAlign: TextAlign.justify,
+                            if (categoryList != null)
+                              RegisterTextFieldWidget(
+                                readOnly: true,
+                                controller: categoryController,
+                                // length: 10,
+                                validator: MultiValidator([
+                                  RequiredValidator(errorText: 'Please enter your category'),
+                                ]).call,
+                                keyboardType: TextInputType.emailAddress,
+                                hint: 'Select category',
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      content: SizedBox(
+                                        height: 400,
+                                        width: double.maxFinite,
+                                        child: ListView.builder(
+                                          physics: const AlwaysScrollableScrollPhysics(),
+                                          itemCount: categoryList!.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            return InkWell(
+                                                onTap: () {
+                                                  categoryController.text = categoryList![index].name;
+                                                  Get.back();
+                                                  setState(() {});
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text(categoryList![index].name),
+                                                ));
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            else
+                              const Center(
+                                child: Text("No Category Available"),
                               ),
-                              decoration: InputDecoration(
-                                focusColor: const Color(0xFF384953),
-                                hintStyle: GoogleFonts.poppins(
-                                  color: const Color(0xFF384953),
-                                  textStyle: GoogleFonts.poppins(
-                                    color: const Color(0xFF384953),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                  fontSize: 14,
-                                  // fontFamily: 'poppins',
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(.10),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                  borderRadius: BorderRadius.circular(6.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
-                                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red.shade800),
-                                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
-                                    borderRadius: BorderRadius.circular(6.0)),
-                              ),
-                              value: categoryValue == "" ? null : categoryValue,
-                              items: categoryList!.map((items) {
-                                return DropdownMenuItem(
-                                  value: items.name.toString(),
-                                  child: Text(
-                                    items.name.toString(),
-                                    style: TextStyle(color: const Color(0xFF384953), fontSize: AddSize.font14),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                categoryValue = newValue.toString();
-                                log(categoryValue.toString());
-                                setState(() {});
-                              },
-                              validator: (value) {
-                                if (categoryValue == null) {
-                                  return 'Please select category';
-                                }
-                                return null;
-                              },
-                            )
-                          else
-                            const Center(
-                              child: Text("No Category Available"),
-                            ),
                           const SizedBox(
                             height: 20,
                           ),

@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/emailOtpScreen.dart';
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showOtpField = false;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
-  String code = "+91";
+  String code = "+353";
   LoginOption loginOption = LoginOption.Mobile;
 
   fetchingFcmToken() {
@@ -74,6 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void checkPhoneNumberInFirestore() async {
+    if (loginController.mobileController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'Please enter phone number');
+      return;
+    }
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('vendor_users')
         .where('mobileNumber', isEqualTo: code + loginController.mobileController.text)
@@ -82,10 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result.docs.isNotEmpty) {
       Map kk = result.docs.first.data() as Map;
       login(kk["email"].toString());
-    } else if (loginController.mobileController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Please enter phone number');
     } else {
-      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
+      Fluttertoast.showToast(msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
     }
   }
 
@@ -120,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Helper.hideLoader(loader);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 5,
                                   ),
                                   IntlPhoneField(
+                                    dropdownIcon: const Icon(Icons.arrow_drop_down_rounded, color: Colors.white),
                                     flagsButtonPadding: const EdgeInsets.all(8),
                                     dropdownIconPosition: IconPosition.trailing,
                                     controller: loginController.mobileController,
@@ -237,19 +242,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
                                       ),
                                     ),
-                                    onCountryChanged: (phone){
+                                    onCountryChanged: (Country phone) {
                                       setState(() {
                                         code = "+${phone.dialCode}";
                                         log(code.toString());
                                       });
                                     },
-                                    initialCountryCode: 'IN',
+                                    initialCountryCode: 'IE',
                                     cursorColor: Colors.white,
                                     keyboardType: TextInputType.number,
-                                    onChanged: (phone) {
-                                      code = phone.countryCode.toString();
-                                      setState(() {});
-                                    },
                                   ),
                                   const SizedBox(
                                     height: 15,
