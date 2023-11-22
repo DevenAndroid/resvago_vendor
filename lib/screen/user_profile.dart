@@ -80,9 +80,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   File categoryFile = File("");
   List<CategoryData>? categoryList;
   String? categoryValue;
-
+  dynamic latitude = "";
+  dynamic longitude = "";
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").get().then((value) {
+    FirebaseFirestore.instance.collection("resturent").where("deactivate", isNotEqualTo: true).get().then((value) {
       categoryList ??= [];
       categoryList!.clear();
       for (var element in value.docs) {
@@ -92,11 +93,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       setState(() {});
     });
   }
+
   Future<void> updateProfileToFirestore() async {
-    // if (controller.galleryImages.isEmpty) {
-    //   showToast("Please select menu images");
-    //   return;
-    // }
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -138,7 +136,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           menuPhotoLink.add(imageUrl1);
         }
       }
-
       await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _address,
@@ -156,6 +153,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "setDelivery": setDelivery,
         "cancellation": cancellation,
         "menuSelection": menuSelection,
+        "latitude": latitude,
+        "longitude": longitude,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       Get.back();
       Helpers.hideLoader(loader);
@@ -179,6 +178,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         restaurantController.text = profileData.restaurantName.toString();
         categoryValue = profileData.category.toString();
         emailController.text = profileData.email.toString();
+        latitude = profileData.latitude.toString();
+        longitude = profileData.longitude.toString();
         _address = profileData.address.toString();
         preparationTime = (profileData.preparationTime ?? "").toString();
         averageMealForMember = (profileData.averageMealForMember ?? "").toString();
@@ -196,10 +197,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
-        if (!categoryList!
-            .map((e) => e.name.toString())
-            .toList()
-            .contains(profileData.category)) {
+        if (!categoryList!.map((e) => e.name.toString()).toList().contains(profileData.category)) {
           categoryValue = "";
         }
         setState(() {});
@@ -215,6 +213,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
     getVendorCategories();
   }
+
   String code = "+91";
   @override
   Widget build(BuildContext context) {
@@ -319,14 +318,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        profileData.restaurantName == null ? "email" : profileData.restaurantName.toString(),
+                         profileData.restaurantName.toString(),
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        profileData.category == null ? "email" : profileData.category.toString(),
+                       profileData.category.toString(),
                         style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
@@ -369,10 +368,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               borderRadius: BorderRadius.circular(10),
                               hint: Text(
                                 "Select category".tr,
-                                style: const TextStyle(
-                                    color: Color(0xff2A3B40),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w300),
+                                style: const TextStyle(color: Color(0xff2A3B40), fontSize: 13, fontWeight: FontWeight.w300),
                                 textAlign: TextAlign.justify,
                               ),
                               decoration: InputDecoration(
@@ -390,44 +386,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 ),
                                 filled: true,
                                 fillColor: Colors.white.withOpacity(.10),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 15),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                                 // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                      const Color(0xFF384953).withOpacity(.24)),
+                                  borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
                                   borderRadius: BorderRadius.circular(6.0),
                                 ),
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: const Color(0xFF384953)
-                                            .withOpacity(.24)),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(6.0))),
+                                    borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
+                                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                 errorBorder: OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.red.shade800),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(6.0))),
+                                    borderSide: BorderSide(color: Colors.red.shade800),
+                                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                 border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: const Color(0xFF384953)
-                                            .withOpacity(.24),
-                                        width: 3.0),
+                                    borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
                                     borderRadius: BorderRadius.circular(6.0)),
                               ),
-                               value:  categoryValue == ""
-                                   ? null
-                                   : categoryValue,
+                              value: categoryValue == "" ? null : categoryValue,
                               items: categoryList!.map((items) {
                                 return DropdownMenuItem(
                                   value: items.name.toString(),
                                   child: Text(
                                     items.name.toString(),
-                                    style: TextStyle(
-                                        color: const Color(0xFF384953),
-                                        fontSize: AddSize.font14),
+                                    style: TextStyle(color: const Color(0xFF384953), fontSize: AddSize.font14),
                                   ),
                                 );
                               }).toList(),
@@ -523,6 +504,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   final geometry = detail.result.geometry!;
                                   final lat = geometry.location.lat;
                                   final lang = geometry.location.lng;
+                                  latitude = lat;
+                                  longitude = lang;
                                   setState(() {
                                     _address = (place.description ?? "Location").toString();
                                   });
@@ -586,10 +569,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Upload Restaurant Images or Videos",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -600,10 +580,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Upload Restaurant Menu Card",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,

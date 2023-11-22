@@ -15,6 +15,7 @@ import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import '../../Firebase_service/firebase_service.dart';
+import '../../controllers/bottomnavbar_controller.dart';
 import '../../model/profile_model.dart';
 import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
@@ -33,7 +34,7 @@ class VendorDashboard extends StatefulWidget {
 }
 
 class _VendorDashboardState extends State<VendorDashboard> {
-
+  final bottomController = Get.put(BottomNavBarController());
   final FirebaseService firebaseService = FirebaseService();
   DateTime? time;
   DateTime? time1;
@@ -50,26 +51,21 @@ class _VendorDashboardState extends State<VendorDashboard> {
   ProfileData profileData = ProfileData();
 
   void restaurantData() {
-    FirebaseFirestore.instance
-        .collection("vendor_users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         log("fgdfgdgfdfg");
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
-        firebaseService.updateFirebaseToken();
         setState(() {});
       }
     });
   }
 
-
   @override
   void initState() {
     super.initState();
+    firebaseService.updateFirebaseToken();
     restaurantData();
   }
 
@@ -80,311 +76,64 @@ class _VendorDashboardState extends State<VendorDashboard> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: const Color(0xffF5F5F5),
-        drawer: Drawer(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          width: MediaQuery.sizeOf(context).width * .70,
-          child: profileData != null?
-          ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              SizedBox(
-                height: 230,
-                child: DrawerHeader(
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                      colors: [
-                        AppTheme.primaryColor,
-                        AppTheme.primaryColor,
-                      ],
-                    )),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(4),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            decoration: const ShapeDecoration(
-                              shape: CircleBorder(),
-                              color: Colors.white,
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl:profileData.image.toString(),
-                              height: screenSize.height * 0.12,
-                              width: screenSize.height * 0.12,
-                              errorWidget: (_, __, ___) => const SizedBox(),
-                              placeholder: (_, __) => const SizedBox(),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Text(profileData.restaurantName ?? "",
-                              style: GoogleFonts.poppins(
-                                fontSize: 15,
-                                color: const Color(0xFFFFFFFF),
-                                fontWeight: FontWeight.w600,
-                              )),
-                          Expanded(
-                            child: Text(profileData.email ?? "",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  color: const Color(0xFFFFFFFF),
-                                  fontWeight: FontWeight.w400,
-                                )),
-                          ),
-                        ],
-                      ),
-                    )),
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.dashboard),
-                title: Text('Dashboard',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 0;
-                    Get.back();
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.restaurant_menu_sharp),
-                title: Text('Menu',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 1;
-                    Get.to(()=> MenuScreen(back: '',));
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.countertops_outlined),
-
-                title: Text('Promo Code List',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 3;
-                    Get.to(const PromoCodeList());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.line_style),
-                title: Text('Slot List',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 4;
-                    Get.to(const SlotListScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.monetization_on),
-                title: Text('Total Earning',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 6;
-                    Get.to(const TotalEarningScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.access_time),
-                title: Text('Set Store Time',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 7;
-                    Get.to( const SetTimeScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.food_bank),
-                title: Text('Bank Details',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () async {
-                  Get.to(const BankDetailsScreen());
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.settings),
-                title: Text('Setting',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 5;
-                    Get.to(const SettingScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.settings),
-                title: Text('FeedBack',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () {
-                  setState(() {
-                    currentDrawer = 5;
-                    Get.to(const ReviewScreen());
-                  });
-                },
-              ),
-              const Divider(
-                height: 5,
-                color: Color(0xffEFEFEF),
-                thickness: 1,
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.logout),
-                title: Text('Log Out',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: const Color(0xFF4F535E),
-                      fontWeight: FontWeight.w400,
-                    )),
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Get.offAll(const LoginScreen());
-                },
-              ),
-              const SizedBox(height: 100,),
-            ],
-          ):SizedBox(),
-        ),
         appBar: AppBar(
-           // toolbarHeight: 80,
+          // toolbarHeight: 80,
           elevation: 0,
           leadingWidth: 45,
           automaticallyImplyLeading: false,
           //backgroundColor: const Color(0xffF5F5F5),
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "Hi, ${profileData.restaurantName}",
-                style: GoogleFonts.ibmPlexSansArabic(
-                    fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
-              ),
               GestureDetector(
-                onTap: () {
-                  Get.to( const SetTimeScreen());
-                },
-                child: Row(
+                  onTap: () {
+                    bottomController.scaffoldKey.currentState!.openDrawer();
+                  },
+                  child: const Icon(Icons.menu, color: Color(0xff292F45))),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Restaurant Time:",
+                      "Hi, ${profileData.restaurantName}",
                       style: GoogleFonts.ibmPlexSansArabic(
-                          fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
+                          fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
                     ),
-                    Flexible(child: RestaurantTimingScreen(docId:profileData.docid.toString())),
-                    SizedBox(
-                      width: AddSize.size5,
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        User? currentUser = FirebaseAuth.instance.currentUser;
-                        RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser!.uid);
-                        log(thisUserModel.toString());
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(const SetTimeScreen());
                       },
-                      child: Icon(
-                        Icons.edit,
-                        color: AppTheme.primaryColor,
-                        size: AddSize.size15,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Restaurant Time:",
+                            style: GoogleFonts.ibmPlexSansArabic(
+                                fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
+                          ),
+                          Flexible(child: RestaurantTimingScreen(docId: profileData.docid.toString())),
+                          SizedBox(
+                            width: AddSize.size5,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              User? currentUser = FirebaseAuth.instance.currentUser;
+                              RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser!.uid);
+                              log(thisUserModel.toString());
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              color: AppTheme.primaryColor,
+                              size: AddSize.size15,
+                            ),
+                          )
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -406,15 +155,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           height: 45,
                           width: 45,
                           child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white,width: 2),
-                                shape: BoxShape.circle
-                            ),
+                            decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
-                                imageUrl:profileData.image.toString(),
+                                imageUrl: profileData.image.toString(),
                                 errorWidget: (_, __, ___) => const Icon(Icons.person),
                                 placeholder: (_, __) => const SizedBox(),
                               ),
@@ -444,9 +190,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
           ],
         ),
         body: Theme(
-          data: ThemeData(
-            useMaterial3: true
-          ),
+          data: ThemeData(useMaterial3: true),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AddSize.padding16,
@@ -484,10 +228,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                             Text(
                               "20",
                               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  height: 1.5,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: AddSize.font20,
-                                  color: AppTheme.blackcolor),
+                                  height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -512,10 +253,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                     "10%",
                                     //"10%",
                                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                        height: 1.5,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font12,
-                                        color: Colors.green),
+                                        height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
                                   ),
                                 ),
                               ],
