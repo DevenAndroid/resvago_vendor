@@ -87,7 +87,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
           "endDate": endDateController.text,
         }).then((value) {
           Get.back();
-          Fluttertoast.showToast(msg: 'Code is Updated');
+          Fluttertoast.showToast(msg: 'Code is Updated'.tr);
         });
       } else {
         firebaseService
@@ -100,7 +100,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                 endDate: endDateController.text.trim())
             .then((value) {
           Get.back();
-          Fluttertoast.showToast(msg: 'Code is created');
+          Fluttertoast.showToast(msg: 'Code is created'.tr);
         });
       }
     } catch (e) {
@@ -128,7 +128,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: backAppBar(
-          title: widget.isEditMode == true?"Update promo code":"Create promo code",
+          title: widget.isEditMode == true?"Update promo code".tr :"Create promo code".tr,
           context: context,
           backgroundColor: Colors.white),
       body: SingleChildScrollView(
@@ -153,7 +153,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Promo Code Name",
+                        "Promo Code Name".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -165,14 +165,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                       RegisterTextFieldWidget(
                         controller: promocodenameController,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Promo Code Name '),
-                        hint: 'Sunday Code',
+                            errorText: 'Please enter your Promo Code Name '.tr),
+                        hint: 'Sunday Code'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Code",
+                        "Code".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -184,14 +184,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                       RegisterTextFieldWidget(
                         controller: codeController,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Code '),
-                        hint: 'Happy sunday',
+                            errorText: 'Please enter your Code '.tr),
+                        hint: 'Happy sunday'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Discount",
+                        "Discount".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -204,14 +204,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         controller: discountController,
                         keyboardType: TextInputType.number,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Discount '),
+                            errorText: 'Please enter your Discount '.tr),
                         hint: '%',
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Max Discount",
+                        "Max Discount".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -224,14 +224,14 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         controller: maxDiscountController,
                         keyboardType: TextInputType.number,
                         validator: RequiredValidator(
-                            errorText: 'Please enter your Discount '),
-                        hint: '100',
+                            errorText: 'Please enter your Discount '.tr),
+                        hint: '100'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Start Date",
+                        "Start Date".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -254,16 +254,16 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                               lastDate: selectedEndDateTIme);
                         },
                         validator: RequiredValidator(
-                            errorText: 'Please enter start Date '),
+                            errorText: 'Please enter start Date '.tr),
                         hint: startDateController.text.isEmpty
-                            ? 'Select Start Date'
+                            ? 'Select Start Date'.tr
                             : startDateController.text,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "End Date",
+                        "End Date".tr,
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.w500,
@@ -287,9 +287,9 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                               firstDate: selectedStartDateTime);
                         },
                         validator: RequiredValidator(
-                            errorText: 'Please enter end Date '),
+                            errorText: 'Please enter end Date '.tr),
                         hint: endDateController.text.isEmpty
-                            ? 'Select End Date'
+                            ? 'Select End Date'.tr
                             : endDateController.text,
                       ),
                       const SizedBox(
@@ -305,7 +305,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                             setState(() {});
                           }
                         },
-                        title: widget.isEditMode == true?"UPDATE COUPON":'CREATE COUPON',
+                        title: widget.isEditMode == true?"UPDATE COUPON".tr :'CREATE COUPON'.tr,
                       ),
                       const SizedBox(
                         height: 20,

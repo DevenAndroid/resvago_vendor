@@ -63,7 +63,7 @@ class _OderListScreenState extends State<OderListScreen> {
                           width: 20,
                         ),
                         Text(
-                          "Oder List",
+                          "Oder List".tr,
                           style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
                         ),
                       ],
@@ -91,7 +91,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 28),
                               ),
                               Text(
-                                "Your earning this month",
+                                "Your earning this month".tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12),
                               ),
                             ],
@@ -106,7 +106,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             ),
                             onPressed: () {},
                             child: Text(
-                              "Withdrawal",
+                              "Withdrawal".tr,
                               style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                           )
@@ -140,8 +140,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                       onTap: () {
                                         dropDownValue1.value = 'No';
                                       },
-                                      child: const Text('No',
-                                          style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                      child:  Text('No'.tr,
+                                          style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
                                 )),
@@ -154,8 +154,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                           dropDownValue1.value = 'Yes';
                                         });
                                       },
-                                      child: const Text('Yes',
-                                          style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                      child:  Text('Yes'.tr,
+                                          style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
                                 )),
@@ -218,8 +218,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                       dropDownValue2.value = 'False';
                                       Get.back();
                                     },
-                                    child: const Text('False',
-                                        style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                    child:  Text('False'.tr,
+                                        style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                   ),
                                 ],
                               )),
@@ -233,8 +233,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         Get.back();
                                       });
                                     },
-                                    child: const Text('True',
-                                        style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                    child:  Text('True'.tr,
+                                        style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                   ),
                                 ],
                               )),
@@ -288,7 +288,7 @@ class _OderListScreenState extends State<OderListScreen> {
                       ),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: "Search",
+                          hintText: "Search".tr,
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.only(left: 10),
                           focusColor: Colors.white,
@@ -310,12 +310,12 @@ class _OderListScreenState extends State<OderListScreen> {
                   ]),
                 ),
               ),
-              const TabBar(labelColor: Color(0xFF454B5C), indicatorColor: Color(0xFF3B5998), indicatorWeight: 4, tabs: [
+               TabBar(labelColor: const Color(0xFF454B5C), indicatorColor: const Color(0xFF3B5998), indicatorWeight: 4, tabs: [
                 Tab(
-                  text: "Dining Orders",
+                  text: "Dining Orders".tr,
                 ),
                 Tab(
-                  text: "Delivery Orders",
+                  text: "Delivery Orders".tr,
                 ),
               ]),
               Expanded(
@@ -329,7 +329,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Order No.",
+                                "Order No.".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
@@ -337,12 +337,12 @@ class _OderListScreenState extends State<OderListScreen> {
                                 width: 1,
                               ),
                               Text(
-                                "Status",
+                                "Status".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
                               Text(
-                                "Earning",
+                                "Earning".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
@@ -430,8 +430,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                             ),
                                           );
                                         })
-                                    : const Center(
-                                        child: Text("No User Found"),
+                                    :  Center(
+                                        child: Text("No User Found".tr),
                                       );
                               }
                               return const CircularProgressIndicator();
@@ -450,7 +450,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Order No.",
+                                "Order No.".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
@@ -458,12 +458,12 @@ class _OderListScreenState extends State<OderListScreen> {
                                 width: 1,
                               ),
                               Text(
-                                "Status",
+                                "Status".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
                               Text(
-                                "Earning",
+                                "Earning".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
@@ -550,8 +550,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                             ),
                                           );
                                         })
-                                    : const Center(
-                                        child: Text("No User Found"),
+                                    :  Center(
+                                        child: Text("No User Found".tr),
                                       );
                               }
                               return const CircularProgressIndicator();

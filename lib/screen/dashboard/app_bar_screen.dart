@@ -50,7 +50,7 @@ class _AppBarScreenState extends State<AppBarScreen> {
         children: [
           // const SizedBox(height: 10,),
           Text(
-            "Hi, Demo",
+            "Hi, Demo".tr,
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 20, color: const Color(0xff292F45)),
           ),
           const SizedBox(

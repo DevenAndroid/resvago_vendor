@@ -152,7 +152,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
     }
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: backAppBar(title: "Set Store Time", context: context, backgroundColor: Colors.white),
+        appBar: backAppBar(title: "Set Store Time".tr, context: context, backgroundColor: Colors.white),
         body: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 10),
@@ -233,7 +233,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                             ),
                             Expanded(
                               child: Text(
-                                "To",
+                                "To".tr,
                                 style:
                                     GoogleFonts.poppins(color: Colors.grey.shade900, fontSize: 14, fontWeight: FontWeight.w400),
                               ),
@@ -395,7 +395,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
@@ -418,11 +418,11 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Text(
-                    "Continue".toUpperCase(),
+                    "Continue".toUpperCase().tr,
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                 )),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
           ],

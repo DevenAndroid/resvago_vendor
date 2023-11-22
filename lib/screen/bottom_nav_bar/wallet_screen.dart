@@ -37,7 +37,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         Column(
                           children: [
                             Text(
-                              "My Balance",
+                              "My Balance".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w400, fontSize: 16),
                             ),
@@ -90,7 +90,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           height: 25,
                         ),
                         CommonButtonBlue(
-                          title: "Withdrawal",
+                          title: "Withdrawal".tr,
                           onPressed: () {
                             Get.toNamed(MyRouters.bankDetailsScreen);
                           },
@@ -108,16 +108,16 @@ class _WalletScreenState extends State<WalletScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Amount",
+                          "Amount".tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         // const SizedBox(width: 0,),
                         Text(
-                          "Date",
+                          "Date".tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         Text(
-                          "Status",
+                          "Status".tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                       ],
@@ -151,7 +151,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                         color: const Color(0xFF8C9BB2), fontWeight: FontWeight.w500, fontSize: 11),
                                   ),
                                   Text(
-                                    "Processing",
+                                    "Processing".tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFFFFB26B), fontWeight: FontWeight.w600, fontSize: 12),
                                   ),

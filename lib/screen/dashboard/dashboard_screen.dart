@@ -98,7 +98,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hi, ${profileData.restaurantName}",
+                      "${'Hi'.tr}, ${profileData.restaurantName}",
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
                     ),
@@ -111,7 +111,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Restaurant Time:",
+                            "Restaurant Time:".tr,
                             style: GoogleFonts.ibmPlexSansArabic(
                                 fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                           ),
@@ -235,12 +235,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               children: [
                                 Text(
                                   index == 0
-                                      ? "Gross Sales"
+                                      ? "Gross Sales".tr
                                       : index == 1
-                                          ? "Earning"
+                                          ? "Earning".tr
                                           : index == 2
-                                              ? "Sold items"
-                                              : "Order Received",
+                                              ? "Sold items".tr
+                                              : "Order Received".tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -369,7 +369,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                             ),
                                             Flexible(child: Container()),
                                             Text(
-                                              "Pending",
+                                              "Pending".tr,
                                               style: GoogleFonts.ibmPlexSansArabic(
                                                   height: 1.5,
                                                   fontWeight: FontWeight.w500,

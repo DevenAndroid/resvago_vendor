@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/dining_order_modal.dart';
@@ -60,7 +61,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
   Widget build(BuildContext context) {
     widget.myDiningOrderModel.fcmToken;
     return Scaffold(
-      appBar: backAppBar(title: "Orders Details", context: context),
+      appBar: backAppBar(title: "Orders Details".tr, context: context),
       body: SingleChildScrollView(
         child: Column(
           children: [

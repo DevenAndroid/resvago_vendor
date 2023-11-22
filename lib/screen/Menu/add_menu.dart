@@ -148,7 +148,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(title: "Add Menu", context: context, backgroundColor: Colors.white),
+      appBar: backAppBar(title: "Add Menu".tr, context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -171,7 +171,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Dish Name",
+                        "Dish Name".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -179,14 +179,14 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       RegisterTextFieldWidget(
                         controller: dishNameController,
-                        validator: RequiredValidator(errorText: 'Please enter your menu name ').call,
-                        hint: 'Meat Pasta',
+                        validator: RequiredValidator(errorText: 'Please enter your menu name '.tr).call,
+                        hint: 'Meat Pasta'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Category",
+                        "Category".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -251,7 +251,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         },
                         validator: (value) {
                           if (categoryValue == null) {
-                            return 'Please select category';
+                            return 'Please select category'.tr;
                           }
                           return null;
                         },
@@ -260,7 +260,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Price",
+                        "Price".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -269,7 +269,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: priceController,
                         validator: MultiValidator([
-                          RequiredValidator(errorText: 'Please enter price'),
+                          RequiredValidator(errorText: 'Please enter price'.tr),
                         ]).call,
                         keyboardType: TextInputType.number,
                         hint: '\$0.00',
@@ -278,7 +278,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Discount",
+                        "Discount".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -295,7 +295,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Menu Description",
+                        "Menu Description".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -303,15 +303,15 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       RegisterTextFieldWidget(
                         controller: descriptionController,
-                        validator: RequiredValidator(errorText: 'Please enter menu description ').call,
+                        validator: RequiredValidator(errorText: 'Please enter menu description '.tr).call,
                         keyboardType: TextInputType.streetAddress,
-                        hint: 'Menu Description',
+                        hint: 'Menu Description'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Upload images",
+                        "Upload images".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -364,9 +364,9 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                       const SizedBox(
                                         height: 5,
                                       ),
-                                      const Text(
-                                        'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
+                                       Text(
+                                        'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
+                                        style: const TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(
@@ -401,7 +401,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                          const Text('Delivery',
+                           Text('Delivery'.tr,
                               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
@@ -426,7 +426,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                          const Text('Dining', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                           Text('Dining'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -439,14 +439,14 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                               if (categoryFile.path != "") {
                                 checkMenuInFirestore();
                               } else {
-                                Fluttertoast.showToast(msg: 'Please select image');
+                                Fluttertoast.showToast(msg: 'Please select image'.tr);
                               }
                             } else {
-                              Fluttertoast.showToast(msg: 'Please select booking type');
+                              Fluttertoast.showToast(msg: 'Please select booking type'.tr);
                             }
                           }
                         },
-                        title: 'Save',
+                        title: 'Save'.tr,
                       ),
                       const SizedBox(
                         height: 20,
@@ -466,8 +466,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -485,13 +485,13 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                   ],
                   uiSettings: [
                     AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
+                        toolbarTitle: 'Cropper'.tr,
                         toolbarColor: Colors.deepOrange,
                         toolbarWidgetColor: Colors.white,
                         initAspectRatio: CropAspectRatioPreset.original,
                         lockAspectRatio: false),
                     IOSUiSettings(
-                      title: 'Cropper',
+                      title: 'Cropper'.tr,
                     ),
                     WebUiSettings(
                       context: context,
@@ -506,7 +506,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child:  Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -522,13 +522,13 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                   ],
                   uiSettings: [
                     AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
+                        toolbarTitle: 'Cropper'.tr,
                         toolbarColor: Colors.deepOrange,
                         toolbarWidgetColor: Colors.white,
                         initAspectRatio: CropAspectRatioPreset.original,
                         lockAspectRatio: false),
                     IOSUiSettings(
-                      title: 'Cropper',
+                      title: 'Cropper'.tr,
                     ),
                     WebUiSettings(
                       context: context,
@@ -543,14 +543,14 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child:  Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child:  Text('Cancel'.tr),
           ),
         ],
       ),

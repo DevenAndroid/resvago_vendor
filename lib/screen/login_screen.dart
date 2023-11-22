@@ -56,12 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
           otpLength: 4,
           otpType: OTPType.digitsOnly);
       if (await myauth.sendOTP() == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OTP has been sent"),
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Text("OTP has been sent".tr),
         ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Oops, OTP send failed"),
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Text("Oops, OTP send failed".tr),
         ));
       }
       setState(() {
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       return;
     } else {
-      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
+      Fluttertoast.showToast(msg: 'Email not register yet Please Signup'.tr);
     }
   }
 
@@ -83,9 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
       Map kk = result.docs.first.data() as Map;
       login(kk["email"].toString());
     } else if (loginController.mobileController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Please enter phone number');
+      Fluttertoast.showToast(msg: 'Please enter phone number'.tr);
     } else {
-      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
+      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup'.tr);
     }
   }
 
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'WELCOME ',
+                              'WELCOME '.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Login your account.',
+                              'Login your account.'.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 13,
@@ -176,9 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text(
-                                "Login With Mobile Number",
-                                style: TextStyle(color: Colors.white),
+                               Text(
+                                "Login With Mobile Number".tr,
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ],
                           ),
@@ -194,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
+                               Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Enter Mobile Number',
+                                    'Enter Mobile Number'.tr,
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -219,11 +219,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: loginController.mobileController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your phone number'),
+                                      RequiredValidator(errorText: 'Please enter your phone number'.tr),
                                     ]).call,
                                     dropdownTextStyle: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
-                                      hintText: 'Enter your Mobile number',
+                                      hintText: 'Enter your Mobile number'.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       enabled: true,
@@ -266,17 +266,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: emailController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your email'),
-                                      EmailValidator(errorText: 'Enter a valid email address'),
+                                      RequiredValidator(errorText: 'Please enter your email'.tr),
+                                      EmailValidator(errorText: 'Enter a valid email address'.tr),
                                     ]).call,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Email',
+                                      hintText: 'Enter Email'.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       suffix: GestureDetector(
                                         onTap: () async {
                                           checkEmailInFirestore();
                                         },
-                                        child: const Text('send'),
+                                        child:  Text('send'.tr),
                                       ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -306,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller: passwordController,
                                       decoration: InputDecoration(
                                         filled: true,
-                                        hintText: 'Enter Otp',
+                                        hintText: 'Enter Otp'.tr,
                                         hintStyle: const TextStyle(color: Colors.white),
                                         fillColor: Colors.white.withOpacity(.10),
                                         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
@@ -329,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller: otpController,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
-                                        hintText: 'Enter Otp',
+                                        hintText: 'Enter Otp'.tr,
                                         hintStyle: const TextStyle(color: Colors.white),
                                         filled: true,
                                         fillColor: Colors.white.withOpacity(.10),
@@ -360,8 +360,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("OTP is verified"),
+                                              ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                                content: Text("OTP is verified".tr),
                                               ));
                                               FirebaseAuth.instance
                                                   .signInWithEmailAndPassword(
@@ -372,13 +372,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 Get.offAllNamed(MyRouters.bottomNavbar);
                                               });
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("Invalid OTP"),
+                                              ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                                content: Text("Invalid OTP".tr),
                                               ));
                                             }
                                           }
                                         },
-                                        title: 'Login',
+                                        title: 'Login'.tr,
                                       )
                                     : CommonButton(
                                         onPressed: () async {
@@ -386,20 +386,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                             checkPhoneNumberInFirestore();
                                           }
                                         },
-                                        title: 'Login',
+                                        title: 'Login'.tr,
                                       ),
                                 const SizedBox(
                                   height: 20,
                                 ),
                                 Text(
-                                  'Customer Booking?',
+                                  'Customer Booking?'.tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
-                                  'Signup as a customer',
+                                  'Signup as a customer'.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
@@ -417,8 +417,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     //SizedBox(width: 10,),
-                                    const Text('Or Login with',
-                                        style: TextStyle(
+                                     Text('Or Login with'.tr,
+                                        style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
@@ -457,7 +457,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'Facebook',
+                                            'Facebook'.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                           )
@@ -484,7 +484,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               width: 10,
                                             ),
                                             Text(
-                                              'Google',
+                                              'Google'.tr,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
@@ -501,7 +501,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Don't Have an Account?",
+                                      "Don't Have an Account?".tr,
                                       style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     InkWell(
@@ -509,7 +509,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Get.toNamed(MyRouters.signUpScreen);
                                       },
                                       child: Text(
-                                        ' Signup',
+                                        ' Signup'.tr,
                                         style: GoogleFonts.poppins(
                                             color: const Color(0xFF1877F2), fontWeight: FontWeight.w600, fontSize: 14),
                                       ),

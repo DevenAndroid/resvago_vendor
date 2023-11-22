@@ -73,7 +73,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
-        appBar: backAppBar(title: "Create Slot", context: context, backgroundColor: Colors.white),
+        appBar: backAppBar(title: "Create Slot".tr, context: context, backgroundColor: Colors.white),
         body: Theme(
           data: ThemeData(useMaterial3: true),
           child: SingleChildScrollView(
@@ -83,8 +83,8 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                     const SizedBox(
                       height: 8,
                     ),
-                    BookableUI(title: "Lunch",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
-                    BookableUI(title: "Dinner",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
+                    BookableUI(title: "Lunch".tr,slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
+                    BookableUI(title: "Dinner".tr,slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
                     const SizedBox(
                       height: 30,
                     ),
@@ -101,7 +101,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                             }
                           }
                         },
-                        title: 'Create Slot'.toUpperCase(),
+                        title: 'Create Slot'.toUpperCase().tr,
                       ),
                     ),
                   ]))),

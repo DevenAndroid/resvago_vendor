@@ -171,7 +171,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 13),
                                           ),
                                           Text(
-                                            "Total Guest : ${item.noOfGuest}",
+                                            "${'Total Guest'.tr} : ${item.noOfGuest}",
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 13),
                                           ),
@@ -216,22 +216,22 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 // ));
                                               },
                                               // value: '/Edit',
-                                              child: const Text("Edit"),
+                                              child:  Text("Edit".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
                                                 Get.to(() => SlotViewScreen(slotDataList: item));
                                               },
                                               // value: '/slotViewScreen',
-                                              child: const Text("View"),
+                                              child:  Text("View".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
                                                 showDialog(
                                                   context: context,
                                                   builder: (ctx) => AlertDialog(
-                                                    title: const Text("Delete Slot"),
-                                                    content: const Text("Are you sure you want to delete this slot"),
+                                                    title:  Text("Delete Slot".tr),
+                                                    content:  Text("Are you sure you want to delete this slot".tr),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () {
@@ -242,10 +242,10 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                               color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                           width: 100,
                                                           padding: const EdgeInsets.all(14),
-                                                          child: const Center(
+                                                          child:  Center(
                                                               child: Text(
-                                                            "Cancel",
-                                                            style: TextStyle(color: Colors.white),
+                                                            "Cancel".tr,
+                                                            style: const TextStyle(color: Colors.white),
                                                           )),
                                                         ),
                                                       ),
@@ -266,10 +266,10 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                               color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                           width: 100,
                                                           padding: const EdgeInsets.all(14),
-                                                          child: const Center(
+                                                          child:  Center(
                                                               child: Text(
-                                                            "okay",
-                                                            style: TextStyle(color: Colors.white),
+                                                            "okay".tr,
+                                                            style: const TextStyle(color: Colors.white),
                                                           )),
                                                         ),
                                                       ),
@@ -279,17 +279,17 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 setState(() {});
                                               },
                                               // value: '/deactivate',
-                                              child: const Text("Delete"),
+                                              child:  Text("Delete".tr),
                                             )
                                           ];
                                         })
                                   ]));
                         })
-                    : const Center(
-                        child: Text("Slots are not created yet"),
+                    :  Center(
+                        child: Text("Slots are not created yet".tr),
                       )
-                : const Center(
-                    child: Text("Slots are not created yet"),
+                :  Center(
+                    child: Text("Slots are not created yet".tr),
                   ),
           )
         ]),
