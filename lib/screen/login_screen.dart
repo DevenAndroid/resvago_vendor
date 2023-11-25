@@ -11,12 +11,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
-import 'package:resvago_vendor/emailOtpScreen.dart';
 import 'package:resvago_vendor/routers/routers.dart';
-import 'package:resvago_vendor/screen/bottom_nav_bar/bottomnav_bar.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../helper.dart';
-import '../widget/common_text_field.dart';
 import '../widget/custom_textfield.dart';
 import 'otp_screen.dart';
 
@@ -50,25 +48,28 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      myauth.setConfig(
-          appEmail: "contact@hdevcoder.com",
-          appName: "Email OTP",
-          userEmail: emailController.text,
-          otpLength: 4,
-          otpType: OTPType.digitsOnly);
-      if (await myauth.sendOTP() == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OTP has been sent"),
-        ));
+      print(result.docs.first.data());
+      Map kk = result.docs.first.data() as Map;
+      print(kk["email"]);
+      if (kk["deactivate"] == false) {
+        myauth.setConfig(
+            appEmail: "contact@hdevcoder.com",
+            appName: "Email OTP",
+            userEmail: emailController.text,
+            otpLength: 6,
+            otpType: OTPType.digitsOnly);
+        if (await myauth.sendOTP() == true) {
+          showToast("OTP has been sent");
+        } else {
+          showToast("Oops, OTP send failed");
+        }
+        setState(() {
+          showOtpField = true;
+        });
+        return;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Oops, OTP send failed"),
-        ));
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
       }
-      setState(() {
-        showOtpField = true;
-      });
-      return;
     } else {
       Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
     }
@@ -86,7 +87,11 @@ class _LoginScreenState extends State<LoginScreen> {
     log(result.docs.toString());
     if (result.docs.isNotEmpty) {
       Map kk = result.docs.first.data() as Map;
-      login(kk["email"].toString());
+      if (kk["deactivate"] == true) {
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+      } else {
+        login(kk["email"].toString());
+      }
     } else {
       Fluttertoast.showToast(msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
     }
@@ -123,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Helper.hideLoader(loader);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -354,16 +358,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 loginOption == LoginOption.EmailPassword
                                     ? CommonButton(
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("OTP is verified"),
-                                              ));
+                                              showToast("OTP is verified");
                                               FirebaseAuth.instance
                                                   .signInWithEmailAndPassword(
                                                 email: emailController.text.trim(),
@@ -373,9 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 Get.offAllNamed(MyRouters.bottomNavbar);
                                               });
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                content: Text("Invalid OTP"),
-                                              ));
+                                              showToast("Invalid OTP");
                                             }
                                           }
                                         },
@@ -440,35 +440,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      width: 152,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(.10),
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: Colors.white.withOpacity(.35))),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            AppAssets.facebook,
-                                            height: 25,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Facebook',
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {},
+                                    Expanded(
                                       child: Container(
-                                        width: 152,
                                         height: 60,
                                         decoration: BoxDecoration(
                                             color: Colors.white.withOpacity(.10),
@@ -478,18 +451,50 @@ class _LoginScreenState extends State<LoginScreen> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Image.asset(
-                                              AppAssets.google,
+                                              AppAssets.facebook,
                                               height: 25,
                                             ),
                                             const SizedBox(
                                               width: 10,
                                             ),
                                             Text(
-                                              'Google',
+                                              'Facebook',
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
                                           ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white.withOpacity(.10),
+                                              borderRadius: BorderRadius.circular(10),
+                                              border: Border.all(color: Colors.white.withOpacity(.35))),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                AppAssets.google,
+                                                height: 25,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Google',
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -522,6 +527,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         ]),
                   ),
-                ))));
+                )).appPaddingForScreen));
   }
 }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/slot_controller.dart';
 import '../../helper.dart';
@@ -42,13 +43,12 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
     try {
       await firebaseService
           .manageSlot(
-        setOffer: slotController.setOffer.text,
+              setOffer: slotController.setOffer.text,
               seats: slotController.noOfGuest.text,
               startDate: slotController.selectedStartDateTime!,
               endDate: slotController.selectedEndDateTIme,
               eveningSlots: slotController.dinnerTimeslots,
-              morningSlots: slotController.timeslots
-      )
+              morningSlots: slotController.timeslots)
           .then((value) {
         Get.back();
         widget.refreshValues();
@@ -83,8 +83,8 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                     const SizedBox(
                       height: 8,
                     ),
-                    BookableUI(title: "Lunch",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
-                    BookableUI(title: "Dinner",slotsDate: widget.slotsDate,slotDataList: widget.slotDataList),
+                    BookableUI(title: "Lunch", slotsDate: widget.slotsDate, slotDataList: widget.slotDataList),
+                    BookableUI(title: "Dinner", slotsDate: widget.slotsDate, slotDataList: widget.slotDataList),
                     const SizedBox(
                       height: 30,
                     ),
@@ -104,8 +104,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                         title: 'Create Slot'.toUpperCase(),
                       ),
                     ),
-                  ]))),
-        )
-    );
+                  ]).appPaddingForScreen)),
+        ));
   }
 }

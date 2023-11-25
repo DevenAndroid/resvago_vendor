@@ -19,6 +19,7 @@ class ProfileData {
   dynamic setDelivery;
   dynamic cancellation;
   dynamic menuSelection;
+  dynamic deactivate;
 
   ProfileData(
       {
@@ -42,6 +43,7 @@ class ProfileData {
         this.menuSelection,
         this.latitude,
         this.longitude,
+        this.deactivate,
 
       });
 
@@ -66,6 +68,7 @@ class ProfileData {
     aboutUs = json['aboutUs'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    deactivate = json['deactivate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -90,6 +93,7 @@ class ProfileData {
     data['menuSelection'] = menuSelection;
     data['latitude'] = latitude;
     data['longitude'] = longitude;
+    data['deactivate'] = deactivate;
     return data;
   }
 }

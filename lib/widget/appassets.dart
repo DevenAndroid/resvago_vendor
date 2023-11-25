@@ -1,5 +1,6 @@
 class AppAssets {
   static const String splash = "assets/images/splash.png";
+  static const String splash2 = "assets/images/Splash_image.png";
   static const String Resvago = "assets/images/Resvago.png";
   static const String gallery = "assets/images/gallery.png";
   static const String thankYou = "assets/images/thankyou.png";

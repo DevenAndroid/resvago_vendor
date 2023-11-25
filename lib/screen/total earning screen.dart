@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 
@@ -242,7 +243,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                       ));
                 })
           ],
-        ),
+        ).appPaddingForScreen,
       ),
     );
   }

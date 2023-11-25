@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/edit_controller.dart';
@@ -106,7 +107,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                         title: 'Update Slot'.toUpperCase(),
                       ),
                     ),
-                  ]))),
+                  ]).appPaddingForScreen)),
         ) : const Center(child: CircularProgressIndicator(),)
     );
   }

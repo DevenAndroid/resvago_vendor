@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
@@ -180,6 +181,74 @@ class NewHelper {
   }
 
 }
+
+
+extension CheckDesktop on BuildContext{
+
+  bool get isWebApp{
+    return MediaQuery.of(this).size.width > 450;
+  }
+
+
+  double get paddingWidth{
+    return (MediaQuery.of(this).size.width-700 )/ 2;
+
+  }
+
+}
+
+extension AddPaddingtoAll on Widget{
+
+  Widget get appPadding{
+    if(kIsWeb){
+      return Center(
+        child: SizedBox(
+          width: 700,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+  Widget get appPaddingForScreen{
+    if(kIsWeb){
+      return Center(
+        child: SizedBox(
+          width: 1200,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+  Widget addPadding(EdgeInsetsGeometry padding){
+    return Padding(padding: padding,child: this,);
+  }
+
+}
+
+extension AddPaddingTextField on Widget{
+
+  Widget get appPaddingTextField{
+    if(kIsWeb){
+      return Center(
+
+
+        child: SizedBox(
+          width:  560,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+}
+
+
+
 
 class Helpers {
   Helpers.of(BuildContext context) {

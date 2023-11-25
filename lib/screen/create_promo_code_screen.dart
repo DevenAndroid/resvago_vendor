@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/Promo_code_list.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
@@ -315,7 +316,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                 ),
               )
             ],
-          ),
+          ).appPaddingForScreen,
         ),
       ),
     );

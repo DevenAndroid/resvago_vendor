@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -19,6 +20,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -41,7 +43,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   File profileImage = File("");
   bool showValidation = false;
   bool showValidationImg = false;
-  final _formKeySignup = GlobalKey<FormState>();
   final registerController = Get.put(RegisterController());
   var obscureText4 = true;
   var obscureText3 = true;
@@ -97,20 +98,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Geoflutterfire? geo;
   Future<void> addUserToFirestore() async {
+    // formKey.currentState!.save();
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      String imageUrl = categoryFile.path;
+      // = categoryFile.path;
       geo = Geoflutterfire();
       GeoFirePoint geoFirePoint =
           geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref("categoryImages")
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
-          .putFile(categoryFile);
+      String imageUrlProfile = categoryFile.path;
+      if (!categoryFile.path.contains("http")) {
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
+            .child("profile_image")
+            .putFile(categoryFile);
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrlProfile = await snapshot.ref.getDownloadURL();
+      }
 
-      TaskSnapshot snapshot = await uploadTask;
-      imageUrl = await snapshot.ref.getDownloadURL();
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
       if (FirebaseAuth.instance.currentUser != null) {
         await firebaseService
@@ -123,7 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           latitude: latitude.toString(),
           longitude: longitude.toString(),
           password: "123456",
-          image: imageUrl,
+          image: imageUrlProfile,
           restaurant_position: geoFirePoint.data.toString(),
         )
             .then((value) {
@@ -169,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: backAppBar(title: "Restaurant Registration", context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
-          key: _formKeySignup,
+          key: formKey,
           child: Column(
             children: [
               const SizedBox(
@@ -460,9 +465,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       width: double.maxFinite,
                                       height: 180,
                                       alignment: Alignment.center,
-                                      child: Image.file(categoryFile,
-                                          errorBuilder: (_, __, ___) =>
-                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => const SizedBox())),
+                                      child: kIsWeb
+                                          ? Image.network(categoryFile.path)
+                                          : Image.file(categoryFile,
+                                              errorBuilder: (_, __, ___) => Image.network(categoryFile.path,
+                                                  errorBuilder: (_, __, ___) => const SizedBox())),
                                     ),
                                   ],
                                 )
@@ -558,7 +565,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (_formKeySignup.currentState!.validate() && categoryFile.path != "" && value == true) {
+                          if (formKey.currentState!.validate() && categoryFile.path != "" && value == true) {
                             checkEmailInFirestore();
                           } else {
                             showValidationImg = true;
@@ -576,7 +583,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               )
             ],
-          ),
+          ).appPaddingForScreen,
         ),
       ),
     );
@@ -594,35 +601,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
-
                 Get.back();
               });
             },
@@ -631,32 +637,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
                 Get.back();

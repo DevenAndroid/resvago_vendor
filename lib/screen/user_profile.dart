@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -82,6 +83,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String? categoryValue;
   dynamic latitude = "";
   dynamic longitude = "";
+  bool deactivated = false;
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       categoryList ??= [];
@@ -155,7 +157,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "menuSelection": menuSelection,
         "latitude": latitude,
         "longitude": longitude,
+        "deactivate":deactivated
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
+      fetchdata();
       Get.back();
       Helpers.hideLoader(loader);
     } catch (e) {
@@ -188,6 +192,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         menuSelection = (profileData.menuSelection);
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
+        deactivated = profileData.deactivate;
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
@@ -234,12 +239,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Stack(
                       children: [
                         Container(
-                            padding: const EdgeInsets.only(bottom: 50),
+                            width: kIsWeb ? 500 : size.width,
+                            padding: const EdgeInsets.only(bottom: 30),
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(border: Border.all(color: Colors.white)),
                             child: Image.asset('assets/images/Group.png')),
@@ -258,31 +264,46 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(10000),
                                       child: Container(
-                                        height: 100,
-                                        width: 100,
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xffFAAF40),
-                                          border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                          borderRadius: BorderRadius.circular(5000),
-                                          // color: Colors.brown
-                                        ),
-                                        child: Image.file(
-                                          categoryFile,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                            imageUrl: categoryFile.path,
-                                            height: AddSize.size30,
-                                            width: AddSize.size30,
-                                            errorWidget: (_, __, ___) => const Icon(
-                                              Icons.person,
-                                              size: 60,
-                                            ),
-                                            placeholder: (_, __) => const SizedBox(),
+                                          height: 100,
+                                          width: 100,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffFAAF40),
+                                            border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                            borderRadius: BorderRadius.circular(5000),
+                                            // color: Colors.brown
                                           ),
-                                        ),
-                                      ),
+                                          child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
+                                              ? Image.network(
+                                                  categoryFile.path,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: categoryFile.path,
+                                                    height: AddSize.size30,
+                                                    width: AddSize.size30,
+                                                    errorWidget: (_, __, ___) => const Icon(
+                                                      Icons.person,
+                                                      size: 60,
+                                                    ),
+                                                    placeholder: (_, __) => const SizedBox(),
+                                                  ),
+                                                )
+                                              : Image.memory(
+                                                  categoryFile.readAsBytesSync(),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: categoryFile.path,
+                                                    height: AddSize.size30,
+                                                    width: AddSize.size30,
+                                                    errorWidget: (_, __, ___) => const Icon(
+                                                      Icons.person,
+                                                      size: 60,
+                                                    ),
+                                                    placeholder: (_, __) => const SizedBox(),
+                                                  ),
+                                                )),
                                     ),
                                     Positioned(
                                       bottom: 0,
@@ -580,7 +601,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               )
             ],
-          ),
+          ).appPaddingForScreen,
         ),
       ),
     );
@@ -598,32 +619,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
 
@@ -635,32 +656,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
 

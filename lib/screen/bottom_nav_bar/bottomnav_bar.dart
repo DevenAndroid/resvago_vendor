@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/wallet_screen.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../../Setting screen.dart';
 import '../../controllers/bottomnavbar_controller.dart';
@@ -48,6 +50,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
       }
     });
   }
+
   final pages = [
     const VendorDashboard(),
     MenuScreen(
@@ -71,7 +74,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
         key: bottomController.scaffoldKey,
         drawer: Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          width: MediaQuery.sizeOf(context).width * .70,
+          width: kIsWeb ? 300 : MediaQuery.sizeOf(context).width * .70,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -80,31 +83,40 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 child: DrawerHeader(
                     decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            AppTheme.primaryColor,
-                            AppTheme.primaryColor,
-                          ],
-                        )),
+                      colors: [
+                        AppTheme.primaryColor,
+                        AppTheme.primaryColor,
+                      ],
+                    )),
                     child: Align(
                       alignment: Alignment.center,
                       child: Column(
                         children: [
                           Container(
-                            margin: const EdgeInsets.all(4),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            decoration: const ShapeDecoration(
-                              shape: CircleBorder(),
-                              color: Colors.white,
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: profileData.image.toString(),
-                              height: screenSize.height * 0.12,
-                              width: screenSize.height * 0.12,
-                              errorWidget: (_, __, ___) => const SizedBox(),
-                              placeholder: (_, __) => const SizedBox(),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                              margin: const EdgeInsets.all(4),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              decoration: const ShapeDecoration(
+                                shape: CircleBorder(),
+                                color: Colors.white,
+                              ),
+                              child: Image.network(
+                                profileData.image.toString(),
+                                fit: BoxFit.cover,
+                                height: screenSize.height * 0.12,
+                                width: screenSize.height * 0.12,
+                                errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: profileData.image.toString(),
+                                  height: screenSize.height * 0.12,
+                                  width: screenSize.height * 0.12,
+                                  errorWidget: (_, __, ___) => const Icon(
+                                    Icons.person,
+                                    size: 20,
+                                    color: Colors.black,
+                                  ),
+                                  placeholder: (_, __) => const SizedBox(),
+                                ),
+                              )),
                           Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
@@ -157,8 +169,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
                   setState(() {
                     currentDrawer = 1;
                     Get.to(() => MenuScreen(
-                      back: '',
-                    ));
+                          back: '',
+                        ));
                   });
                 },
               ),
@@ -502,7 +514,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                     ),
                   ),
                 ],
-              ),
+              ).appPaddingForScreen,
             ],
           ),
         ),

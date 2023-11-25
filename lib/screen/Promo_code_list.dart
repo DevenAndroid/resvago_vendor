@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import '../model/coupon_model.dart';
 import '../widget/addsize.dart';
 import '../widget/custom_textfield.dart';
@@ -28,8 +30,10 @@ class _PromoCodeListState extends State<PromoCodeList> {
             title: "Promo code List",
             context: context,
             icon2: GestureDetector(
-              onTap: (){
-                Get.to(const CreatePromoCodeScreen(isEditMode: false,));
+              onTap: () {
+                Get.to(const CreatePromoCodeScreen(
+                  isEditMode: false,
+                ));
               },
               child: const Padding(
                 padding: EdgeInsets.only(right: 10),
@@ -39,8 +43,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                   size: 30,
                 ),
               ),
-            )
-        ),
+            )),
         body: SingleChildScrollView(
             child: Column(children: [
           const SizedBox(
@@ -48,8 +51,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
           ),
           StreamBuilder<List<CouponData>>(
             stream: getCouponStream(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<CouponData>> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<List<CouponData>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
@@ -88,102 +90,73 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                       ],
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 28, top: 7),
+                                      padding: const EdgeInsets.only(left: 28, top: 7),
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 8.0),
+                                            padding: const EdgeInsets.only(right: 8.0),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 RichText(
                                                   overflow: TextOverflow.clip,
                                                   textAlign: TextAlign.end,
-                                                  textDirection:
-                                                      TextDirection.rtl,
+                                                  textDirection: TextDirection.rtl,
                                                   softWrap: true,
                                                   maxLines: 1,
                                                   textScaleFactor: 1,
                                                   text: TextSpan(
-                                                    text: item.promoCodeName
-                                                        .toString(),
-                                                    style: DefaultTextStyle.of(
-                                                            context)
-                                                        .style,
-                                                    children: const <TextSpan>[
-
-                                                    ],
+                                                    text: item.promoCodeName.toString(),
+                                                    style: DefaultTextStyle.of(context).style,
+                                                    children: const <TextSpan>[],
                                                   ),
                                                 ),
                                                 item.deactivate
-                                                    ? const Icon(Icons.block,color: Colors.red,)
+                                                    ? const Icon(
+                                                        Icons.block,
+                                                        color: Colors.red,
+                                                      )
                                                     : const SizedBox(),
                                                 PopupMenuButton(
                                                     iconSize: 20,
                                                     onSelected: (value) {
                                                       setState(() {
-                                                        selectedItem =
-                                                            value.toString();
+                                                        selectedItem = value.toString();
                                                       });
                                                       print(value);
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          value.toString());
+                                                      Navigator.pushNamed(context, value.toString());
                                                     },
                                                     itemBuilder: (ac) {
                                                       return [
                                                         PopupMenuItem(
                                                           child: const Text("Edit"),
                                                           onTap: () {
-                                                            Get.to(
-                                                                CreatePromoCodeScreen(
+                                                            Get.to(CreatePromoCodeScreen(
                                                               isEditMode: true,
-                                                              promoCodeName: item
-                                                                  .promoCodeName,
+                                                              promoCodeName: item.promoCodeName,
                                                               code: item.code,
-                                                              discount:
-                                                                  item.discount,
-                                                              startDate: item
-                                                                  .startDate,
-                                                              endDate:
-                                                                  item.endDate,
+                                                              discount: item.discount,
+                                                              startDate: item.startDate,
+                                                              endDate: item.endDate,
                                                               maxDiscount: item.maxDiscount,
-                                                              documentId:
-                                                                  item.docid,
+                                                              documentId: item.docid,
                                                             ));
                                                           },
                                                         ),
-
                                                         PopupMenuItem(
-                                                          child: Text(item.deactivate
-                                                              ? "Activate"
-                                                              : "Deactivate"),
+                                                          child: Text(item.deactivate ? "Activate" : "Deactivate"),
                                                           onTap: () {
-                                                            item.deactivate ?
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'Coupon_data')
-                                                                .doc(item.docid)
-                                                                .update({
-                                                              "deactivate": false
-                                                            }) :
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                'Coupon_data')
-                                                                .doc(item.docid)
-                                                                .update({
-                                                              "deactivate": true
-                                                            });
+                                                            item.deactivate
+                                                                ? FirebaseFirestore.instance
+                                                                    .collection('Coupon_data')
+                                                                    .doc(item.docid)
+                                                                    .update({"deactivate": false})
+                                                                : FirebaseFirestore.instance
+                                                                    .collection('Coupon_data')
+                                                                    .doc(item.docid)
+                                                                    .update({"deactivate": true});
                                                             setState(() {});
                                                           },
                                                         )
@@ -196,37 +169,25 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                           Text(
                                             item.code.toString(),
                                             style: GoogleFonts.poppins(
-                                                color: const Color(0xFFFAAF40),
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: 14),
+                                                color: const Color(0xFFFAAF40), fontWeight: FontWeight.w300, fontSize: 14),
                                           ),
                                           const SizedBox(
                                             height: 30,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 2.0, right: 25),
+                                            padding: const EdgeInsets.only(left: 2.0, right: 25),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
                                                   "Discount",
                                                   style: GoogleFonts.poppins(
-                                                      color: const Color(
-                                                          0xFF304048),
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 16),
+                                                      color: const Color(0xFF304048), fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
                                                 Text(
                                                   "${item.discount.toString()}%",
                                                   style: GoogleFonts.poppins(
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 14),
+                                                      color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
                                                 ),
                                               ],
                                             ),
@@ -235,36 +196,24 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                             height: 6,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 2.0, right: 25),
+                                            padding: const EdgeInsets.only(left: 2.0, right: 25),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
                                                   item.startDate.toString(),
                                                   style: GoogleFonts.poppins(
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 16),
+                                                      color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
                                                 Text(
                                                   "To",
                                                   style: GoogleFonts.poppins(
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 16),
+                                                      color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
                                                 Text(
                                                   item.endDate.toString(),
                                                   style: GoogleFonts.poppins(
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 14),
+                                                      color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
                                                 ),
                                               ],
                                             ),
@@ -285,8 +234,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                 left: -10,
                                 right: -10,
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     CircleAvatar(
                                       radius: 15,
@@ -297,17 +245,15 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                       child: FittedBox(
                                         child: Row(
                                           children: List.generate(
-                                              25,
-                                              (index) => Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 2, right: 2),
-                                                    child: Container(
-                                                      color: Colors.grey[200],
-                                                      height: 2,
-                                                      width: 10,
-                                                    ),
-                                                  )),
+                                              kIsWeb ? 60: 25,
+                                                  (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 1,
+                                                  width: 5,
+                                                ),
+                                              )),
                                         ),
                                       ),
                                     ),
@@ -326,7 +272,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
               return const Center(child: CircularProgressIndicator());
             },
           )
-        ])));
+        ]).appPaddingForScreen));
   }
 
   List<CouponData> filterUsers(List<CouponData> users, String query) {
@@ -346,8 +292,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Stream<List<CouponData>> getCouponStream() {
     return FirebaseFirestore.instance
         .collection('Coupon_data')
-        .where('userID',
-            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => CouponData(

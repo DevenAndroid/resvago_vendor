@@ -62,6 +62,7 @@ class FirebaseService{
         "menuSelection": menuSelection,
         "time": DateTime.now(),
         "userID": mobileNumber,
+        "deactivate":false
       });
     } catch (e) {
       throw Exception(e);

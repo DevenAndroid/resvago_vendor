@@ -15,6 +15,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resvago_vendor/model/category_model.dart';
 import 'package:resvago_vendor/model/menu_model.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -111,7 +112,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
 
   List<MenuItemData> menuItemList = [];
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("menuItemsList").get().then((value) {
+    FirebaseFirestore.instance.collection("menuItemsList").where("deactivate", isEqualTo: false).get().then((value) {
       menuItemList.clear();
       for (var element in value.docs) {
         var gg = element.data();
@@ -139,8 +140,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     categoryValue = widget.menuItemData!.category ?? "";
     delivery = widget.menuItemData!.bookingForDelivery;
     dining = widget.menuItemData!.bookingForDining;
-    log("rhgfhf"+widget.menuItemData!.category);
-    log("rhgfhf"+categoryValue.toString());
   }
 
   @override
@@ -456,7 +455,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                 ),
               )
             ],
-          ),
+          ).appPaddingForScreen,
         ),
       ),
     );

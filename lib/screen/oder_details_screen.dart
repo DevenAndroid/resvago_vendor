@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/dining_order_modal.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -530,7 +531,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
                             Text(
-                              "\0.00",
+                              "\$0.00",
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -716,7 +717,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
               height: 40,
             ),
           ],
-        ),
+        ).appPaddingForScreen,
       ),
     );
   }

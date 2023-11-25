@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 
 import '../widget/appassets.dart';
@@ -85,6 +86,6 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                   },
                                 ),
                               )
-                            ]))))));
+                            ])))).appPaddingForScreen));
   }
 }

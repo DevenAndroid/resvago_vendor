@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_vendor/helper.dart';
 import 'package:resvago_vendor/model/menu_model.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../widget/addsize.dart';
 import '../../widget/apptheme.dart';
@@ -94,9 +95,9 @@ class _MenuScreenState extends State<MenuScreen> {
                             prefixIcon: IconButton(
                               onPressed: () {},
                               icon: Icon(
-                                Icons.search_rounded,
+                                Icons.search,
                                 color: const Color(0xFF9DA4BB),
-                                size: AddSize.size25,
+                                size: AddSize.size20,
                               ),
                             ),
                             border: const OutlineInputBorder(
@@ -357,7 +358,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   return const SizedBox.shrink();
                 },
               ),
-            ]),
+            ]).appPaddingForScreen,
           ),
         ));
   }

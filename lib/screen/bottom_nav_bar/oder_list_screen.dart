@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/delivery_oders_details_screen.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../../model/dining_order_modal.dart';
 import '../../model/order_details_modal.dart';
@@ -36,8 +37,9 @@ class _OderListScreenState extends State<OderListScreen> {
             children: [
               Container(
                 height: 320,
-                decoration:
-                    const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.oderlistbg))),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.oderlistbg)),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15),
                   child: Column(children: [
@@ -119,11 +121,92 @@ class _OderListScreenState extends State<OderListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          height: 50,
-                          width: size.width * .4,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
+                            // width: size.width * .4,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+                              child: PopupMenuButton<int>(
+                                constraints: const BoxConstraints(maxHeight: 300),
+                                position: PopupMenuPosition.under,
+                                offset: Offset.fromDirection(1, 1),
+                                onSelected: (value) {
+                                  setState(() {});
+                                },
+                                // icon: Icon(Icons.keyboard_arrow_down),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                      child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          dropDownValue1.value = 'No';
+                                        },
+                                        child: const Text('No',
+                                            style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                      ),
+                                    ],
+                                  )),
+                                  PopupMenuItem(
+                                      child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            dropDownValue1.value = 'Yes';
+                                          });
+                                        },
+                                        child: const Text('Yes',
+                                            style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                      ),
+                                    ],
+                                  )),
+                                ],
+                                child: Container(
+                                  padding: const EdgeInsets.all(9),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.white.withOpacity(.35)),
+                                    color: Colors.white.withOpacity(.10),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Obx(() {
+                                        return Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Center(
+                                              child: Text(
+                                                dropDownValue1.value.toString().isEmpty
+                                                    ? "Filter"
+                                                    : dropDownValue1.value.toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                      const Spacer(),
+                                      const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
+                            // width: size.width * .4,
                             child: PopupMenuButton<int>(
                               constraints: const BoxConstraints(maxHeight: 300),
                               position: PopupMenuPosition.under,
@@ -138,9 +221,10 @@ class _OderListScreenState extends State<OderListScreen> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        dropDownValue1.value = 'No';
+                                        dropDownValue2.value = 'False';
+                                        Get.back();
                                       },
-                                      child: const Text('No',
+                                      child: const Text('False',
                                           style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
@@ -151,10 +235,11 @@ class _OderListScreenState extends State<OderListScreen> {
                                     InkWell(
                                       onTap: () {
                                         setState(() {
-                                          dropDownValue1.value = 'Yes';
+                                          dropDownValue2.value = 'True';
+                                          Get.back();
                                         });
                                       },
-                                      child: const Text('Yes',
+                                      child: const Text('True',
                                           style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
@@ -177,9 +262,9 @@ class _OderListScreenState extends State<OderListScreen> {
                                         children: [
                                           Center(
                                             child: Text(
-                                              dropDownValue1.value.toString().isEmpty
-                                                  ? "Filter"
-                                                  : dropDownValue1.value.toString(),
+                                              dropDownValue2.value.toString().isEmpty
+                                                  ? "Status"
+                                                  : dropDownValue2.value.toString(),
                                               style:
                                                   const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
                                             ),
@@ -194,82 +279,6 @@ class _OderListScreenState extends State<OderListScreen> {
                                     )
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                          width: size.width * .4,
-                          child: PopupMenuButton<int>(
-                            constraints: const BoxConstraints(maxHeight: 300),
-                            position: PopupMenuPosition.under,
-                            offset: Offset.fromDirection(1, 1),
-                            onSelected: (value) {
-                              setState(() {});
-                            },
-                            // icon: Icon(Icons.keyboard_arrow_down),
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                  child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      dropDownValue2.value = 'False';
-                                      Get.back();
-                                    },
-                                    child: const Text('False',
-                                        style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
-                                  ),
-                                ],
-                              )),
-                              PopupMenuItem(
-                                  child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        dropDownValue2.value = 'True';
-                                        Get.back();
-                                      });
-                                    },
-                                    child: const Text('True',
-                                        style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
-                                  ),
-                                ],
-                              )),
-                            ],
-                            child: Container(
-                              padding: const EdgeInsets.all(9),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white.withOpacity(.35)),
-                                color: Colors.white.withOpacity(.10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Obx(() {
-                                    return Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            dropDownValue2.value.toString().isEmpty ? "Status" : dropDownValue2.value.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                                  const Spacer(),
-                                  const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Colors.white,
-                                  )
-                                ],
                               ),
                             ),
                           ),
@@ -564,7 +573,7 @@ class _OderListScreenState extends State<OderListScreen> {
                 ]),
               )
             ],
-          ),
+          ).appPaddingForScreen,
         ));
   }
 

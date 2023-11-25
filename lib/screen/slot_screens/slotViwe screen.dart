@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
 import '../../model/createslot_model.dart';
@@ -62,7 +63,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                25,
+                                kIsWeb ? 100: 25,
                                 (index) => Padding(
                                       padding: const EdgeInsets.only(left: 2, right: 2),
                                       child: Container(
@@ -126,15 +127,15 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                25,
-                                (index) => Padding(
-                                      padding: const EdgeInsets.only(left: 2, right: 2),
-                                      child: Container(
-                                        color: Colors.grey[200],
-                                        height: 2,
-                                        width: 10,
-                                      ),
-                                    )),
+                                kIsWeb ? 100: 25,
+                                    (index) => Padding(
+                                  padding: const EdgeInsets.only(left: 2, right: 2),
+                                  child: Container(
+                                    color: Colors.grey[200],
+                                    height: 2,
+                                    width: 10,
+                                  ),
+                                )),
                           ),
                         ),
                         const SizedBox(
@@ -182,15 +183,15 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                25,
-                                (index) => Padding(
-                                      padding: const EdgeInsets.only(left: 2, right: 2),
-                                      child: Container(
-                                        color: Colors.grey[200],
-                                        height: 2,
-                                        width: 10,
-                                      ),
-                                    )),
+                                kIsWeb ? 100: 25,
+                                    (index) => Padding(
+                                  padding: const EdgeInsets.only(left: 2, right: 2),
+                                  child: Container(
+                                    color: Colors.grey[200],
+                                    height: 2,
+                                    width: 10,
+                                  ),
+                                )),
                           ),
                         ),
                         const SizedBox(
@@ -269,7 +270,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                     ),
                   )),
             ],
-          ),
+          ).appPaddingForScreen,
         ));
   }
 }

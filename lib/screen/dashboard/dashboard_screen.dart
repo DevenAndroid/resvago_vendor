@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ import 'package:resvago_vendor/screen/reviwe_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
 import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/bottomnavbar_controller.dart';
 import '../../model/profile_model.dart';
@@ -65,13 +67,13 @@ class _VendorDashboardState extends State<VendorDashboard> {
   @override
   void initState() {
     super.initState();
-    firebaseService.updateFirebaseToken();
+    // firebaseService.updateFirebaseToken();
     restaurantData();
   }
 
   @override
   Widget build(BuildContext context) {
-    firebaseService.sendNotifications();
+    // firebaseService.sendNotifications();
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         key: _scaffoldKey,
@@ -98,7 +100,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hi, ${profileData.restaurantName}",
+                      "Hi, ${(profileData.restaurantName ?? "")}",
                       style: GoogleFonts.ibmPlexSansArabic(
                           fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
                     ),
@@ -144,7 +146,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10, top: 5),
                   child: GestureDetector(
                     onTap: () {
                       Get.to(const UserProfileScreen());
@@ -155,16 +157,25 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           height: 45,
                           width: 45,
                           child: Container(
-                            decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                            decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), shape: BoxShape.circle),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: profileData.image.toString(),
-                                errorWidget: (_, __, ___) => const Icon(Icons.person),
-                                placeholder: (_, __) => const SizedBox(),
-                              ),
-                            ),
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.network(
+                                  profileData.image.toString(),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl: profileData.image.toString(),
+                                    height: AddSize.size30,
+                                    width: AddSize.size30,
+                                    errorWidget: (_, __, ___) => const Icon(
+                                      Icons.person,
+                                      size: 20,
+                                      color: Colors.black,
+                                    ),
+                                    placeholder: (_, __) => const SizedBox(),
+                                  ),
+                                )),
                           ),
                         ),
                         Positioned(
@@ -207,15 +218,26 @@ class _VendorDashboardState extends State<VendorDashboard> {
                     ),
                   ),
                 ),
-                SliverGrid.count(
-                    crossAxisSpacing: AddSize.size12,
-                    mainAxisSpacing: AddSize.size12,
-                    crossAxisCount: 2,
-                    childAspectRatio: AddSize.size10 / 7,
-                    children: List.generate(
-                      4,
-                      (index) => Container(
-                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding05),
+                SliverGrid.builder(
+                  itemCount: 4,
+                  // shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: kIsWeb
+                      ? SliverGridDelegateWithMaxCrossAxisExtent(
+                          mainAxisExtent: AddSize.screenHeight * .20,
+                          maxCrossAxisExtent: 240,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 5,
+                        )
+                      : SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 0,
+                          mainAxisExtent: AddSize.screenHeight * .15),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppTheme.backgroundcolor),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,8 +282,10 @@ class _VendorDashboardState extends State<VendorDashboard> {
                             ),
                           ],
                         ),
-                      ),
-                    )),
+                      )
+                    ]);
+                  },
+                ),
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
@@ -404,7 +428,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   ),
                 )
               ],
-            ),
+            ).appPaddingForScreen,
           ),
         ));
   }

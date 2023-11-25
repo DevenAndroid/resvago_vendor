@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
 import 'package:resvago_vendor/screen/slot_screens/add_booking_slot_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slotViwe%20screen.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../../../controllers/slot_controller.dart';
@@ -292,7 +293,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                     child: Text("Slots are not created yet"),
                   ),
           )
-        ]),
+        ]).appPaddingForScreen,
       ),
     );
   }
