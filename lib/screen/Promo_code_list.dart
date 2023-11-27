@@ -245,15 +245,15 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                       child: FittedBox(
                                         child: Row(
                                           children: List.generate(
-                                              kIsWeb ? 60: 25,
-                                                  (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 1,
-                                                  width: 5,
-                                                ),
-                                              )),
+                                              kIsWeb ? 60 : 25,
+                                              (index) => Padding(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2),
+                                                    child: Container(
+                                                      color: Colors.grey[200],
+                                                      height: 1,
+                                                      width: 5,
+                                                    ),
+                                                  )),
                                         ),
                                       ),
                                     ),
@@ -292,6 +292,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Stream<List<CouponData>> getCouponStream() {
     return FirebaseFirestore.instance
         .collection('Coupon_data')
+        .where("deactivate", isEqualTo: false)
         .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((snapshot) => snapshot.docs

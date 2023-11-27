@@ -236,8 +236,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       enabled: true,
-                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
-                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                                       iconColor: Colors.white,
                                       errorBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                                       fillColor: const Color(0x63ffffff).withOpacity(.2),
@@ -277,11 +277,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
                                       hintStyle: const TextStyle(color: Colors.white),
-                                      suffix: GestureDetector(
-                                        onTap: () async {
+                                      suffix: TextButton(
+                                        onPressed: () {
                                           checkEmailInFirestore();
                                         },
-                                        child: const Text('send'),
+                                        child: const Text(
+                                          'send',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -298,7 +301,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
-
                                     keyboardType: TextInputType.emailAddress,
                                     // textInputAction: TextInputAction.next,
                                   ),

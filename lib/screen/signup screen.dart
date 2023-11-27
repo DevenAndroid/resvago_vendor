@@ -57,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   dynamic longitude = "";
   RxBool showValidation1 = false.obs;
   String code = "+353";
+
   bool checkValidation(bool bool1, bool2) {
     if (bool1 == true && bool2 == true) {
       return true;
@@ -73,11 +74,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
+  Rx<File> categoryFile = File("").obs;
+  Uint8List? pickedFile;
 
-  File categoryFile = File("");
+  // File categoryFile = File("");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   final controller = Get.put(AddProductController());
+
   void checkEmailInFirestore() async {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
@@ -97,25 +101,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Geoflutterfire? geo;
+
   Future<void> addUserToFirestore() async {
     // formKey.currentState!.save();
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      // = categoryFile.path;
       geo = Geoflutterfire();
       GeoFirePoint geoFirePoint =
           geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
-      String imageUrlProfile = categoryFile.path;
-      if (!categoryFile.path.contains("http")) {
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
-            .child("profile_image")
-            .putFile(categoryFile);
+      String? imageUrl;
+      if (kIsWeb) {
+        UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
         TaskSnapshot snapshot = await uploadTask;
-        imageUrlProfile = await snapshot.ref.getDownloadURL();
+        imageUrl = await snapshot.ref.getDownloadURL();
+      } else {
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref("categoryImages")
+            .child(DateTime.now().millisecondsSinceEpoch.toString())
+            .putFile(categoryFile.value);
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrl = await snapshot.ref.getDownloadURL();
       }
-
+      if (kDebugMode) {
+        print("got image url.........    $imageUrl");
+      }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
       if (FirebaseAuth.instance.currentUser != null) {
         await firebaseService
@@ -128,7 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           latitude: latitude.toString(),
           longitude: longitude.toString(),
           password: "123456",
-          image: imageUrlProfile,
+          image: imageUrl,
           restaurant_position: geoFirePoint.data.toString(),
         )
             .then((value) {
@@ -441,68 +451,149 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      DottedBorder(
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(20),
-                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
-                        dashPattern: const [6],
-                        strokeWidth: 1,
-                        child: InkWell(
-                          onTap: () {
-                            showActionSheet(context);
-                          },
-                          child: categoryFile.path != ""
-                              ? Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
+                      kIsWeb
+                          ? DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(20),
+                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                              dashPattern: const [6],
+                              strokeWidth: 1,
+                              child: InkWell(
+                                onTap: () {
+                                  // showActionSheet(context);
+                                  Helper.addFilePicker().then((value) {
+                                    if (kIsWeb) {
+                                      pickedFile = value;
+                                      setState(() {});
+                                      return;
+                                    }
+                                    setState(() {});
+                                    categoryFile.value = value;
+                                    print("Image----${categoryFile.value}");
+                                  });
+                                },
+                                child: pickedFile != null
+                                    ? Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: Colors.white,
+                                            ),
+                                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                            width: double.maxFinite,
+                                            height: 180,
+                                            alignment: Alignment.center,
+                                            child: kIsWeb
+                                                ? pickedFile != null
+                                                    ? Image.memory(pickedFile!)
+                                                    : Image.asset(
+                                                        AppAssets.gallery,
+                                                        height: 60,
+                                                        width: 50,
+                                                      )
+                                                : Image.memory(pickedFile!,
+                                                    errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
+                                                        errorBuilder: (_, __, ___) => const SizedBox())),
+                                          ),
+                                        ],
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        width: double.maxFinite,
+                                        height: 130,
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              AppAssets.gallery,
+                                              height: 60,
+                                              width: 50,
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                      width: double.maxFinite,
-                                      height: 180,
-                                      alignment: Alignment.center,
-                                      child: kIsWeb
-                                          ? Image.network(categoryFile.path)
-                                          : Image.file(categoryFile,
-                                              errorBuilder: (_, __, ___) => Image.network(categoryFile.path,
-                                                  errorBuilder: (_, __, ___) => const SizedBox())),
-                                    ),
-                                  ],
-                                )
-                              : Container(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                  width: double.maxFinite,
-                                  height: 130,
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        AppAssets.gallery,
-                                        height: 60,
-                                        width: 50,
+                              ),
+                            )
+                          : DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(20),
+                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                              dashPattern: const [6],
+                              strokeWidth: 1,
+                              child: InkWell(
+                                onTap: () {
+                                  // showActionSheet(context);
+                                  Helper.addFilePicker().then((value) {
+                                    categoryFile.value = value;
+                                    print("Image----${categoryFile.value}");
+                                  });
+                                },
+                                child: categoryFile.value.path != ""
+                                    ? Obx(() {
+                                        return Stack(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: Colors.white,
+                                              ),
+                                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                              width: double.maxFinite,
+                                              height: 180,
+                                              alignment: Alignment.center,
+                                              child: Image.file(categoryFile.value,
+                                                  errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
+                                                      errorBuilder: (_, __, ___) => const SizedBox())),
+                                            ),
+                                          ],
+                                        );
+                                      })
+                                    : Container(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        width: double.maxFinite,
+                                        height: 130,
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              AppAssets.gallery,
+                                              height: 60,
+                                              width: 50,
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Text(
-                                        'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(fontSize: 16, color: Colors.black54),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(
-                                        height: 11,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                        ),
-                      ),
+                              ),
+                            ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -565,7 +656,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (formKey.currentState!.validate() && categoryFile.path != "" && value == true) {
+                          if (formKey.currentState!.validate() && value == true) {
                             checkEmailInFirestore();
                           } else {
                             showValidationImg = true;
@@ -626,7 +717,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 //   ],
                 // );
                 if (value != null) {
-                  categoryFile = File(value.path);
+                  categoryFile.value = File(value.path);
                   setState(() {});
                 }
                 Get.back();
@@ -662,7 +753,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 //   ],
                 // );
                 if (value != null) {
-                  categoryFile = File(value.path);
+                  categoryFile.value = File(value.path);
                   setState(() {});
                 }
                 Get.back();

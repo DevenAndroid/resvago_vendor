@@ -67,6 +67,8 @@ dependencies:
   url_launcher: ^6.2.1
   intl_phone_field: ^3.2.0
   email_otp: ^2.1.1
+  image_picker_for_web:
+  file_picker:
 
 
 
