@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -136,7 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
             child: Container(
-                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
+                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill,
+                    image: AssetImage(kIsWeb ?AppAssets.webLogin :AppAssets.login))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 4),
                   child: Form(

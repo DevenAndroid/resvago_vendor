@@ -4,7 +4,9 @@ class AppAssets {
   static const String Resvago = "assets/images/Resvago.png";
   static const String gallery = "assets/images/gallery.png";
   static const String thankYou = "assets/images/thankyou.png";
+  static const String webThankYou = "assets/images/web Thank You.png";
   static const String login = "assets/images/login.png";
+  static const String webLogin = "assets/images/webLogin.png";
   static const String back = "assets/images/back.png";
   static const String backWhite = "assets/icons/backwhite.png";
   static const String facebook = "assets/icons/facrebook.png";

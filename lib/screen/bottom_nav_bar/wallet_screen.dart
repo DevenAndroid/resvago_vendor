@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -175,7 +176,7 @@ class _WalletScreenState extends State<WalletScreen> {
               height: 50,
             ),
           ],
-        ),
+        ).appPaddingForScreen,
       ),
     );
   }

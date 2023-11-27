@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -55,6 +57,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   bool showValidationImg = false;
   // final menuController = Get.put(MenuDataController());
   var obscureText5 = true;
+  Uint8List? pickedFile;
+  String fileUrl = "";
 
   void checkMenuInFirestore() async {
     addMenuToFirestore();
@@ -71,19 +75,29 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       for (var i = 0; i < kk.length; i++) {
         arrangeNumbers.add(kk.substring(0, i + 1));
       }
-      String imageUrl = categoryFile.path;
-      if (!categoryFile.path.contains("https")) {
-        if (menuItemData != null) {
-          Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
-          await gg.delete();
+      String? imageUrl;
+      if (kIsWeb) {
+        if (pickedFile != null) {
+          UploadTask uploadTask = FirebaseStorage.instance.ref("categoryImages}").child("profile_image").putData(pickedFile!);
+          TaskSnapshot snapshot = await uploadTask;
+          imageUrl = await snapshot.ref.getDownloadURL();
+        } else {
+          imageUrl = fileUrl;
         }
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref("categoryImages")
-            .child(DateTime.now().millisecondsSinceEpoch.toString())
-            .putFile(categoryFile);
+      } else {
+        if (!categoryFile.path.contains("https")) {
+          if (menuItemData != null) {
+            Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
+            await gg.delete();
+          }
+          UploadTask uploadTask = FirebaseStorage.instance
+              .ref("categoryImages")
+              .child(DateTime.now().millisecondsSinceEpoch.toString())
+              .putFile(categoryFile);
 
-        TaskSnapshot snapshot = await uploadTask;
-        imageUrl = await snapshot.ref.getDownloadURL();
+          TaskSnapshot snapshot = await uploadTask;
+          imageUrl = await snapshot.ref.getDownloadURL();
+        }
       }
       await firebaseService
           .manageMenu(
@@ -136,7 +150,11 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     priceController.text = widget.menuItemData!.price ?? "";
     discountNumberController.text = widget.menuItemData!.discount ?? "";
     descriptionController.text = widget.menuItemData!.description ?? "";
-    categoryFile = File(widget.menuItemData!.image ?? "");
+    if (!kIsWeb) {
+      categoryFile = File(widget.menuItemData!.image ?? "");
+    } else {
+      fileUrl = widget.menuItemData!.image ?? "";
+    }
     categoryValue = widget.menuItemData!.category ?? "";
     delivery = widget.menuItemData!.bookingForDelivery;
     dining = widget.menuItemData!.bookingForDining;
@@ -316,66 +334,133 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      DottedBorder(
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(4),
-                        padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                        color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
-                        dashPattern: const [6],
-                        strokeWidth: 1,
-                        child: InkWell(
-                          onTap: () {
-                            showActionSheet(context);
-                          },
-                          child: categoryFile.path != ""
-                              ? Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                        image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
+                      kIsWeb
+                          ? DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(20),
+                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                              dashPattern: const [6],
+                              strokeWidth: 1,
+                              child: InkWell(
+                                onTap: () {
+                                  Helper.addFilePicker().then((value) {
+                                    pickedFile = value;
+                                    setState(() {});
+                                  });
+                                },
+                                child: pickedFile != null
+                                    ? Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: Colors.white,
+                                            ),
+                                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                            width: double.maxFinite,
+                                            height: 180,
+                                            alignment: Alignment.center,
+                                            child: Image.memory(pickedFile!),
+                                          ),
+                                        ],
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        width: double.maxFinite,
+                                        height: 130,
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.network(
+                                              fileUrl,
+                                              height: 60,
+                                              width: 50,
+                                              errorBuilder: (_, __, ___) => Image.asset(
+                                                AppAssets.gallery,
+                                                height: 60,
+                                                width: 50,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                      width: double.maxFinite,
-                                      height: 180,
-                                      alignment: Alignment.center,
-                                      child: Image.file(categoryFile,
-                                          errorBuilder: (_, __, ___) =>
-                                              Image.network(categoryFile.path, errorBuilder: (_, __, ___) => const SizedBox())),
-                                    ),
-                                  ],
-                                )
-                              : Container(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                  width: double.maxFinite,
-                                  height: 130,
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        AppAssets.gallery,
-                                        height: 50,
-                                        width: 40,
+                              ),
+                            )
+                          : DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(4),
+                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                              dashPattern: const [6],
+                              strokeWidth: 1,
+                              child: InkWell(
+                                onTap: () {
+                                  showActionSheet(context);
+                                },
+                                child: categoryFile.path != ""
+                                    ? Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: Colors.white,
+                                              image: DecorationImage(image: FileImage(profileImage), fit: BoxFit.fill),
+                                            ),
+                                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                            width: double.maxFinite,
+                                            height: 180,
+                                            alignment: Alignment.center,
+                                            child: Image.file(categoryFile,
+                                                errorBuilder: (_, __, ___) => Image.network(categoryFile.path,
+                                                    errorBuilder: (_, __, ___) => const SizedBox())),
+                                          ),
+                                        ],
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        width: double.maxFinite,
+                                        height: 130,
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              AppAssets.gallery,
+                                              height: 50,
+                                              width: 40,
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                              style:
+                                                  TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(
+                                              height: 11,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Text(
-                                        'Accepted file types: JPEG, Doc, PDF, PNG',
-                                        style: TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(
-                                        height: 11,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                        ),
-                      ),
+                              ),
+                            ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -435,7 +520,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (delivery == true || dining == true) {
-                              if (categoryFile.path != "") {
+                              if (categoryFile.path != "" || (pickedFile != null || fileUrl.isNotEmpty)) {
                                 checkMenuInFirestore();
                               } else {
                                 Fluttertoast.showToast(msg: 'Please select image');
@@ -473,35 +558,34 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 75).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
-
                 Get.back();
               });
             },
@@ -510,32 +594,33 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 75).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.original,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
+                  pickedFile = value;
                   setState(() {});
                 }
 

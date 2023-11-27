@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,10 +25,10 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
             child: Container(
                 height: Get.height,
                 width: Get.width,
-                decoration: const BoxDecoration(
+                decoration:  const BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(AppAssets.thankYou))),
+                        image: AssetImage(kIsWeb ?AppAssets.webThankYou :AppAssets.thankYou))),
                 child: SingleChildScrollView(
                     child: Padding(
                         padding: const EdgeInsets.only(left: 4.0, right: 4),

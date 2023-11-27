@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:resvago_vendor/helper.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 
 import '../model/bankdetails_model.dart';
@@ -151,7 +152,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                         ],
                       )))
             ],
-          ),
+          ).appPaddingTextField,
         ),
       ),
     );

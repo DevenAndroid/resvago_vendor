@@ -79,6 +79,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
   File categoryFile = File("");
+  Uint8List? pickedFile;
+  String fileUrl = "";
   List<CategoryData>? categoryList;
   String? categoryValue;
   dynamic latitude = "";
@@ -102,23 +104,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     try {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
-      String imageUrlProfile = categoryFile.path;
-      if (!categoryFile.path.contains("http")) {
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
-            .child("image")
-            .putFile(categoryFile);
-        TaskSnapshot snapshot = await uploadTask;
-        imageUrlProfile = await snapshot.ref.getDownloadURL();
+      String? imageUrlProfile;
+      if (kIsWeb) {
+        if (pickedFile != null) {
+          UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
+          TaskSnapshot snapshot = await uploadTask;
+          imageUrlProfile = await snapshot.ref.getDownloadURL();
+        } else {
+          imageUrlProfile = fileUrl;
+        }
+      } else {
+        if (!categoryFile.path.contains("https")) {
+          if (profileData.restaurantImage != null) {
+            Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
+            await gg.delete();
+          }
+          UploadTask uploadTask = FirebaseStorage.instance
+              .ref("categoryImages")
+              .child(DateTime.now().millisecondsSinceEpoch.toString())
+              .putFile(categoryFile);
+
+          TaskSnapshot snapshot = await uploadTask;
+          imageUrlProfile = await snapshot.ref.getDownloadURL();
+        }
       }
       for (var element in controller.galleryImages.asMap().entries) {
         if (element.value.path.contains("http")) {
           imagesLink.add(element.value.path);
         } else {
-          UploadTask uploadTask = FirebaseStorage.instance
-              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
-              .child("${element.key}image")
-              .putFile(element.value);
+          UploadTask uploadTask =
+              FirebaseStorage.instance.ref("restaurant_images").child("${element.key}image").putFile(element.value);
           TaskSnapshot snapshot = await uploadTask;
           String imageUrl = await snapshot.ref.getDownloadURL();
           imagesLink.add(imageUrl);
@@ -128,10 +143,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         if (element.value.path.contains("http")) {
           menuPhotoLink.add(element.value.path);
         } else {
-          UploadTask uploadMenuImage = FirebaseStorage.instance
-              .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
-              .child("${element.key}image")
-              .putFile(element.value);
+          UploadTask uploadMenuImage =
+              FirebaseStorage.instance.ref("menu_images").child("${element.key}image").putFile(element.value);
 
           TaskSnapshot snapshot1 = await uploadMenuImage;
           String imageUrl1 = await snapshot1.ref.getDownloadURL();
@@ -157,7 +170,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "menuSelection": menuSelection,
         "latitude": latitude,
         "longitude": longitude,
-        "deactivate":deactivated
+        "deactivate": deactivated
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       fetchdata();
       Get.back();
@@ -177,7 +190,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
-        categoryFile = File(profileData.image.toString());
+        if (!kIsWeb) {
+          categoryFile = File(profileData.image ?? "");
+        } else {
+          fileUrl = profileData.image ?? "";
+        }
         mobileController.text = profileData.mobileNumber.toString();
         restaurantController.text = profileData.restaurantName.toString();
         categoryController.text = profileData.category.toString();
@@ -259,77 +276,152 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               SizedBox(
                                 height: 100,
                                 width: 100,
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10000),
-                                      child: Container(
-                                          height: 100,
-                                          width: 100,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffFAAF40),
-                                            border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                            borderRadius: BorderRadius.circular(5000),
-                                            // color: Colors.brown
+                                child: kIsWeb
+                                    ? Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(10000),
+                                            child: Container(
+                                                height: 100,
+                                                width: 100,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xffFAAF40),
+                                                  border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                  borderRadius: BorderRadius.circular(5000),
+                                                  // color: Colors.brown
+                                                ),
+                                                child: pickedFile != null
+                                                    ? Image.memory(
+                                                        pickedFile!,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: categoryFile.path,
+                                                          height: AddSize.size30,
+                                                          width: AddSize.size30,
+                                                          errorWidget: (_, __, ___) => const Icon(
+                                                            Icons.person,
+                                                            size: 60,
+                                                          ),
+                                                          placeholder: (_, __) => const SizedBox(),
+                                                        ),
+                                                      )
+                                                    : Image.network(
+                                                        fileUrl,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: categoryFile.path,
+                                                          height: AddSize.size30,
+                                                          width: AddSize.size30,
+                                                          errorWidget: (_, __, ___) => const Icon(
+                                                            Icons.person,
+                                                            size: 60,
+                                                          ),
+                                                          placeholder: (_, __) => const SizedBox(),
+                                                        ),
+                                                      )),
                                           ),
-                                          child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
-                                              ? Image.network(
-                                                  categoryFile.path,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                    fit: BoxFit.cover,
-                                                    imageUrl: categoryFile.path,
-                                                    height: AddSize.size30,
-                                                    width: AddSize.size30,
-                                                    errorWidget: (_, __, ___) => const Icon(
-                                                      Icons.person,
-                                                      size: 60,
-                                                    ),
-                                                    placeholder: (_, __) => const SizedBox(),
-                                                  ),
-                                                )
-                                              : Image.memory(
-                                                  categoryFile.readAsBytesSync(),
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                    fit: BoxFit.cover,
-                                                    imageUrl: categoryFile.path,
-                                                    height: AddSize.size30,
-                                                    width: AddSize.size30,
-                                                    errorWidget: (_, __, ___) => const Icon(
-                                                      Icons.person,
-                                                      size: 60,
-                                                    ),
-                                                    placeholder: (_, __) => const SizedBox(),
-                                                  ),
-                                                )),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          showActionSheet(context);
-                                        },
-                                        child: Container(
-                                          height: 30,
-                                          width: 30,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff04666E),
-                                            borderRadius: BorderRadius.circular(50),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Helper.addFilePicker().then((value) {
+                                                  pickedFile = value;
+                                                  setState(() {});
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 30,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xff04666E),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.camera_alt,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(10000),
+                                            child: Container(
+                                                height: 100,
+                                                width: 100,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xffFAAF40),
+                                                  border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                  borderRadius: BorderRadius.circular(5000),
+                                                  // color: Colors.brown
+                                                ),
+                                                child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
+                                                    ? Image.network(
+                                                        categoryFile.path,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: categoryFile.path,
+                                                          height: AddSize.size30,
+                                                          width: AddSize.size30,
+                                                          errorWidget: (_, __, ___) => const Icon(
+                                                            Icons.person,
+                                                            size: 60,
+                                                          ),
+                                                          placeholder: (_, __) => const SizedBox(),
+                                                        ),
+                                                      )
+                                                    : Image.memory(
+                                                        categoryFile.readAsBytesSync(),
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: categoryFile.path,
+                                                          height: AddSize.size30,
+                                                          width: AddSize.size30,
+                                                          errorWidget: (_, __, ___) => const Icon(
+                                                            Icons.person,
+                                                            size: 60,
+                                                          ),
+                                                          placeholder: (_, __) => const SizedBox(),
+                                                        ),
+                                                      )),
                                           ),
-                                          child: const Icon(
-                                            Icons.camera_alt,
-                                            color: Colors.white,
-                                            size: 15,
-                                          ),
-                                        ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                showActionSheet(context);
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 30,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xff04666E),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.camera_alt,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                    )
-                                  ],
-                                ),
                               ),
                             ],
                           ),

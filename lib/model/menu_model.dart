@@ -7,7 +7,7 @@ class MenuData {
    dynamic docid;
    dynamic discount;
    dynamic description;
-   dynamic image;
+   String? image;
    dynamic booking;
    dynamic time;
    dynamic bookingForDelivery;

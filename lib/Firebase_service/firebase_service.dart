@@ -124,6 +124,7 @@ class FirebaseService{
         "bookingForDining": bookingForDining,
         "bookingForDelivery": bookingForDelivery,
         "searchName": searchName,
+        "deactivate":false
       });
       showToast("Menu Added Successfully");
     } catch (e) {

@@ -91,7 +91,7 @@ class _OtpScreenState extends State<OtpScreen> {
             child: Container(
                 height: Get.height,
                 width: Get.width,
-                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(AppAssets.login))),
+                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ?AppAssets.webLogin :AppAssets.login))),
                 child: SingleChildScrollView(
                     child: Padding(
                         padding: const EdgeInsets.only(left: 4.0, right: 4),
@@ -100,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height: size.height * 0.32,
+                                height: size.height * 0.37,
                               ),
                               Align(
                                 alignment: Alignment.center,
@@ -146,9 +146,6 @@ class _OtpScreenState extends State<OtpScreen> {
                                                       verifyOtp();
                                                     }
                                                   },
-                                                  validator: MultiValidator([
-                                                    RequiredValidator(errorText: 'Please enter your otp'),
-                                                  ]).call,
                                                   keyboardType: TextInputType.number,
                                                 ),
                                               ),
