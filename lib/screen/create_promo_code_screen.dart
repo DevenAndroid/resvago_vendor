@@ -13,6 +13,7 @@ import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
+import '../model/profile_model.dart';
 import '../widget/common_text_field.dart';
 
 class CreatePromoCodeScreen extends StatefulWidget {
@@ -98,7 +99,10 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                 maxDiscount: maxDiscountController.text.trim(),
                 discount: discountController.text.trim(),
                 startDate: startDateController.text.trim(),
-                endDate: endDateController.text.trim())
+                endDate: endDateController.text.trim(),
+                userName: profileData!.restaurantName,
+        )
+
             .then((value) {
           Get.back();
           Fluttertoast.showToast(msg: 'Code is created');
@@ -110,11 +114,26 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
       }
     }
   }
+  ProfileData? profileData;
+  getVendorUsers() {
+    FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      if (value.exists) {
+        var data = value.data();
+        if (data != null) {
+          profileData = ProfileData.fromJson(data);
+          setState(() {});
+        }
+      }
+
+      setState(() {});
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getVendorUsers();
     promocodenameController.text = widget.promoCodeName ?? "";
     codeController.text = widget.code ?? "";
     discountController.text = widget.discount ?? "";
