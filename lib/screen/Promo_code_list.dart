@@ -292,7 +292,6 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Stream<List<CouponData>> getCouponStream() {
     return FirebaseFirestore.instance
         .collection('Coupon_data')
-        .where("deactivate", isEqualTo: false)
         .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((snapshot) => snapshot.docs
