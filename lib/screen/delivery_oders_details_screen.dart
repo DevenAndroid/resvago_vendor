@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +11,7 @@ import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Firebase_service/notification_api.dart';
+import '../model/createslot_model.dart';
 import '../model/order_details_modal.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
@@ -45,6 +49,73 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
       await launch(url);
     } else {
       throw 'Could not launch $url';
+    }
+  }
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Future manageOrderForDining(
+      {required String orderId,
+      dynamic vendorId,
+      dynamic fcm,
+      dynamic address,
+      dynamic date,
+      required bool lunchSelected,
+      dynamic slot,
+      dynamic guest,
+      dynamic offer,
+      dynamic docId,
+      dynamic total,
+      dynamic couponDiscount,
+      required Map<String, dynamic> restaurantInfo,
+      required Map<String, dynamic> profileData,
+      required List<dynamic> menuList,
+      dynamic time}) async {
+    try {
+      final slotDocument = firestore.collection("vendor_slot").doc(vendorId.toString()).collection("slot").doc(date.toString());
+      await firestore.runTransaction((transaction) {
+        return transaction.get(slotDocument).then((transactionDoc) {
+          log("transaction data.......        ${transactionDoc.data()}");
+          CreateSlotData createSlotData = CreateSlotData.fromMap(transactionDoc.data() ?? {});
+          createSlotData.morningSlots = createSlotData.morningSlots ?? {};
+          createSlotData.eveningSlots = createSlotData.eveningSlots ?? {};
+          log("transaction data.......        ${createSlotData.toMap()}");
+          // log("transaction data.......        $slot");
+
+          int? availableSeats =
+              lunchSelected ? createSlotData.morningSlots![slot.toString()] : createSlotData.eveningSlots![slot.toString()];
+          log("transaction data.......        ${slot}    ${guest}    $lunchSelected     $availableSeats   ");
+
+          if (availableSeats != null) {
+            if (availableSeats < int.parse("$guest")) {
+              showToast("Some seats are booked\nPlease select seats again");
+              throw Exception();
+            } else {
+              if (lunchSelected) {
+                createSlotData.morningSlots![slot.toString()] = availableSeats - int.parse("$guest");
+              } else {
+                createSlotData.eveningSlots![slot.toString()] = availableSeats - int.parse("$guest");
+              }
+            }
+          } else {
+            showToast("Seats not available");
+            throw Exception();
+          }
+
+          log("transaction data.......        ${createSlotData.toMap()}");
+          // throw Exception();
+          transaction.update(slotDocument, createSlotData.toMap());
+        });
+      }).then(
+        (newPopulation) => print("Population increased to $newPopulation"),
+        onError: (e) {
+          throw Exception(e);
+        },
+      );
+      await firestore.collection('dining_order').doc(docId).update({
+        "order_status": "Order Rejected",
+      });
+      showToast("Order Placed Successfully");
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -185,7 +256,9 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                                 ],
                                               ),
                                             ),
-                                            const SizedBox(width: 10,),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
                                             Text(
                                               "\$${item.price}",
                                               style: GoogleFonts.poppins(
@@ -549,6 +622,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     .collection('order')
                                     .doc(myOrderModel!.docid)
                                     .update({'order_status': 'Order Rejected'});
+
                                 sendPushNotification(
                                     body: myOrderModel!.orderDetails.toString(),
                                     deviceToken: myOrderModel!.fcmToken,

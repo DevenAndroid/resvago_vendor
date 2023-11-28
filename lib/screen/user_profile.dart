@@ -78,7 +78,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
-  File categoryFile = File("");
   Uint8List? pickedFile;
   String fileUrl = "";
   List<CategoryData>? categoryList;
@@ -107,23 +106,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       String? imageUrlProfile;
       if (kIsWeb) {
         if (pickedFile != null) {
-          UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
+          UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
           TaskSnapshot snapshot = await uploadTask;
           imageUrlProfile = await snapshot.ref.getDownloadURL();
         } else {
           imageUrlProfile = fileUrl;
         }
       } else {
-        if (!categoryFile.path.contains("https")) {
-          if (profileData.restaurantImage != null) {
-            Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
-            await gg.delete();
-          }
+        if (!controller.categoryFile.path.contains("http")) {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref("categoryImages")
-              .child(DateTime.now().millisecondsSinceEpoch.toString())
-              .putFile(categoryFile);
-
+              .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
+              .child("image")
+              .putFile(controller.categoryFile);
           TaskSnapshot snapshot = await uploadTask;
           imageUrlProfile = await snapshot.ref.getDownloadURL();
         }
@@ -191,7 +185,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
         if (!kIsWeb) {
-          categoryFile = File(profileData.image ?? "");
+          controller.categoryFile = File(profileData.image ?? "");
         } else {
           fileUrl = profileData.image ?? "";
         }
@@ -222,7 +216,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         if (!categoryList!.map((e) => e.name.toString()).toList().contains(profileData.category)) {
           categoryValue = "";
         }
-        setState(() {});
+        // setState(() {});
       }
     });
   }
@@ -236,7 +230,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     getVendorCategories();
   }
 
-  String code = "+91";
+  // String code = "+91";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -297,7 +291,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         fit: BoxFit.cover,
                                                         errorBuilder: (_, __, ___) => CachedNetworkImage(
                                                           fit: BoxFit.cover,
-                                                          imageUrl: categoryFile.path,
+                                                          imageUrl: controller.categoryFile.path,
                                                           height: AddSize.size30,
                                                           width: AddSize.size30,
                                                           errorWidget: (_, __, ___) => const Icon(
@@ -312,7 +306,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         fit: BoxFit.cover,
                                                         errorBuilder: (_, __, ___) => CachedNetworkImage(
                                                           fit: BoxFit.cover,
-                                                          imageUrl: categoryFile.path,
+                                                          imageUrl: controller.categoryFile.path,
                                                           height: AddSize.size30,
                                                           width: AddSize.size30,
                                                           errorWidget: (_, __, ___) => const Icon(
@@ -326,14 +320,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           Positioned(
                                             bottom: 0,
                                             right: 0,
-                                            child: GestureDetector(
-                                              onTap: () {
+                                            child: IconButton(
+                                              onPressed: () {
                                                 Helper.addFilePicker().then((value) {
                                                   pickedFile = value;
                                                   setState(() {});
                                                 });
                                               },
-                                              child: Container(
+                                              icon: Container(
                                                 height: 30,
                                                 width: 30,
                                                 clipBehavior: Clip.antiAlias,
@@ -365,13 +359,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                   borderRadius: BorderRadius.circular(5000),
                                                   // color: Colors.brown
                                                 ),
-                                                child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
+                                                child: controller.categoryFile.path.contains("http") ||
+                                                        controller.categoryFile.path == ""
                                                     ? Image.network(
-                                                        categoryFile.path,
+                                                        profileData.image ?? "",
+                                                        height: AddSize.size30,
+                                                        width: AddSize.size30,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => const Icon(
+                                                          Icons.person,
+                                                          size: 60,
+                                                        ),
+                                                      )
+                                                    : Image.file(
+                                                        controller.categoryFile,
                                                         fit: BoxFit.cover,
                                                         errorBuilder: (_, __, ___) => CachedNetworkImage(
                                                           fit: BoxFit.cover,
-                                                          imageUrl: categoryFile.path,
+                                                          imageUrl: controller.categoryFile.path,
                                                           height: AddSize.size30,
                                                           width: AddSize.size30,
                                                           errorWidget: (_, __, ___) => const Icon(
@@ -381,21 +386,38 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                           placeholder: (_, __) => const SizedBox(),
                                                         ),
                                                       )
-                                                    : Image.memory(
-                                                        categoryFile.readAsBytesSync(),
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                          fit: BoxFit.cover,
-                                                          imageUrl: categoryFile.path,
-                                                          height: AddSize.size30,
-                                                          width: AddSize.size30,
-                                                          errorWidget: (_, __, ___) => const Icon(
-                                                            Icons.person,
-                                                            size: 60,
-                                                          ),
-                                                          placeholder: (_, __) => const SizedBox(),
-                                                        ),
-                                                      )),
+                                                // controller.categoryFile.path.contains("http") || controller.categoryFile.path == ""
+                                                //     ? Image.network(
+                                                //   controller.categoryFile.path,
+                                                //         fit: BoxFit.cover,
+                                                //         errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                //           fit: BoxFit.cover,
+                                                //           imageUrl: controller.categoryFile.path,
+                                                //           height: AddSize.size30,
+                                                //           width: AddSize.size30,
+                                                //           errorWidget: (_, __, ___) => const Icon(
+                                                //             Icons.person,
+                                                //             size: 60,
+                                                //           ),
+                                                //           placeholder: (_, __) => const SizedBox(),
+                                                //         ),
+                                                //       )
+                                                //     : Image.file(
+                                                //   controller.categoryFile,
+                                                //         fit: BoxFit.cover,
+                                                //         errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                //           fit: BoxFit.cover,
+                                                //           imageUrl: controller.categoryFile.path,
+                                                //           height: AddSize.size30,
+                                                //           width: AddSize.size30,
+                                                //           errorWidget: (_, __, ___) => const Icon(
+                                                //             Icons.person,
+                                                //             size: 60,
+                                                //           ),
+                                                //           placeholder: (_, __) => const SizedBox(),
+                                                //         ),
+                                                //       )
+                                                ),
                                           ),
                                           Positioned(
                                             bottom: 0,
@@ -473,49 +495,48 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
                           if (categoryList != null)
-                            if (categoryList != null)
-                              RegisterTextFieldWidget(
-                                readOnly: true,
-                                controller: categoryController,
-                                // length: 10,
-                                validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your category'),
-                                ]).call,
-                                keyboardType: TextInputType.emailAddress,
-                                hint: 'Select category',
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      content: SizedBox(
-                                        height: 400,
-                                        width: double.maxFinite,
-                                        child: ListView.builder(
-                                          physics: const AlwaysScrollableScrollPhysics(),
-                                          itemCount: categoryList!.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return InkWell(
-                                                onTap: () {
-                                                  categoryController.text = categoryList![index].name;
-                                                  Get.back();
-                                                  setState(() {});
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Text(categoryList![index].name),
-                                                ));
-                                          },
-                                        ),
+                            RegisterTextFieldWidget(
+                              readOnly: true,
+                              controller: categoryController,
+                              // length: 10,
+                              validator: MultiValidator([
+                                RequiredValidator(errorText: 'Please enter your category'),
+                              ]).call,
+                              keyboardType: TextInputType.emailAddress,
+                              hint: 'Select category',
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    content: SizedBox(
+                                      height: 400,
+                                      width: double.maxFinite,
+                                      child: ListView.builder(
+                                        physics: const AlwaysScrollableScrollPhysics(),
+                                        itemCount: categoryList!.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return InkWell(
+                                              onTap: () {
+                                                categoryController.text = categoryList![index].name;
+                                                Get.back();
+                                                setState(() {});
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                child: Text(categoryList![index].name),
+                                              ));
+                                        },
                                       ),
                                     ),
-                                  );
-                                },
-                              )
-                            else
-                              const Center(
-                                child: Text("No Category Available"),
-                              ),
+                                  ),
+                                );
+                              },
+                            )
+                          else
+                            const Center(
+                              child: Text("No Category Available"),
+                            ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -736,7 +757,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 //   ],
                 // );
                 if (value != null) {
-                  categoryFile = File(value.path);
+                  controller.categoryFile = File(value.path);
                   setState(() {});
                 }
 
@@ -773,7 +794,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 //   ],
                 // );
                 if (value != null) {
-                  categoryFile = File(value.path);
+                  controller.categoryFile = File(value.path);
                   setState(() {});
                 }
 

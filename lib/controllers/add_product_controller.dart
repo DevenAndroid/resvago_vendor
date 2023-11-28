@@ -9,6 +9,6 @@ class AddProductController extends GetxController {
   List<File> galleryImages = [];
   List<File> menuGallery = [];
   bool showValidations = false;
-
+  File categoryFile = File("");
 
 }

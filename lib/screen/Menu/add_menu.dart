@@ -620,7 +620,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                 // );
                 if (value != null) {
                   categoryFile = File(value.path);
-                  pickedFile = value;
                   setState(() {});
                 }
 

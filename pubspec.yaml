@@ -69,6 +69,7 @@ dependencies:
   email_otp: ^2.1.1
   image_picker_for_web:
   file_picker:
+  email_auth:
 
 
 

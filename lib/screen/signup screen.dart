@@ -141,16 +141,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
           image: imageUrl,
           restaurant_position: geoFirePoint.data.toString(),
         )
-            .then((value) {
+            .then((value) async {
+          await FirebaseAuth.instance.signOut();
           Get.back();
           Helper.hideLoader(loader);
+        }).catchError((e) async {
+          await FirebaseAuth.instance.signOut();
         });
       }
+      await FirebaseAuth.instance.signOut();
       Get.toNamed(MyRouters.thankYouScreen);
     } catch (e) {
+      await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
       throw Exception(e);
     } finally {
+      await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
     }
   }

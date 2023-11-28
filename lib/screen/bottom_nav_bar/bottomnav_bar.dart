@@ -12,6 +12,7 @@ import 'package:resvago_vendor/screen/bottom_nav_bar/wallet_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import '../../Setting screen.dart';
+import '../../controllers/add_product_controller.dart';
 import '../../controllers/bottomnavbar_controller.dart';
 import '../../model/profile_model.dart';
 import '../../widget/apptheme.dart';
@@ -37,6 +38,7 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   final bottomController = Get.put(BottomNavBarController());
+  final controller = Get.put(AddProductController());
   int currentDrawer = 0;
   ProfileData profileData = ProfileData();
   void restaurantData() {
@@ -99,24 +101,51 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 shape: CircleBorder(),
                                 color: Colors.white,
                               ),
-                              child: Image.network(
-                                profileData.image.toString(),
-                                fit: BoxFit.cover,
-                                height: screenSize.height * 0.12,
-                                width: screenSize.height * 0.12,
-                                errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: profileData.image.toString(),
-                                  height: screenSize.height * 0.12,
-                                  width: screenSize.height * 0.12,
-                                  errorWidget: (_, __, ___) => const Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color: Colors.black,
-                                  ),
-                                  placeholder: (_, __) => const SizedBox(),
-                                ),
-                              )),
+                              child: controller.categoryFile.path.contains("http") || controller.categoryFile.path == ""
+                                  ? Image.network(
+                                      profileData.image ?? "",
+                                      height: screenSize.height * 0.12,
+                                      width: screenSize.height * 0.12,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => const Icon(
+                                        Icons.person,
+                                        size: 60,
+                                      ),
+                                    )
+                                  : Image.file(
+                                      controller.categoryFile,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: controller.categoryFile.path,
+                                        height: screenSize.height * 0.12,
+                                        width: screenSize.height * 0.12,
+                                        errorWidget: (_, __, ___) => const Icon(
+                                          Icons.person,
+                                          size: 60,
+                                        ),
+                                        placeholder: (_, __) => const SizedBox(),
+                                      ),
+                                    )
+                              // Image.network(
+                              //   profileData.image.toString(),
+                              //   fit: BoxFit.cover,
+                              //   height: screenSize.height * 0.12,
+                              //   width: screenSize.height * 0.12,
+                              //   errorBuilder: (_, __, ___) => CachedNetworkImage(
+                              //     fit: BoxFit.cover,
+                              //     imageUrl: profileData.image.toString(),
+                              //     height: screenSize.height * 0.12,
+                              //     width: screenSize.height * 0.12,
+                              //     errorWidget: (_, __, ___) => const Icon(
+                              //       Icons.person,
+                              //       size: 20,
+                              //       color: Colors.black,
+                              //     ),
+                              //     placeholder: (_, __) => const SizedBox(),
+                              //   ),
+                              // )
+                              ),
                           Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
                                 fontSize: 15,

@@ -6,10 +6,10 @@ import 'package:resvago_vendor/routers/routers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb){
+  if (kIsWeb) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey:"AIzaSyBCol-O-qoqmOCLI_aRN0PeJ5KPvGPVQB8",
+        apiKey: "AIzaSyBCol-O-qoqmOCLI_aRN0PeJ5KPvGPVQB8",
         projectId: "resvago-b7bd4",
         messagingSenderId: "671324938172",
         appId: "1:671324938172:web:d017a2cf72416c24aed5b9",

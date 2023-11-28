@@ -279,8 +279,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
                                       hintStyle: const TextStyle(color: Colors.white),
-                                      suffix: TextButton(
-                                        onPressed: () {
+                                      suffix: InkWell(
+                                        onTap: () {
                                           checkEmailInFirestore();
                                         },
                                         child: const Text(
@@ -290,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                                      // contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                                       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
