@@ -78,6 +78,7 @@ class FirebaseService{
     dynamic endDate,
     bool? deactivate,
     dynamic userID,
+    dynamic userName
   }) async {
     try {
       FirebaseFirestore.instance.collection('Coupon_data').doc().set({
@@ -88,6 +89,7 @@ class FirebaseService{
         "startDate": startDate,
         "endDate": endDate,
         "deactivate": false,
+        "userName": userName,
         "userID": FirebaseAuth.instance.currentUser!.uid,
       });
     } catch (e) {
