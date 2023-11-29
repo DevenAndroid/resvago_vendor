@@ -94,7 +94,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
           children: [
             Expanded(
               child: Text(
-                !slotController.resetSlots ? "Create Slots" : "Create Slot",
+                !slotController.resetSlots ? "Create Slots".tr : "Create Slot".tr,
                 style:
                     GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
@@ -105,7 +105,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                     slotController.resetSlots = !slotController.resetSlots;
                     setState(() {});
                   },
-                  child: Text(!slotController.resetSlots ? "Create Slots" : "Previous Slots"))
+                  child: Text(!slotController.resetSlots ? "Create Slots".tr : "Previous Slots".tr))
           ],
         ),
         if (slotController.resetSlots == true ||
@@ -146,11 +146,11 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                           ),
                         );
                       },
-                      hint: "Start Time",
+                      hint: "Start Time".tr,
                       controller: slotController.startTime,
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return "Start time is required";
+                          return "Start time is required".tr;
                         }
                         return null;
                       }),
@@ -192,14 +192,14 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                           ),
                         );
                       },
-                      hint: "End Time",
+                      hint: "End Time".tr,
                       controller: slotController.endTime,
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return "End time is required";
+                          return "End time is required".tr;
                         }
                         if(endDuration<=startDuration){
-                          return  "Start time is less than end time";
+                          return  "Start time is less than end time".tr;
                         }
                         return null;
                       }),
@@ -213,18 +213,18 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
               onChanged: (f) {
                 clearSlots();
               },
-              hint: "Interval Time",
+              hint: "Interval Time".tr,
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value!.trim().isEmpty) {
-                  return "Service duration is required";
+                  return "Service duration is required".tr;
                 }
                 if (startDateTime
                         .difference(endDateTime)
                         .abs()
                         .compareTo(Duration(minutes: int.tryParse(value) ?? 0)) ==
                     -1) {
-                  return "Service duration is greater then start & end time duration";
+                  return "Service duration is greater then start & end time duration".tr;
                 }
                 return null;
               }),
@@ -235,15 +235,15 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (slotController.startTime.text.trim().isEmpty) {
-                      showToast("Select start time");
+                      showToast("Select start time".tr);
                       return;
                     }
                     if (slotController.endTime.text.trim().isEmpty) {
-                      showToast("Select end time");
+                      showToast("Select end time".tr);
                       return;
                     }
                     if (slotController.serviceDuration.text.trim().isEmpty) {
-                      showToast("Select service duration");
+                      showToast("Select service duration".tr);
                       return;
                     }
 
@@ -278,7 +278,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                       surfaceTintColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                   child: Text(
-                    slotController.slots.isEmpty ? "Create Slot" : "Slots Created - ${slotController.slots.length}",
+                    slotController.slots.isEmpty ? "Create Slot".tr : "Slots Created - ${slotController.slots.length}",
                     style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
                   ),
                 ),
@@ -441,7 +441,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
           children: [
             Expanded(
               child: Text(
-                !slotController.dinnerResetSlots ? "Create Slots" : "Create Slot",
+                !slotController.dinnerResetSlots ? "Create Slots".tr : "Create Slot".tr,
                 style:
                 GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
@@ -452,7 +452,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                     slotController.dinnerResetSlots = !slotController.dinnerResetSlots;
                     setState(() {});
                   },
-                  child: Text(!slotController.dinnerResetSlots ? "Create Slots" : "Previous Slots"))
+                  child: Text(!slotController.dinnerResetSlots ? "Create Slots".tr : "Previous Slots".tr))
           ],
         ),
         if (slotController.dinnerResetSlots == true ||
@@ -464,7 +464,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 Flexible(
                   child: RegisterTextFieldWidget(
                       readOnly: true,
-                      hint: "Start Time",
+                      hint: "Start Time".tr,
                       onTap: () {
                         String hour =
                             "${startDuration.inHours < 10 ? "0${startDuration.inHours}" : startDuration.inHours}";
@@ -508,7 +508,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 Flexible(
                   child: RegisterTextFieldWidget(
                       readOnly: true,
-                      hint: "End Time",
+                      hint: "End Time".tr,
                       onTap: () {
                         String hour =
                             "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
@@ -543,10 +543,10 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       controller: slotController.dinnerEndTime,
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return "End time is required";
+                          return "End time is required".tr;
                         }
                         if(endDuration<=startDuration){
-                          return  "Start time is less than end time";
+                          return  "Start time is less than end time".tr;
                         }
                         return null;
                       }),
@@ -564,35 +564,35 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value!.trim().isEmpty) {
-                  return "Service duration is required";
+                  return "Service duration is required".tr;
                 }
                 if (startDateTime
                     .difference(endDateTime)
                     .abs()
                     .compareTo(Duration(minutes: int.tryParse(value) ?? 0)) ==
                     -1) {
-                  return "Service duration is greater then start & end time duration";
+                  return "Service duration is greater then start & end time duration".tr;
                 }
                 return null;
               }),
           const SizedBox(height: 10),
           RegisterTextFieldWidget(
               controller: slotController.noOfGuest,
-              hint: "Enter no. of guest",
+              hint: "Enter no. of guest".tr,
               onChanged: (f) {
                 clearSlots();
               },
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value!.trim().isEmpty) {
-                  return "Guest no. is required";
+                  return "Guest no. is required".tr;
                 }
                 return null;
               }),
           const SizedBox(height: 10),
           RegisterTextFieldWidget(
               controller: slotController.setOffer,
-              hint: "Set offer",
+              hint: "Set offer".tr,
               onChanged: (f) {
                 clearSlots();
               },
@@ -611,15 +611,15 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (slotController.dinnerStartTime.text.trim().isEmpty) {
-                      showToast("Select start time");
+                      showToast("Select start time".tr);
                       return;
                     }
                     if (slotController.dinnerEndTime.text.trim().isEmpty) {
-                      showToast("Select end time");
+                      showToast("Select end time".tr);
                       return;
                     }
                     if (slotController.dinnerServiceDuration.text.trim().isEmpty) {
-                      showToast("Select service duration");
+                      showToast("Select service duration".tr);
                       return;
                     }
 
@@ -654,7 +654,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       surfaceTintColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                   child: Text(
-                    slotController.dinnerSlots.isEmpty ? "Create Slot" : "Slots Created - ${slotController.dinnerSlots.length}",
+                    slotController.dinnerSlots.isEmpty ? "Create Slot".tr : "Slots Created - ${slotController.dinnerSlots.length}",
                     style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
                   ),
                 ),

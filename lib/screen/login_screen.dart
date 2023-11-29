@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'WELCOME ',
+                              'WELCOME'.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Login your account.',
+                              'Login your account.'.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 13,
@@ -186,8 +186,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text(
-                                "Login With Mobile Number",
+                               Text(
+                                "Login With Mobile Number".tr,
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
+                               Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Enter Mobile Number',
+                                    'Enter Mobile Number'.tr,
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -230,11 +230,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: loginController.mobileController,
                                     style: const TextStyle(color: Colors.white),
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Please enter your phone number'),
+                                      RequiredValidator(errorText: 'Please enter your phone number'.tr),
                                     ]).call,
                                     dropdownTextStyle: const TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
-                                      hintText: 'Enter your Mobile number',
+                                      hintText: 'Enter your Mobile number'.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       enabled: true,
@@ -271,12 +271,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   CommonTextFieldWidget(
                                     controller: emailController,
-                                    hint: 'Enter Email',
+                                    hint: 'Enter Email'.tr,
                                   ),
                                   SizedBox(height: 20,),
                                   CommonTextFieldWidget(
                                     controller: passwordController,
-                                    hint: 'Enter Password',
+                                    hint: 'Enter Password'.tr,
                                   ),
 
                                   // TextFormField(
@@ -401,7 +401,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               });
                                           }
                                         },
-                                        title: 'Login',
+                                        title: 'Login'.tr,
                                       )
                                     : CommonButton(
                                         onPressed: () async {
@@ -409,20 +409,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                             checkPhoneNumberInFirestore();
                                           }
                                         },
-                                        title: 'Login',
+                                        title: 'Login'.tr,
                                       ),
                                 const SizedBox(
                                   height: 20,
                                 ),
                                 Text(
-                                  'Customer Booking?',
+                                  'Customer Booking?'.tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
-                                  'Signup as a customer',
+                                  'Signup as a customer'.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
@@ -440,8 +440,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     //SizedBox(width: 10,),
-                                    const Text('Or Login with',
-                                        style: TextStyle(
+                                     Text('Or Login with'.tr,
+                                        style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
@@ -480,7 +480,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               width: 10,
                                             ),
                                             Text(
-                                              'Facebook',
+                                              'Facebook'.tr,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                             )
@@ -511,7 +511,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 width: 10,
                                               ),
                                               Text(
-                                                'Google',
+                                                'Google'.tr,
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                               )
@@ -529,7 +529,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Don't Have an Account?",
+                                      "Don't Have an Account?".tr,
                                       style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     InkWell(
@@ -537,7 +537,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Get.toNamed(MyRouters.signUpScreen);
                                       },
                                       child: Text(
-                                        ' Signup',
+                                        'Signup'.tr,
                                         style: GoogleFonts.poppins(
                                             color: const Color(0xFF1877F2), fontWeight: FontWeight.w600, fontSize: 14),
                                       ),

@@ -473,7 +473,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Restaurant Name',
+                            'Restaurant Name'.tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -481,14 +481,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                             controller: restaurantController,
-                            validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
-                            hint: profileData.restaurantName == null ? "restaurant name" : profileData.restaurantName.toString(),
+                            validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
+                            hint: profileData.restaurantName == null ? "restaurant name".tr : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Category",
+                            "Category".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -500,10 +500,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               controller: categoryController,
                               // length: 10,
                               validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter your category'),
+                                RequiredValidator(errorText: 'Please enter your category'.tr),
                               ]).call,
                               keyboardType: TextInputType.emailAddress,
-                              hint: 'Select category',
+                              hint: 'Select category'.tr,
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -534,14 +534,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               },
                             )
                           else
-                            const Center(
-                              child: Text("No Category Available"),
+                            Center(
+                              child: Text("No Category Available".tr),
                             ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            "Email",
+                            "Email".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -551,8 +551,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             readOnly: true,
                             controller: emailController,
                             validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your email'),
-                              EmailValidator(errorText: 'Enter a valid email address'),
+                              RequiredValidator(errorText: 'Please enter your email'.tr),
+                              EmailValidator(errorText: 'Enter a valid email address'.tr),
                             ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
@@ -562,7 +562,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Mobile Number",
+                            "Mobile Number".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -572,7 +572,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             readOnly: true,
                             controller: mobileController,
                             length: 10,
-                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number ').call,
+                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number'.tr).call,
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
                             hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
@@ -581,7 +581,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Address",
+                            "Address".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -590,7 +590,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           InkWell(
                               onTap: () async {
                                 var place = await PlacesAutocomplete.show(
-                                    hint: "Location",
+                                    hint: "Location".tr,
                                     context: context,
                                     apiKey: googleApikey,
                                     mode: Mode.overlay,
@@ -646,7 +646,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ? Padding(
                                           padding: EdgeInsets.only(top: AddSize.size5),
                                           child: Text(
-                                            "      Location is required",
+                                            "Location is required".tr,
                                             style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
                                           ),
                                         )
@@ -657,7 +657,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "About Us",
+                            "About Us".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -668,7 +668,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             minLines: 5,
                             maxLines: 5,
                             validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter about yourself'),
+                              RequiredValidator(errorText: 'Please enter about yourself'.tr),
                             ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
@@ -677,7 +677,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Upload Restaurant Images or Videos",
+                            "Upload Restaurant Images or Videos".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -688,7 +688,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           Text(
-                            "Upload Restaurant Menu Card",
+                            "Upload Restaurant Menu Card".tr,
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -702,7 +702,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             onPressed: () {
                               updateProfileToFirestore();
                             },
-                            title: 'Save',
+                            title: 'Save'.tr,
                           ),
                         ],
                       ),
@@ -724,8 +724,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -764,7 +764,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child:  Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -801,14 +801,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child:  Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child:  Text('Cancel'.tr),
           ),
         ],
       ),
@@ -871,7 +871,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               elevation: 0,
                               color: Colors.white,
                               child: Text(
-                                "Video",
+                                "Video".tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -906,7 +906,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               elevation: 0,
                               color: Colors.white,
                               child: Text(
-                                "Take picture",
+                                "Take picture".tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -941,7 +941,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               elevation: 0,
                               color: Colors.white,
                               child: Text(
-                                "Choose From Gallery",
+                                "Choose From Gallery".tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -965,7 +965,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               textStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)),
                           child: Text(
-                            "Submit",
+                            "Submit".tr,
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
@@ -1002,7 +1002,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                           children: [
                             Flexible(
                               child: Text(
-                                'Image Gallery',
+                                'Image Gallery'.tr,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -1148,7 +1148,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               elevation: 0,
                               color: Colors.white,
                               child: Text(
-                                "Take picture",
+                                "Take picture".tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -1183,7 +1183,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               elevation: 0,
                               color: Colors.white,
                               child: Text(
-                                "Choose From Gallery",
+                                "Choose From Gallery".tr,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -1207,7 +1207,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               textStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)),
                           child: Text(
-                            "Submit",
+                            "Submit".tr,
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
@@ -1244,7 +1244,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                           children: [
                             Flexible(
                               child: Text(
-                                'Image Gallery',
+                                'Image Gallery'.tr,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,

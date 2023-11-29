@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../widget/apptheme.dart';
@@ -40,7 +41,7 @@ class _LatestSalesAppBarState extends State<LatestSalesAppBar> {
               children: [
                 Expanded(
                   child: Text(
-                    "Latest Sales",
+                    "Latest Sales".tr,
                     style: Theme.of(context)
                         .textTheme
                         .headlineSmall!
@@ -55,7 +56,7 @@ class _LatestSalesAppBarState extends State<LatestSalesAppBar> {
                     style: TextButton.styleFrom(
                         visualDensity: VisualDensity.compact, padding: const EdgeInsets.symmetric(horizontal: 10)),
                     child: Text(
-                      "See All",
+                      "See All".tr,
                       style: GoogleFonts.poppins(
                           decorationColor: AppTheme.greycolor,
                           height: 1.5,
@@ -71,7 +72,7 @@ class _LatestSalesAppBarState extends State<LatestSalesAppBar> {
                 Expanded(
                   flex: 5,
                   child: Text(
-                    "Order No.",
+                    "Order No.".tr,
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14, color: const Color(0xFF52AC1A)),
                   ),
                 ),
@@ -81,7 +82,7 @@ class _LatestSalesAppBarState extends State<LatestSalesAppBar> {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    "Status",
+                    "Status".tr,
                     style: GoogleFonts.poppins(
                         height: 1.5, fontWeight: FontWeight.w600, fontSize: 14, color: const Color(0xFF52AC1A)),
                   ),
@@ -92,7 +93,7 @@ class _LatestSalesAppBarState extends State<LatestSalesAppBar> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    "Earning",
+                    "Earning".tr,
                     textAlign: TextAlign.end,
                     style: GoogleFonts.poppins(
                         height: 1.5, fontWeight: FontWeight.w600, fontSize: 14, color: const Color(0xFF52AC1A)),

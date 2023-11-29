@@ -70,6 +70,7 @@ dependencies:
   image_picker_for_web:
   file_picker:
   email_auth:
+  shared_preferences: ^2.2.2
 
 
 

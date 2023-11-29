@@ -95,7 +95,7 @@ class _BookableUIState extends State<BookableUI> {
                               },
                               behavior: HitTestBehavior.translucent,
                               child: Text(
-                                "Single Date",
+                                "Single Date".tr,
                                 style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
                               ),
@@ -129,7 +129,7 @@ class _BookableUIState extends State<BookableUI> {
                               },
                               behavior: HitTestBehavior.translucent,
                               child: Text(
-                                "Date Range",
+                                "Date Range".tr,
                                 style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w400, color: const Color(0xff2F2F2F), fontSize: 14),
                               ),
@@ -145,7 +145,7 @@ class _BookableUIState extends State<BookableUI> {
                             children: [
                               RegisterTextFieldWidget(
                                   readOnly: true,
-                                  hint: "Start Date",
+                                  hint: "Start Date".tr,
                                   onTap: () {
                                     pickDate(
                                         onPick: (DateTime gg) {
@@ -165,7 +165,7 @@ class _BookableUIState extends State<BookableUI> {
                               const SizedBox(height: 10),
                               RegisterTextFieldWidget(
                                   readOnly: true,
-                                  hint: "End Date",
+                                  hint: "End Date".tr,
                                   onTap: () {
                                     pickDate(
                                         onPick: (DateTime gg) {
@@ -190,7 +190,7 @@ class _BookableUIState extends State<BookableUI> {
                             children: [
                               RegisterTextFieldWidget(
                                   readOnly: true,
-                                  hint: "Start Date",
+                                  hint: "Start Date".tr,
                                   onTap: () {
                                     pickDate(
                                       onPick: (DateTime gg) {
@@ -229,7 +229,7 @@ class _BookableUIState extends State<BookableUI> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Lunch Time Slot",
+                        "Lunch Time Slot".tr,
                         style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
                       ),
                     ),
@@ -239,7 +239,7 @@ class _BookableUIState extends State<BookableUI> {
                             slotController.editLunch = !slotController.editLunch;
                             setState(() {});
                           },
-                          child: Text(slotController.editLunch ? "Previous Slots" : "Create New")),
+                          child: Text(slotController.editLunch ? "Previous Slots".tr : "Create New".tr)),
                   ],
                 ),
                 if (widget.slotDataList == null || slotController.editLunch == true)
@@ -295,7 +295,7 @@ class _BookableUIState extends State<BookableUI> {
               children: [
                 Expanded(
                   child: Text(
-                    "Dinner Time Slot",
+                    "Dinner Time Slot".tr,
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
                   ),
                 ),
@@ -305,7 +305,7 @@ class _BookableUIState extends State<BookableUI> {
                         slotController.editDinner = !slotController.editDinner;
                         setState(() {});
                       },
-                      child: Text(slotController.editDinner ? "Previous Slots" : "Create New")),
+                      child: Text(slotController.editDinner ? "Previous Slots".tr : "Create New".tr)),
               ],
             ),
             if (widget.slotDataList == null || slotController.editDinner == true)

@@ -62,7 +62,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: backAppBar(title: "Menu List", context: context, dispose: widget.back),
+        appBar: backAppBar(title: "Menu List".tr, context: context, dispose: widget.back),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
@@ -105,7 +105,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(10))),
                             fillColor: Colors.white,
                             contentPadding: EdgeInsets.symmetric(horizontal: AddSize.padding20, vertical: AddSize.padding10),
-                            hintText: 'Find for food...',
+                            hintText: 'Find for food...'.tr,
                             hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF9DA4BB), fontWeight: FontWeight.w400)),
                       ),
                     ),
@@ -286,8 +286,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                               showDialog(
                                                 context: context,
                                                 builder: (ctx) => AlertDialog(
-                                                  title: const Text("Delete Menu"),
-                                                  content: const Text("Are you sure you want to delete this Menu"),
+                                                  title: Text("Delete Menu".tr),
+                                                  content: Text("Are you sure you want to delete this Menu".tr),
                                                   actions: <Widget>[
                                                     TextButton(
                                                       onPressed: () {
@@ -298,9 +298,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child: const Center(
+                                                        child:  Center(
                                                             child: Text(
-                                                          "Cancel",
+                                                          "Cancel".tr,
                                                           style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
@@ -308,7 +308,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                                     TextButton(
                                                       onPressed: () {
                                                         FirebaseFirestore.instance
-                                                            .collection("vendor_menu")
+                                                            .collection("vendor_menu".tr)
                                                             .doc(menuItem.menuId)
                                                             .delete()
                                                             .then((value) {
@@ -321,9 +321,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child: const Center(
+                                                        child:  Center(
                                                             child: Text(
-                                                          "okay",
+                                                          "okay".tr,
                                                           style: TextStyle(color: Colors.white),
                                                         )),
                                                       ),
@@ -352,8 +352,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ],
                               );
                             })
-                        : const Center(
-                            child: Text("No Menu Created"),
+                        :  Center(
+                            child: Text("No Menu Created".tr),
                           );
                   }
                   return const SizedBox.shrink();

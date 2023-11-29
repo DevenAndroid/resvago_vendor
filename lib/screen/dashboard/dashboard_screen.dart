@@ -113,7 +113,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Restaurant Time:",
+                            "Restaurant Time:".tr,
                             style: GoogleFonts.ibmPlexSansArabic(
                                 fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                           ),

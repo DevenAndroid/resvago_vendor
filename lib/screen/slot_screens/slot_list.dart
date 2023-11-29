@@ -86,7 +86,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Slot List", context: context),
+      appBar: backAppBar(title: "Slot List".tr, context: context),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(children: [
@@ -217,22 +217,22 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 // ));
                                               },
                                               // value: '/Edit',
-                                              child: const Text("Edit"),
+                                              child:  Text("Edit".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
                                                 Get.to(() => SlotViewScreen(slotDataList: item));
                                               },
                                               // value: '/slotViewScreen',
-                                              child: const Text("View"),
+                                              child:  Text("View".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
                                                 showDialog(
                                                   context: context,
                                                   builder: (ctx) => AlertDialog(
-                                                    title: const Text("Delete Slot"),
-                                                    content: const Text("Are you sure you want to delete this slot"),
+                                                    title: Text("Delete Slot".tr),
+                                                    content: Text("Are you sure you want to delete this slot".tr),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () {
@@ -243,9 +243,9 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                               color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                           width: 100,
                                                           padding: const EdgeInsets.all(14),
-                                                          child: const Center(
+                                                          child: Center(
                                                               child: Text(
-                                                            "Cancel",
+                                                            "Cancel".tr,
                                                             style: TextStyle(color: Colors.white),
                                                           )),
                                                         ),
@@ -267,9 +267,9 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                               color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                           width: 100,
                                                           padding: const EdgeInsets.all(14),
-                                                          child: const Center(
+                                                          child: Center(
                                                               child: Text(
-                                                            "okay",
+                                                            "okay".tr,
                                                             style: TextStyle(color: Colors.white),
                                                           )),
                                                         ),
@@ -280,17 +280,17 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 setState(() {});
                                               },
                                               // value: '/deactivate',
-                                              child: const Text("Delete"),
+                                              child: Text("Delete".tr),
                                             )
                                           ];
                                         })
                                   ]));
                         })
-                    : const Center(
-                        child: Text("Slots are not created yet"),
+                    :  Center(
+                        child: Text("Slots are not created yet".tr),
                       )
-                : const Center(
-                    child: Text("Slots are not created yet"),
+                :  Center(
+                    child: Text("Slots are not created yet".tr),
                   ),
           )
         ]).appPaddingForScreen,

@@ -162,7 +162,7 @@ class OnboardContent extends StatelessWidget {
                     height: height * .04,
                   ),
                   Text(
-                    title,
+                    title.tr,
                     style: GoogleFonts.alegreyaSans(
                         textStyle: const TextStyle(
                             color: Color(0xFF131A38),
@@ -175,7 +175,7 @@ class OnboardContent extends StatelessWidget {
                     height: height * .08,
                   ),
                   Text(
-                    description,
+                    description.tr,
                     style: GoogleFonts.alegreyaSans(
                       textStyle: const TextStyle(
                           color: Color(0xFF616772), fontStyle: FontStyle.italic, fontSize: 17, fontWeight: FontWeight.w400),
