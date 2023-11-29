@@ -544,11 +544,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               strokeWidth: 1,
                               child: InkWell(
                                 onTap: () {
-                                  // showActionSheet(context);
-                                  Helper.addFilePicker().then((value) {
-                                    categoryFile.value = value;
-                                    print("Image----${categoryFile.value}");
-                                  });
+                                  showActionSheet(context);
+                                  // Helper.addFilePicker().then((value) {
+                                  //   categoryFile.value = value;
+                                  //   print("Image----${categoryFile.value}");
+                                  // });
                                 },
                                 child: categoryFile.value.path != ""
                                     ? Obx(() {
