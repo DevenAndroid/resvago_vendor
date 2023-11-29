@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/wallet_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
+import 'package:resvago_vendor/widget/language_change.dart';
 import '../../Setting screen.dart';
 import '../../controllers/add_product_controller.dart';
 import '../../controllers/bottomnavbar_controller.dart';
@@ -169,7 +170,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.dashboard),
-                title: Text('Dashboard',
+                title: Text("Dashboard".tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -190,7 +191,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.restaurant_menu_sharp),
-                title: Text('Menu',
+                title: Text('Menu'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -213,7 +214,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.countertops_outlined),
-                title: Text('Promo Code List',
+                title: Text('Promo Code List'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -234,7 +235,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.line_style),
-                title: Text('Slot List',
+                title: Text('Slot List'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -255,7 +256,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.monetization_on),
-                title: Text('Total Earning',
+                title: Text('Total Earning'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -276,7 +277,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.access_time),
-                title: Text('Set Store Time',
+                title: Text('Set Store Time'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -297,7 +298,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.food_bank),
-                title: Text('Bank Details',
+                title: Text('Bank Details'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -315,7 +316,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.settings),
-                title: Text('Setting',
+                title: Text('Setting'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -336,7 +337,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.settings),
-                title: Text('FeedBack',
+                title: Text('FeedBack'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -356,8 +357,29 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.language),
+                title: Text('Change Language'.tr,
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 6;
+                    Get.to(const LanguageChangeScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
                 leading: const Icon(Icons.logout),
-                title: Text('Log Out',
+                title: Text('Log Out'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: const Color(0xFF4F535E),
@@ -430,12 +452,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 6,
                           ),
                           bottomController.pageIndex.value == 0
-                              ? const Text(
-                                  " Dashboard",
+                              ?  Text(
+                                  " Dashboard".tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  " Dashboard",
+                              :  Text(
+                                  " Dashboard".tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -466,12 +488,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
-                              ? const Text(
-                                  "Menu",
+                              ?  Text(
+                                  "Menu".tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Menu",
+                              :  Text(
+                                  "Menu".tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -499,12 +521,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
-                              ? const Text(
-                                  "Oders",
+                              ?  Text(
+                                  "Oders".tr,
                                   style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Oders",
+                              :  Text(
+                                  "Oders".tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -532,12 +554,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
-                              ? const Text(
-                                  "Wallet",
-                                  style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                              ?  Text(
+                                  "Wallet".tr,
+                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Wallet",
+                              :  Text(
+                                  "Wallet".tr,
                                   style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],

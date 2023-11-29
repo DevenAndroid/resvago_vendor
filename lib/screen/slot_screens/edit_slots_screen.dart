@@ -61,7 +61,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
-        appBar: backAppBar(title: "Edit Slot", context: context, backgroundColor: Colors.white),
+        appBar: backAppBar(title: "Edit Slot".tr, context: context, backgroundColor: Colors.white),
         body: apiLoaded ?
         Theme(
           data: ThemeData(useMaterial3: true),
@@ -72,9 +72,9 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                     const SizedBox(
                       height: 8,
                     ),
-                    BookableUI(title: "Lunch", slotDataList: widget.createSlotData, showDates: false, editing: true),
+                    BookableUI(title: "Lunch".tr, slotDataList: widget.createSlotData, showDates: false, editing: true),
                     BookableUI(
-                      title: "Dinner",
+                      title: "Dinner".tr,
                       slotDataList: widget.createSlotData,
                       showDates: false,
                       editing: true,
@@ -104,7 +104,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                             Get.back();
                           }
                         },
-                        title: 'Update Slot'.toUpperCase(),
+                        title: 'Update Slot'.tr.toUpperCase(),
                       ),
                     ),
                   ]).appPaddingForScreen)),

@@ -27,7 +27,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: backAppBar(
-            title: "Promo code List",
+            title: "Promo code List".tr,
             context: context,
             icon2: GestureDetector(
               onTap: () {
@@ -57,7 +57,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
               } else if (snapshot.hasError) {
                 return Center(child: Text("Error: ${snapshot.error}"));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("No Coupon Found"));
+                return  Center(child: Text("No Coupon Found".tr));
               } else {
                 List<CouponData>? users = snapshot.data;
                 final filteredUsers = filterUsers(users!, searchQuery);
@@ -131,7 +131,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                     itemBuilder: (ac) {
                                                       return [
                                                         PopupMenuItem(
-                                                          child: const Text("Edit"),
+                                                          child:  Text("Edit".tr),
                                                           onTap: () {
                                                             Get.to(CreatePromoCodeScreen(
                                                               isEditMode: true,
@@ -146,7 +146,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                           },
                                                         ),
                                                         PopupMenuItem(
-                                                          child: Text(item.deactivate ? "Activate" : "Deactivate"),
+                                                          child: Text(item.deactivate ? "Activate".tr : "Deactivate".tr),
                                                           onTap: () {
                                                             item.deactivate
                                                                 ? FirebaseFirestore.instance
@@ -180,7 +180,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
-                                                  "Discount",
+                                                  "Discount".tr,
                                                   style: GoogleFonts.poppins(
                                                       color: const Color(0xFF304048), fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
@@ -206,7 +206,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                       color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
                                                 Text(
-                                                  "To",
+                                                  "To".tr,
                                                   style: GoogleFonts.poppins(
                                                       color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
@@ -265,8 +265,8 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                 )),
                           ]);
                         })
-                    : const Center(
-                        child: Text("No Coupon Found"),
+                    :  Center(
+                        child: Text("No Coupon Found".tr),
                       );
               }
               return const Center(child: CircularProgressIndicator());

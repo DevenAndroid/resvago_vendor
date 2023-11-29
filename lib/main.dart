@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/widget/local_string.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,12 +23,35 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  updateLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString("app_language") == null ||
+        sharedPreferences.getString("app_language") == "english") {
+      Get.updateLocale(const Locale('en', 'US'));
+    } else {
+      Get.updateLocale(const Locale('es', 'ES'));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updateLanguage();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      translations: LocaleString(),
+      locale: const Locale('en', 'US'),
       title: 'Flutter Demo',
       theme: ThemeData(
           // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

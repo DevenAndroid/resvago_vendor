@@ -35,14 +35,14 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
                 Get.to(()=>const SetTimeScreen());
               },
               child: Text(
-                schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",
+                schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed".tr,
                 style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: AppTheme.primaryColor,),
               ),
             );
           }
         }
         return Text(
-          "Closed",
+          "Closed".tr,
           style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: AppTheme.primaryColor,),
         );
       },

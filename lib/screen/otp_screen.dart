@@ -105,7 +105,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Sent OTP  to verify your number',
+                                  'Sent OTP  to verify your number'.tr,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
@@ -186,14 +186,29 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                               Align(
                                 alignment: Alignment.center,
-                                child: Text(
-                                  'Enter the OTP Send to ${loginController.mobileController.text}',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                  ),
-                                  textAlign: TextAlign.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Enter the OTP Send to'.tr,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      loginController.mobileController.text,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(
@@ -205,7 +220,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 },
                                 child: Center(
                                   child: Text(
-                                    'RESEND OTP',
+                                    'RESEND OTP'.tr,
                                     style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
                                     textAlign: TextAlign.center,
                                   ),

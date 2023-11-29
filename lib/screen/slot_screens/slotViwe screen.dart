@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/utils/helper.dart';
@@ -28,7 +29,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
       print(slotDataList!.eveningSlots!);
     }
     return Scaffold(
-        appBar: backAppBar(title: "Slot View", context: context),
+        appBar: backAppBar(title: "Slot View".tr, context: context),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -43,7 +44,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Start Date",
+                              "Start Date".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
@@ -81,12 +82,12 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Lunch Time Slots",
+                              "Lunch Time Slots".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             Text(
-                              "Seats",
+                              "Seats".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -145,12 +146,12 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Dinner Start Time ",
+                              "Dinner Start Time".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             Text(
-                              "Seats",
+                              "Seats".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -201,7 +202,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Number of Guest",
+                              "Number of Guest".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
@@ -219,12 +220,12 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Interval TIme",
+                              "Interval TIme".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
-                              "30 Mins",
+                              "30 Mins".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -255,7 +256,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Offers",
+                              "Offers".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),

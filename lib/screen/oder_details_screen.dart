@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/model/dining_order_modal.dart';
@@ -61,7 +62,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
   Widget build(BuildContext context) {
     widget.myDiningOrderModel.fcmToken;
     return Scaffold(
-      appBar: backAppBar(title: "Orders Details", context: context),
+      appBar: backAppBar(title: "Orders Details".tr, context: context),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -258,7 +259,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Selected Items",
+                        "Selected Items".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                       ),
                       const SizedBox(
@@ -354,7 +355,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Customer Details",
+                          "Customer Details".tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                         ),
                         const SizedBox(
@@ -376,7 +377,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Customer Name",
+                                    "Customer Name".tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                   ),
@@ -411,7 +412,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Customer Number",
+                                    "Customer Number".tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                   ),
@@ -490,7 +491,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Subtotal",
+                              "Subtotal".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
@@ -508,7 +509,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Service Fees",
+                              "Service Fees".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
@@ -526,7 +527,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Meat Pasta",
+                              "Meat Pasta".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                             ),
@@ -548,7 +549,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Total",
+                              "Total".tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -576,7 +577,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
-                      "Order Completed",
+                      "Order Completed".tr,
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall!
@@ -611,7 +612,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
-                      "Complete Order",
+                      "Complete Order".tr,
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall!
@@ -630,7 +631,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
-                      "Order Rejected",
+                      "Order Rejected".tr,
                       style: Theme.of(context)
                           .textTheme
                           .headline5!
@@ -670,7 +671,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           child: Text(
-                            "Accept Order",
+                            "Accept Order".tr,
                             style: Theme.of(context)
                                 .textTheme
                                 .headline5!
@@ -706,7 +707,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: Text(
-                              "Reject Order",
+                              "Reject Order".tr,
                               style: Theme.of(context).textTheme.headline5!.copyWith(
                                   color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                             )))

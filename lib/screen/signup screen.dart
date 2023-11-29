@@ -185,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(title: "Restaurant Registration", context: context, backgroundColor: Colors.white),
+      appBar: backAppBar(title: "Restaurant Registration".tr, context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -208,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Restaurant Name",
+                        "Restaurant Name".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -217,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: restaurantNameController,
                         // length: 10,
-                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name ').call,
+                        validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
                         // keyboardType: TextInputType.none,
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
@@ -226,7 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Category",
+                        "Category".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -238,7 +238,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           controller: categoryController,
                           // length: 10,
                           validator: MultiValidator([
-                            RequiredValidator(errorText: 'Please enter your category'),
+                            RequiredValidator(errorText: 'Please enter your category'.tr),
                           ]).call,
                           keyboardType: TextInputType.emailAddress,
                           hint: 'Select category',
@@ -272,15 +272,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                         )
                       else
-                        const Center(
-                          child: Text("No Category Available"),
+                         Center(
+                          child: Text("No Category Available".tr),
                         ),
                       const SizedBox(
                         height: 20,
                       ),
 
                       Text(
-                        "Email",
+                        "Email".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -290,8 +290,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: emailController,
                         // length: 10,
                         validator: MultiValidator([
-                          RequiredValidator(errorText: 'Please enter your email'),
-                          EmailValidator(errorText: 'Enter a valid email address'),
+                          RequiredValidator(errorText: 'Please enter your email'.tr),
+                          EmailValidator(errorText: 'Enter a valid email address'.tr),
                         ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
@@ -320,7 +320,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //   height: 20,
                       // ),
                       Text(
-                        "Mobile Number",
+                        "Mobile Number".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -333,7 +333,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: Colors.black,
                         ),
                         validator: MultiValidator([
-                          RequiredValidator(errorText: 'Please enter your phone number'),
+                          RequiredValidator(errorText: 'Please enter your phone number'.tr),
                         ]).call,
                         dropdownTextStyle: const TextStyle(color: Colors.black),
                         style: const TextStyle(color: Colors.black),
@@ -352,7 +352,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // fontFamily: 'poppins',
                               fontWeight: FontWeight.w300,
                             ),
-                            hintText: 'Phone Number',
+                            hintText: 'Phone Number'.tr,
                             // labelStyle: TextStyle(color: Colors.black),
                             border: const OutlineInputBorder(
                               borderSide: BorderSide(),
@@ -379,7 +379,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 5,
                       ),
                       Text(
-                        "Address",
+                        "Address".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -388,7 +388,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       InkWell(
                           onTap: () async {
                             var place = await PlacesAutocomplete.show(
-                                hint: "Location",
+                                hint: "Location".tr,
                                 context: context,
                                 apiKey: googleApikey,
                                 mode: Mode.overlay,
@@ -445,7 +445,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ? Padding(
                                       padding: EdgeInsets.only(top: AddSize.size5),
                                       child: Text(
-                                        "      Location is required",
+                                        "Location is required".tr,
                                         style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
                                       ),
                                     )
@@ -520,8 +520,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                            const Text(
-                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                             Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style: TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
                                             ),
@@ -585,8 +585,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                            const Text(
-                                              'Accepted file types: JPEG, Doc, PDF, PNG',
+                                             Text(
+                                              'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style: TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
                                             ),
@@ -628,7 +628,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textDirection: TextDirection.rtl,
                             softWrap: true,
                             text: TextSpan(
-                              text: 'Yes I understand and agree to the ',
+                              text: 'Yes I understand and agree to the'.tr,
                               style: const TextStyle(color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
@@ -638,8 +638,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             // Return the dialog box widget
-                                            return const AlertDialog(
-                                              title: Text('Terms And Conditions'),
+                                            return  AlertDialog(
+                                              title: Text('Terms And Conditions'.tr),
                                               content: Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
                                                   'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
@@ -648,7 +648,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           },
                                         );
                                       },
-                                    text: 'Terms And Conditions',
+                                    text: 'Terms And Conditions'.tr,
                                     style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.red)),
                               ],
                             ),
@@ -688,8 +688,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -727,7 +727,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child: Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -763,14 +763,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child: Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
         ],
       ),

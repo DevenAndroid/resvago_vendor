@@ -51,7 +51,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'THANK YOU ',
+                                  'THANK YOU'.tr,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
@@ -65,7 +65,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'your account has been successfully created',
+                                  'your account has been successfully created'.tr,
                                   style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -81,7 +81,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                 padding: const EdgeInsets.only(
                                     left: 10.0, right: 10),
                                 child: CommonButtonBlue(
-                                  title: "CONTINUE",
+                                  title: "CONTINUE".tr,
                                   onPressed: () {
                                     Get.toNamed(MyRouters.loginScreen);
                                   },
