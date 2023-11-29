@@ -126,7 +126,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
 
   List<MenuItemData> menuItemList = [];
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("menuItemsList").where("deactivate", isEqualTo: false).get().then((value) {
+    FirebaseFirestore.instance.collection("menuItemsList").get().then((value) {
       menuItemList.clear();
       for (var element in value.docs) {
         var gg = element.data();

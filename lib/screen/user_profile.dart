@@ -114,6 +114,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         }
       } else {
         if (!controller.categoryFile.path.contains("http")) {
+          if (profileData.image.toString().isNotEmpty) {
+            Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
+            await gg.delete();
+          }
           UploadTask uploadTask = FirebaseStorage.instance
               .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
               .child("image")
@@ -216,7 +220,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         if (!categoryList!.map((e) => e.name.toString()).toList().contains(profileData.category)) {
           categoryValue = "";
         }
-        // setState(() {});
+        setState(() {});
       }
     });
   }

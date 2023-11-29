@@ -114,6 +114,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                     )
                                   : Image.file(
                                       controller.categoryFile,
+                                height: screenSize.height * 0.12,
+                                width: screenSize.height * 0.12,
                                       fit: BoxFit.cover,
                                       errorBuilder: (_, __, ___) => CachedNetworkImage(
                                         fit: BoxFit.cover,

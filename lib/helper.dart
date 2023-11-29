@@ -31,7 +31,7 @@ class Helper {
       if (item == null) {
         return null;
       } else {
-        print(item.files.first.bytes!);
+        // print(item.files.first.bytes!);
         return kIsWeb ? item.files.first.bytes! : File(item.files.first.path!);
       }
     } on PlatformException catch (e) {

@@ -143,14 +143,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         )
             .then((value) async {
           await FirebaseAuth.instance.signOut();
-          Get.back();
+          Get.toNamed(MyRouters.thankYouScreen);
           Helper.hideLoader(loader);
         }).catchError((e) async {
           await FirebaseAuth.instance.signOut();
         });
       }
-      await FirebaseAuth.instance.signOut();
-      Get.toNamed(MyRouters.thankYouScreen);
     } catch (e) {
       await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
@@ -544,11 +542,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               strokeWidth: 1,
                               child: InkWell(
                                 onTap: () {
-                                  // showActionSheet(context);
-                                  Helper.addFilePicker().then((value) {
-                                    categoryFile.value = value;
-                                    print("Image----${categoryFile.value}");
-                                  });
+                                  showActionSheet(context);
+                                  // Helper.addFilePicker().then((value) {
+                                  //   categoryFile.value = value;
+                                  //   print("Image----${categoryFile.value}");
+                                  // });
                                 },
                                 child: categoryFile.value.path != ""
                                     ? Obx(() {
