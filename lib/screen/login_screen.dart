@@ -107,12 +107,15 @@ class _LoginScreenState extends State<LoginScreen> {
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
           log("Verification credential: $credential");
+          showToast("$credential");
         },
         verificationFailed: (FirebaseAuthException e) {
           log("Verification Failed: $e");
+          showToast("$e");
         },
         codeSent: (String verificationId, [int? resendToken]) {
           log("Code Sent: $verificationId");
+          showToast(verificationId);
           verificationId = verificationId;
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
@@ -122,11 +125,13 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           log("Auto Retrieval Timeout: $verificationId");
+          showToast(verificationId);
         },
       );
       Helper.hideLoader(loader);
     } catch (e) {
       Helper.hideLoader(loader);
+      showToast(e);
     }
   }
 

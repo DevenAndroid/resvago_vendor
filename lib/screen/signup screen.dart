@@ -150,6 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
       }
     } catch (e) {
+      showToast(e);
       await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
       throw Exception(e);
@@ -405,7 +406,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 apiKey: googleApikey,
                                 apiHeaders: await const GoogleApiHeaders().getHeaders(),
                               );
-                              print(plist);
+                              if (kDebugMode) {
+                                print(plist);
+                              }
                               String placeid = place.placeId ?? "0";
                               final detail = await plist.getDetailsByPlaceId(placeid);
                               final geometry = detail.result.geometry!;
@@ -415,7 +418,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 _address = (place.description ?? "Location").toString();
                                 latitude = lat;
                                 longitude = lang;
-                                print("Address iss...$_address");
+                                if (kDebugMode) {
+                                  print("Address iss...$_address");
+                                }
                               });
                             }
                           },
@@ -474,7 +479,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     }
                                     setState(() {});
                                     categoryFile.value = value;
-                                    print("Image----${categoryFile.value}");
+                                    if (kDebugMode) {
+                                      print("Image----${categoryFile.value}");
+                                    }
                                   });
                                 },
                                 child: pickedFile != null
@@ -522,7 +529,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             ),
                                              Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              style: const TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
                                             ),
                                             const SizedBox(
@@ -587,7 +594,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             ),
                                              Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              style: const TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
                                             ),
                                             const SizedBox(
@@ -640,10 +647,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             // Return the dialog box widget
                                             return  AlertDialog(
                                               title: Text('Terms And Conditions'.tr),
-                                              content: Text(
+                                              content: const Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
                                                   'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
-                                              actions: <Widget>[],
+                                              actions: const <Widget>[],
                                             );
                                           },
                                         );
@@ -690,7 +697,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title:  Text(
           'Select Picture from'.tr,
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
