@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -23,11 +22,9 @@ import '../bank_details_screen.dart';
 import '../login_screen.dart';
 import '../reviwe_screen.dart';
 import '../set_store_time/set_store_time.dart';
-import '../slot_screens/add_booking_slot_screen.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../slot_screens/slot_list.dart';
 import '../total earning screen.dart';
-import 'menu_list_screen.dart';
 import 'oder_list_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
@@ -42,6 +39,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   final controller = Get.put(AddProductController());
   int currentDrawer = 0;
   ProfileData profileData = ProfileData();
+
   void restaurantData() {
     FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
@@ -102,34 +100,20 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 shape: CircleBorder(),
                                 color: Colors.white,
                               ),
-                              child: controller.categoryFile.path.contains("http") || controller.categoryFile.path == ""
-                                  ? Image.network(
-                                      profileData.image ?? "",
-                                      height: screenSize.height * 0.12,
-                                      width: screenSize.height * 0.12,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => const Icon(
-                                        Icons.person,
-                                        size: 60,
-                                      ),
-                                    )
-                                  : Image.file(
-                                      controller.categoryFile,
+                              child: Image.network(
+                                profileData.image ?? "",
                                 height: screenSize.height * 0.12,
                                 width: screenSize.height * 0.12,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: controller.categoryFile.path,
-                                        height: screenSize.height * 0.12,
-                                        width: screenSize.height * 0.12,
-                                        errorWidget: (_, __, ___) => const Icon(
-                                          Icons.person,
-                                          size: 60,
-                                        ),
-                                        placeholder: (_, __) => const SizedBox(),
-                                      ),
-                                    )
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => SizedBox(
+                                  height: screenSize.height * 0.12,
+                                  width: screenSize.height * 0.12,
+                                  child: const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                  ),
+                                ),
+                              )
                               // Image.network(
                               //   profileData.image.toString(),
                               //   fit: BoxFit.cover,
@@ -452,13 +436,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 6,
                           ),
                           bottomController.pageIndex.value == 0
-                              ?  Text(
+                              ? Text(
                                   " Dashboard".tr,
-                                  style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              :  Text(
+                              : Text(
                                   " Dashboard".tr,
-                                  style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -488,13 +472,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
-                              ?  Text(
+                              ? Text(
                                   "Menu".tr,
-                                  style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              :  Text(
+                              : Text(
                                   "Menu".tr,
-                                  style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -521,13 +505,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
-                              ?  Text(
-                                  "Oders".tr,
-                                  style: TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                              ? Text(
+                                  "Orders".tr,
+                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              :  Text(
-                                  "Oders".tr,
-                                  style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                              : Text(
+                                  "Orders".tr,
+                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -554,13 +538,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
-                              ?  Text(
+                              ? Text(
                                   "Wallet".tr,
                                   style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              :  Text(
+                              : Text(
                                   "Wallet".tr,
-                                  style: TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),

@@ -51,7 +51,7 @@ class ProfileData {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
     menuGalleryImages = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
-    image = json['image'];
+    image = json['image'] ?? "";
     address = json['address'];
     restaurantName = json['restaurantName'];
     docid = json['docid'];

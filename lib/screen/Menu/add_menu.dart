@@ -75,7 +75,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       for (var i = 0; i < kk.length; i++) {
         arrangeNumbers.add(kk.substring(0, i + 1));
       }
-      String? imageUrl;
+      String? imageUrl = kIsWeb ? null : categoryFile.path;
       if (kIsWeb) {
         if (pickedFile != null) {
           UploadTask uploadTask = FirebaseStorage.instance.ref("categoryImages}").child("profile_image").putData(pickedFile!);
@@ -85,11 +85,11 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           imageUrl = fileUrl;
         }
       } else {
-        if (!categoryFile.path.contains("https")) {
-          if (menuItemData != null) {
-            Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
-            await gg.delete();
-          }
+        // if (menuItemData != null) {
+        //   Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
+        //   await gg.delete();
+        // }
+        if (!categoryFile.path.contains("https") && categoryFile.path.isNotEmpty) {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref("categoryImages")
               .child(DateTime.now().millisecondsSinceEpoch.toString())
@@ -387,7 +387,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
+                                            Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style: TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
@@ -447,7 +447,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
+                                            Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style:
                                                   TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
@@ -485,8 +485,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                           Text('Delivery'.tr,
-                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                          Text('Delivery'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       Row(
@@ -510,7 +509,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                           Text('Dining'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                          Text('Dining'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -589,7 +588,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                 Get.back();
               });
             },
-            child:  Text("Camera".tr),
+            child: Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {

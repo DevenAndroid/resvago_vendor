@@ -103,7 +103,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     try {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
-      String? imageUrlProfile;
+      String? imageUrlProfile = kIsWeb ? null : controller.categoryFile.path;
       if (kIsWeb) {
         if (pickedFile != null) {
           UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
@@ -113,11 +113,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imageUrlProfile = fileUrl;
         }
       } else {
-        if (!controller.categoryFile.path.contains("http")) {
-          if (profileData.image.toString().isNotEmpty) {
-            Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
-            await gg.delete();
-          }
+        // if (profileData.image.toString().isNotEmpty) {
+        //   Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
+        //   await gg.delete();
+        // }
+        if (!controller.categoryFile.path.contains("http") && controller.categoryFile.path.isNotEmpty) {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
               .child("image")
@@ -208,11 +208,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
         profileData.restaurantImage ??= [];
         deactivated = profileData.deactivate;
+        controller.galleryImages.clear();
         for (var element in profileData.restaurantImage!) {
           controller.galleryImages.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
         profileData.menuGalleryImages ??= [];
+        controller.menuGallery.clear();
         for (var element in profileData.menuGalleryImages!) {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
@@ -486,7 +488,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: restaurantController,
                             validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
-                            hint: profileData.restaurantName == null ? "restaurant name".tr : profileData.restaurantName.toString(),
+                            hint:
+                                profileData.restaurantName == null ? "restaurant name".tr : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
@@ -728,7 +731,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title:  Text(
+        title: Text(
           'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
@@ -768,7 +771,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Get.back();
               });
             },
-            child:  Text("Camera".tr),
+            child: Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -805,14 +808,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Get.back();
               });
             },
-            child:  Text('Gallery'.tr),
+            child: Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child:  Text('Cancel'.tr),
+            child: Text('Cancel'.tr),
           ),
         ],
       ),

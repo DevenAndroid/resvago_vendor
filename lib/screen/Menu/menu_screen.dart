@@ -28,7 +28,6 @@ class _MenuScreenState extends State<MenuScreen> {
   Stream<List<MenuData>> getMenu() {
     return FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("deactivate", isEqualTo: false)
         .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .map((querySnapshot) {
