@@ -12,7 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../widget/apptheme.dart';
 
 class Helper {
-  static Future addImagePicker({ImageSource imageSource = ImageSource.gallery, int imageQuality = 100}) async {
+  static Future addImagePicker({ImageSource imageSource = ImageSource.gallery, int imageQuality = 30}) async {
     try {
       final item = await ImagePicker().pickImage(source: imageSource, imageQuality: imageQuality);
       if (item == null) {

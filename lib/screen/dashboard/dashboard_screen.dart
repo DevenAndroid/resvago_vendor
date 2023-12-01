@@ -89,6 +89,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () {
                     bottomController.scaffoldKey.currentState!.openDrawer();
                   },
@@ -105,6 +106,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
                     ),
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {
                         Get.to(const SetTimeScreen());
                       },
@@ -121,7 +123,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           SizedBox(
                             width: AddSize.size5,
                           ),
-                          InkWell(
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                             onTap: () async {
                               User? currentUser = FirebaseAuth.instance.currentUser;
                               RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser!.uid);
@@ -148,6 +151,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10, top: 5),
                   child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Get.to(const UserProfileScreen());
                     },

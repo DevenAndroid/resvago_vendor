@@ -28,6 +28,7 @@ class _AppBarScreenState extends State<AppBarScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   Get.back();
                 },

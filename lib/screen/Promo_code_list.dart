@@ -30,6 +30,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
             title: "Promo code List".tr,
             context: context,
             icon2: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 Get.to(const CreatePromoCodeScreen(
                   isEditMode: false,

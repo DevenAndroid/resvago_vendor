@@ -429,6 +429,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                             bottom: 0,
                                             right: 0,
                                             child: GestureDetector(
+                                              behavior: HitTestBehavior.translucent,
                                               onTap: () {
                                                 showActionSheet(context);
                                               },
@@ -620,10 +621,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   final geometry = detail.result.geometry!;
                                   final lat = geometry.location.lat;
                                   final lang = geometry.location.lng;
-                                  latitude = lat;
-                                  longitude = lang;
                                   setState(() {
                                     _address = (place.description ?? "Location").toString();
+                                    latitude = lat;
+                                    longitude = lang;
                                   });
                                 }
                               },

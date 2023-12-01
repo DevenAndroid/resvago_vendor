@@ -99,6 +99,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     ),
                     const Spacer(),
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () {},
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),

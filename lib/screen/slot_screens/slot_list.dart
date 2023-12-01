@@ -93,6 +93,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 slotController.startDate.text = "";
                 slotController.endDate.text = "";

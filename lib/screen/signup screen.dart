@@ -16,7 +16,6 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
@@ -273,7 +272,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                         )
                       else
-                         Center(
+                        Center(
                           child: Text("No Category Available".tr),
                         ),
                       const SizedBox(
@@ -527,7 +526,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
+                                            Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style: const TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
@@ -592,7 +591,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                             Text(
+                                            Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
                                               style: const TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
@@ -645,7 +644,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             // Return the dialog box widget
-                                            return  AlertDialog(
+                                            return AlertDialog(
                                               title: Text('Terms And Conditions'.tr),
                                               content: const Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
@@ -695,14 +694,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title:  Text(
+        title: Text(
           'Select Picture from'.tr,
           style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 30).then((value) async {
                 // CroppedFile? croppedFile = await ImageCropper().cropImage(
                 //   sourcePath: value.path,
                 //   aspectRatioPresets: [
@@ -738,7 +737,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 30).then((value) async {
                 // CroppedFile? croppedFile = await ImageCropper().cropImage(
                 //   sourcePath: value.path,
                 //   aspectRatioPresets: [

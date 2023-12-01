@@ -113,6 +113,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     width: 10,
                   ),
                   GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Get.to(() => AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
                     },
@@ -281,6 +282,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                           ),
                                           const SizedBox(height: 10),
                                           GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
                                             onTap: () {
                                               showDialog(
                                                 context: context,
