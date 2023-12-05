@@ -6,17 +6,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/bottomnavbar_controller.dart';
+import '../../model/dining_order_modal.dart';
+import '../../model/order_details_modal.dart';
 import '../../model/profile_model.dart';
 import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../bottom_nav_bar/oder_list_screen.dart';
+import '../delivery_oders_details_screen.dart';
+import '../oder_details_screen.dart';
 import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
@@ -46,7 +51,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
   void restaurantData() {
     FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
-        log("fgdfgdgfdfg");
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
@@ -58,19 +62,34 @@ class _VendorDashboardState extends State<VendorDashboard> {
   @override
   void initState() {
     super.initState();
-    // firebaseService.updateFirebaseToken();
+    if (!kIsWeb) {
+      firebaseService.updateFirebaseToken();
+    }
     restaurantData();
+  }
+  
+  Future<int> totalSoldItem()async{
+   final item1 = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid).where("order_status", isEqualTo: "Order Completed").count().get();
+   final item2 = await FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid).where("order_status", isEqualTo: "Order Completed").count().get();
+   return item1.count+ item2.count;
   }
 
   @override
   Widget build(BuildContext context) {
-    // firebaseService.sendNotifications();
+    if (!kIsWeb) {
+      firebaseService.sendNotifications();
+    }
     final screenSize = MediaQuery.of(context).size;
+    log("sfdsfgdsg${FirebaseAuth.instance.currentUser!.uid}");
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: const Color(0xffF5F5F5),
         appBar: AppBar(
           // toolbarHeight: 80,
+          surfaceTintColor: Colors.white,
           elevation: 0,
           leadingWidth: 45,
           automaticallyImplyLeading: false,
@@ -195,237 +214,550 @@ class _VendorDashboardState extends State<VendorDashboard> {
             )
           ],
         ),
-        body: Theme(
-          data: ThemeData(useMaterial3: true),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AddSize.padding16,
-            ),
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: <Widget>[
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [],
+        body: DefaultTabController(
+          length: 2,
+          child: Theme(
+            data: ThemeData(useMaterial3: true),
+            child: Column(children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 100,
+                    width: 160,
+                    padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: AppTheme.backgroundcolor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                SliverGrid.builder(
-                  itemCount: 4,
-                  // shrinkWrap: true,
-                  // physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: kIsWeb
-                      ? SliverGridDelegateWithMaxCrossAxisExtent(
-                          mainAxisExtent: AddSize.screenHeight * .15,
-                          maxCrossAxisExtent: 260,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 5,
-                        )
-                      : SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 0,
-                          mainAxisExtent: AddSize.screenHeight * .15),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                        children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppTheme.backgroundcolor),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Image.asset(imgList[0].toString()),
+                        ),
+                        Text(
+                          "0",
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: Image.asset(imgList[index].toString()),
-                            ),
                             Text(
-                              "20",
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
+                              "Gross Sales",
+                              style: GoogleFonts.ibmPlexSansArabic(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: AddSize.font12,
+                                  color: const Color(0xff8C9BB2)),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  index == 0
-                                      ? "Gross Sales"
-                                      : index == 1
-                                          ? "Earning"
-                                          : index == 2
-                                              ? "Sold items"
-                                              : "Order Received",
-                                  style: GoogleFonts.ibmPlexSansArabic(
-                                      height: 1.5,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: AddSize.font12,
-                                      color: const Color(0xff8C9BB2)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: Text(
-                                    "10%",
-                                    //"10%",
-                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                        height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
-                                  ),
-                                ),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Text(
+                                "0%",
+                                //"10%",
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                    height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
+                              ),
                             ),
                           ],
                         ),
-                      )
-                    ]);
-                  },
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: 160,
+                    padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: AppTheme.backgroundcolor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Image.asset(imgList[1].toString()),
+                        ),
+                        Text(
+                          "0",
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Earning",
+                              style: GoogleFonts.ibmPlexSansArabic(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: AddSize.font12,
+                                  color: const Color(0xff8C9BB2)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Text(
+                                "0%",
+                                //"10%",
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                    height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 100,
+                    width: 160,
+                    padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: AppTheme.backgroundcolor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Image.asset(imgList[2].toString()),
+                        ),
+                        FutureBuilder(
+                          future: totalSoldItem(),
+                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                            if(snapshot.hasData) {
+                              return Text(
+                                (snapshot.data ?? "0").toString(),
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                    height: 1.5,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: AddSize.font20,
+                                    color: AppTheme.blackcolor),
+                              );
+                            }
+                            return Text("0");
+                            },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Sold Items",
+                              style: GoogleFonts.ibmPlexSansArabic(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: AddSize.font12,
+                                  color: const Color(0xff8C9BB2)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Text(
+                                "0%",
+                                //"10%",
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                    height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    width: 160,
+                    padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: AppTheme.backgroundcolor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Image.asset(imgList[3].toString()),
+                        ),
+                        Text(
+                          "20",
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Order Received",
+                              style: GoogleFonts.ibmPlexSansArabic(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: AddSize.font12,
+                                  color: const Color(0xff8C9BB2)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Text(
+                                "10%",
+                                //"10%",
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                    height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const TabBar(labelColor: Color(0xFF454B5C), indicatorColor: Color(0xFF3B5998), indicatorWeight: 4, tabs: [
+                Tab(
+                  text: "Dining",
                 ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: AddSize.size12,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(color: AppTheme.backgroundcolor, borderRadius: BorderRadius.circular(20)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10),
-                          child: Column(
+                Tab(
+                  text: "Delivery",
+                ),
+              ]),
+              Expanded(
+                child: TabBarView(children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Latest Sales".tr,
-                                    style: GoogleFonts.ibmPlexSansArabic(
-                                        height: 1.5,
-                                        color: const Color(0xff454B5C),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font16),
-                                  ),
-                                  GestureDetector(
-                                      behavior: HitTestBehavior.translucent,
-                                      onTap: () {
-                                        Get.to(()=>OderListScreen(back: 'Back'));
-                                      },
-                                      child: Text(
-                                        "See All".tr,
-                                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                            decoration: TextDecoration.underline,
-                                            height: 1.5,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppTheme.primaryColor,
-                                            fontSize: AddSize.font16),
-                                      ))
-                                ],
+                              Text(
+                                "Order No.".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Order No.".tr,
-                                    style: GoogleFonts.ibmPlexSansArabic(
-                                        height: 1.5,
-                                        color: const Color(0xff65CD90),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font16),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Text(
-                                    "Status".tr,
-                                    style: GoogleFonts.ibmPlexSansArabic(
-                                        height: 1.5,
-                                        color: const Color(0xff65CD90),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font16),
-                                  ),
-                                  Text(
-                                    "Earning".tr,
-                                    style: GoogleFonts.ibmPlexSansArabic(
-                                        height: 1.5,
-                                        color: const Color(0xff65CD90),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: AddSize.font16),
-                                  ),
-                                ],
+                              const SizedBox(
+                                width: 1,
                               ),
-                              const Divider(),
-                              ListView.builder(
-                                // physics: const AlwaysScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: 3,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      // Get.toNamed(VendorOrderList
-                                      //     .vendorOrderList);
-                                    },
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: AddSize.size5,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                              Text(
+                                "Status".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
+                              Text(
+                                "Earning".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            thickness: 1,
+                            color: Colors.black12.withOpacity(0.09),
+                          ),
+                          StreamBuilder<List<MyDiningOrderModel>>(
+                            stream: getDiningOrdersStreamFromFirestore(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator()); // Show a loading indicator while data is being fetched
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                List<MyDiningOrderModel> users = snapshot.data ?? [];
+                                return users.isNotEmpty
+                                    ? ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: users.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          final item = users[index];
+                                          return GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
+                                            onTap: () {
+                                              Get.to(() => OderDetailsScreen(
+                                                    myDiningOrderModel: item,
+                                                  ));
+                                            },
+                                            child: Column(
                                               children: [
-                                                Text(
-                                                  "#123",
-                                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                                      height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font14),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          item.orderId.toString(),
+                                                          style: GoogleFonts.poppins(
+                                                              color: const Color(0xFF454B5C),
+                                                              fontWeight: FontWeight.w600,
+                                                              fontSize: 14),
+                                                        ),
+                                                        Text(
+                                                          DateFormat("dd-mm-yy hh:mm a").format(DateTime.parse(
+                                                              DateTime.fromMillisecondsSinceEpoch(item.time)
+                                                                  .toLocal()
+                                                                  .toString())),
+                                                          style: GoogleFonts.poppins(
+                                                              color: const Color(0xFF8C9BB2),
+                                                              fontWeight: FontWeight.w500,
+                                                              fontSize: 11),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      item.orderStatus,
+                                                      style: GoogleFonts.poppins(
+                                                          color: item.orderStatus == "Order Completed" ?
+                                                          Colors.green : item.orderStatus == "Order Rejected" ?
+                                                          Colors.red :
+                                                          const Color(0xFFFFB26B),
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 12),
+                                                    ),
+                                                    Text(
+                                                      "\$${item.total}",
+                                                      style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF454B5C),
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Text(
-                                                  "2 June, 2021 - 11:57PM",
-                                                  style: GoogleFonts.ibmPlexSansArabic(
-                                                      fontSize: AddSize.font12,
-                                                      color: const Color(0xff8C9BB2),
-                                                      fontWeight: FontWeight.w500),
+                                                Divider(
+                                                  thickness: 1,
+                                                  color: Colors.black12.withOpacity(0.09),
                                                 ),
                                               ],
                                             ),
-                                            Flexible(child: Container()),
-                                            Text(
-                                              "Pending",
-                                              style: GoogleFonts.ibmPlexSansArabic(
-                                                  height: 1.5,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: AddSize.font14,
-                                                  color: const Color(0xffFF557E)),
-                                            ),
-                                            Flexible(child: Container()),
-                                            Text(
-                                              "\$100",
-                                              style: GoogleFonts.ibmPlexSansArabic(
-                                                  height: 1.5,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: AddSize.font16,
-                                                  color: AppTheme.blackcolor),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: AddSize.size5,
-                                        ),
-                                        const Divider(),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )
+                                          );
+                                        })
+                                    : Center(
+                                        child: Text("No User Found".tr),
+                                      );
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Order No.".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
+                              const SizedBox(
+                                width: 1,
+                              ),
+                              Text(
+                                "Status".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
+                              Text(
+                                "Earning".tr,
+                                style: GoogleFonts.poppins(
+                                    color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
                             ],
                           ),
-                        ),
+                          Divider(
+                            thickness: 1,
+                            color: Colors.black12.withOpacity(0.09),
+                          ),
+                          StreamBuilder<List<MyOrderModel>>(
+                            stream: getOrdersStreamFromFirestore(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator()); // Show a loading indicator while data is being fetched
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                List<MyOrderModel> users = snapshot.data ?? [];
+
+                                return users.isNotEmpty
+                                    ? ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: users.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          final item = users[index];
+                                          return GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
+                                            onTap: () {
+                                              Get.to(() => DeliveryOderDetailsScreen(
+                                                    model: item,
+                                                  ));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          item.orderId.toString(),
+                                                          style: GoogleFonts.poppins(
+                                                              color: const Color(0xFF454B5C),
+                                                              fontWeight: FontWeight.w600,
+                                                              fontSize: 14),
+                                                        ),
+                                                        Text(
+                                                          DateFormat("dd-mm-yy hh:mm a").format(DateTime.parse(
+                                                              DateTime.fromMillisecondsSinceEpoch(item.time)
+                                                                  .toLocal()
+                                                                  .toString())),
+                                                          style: GoogleFonts.poppins(
+                                                              color: const Color(0xFF8C9BB2),
+                                                              fontWeight: FontWeight.w500,
+                                                              fontSize: 11),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      item.orderStatus,
+                                                      style: GoogleFonts.poppins(
+                                                          color: const Color(0xFFFFB26B),
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 12),
+                                                    ),
+                                                    Text(
+                                                      "\$${item.total}",
+                                                      style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF454B5C),
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Divider(
+                                                  thickness: 1,
+                                                  color: Colors.black12.withOpacity(0.09),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        })
+                                    : Center(
+                                        child: Text("No User Found".tr),
+                                      );
+                              }
+                              return const CircularProgressIndicator();
+                            },
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                )
-              ],
-            ).appPaddingForScreen,
+                ]),
+              )
+            ]).appPaddingForScreen,
           ),
         ));
+  }
+
+  List<MyOrderModel> orders = [];
+  Stream<List<MyOrderModel>> getOrdersStreamFromFirestore() {
+    return FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy("time", descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      List<MyOrderModel> orders = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          orders.add(MyOrderModel.fromJson(doc.data(), doc.id));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return orders;
+    });
+  }
+
+  Stream<List<MyDiningOrderModel>> getDiningOrdersStreamFromFirestore() {
+    return FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy("time", descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      List<MyDiningOrderModel> diningOrders = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          diningOrders.add(MyDiningOrderModel.fromJson(doc.data(), doc.id));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return diningOrders;
+    });
   }
 }

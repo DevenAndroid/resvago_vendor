@@ -103,7 +103,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Geoflutterfire? geo;
 
   Future<void> addUserToFirestore() async {
-    // formKey.currentState!.save();
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -134,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           category: categoryController.text.trim(),
           email: emailController.text.trim(),
           mobileNumber: code + mobileNumberController.text.trim(),
-          address: location.text.trim(),
+          address: _address,
           latitude: latitude.toString(),
           longitude: longitude.toString(),
           password: "123456",

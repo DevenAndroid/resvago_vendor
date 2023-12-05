@@ -8,14 +8,13 @@ class CouponData {
   final dynamic docid;
   final bool deactivate;
 
-
   CouponData(
       {required this.promoCodeName,
       this.code,
       this.discount,
       this.startDate,
       this.maxDiscount,
-        required this.deactivate,
+      required this.deactivate,
       this.endDate,
       this.docid});
 

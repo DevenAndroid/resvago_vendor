@@ -95,16 +95,11 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
           log("transaction data.......        ${slot}    ${guest}    $lunchSelected     $availableSeats   ");
 
           if (availableSeats != null) {
-            if (availableSeats < int.parse("$guest")) {
-              // showToast("Some seats are booked\nPlease select seats again".tr);
-              // throw Exception();
-            } else {
               if (lunchSelected) {
                 createSlotData.morningSlots![slot.toString()] = availableSeats + int.parse("$guest");
               } else {
                 createSlotData.eveningSlots![slot.toString()] = availableSeats + int.parse("$guest");
               }
-            }
           } else {
             // showToast("Seats not available".tr);
             throw Exception();
@@ -162,8 +157,8 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                           ),
                           Text(
-                            DateFormat("dd-mm-yy hh:mm a").format(
-                                DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
+                            DateFormat.yMMMMd().format(DateTime.parse(
+                                DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
                             style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                           ),
                         ],
@@ -755,7 +750,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     ),
                     Expanded(
                         child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
                                 myDiningOrderModel!.orderStatus = 'Order Rejected';
                               });
@@ -763,7 +758,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               //     .collection('dining_order')
                               //     .doc(myDiningOrderModel!.docid)
                               //     .update({'order_status': 'Order Rejected'});
-                              manageOrderForDining(
+                             await manageOrderForDining(
                                   orderId: myDiningOrderModel!.orderId,
                                   lunchSelected: true,
                                   restaurantInfo: myDiningOrderModel!.restaurantInfo!.toJson(),
