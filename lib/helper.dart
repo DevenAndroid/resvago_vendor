@@ -81,7 +81,7 @@ class Helper {
 showToast(message) {
   Fluttertoast.cancel();
   Fluttertoast.showToast(
-      msg: message,
+      msg: message.toString(),
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,

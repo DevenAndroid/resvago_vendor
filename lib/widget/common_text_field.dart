@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'addsize.dart';
 import 'apptheme.dart';
@@ -18,6 +17,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
+  final TextInputFormatter? digitValue;
   final bool? readOnly;
   final dynamic value = 0;
   final dynamic minLines;
@@ -46,6 +46,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.length,
+    this.digitValue,
   }) : super(key: key);
 
   @override
@@ -67,9 +68,9 @@ class RegisterTextFieldWidget extends StatelessWidget {
       cursorColor: AppTheme.primaryColor,
       inputFormatters: [
         LengthLimitingTextInputFormatter(length),
+        if(digitValue !=null) digitValue!
       ],
       decoration: InputDecoration(
-
           hintText: hint,
           focusColor: const Color(0xFF384953),
           hintStyle: GoogleFonts.poppins(
@@ -85,8 +86,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white.withOpacity(.10),
-          contentPadding:
-          const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
           // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
@@ -96,26 +96,24 @@ class RegisterTextFieldWidget extends StatelessWidget {
               borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24)),
               borderRadius: const BorderRadius.all(Radius.circular(6.0))),
           border: OutlineInputBorder(
-              borderSide:
-              BorderSide(color:const Color(0xFF384953).withOpacity(.24), width: 3.0),
+              borderSide: BorderSide(color: const Color(0xFF384953).withOpacity(.24), width: 3.0),
               borderRadius: BorderRadius.circular(6.0)),
           suffixIcon: suffix,
           prefixIcon: prefix),
     );
   }
 }
+
 class CommonButtonBlue extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
 
-  const CommonButtonBlue({Key? key, required this.title, this.onPressed})
-      : super(key: key);
+  const CommonButtonBlue({Key? key, required this.title, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6), color: AppTheme.primaryColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: AppTheme.primaryColor),
       child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
@@ -128,11 +126,7 @@ class CommonButtonBlue extends StatelessWidget {
             // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: Text(title,
-              style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  letterSpacing: .5,
-                  fontSize: 20))),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: .5, fontSize: 20))),
     );
   }
 }

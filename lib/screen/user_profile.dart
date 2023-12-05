@@ -70,6 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController aboutUsController = TextEditingController();
+  // TextEditingController locationUsController = TextEditingController();
   dynamic preparationTime;
   dynamic averageMealForMember;
   dynamic setDelivery;
@@ -595,6 +596,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             height: 10,
                           ),
+
+                          // RegisterTextFieldWidget(
+                          //   readOnly: true,
+                          //   controller: locationUsController,
+                          //   length: 10,
+                          //   validator: RequiredValidator(errorText: 'Please enter your address'.tr).call,
+                          //   keyboardType: TextInputType.number,
+                          //   // textInputAction: TextInputAction.next,
+                          //   hint: profileData.address == null ? "Address" : profileData.address.toString(),
+                          // ),
                           InkWell(
                               onTap: () async {
                                 var place = await PlacesAutocomplete.show(

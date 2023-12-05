@@ -54,9 +54,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   final pages = [
     const VendorDashboard(),
-    MenuScreen(
-      back: 'Back',
-    ),
+    MenuScreen(back: 'Back',),
     OderListScreen(back: 'Back'),
     WalletScreen(back: 'Back'),
   ];

@@ -219,7 +219,6 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                               ],
                                             ),
                                           ),
-
                                           const SizedBox(
                                             height: 20,
                                           ),

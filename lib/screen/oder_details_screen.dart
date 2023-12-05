@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +13,7 @@ import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Firebase_service/notification_api.dart';
 import '../helper.dart';
+import '../model/createslot_model.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 
@@ -58,6 +61,74 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
     }
   }
 
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Future manageOrderForDining(
+      {required String orderId,
+      dynamic vendorId,
+      dynamic fcm,
+      dynamic address,
+      dynamic date,
+      required bool lunchSelected,
+      dynamic slot,
+      dynamic guest,
+      dynamic offer,
+      dynamic docId,
+      dynamic total,
+      dynamic couponDiscount,
+      required Map<String, dynamic> restaurantInfo,
+      required Map<String, dynamic> profileData,
+      required List<dynamic> menuList,
+      dynamic time}) async {
+    try {
+      final slotDocument = firestore.collection("vendor_slot").doc(vendorId.toString()).collection("slot").doc(date.toString());
+      await firestore.runTransaction((transaction) {
+        return transaction.get(slotDocument).then((transactionDoc) {
+          log("transaction data.......        ${transactionDoc.data()}");
+          CreateSlotData createSlotData = CreateSlotData.fromMap(transactionDoc.data() ?? {});
+          createSlotData.morningSlots = createSlotData.morningSlots ?? {};
+          createSlotData.eveningSlots = createSlotData.eveningSlots ?? {};
+          log("transaction data.......        ${createSlotData.toMap()}");
+          // log("transaction data.......        $slot");
+
+          int? availableSeats =
+              lunchSelected ? createSlotData.morningSlots![slot.toString()] : createSlotData.eveningSlots![slot.toString()];
+          log("transaction data.......        ${slot}    ${guest}    $lunchSelected     $availableSeats   ");
+
+          if (availableSeats != null) {
+            if (availableSeats < int.parse("$guest")) {
+              // showToast("Some seats are booked\nPlease select seats again".tr);
+              // throw Exception();
+            } else {
+              if (lunchSelected) {
+                createSlotData.morningSlots![slot.toString()] = availableSeats + int.parse("$guest");
+              } else {
+                createSlotData.eveningSlots![slot.toString()] = availableSeats + int.parse("$guest");
+              }
+            }
+          } else {
+            // showToast("Seats not available".tr);
+            throw Exception();
+          }
+
+          log("transaction data.......        ${createSlotData.toMap()}");
+          // throw Exception();
+          transaction.update(slotDocument, createSlotData.toMap());
+        });
+      }).then(
+        (newPopulation) => print("Population increased to $newPopulation"),
+        onError: (e) {
+          throw Exception(e);
+        },
+      );
+      await firestore.collection('dining_order').doc(docId).update({
+        "order_status": "Order Rejected",
+      });
+      showToast("Order Rejected");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     widget.myDiningOrderModel.fcmToken;
@@ -82,29 +153,29 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-// mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Order ID: ${myDiningOrderModel!.orderId.toString()}",
-                          style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
-                        ),
-                        Text(
-                          DateFormat("dd-mm-yy hh:mm a").format(
-                              DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
-                          style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Order ID: ${myDiningOrderModel!.orderId.toString()}",
+                            style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                          ),
+                          Text(
+                            DateFormat("dd-mm-yy hh:mm a").format(
+                                DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
+                            style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                          ),
+                        ],
+                      ),
                     ),
-                    const Spacer(),
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () {},
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
                         decoration: BoxDecoration(
-                          color: getStatusColor(myDiningOrderModel!.orderStatus),
+                          color: const Color(0xFF65CD90),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
@@ -635,7 +706,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       "Order Rejected".tr,
                       style: Theme.of(context)
                           .textTheme
-                          .headline5!
+                          .headlineSmall!
                           .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                     )),
               ),
@@ -688,18 +759,27 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               setState(() {
                                 myDiningOrderModel!.orderStatus = 'Order Rejected';
                               });
-                              FirebaseFirestore.instance
-                                  .collection('dining_order')
-                                  .doc(myDiningOrderModel!.docid)
-                                  .update({'order_status': 'Order Rejected'});
+                              // FirebaseFirestore.instance
+                              //     .collection('dining_order')
+                              //     .doc(myDiningOrderModel!.docid)
+                              //     .update({'order_status': 'Order Rejected'});
+                              manageOrderForDining(
+                                  orderId: myDiningOrderModel!.orderId,
+                                  lunchSelected: true,
+                                  restaurantInfo: myDiningOrderModel!.restaurantInfo!.toJson(),
+                                  profileData: myDiningOrderModel!.customerData!.toJson(),
+                                  menuList: myDiningOrderModel!.menuList!.toList(),
+                                  guest: myDiningOrderModel!.guest,
+                                  slot: myDiningOrderModel!.slot,
+                                  date: myDiningOrderModel!.date,
+                                  docId: myDiningOrderModel!.docid,
+                                  vendorId: myDiningOrderModel!.restaurantInfo!.userID);
                               sendPushNotification(
                                   body: myDiningOrderModel!.orderType.toString(),
                                   deviceToken: myDiningOrderModel!.fcmToken,
                                   image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
                                   title: "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
                                   orderID: myDiningOrderModel!.orderId);
-
-                              showToast("Order is Rejected");
                             },
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.maxFinite, 50),

@@ -18,8 +18,10 @@ Future<void> main() async {
         storageBucket: "resvago-b7bd4.appspot.com",
       ),
     );
+  } else {
+    await Firebase.initializeApp();
   }
-  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -33,8 +35,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   updateLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("app_language") == null ||
-        sharedPreferences.getString("app_language") == "english") {
+    if (sharedPreferences.getString("app_language") == null || sharedPreferences.getString("app_language") == "english") {
       Get.updateLocale(const Locale('en', 'US'));
     } else {
       Get.updateLocale(const Locale('es', 'ES'));
@@ -54,9 +55,9 @@ class _MyAppState extends State<MyApp> {
       locale: const Locale('en', 'US'),
       title: 'Flutter Demo',
       theme: ThemeData(
-          // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
+          // // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          // focusColor: Colors.transparent,
+          // hoverColor: Colors.transparent,
           useMaterial3: false,
           appBarTheme: const AppBarTheme(color: Colors.white),
           backgroundColor: Colors.white),

@@ -72,6 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController addressController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController location = TextEditingController();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
   Rx<File> categoryFile = File("").obs;
   Uint8List? pickedFile;
@@ -133,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           category: categoryController.text.trim(),
           email: emailController.text.trim(),
           mobileNumber: code + mobileNumberController.text.trim(),
-          address: _address,
+          address: location.text.trim(),
           latitude: latitude.toString(),
           longitude: longitude.toString(),
           password: "123456",
@@ -385,6 +386,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 10,
                       ),
+                      // if (kIsWeb)
+                      //   RegisterTextFieldWidget(
+                      //     controller: location,
+                      //     // length: 10,
+                      //     validator: MultiValidator([
+                      //       RequiredValidator(errorText: 'Please enter your address'.tr),
+                      //     ]).call,
+                      //     keyboardType: TextInputType.emailAddress,
+                      //     // textInputAction: TextInputAction.next,
+                      //     hint: 'Enter your address',
+                      //   ),
                       InkWell(
                           onTap: () async {
                             var place = await PlacesAutocomplete.show(
@@ -456,6 +468,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   : const SizedBox()
                             ],
                           )),
+
                       const SizedBox(
                         height: 20,
                       ),
@@ -666,11 +679,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (formKey.currentState!.validate() && value == true) {
+                          if (formKey.currentState!.validate()) {
                             checkEmailInFirestore();
                           } else {
-                            showValidationImg = true;
-                            showValidation = true;
+                            // showValidationImg = true;
+                            // showValidation = true;
                             setState(() {});
                           }
                         },

@@ -142,8 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
             child: Container(
-                decoration: const BoxDecoration(image: DecorationImage(fit: BoxFit.fill,
-                    image: AssetImage(kIsWeb ?AppAssets.webLogin :AppAssets.login))),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ? AppAssets.webLogin : AppAssets.login))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 4),
                   child: Form(
@@ -165,9 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 28,
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 8,
                           ),
                           Align(
                             alignment: Alignment.center,
@@ -191,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                               Text(
+                              Text(
                                 "Login With Mobile Number".tr,
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -209,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                               Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
+                              Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -250,8 +247,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       fillColor: const Color(0x63ffffff).withOpacity(.2),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
+                                        borderSide: const BorderSide(width: 1, color: Colors.white),
                                       ),
+                                      disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                                     ),
                                     onCountryChanged: (Country phone) {
                                       setState(() {
@@ -274,103 +272,107 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(12),
                               child: Column(
                                 children: [
-                                  CommonTextFieldWidget(
-                                    controller: emailController,
-                                    hint: 'Enter Email'.tr,
-                                  ),
-                                  SizedBox(height: 20,),
-                                  CommonTextFieldWidget(
-                                    controller: passwordController,
-                                    hint: 'Enter Password'.tr,
-                                  ),
-
-                                  // TextFormField(
+                                  // CommonTextFieldWidget(
                                   //   controller: emailController,
-                                  //   style: const TextStyle(color: Colors.white),
-                                  //   validator: MultiValidator([
-                                  //     RequiredValidator(errorText: 'Please enter your email'),
-                                  //     EmailValidator(errorText: 'Enter a valid email address'),
-                                  //   ]).call,
-                                  //   decoration: InputDecoration(
-                                  //     hintText: 'Enter Email',
-                                  //     hintStyle: const TextStyle(color: Colors.white),
-                                  //     suffix: InkWell(
-                                  //       onTap: () {
-                                  //         checkEmailInFirestore();
-                                  //       },
-                                  //       child: const Text(
-                                  //         'send',
-                                  //         style: TextStyle(color: Colors.white),
-                                  //       ),
-                                  //     ),
-                                  //     filled: true,
-                                  //     fillColor: Colors.white.withOpacity(.10),
-                                  //     // contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                  //     // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                  //     focusedBorder: OutlineInputBorder(
-                                  //       borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //       borderRadius: BorderRadius.circular(6.0),
-                                  //     ),
-                                  //     enabledBorder: OutlineInputBorder(
-                                  //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //         borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                  //     border: OutlineInputBorder(
-                                  //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                  //         borderRadius: BorderRadius.circular(6.0)),
-                                  //   ),
-                                  //   keyboardType: TextInputType.emailAddress,
-                                  //   // textInputAction: TextInputAction.next,
+                                  //   hint: 'Enter Email'.tr,
                                   // ),
                                   // const SizedBox(
                                   //   height: 20,
                                   // ),
-                                  // if (!showOtpField)
-                                  //   TextFormField(
-                                  //     style: const TextStyle(color: Colors.white),
-                                  //     controller: passwordController,
-                                  //     decoration: InputDecoration(
-                                  //       filled: true,
-                                  //       hintText: 'Enter Otp',
-                                  //       hintStyle: const TextStyle(color: Colors.white),
-                                  //       fillColor: Colors.white.withOpacity(.10),
-                                  //       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                                  //       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                  //       focusedBorder: OutlineInputBorder(
-                                  //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //         borderRadius: BorderRadius.circular(6.0),
-                                  //       ),
-                                  //       enabledBorder: OutlineInputBorder(
-                                  //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                  //       border: OutlineInputBorder(
-                                  //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                  //           borderRadius: BorderRadius.circular(6.0)),
-                                  //     ),
-                                  //   )
-                                  // else
-                                  //   TextFormField(
-                                  //     style: const TextStyle(color: Colors.white),
-                                  //     controller: otpController,
-                                  //     keyboardType: TextInputType.number,
-                                  //     decoration: InputDecoration(
-                                  //       hintText: 'Enter Otp',
-                                  //       hintStyle: const TextStyle(color: Colors.white),
-                                  //       filled: true,
-                                  //       fillColor: Colors.white.withOpacity(.10),
-                                  //       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                                  //       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                  //       focusedBorder: OutlineInputBorder(
-                                  //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //         borderRadius: BorderRadius.circular(6.0),
-                                  //       ),
-                                  //       enabledBorder: OutlineInputBorder(
-                                  //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  //           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                  //       border: OutlineInputBorder(
-                                  //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                  //           borderRadius: BorderRadius.circular(6.0)),
-                                  //     ),
-                                  //   ),
+                                  // CommonTextFieldWidget(
+                                  //   controller: passwordController,
+                                  //   hint: 'Enter Password'.tr,
+                                  // ),
+
+                                  TextFormField(
+                                    controller: emailController,
+                                    style: const TextStyle(color: Colors.white),
+                                    validator: MultiValidator([
+                                      RequiredValidator(errorText: 'Please enter your email'),
+                                      EmailValidator(errorText: 'Enter a valid email address'),
+                                    ]).call,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter Email',
+                                      hintStyle: const TextStyle(color: Colors.white),
+                                      suffix: InkWell(
+                                        onTap: () {
+                                          if (_formKey.currentState!.validate()) {
+                                            checkEmailInFirestore();
+                                          }
+                                        },
+                                        child: const Text(
+                                          'send',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white.withOpacity(.10),
+                                      // contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                      // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                        borderRadius: BorderRadius.circular(6.0),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderRadius: BorderRadius.circular(6.0)),
+                                    ),
+                                    keyboardType: TextInputType.emailAddress,
+                                    // textInputAction: TextInputAction.next,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  if (!showOtpField)
+                                    TextFormField(
+                                      style: const TextStyle(color: Colors.white),
+                                      controller: passwordController,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        hintText: 'Enter Otp',
+                                        hintStyle: const TextStyle(color: Colors.white),
+                                        fillColor: Colors.white.withOpacity(.10),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                                        // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: BorderRadius.circular(6.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                            borderRadius: BorderRadius.circular(6.0)),
+                                      ),
+                                    )
+                                  else
+                                    TextFormField(
+                                      style: const TextStyle(color: Colors.white),
+                                      controller: otpController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        hintText: 'Enter Otp',
+                                        hintStyle: const TextStyle(color: Colors.white),
+                                        filled: true,
+                                        fillColor: Colors.white.withOpacity(.10),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                                        // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                          borderRadius: BorderRadius.circular(6.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                            borderRadius: BorderRadius.circular(6.0)),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -383,27 +385,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ? CommonButton(
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
-                                            // if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                            //   showToast("OTP is verified");
-                                            //   FirebaseAuth.instance
-                                            //       .signInWithEmailAndPassword(
-                                            //     email: emailController.text.trim(),
-                                            //     password: "123456",
-                                            //   )
-                                            //       .then((value) {
-                                            //     Get.offAllNamed(MyRouters.bottomNavbar);
-                                            //   });
-                                            // } else {
-                                            //   showToast("Invalid OTP");
-                                            // }
-                                            FirebaseAuth.instance
+                                            if (await myauth.verifyOTP(otp: otpController.text) == true) {
+                                              showToast("OTP is verified");
+                                              FirebaseAuth.instance
                                                   .signInWithEmailAndPassword(
                                                 email: emailController.text.trim(),
-                                                password: passwordController.text.trim(),
+                                                password: "123456",
                                               )
                                                   .then((value) {
                                                 Get.offAllNamed(MyRouters.bottomNavbar);
                                               });
+                                            } else {
+                                              showToast("Invalid OTP");
+                                            }
                                           }
                                         },
                                         title: 'Login'.tr,
@@ -445,7 +439,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     //SizedBox(width: 10,),
-                                     Text('Or Login with'.tr,
+                                    Text('Or Login with'.tr,
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,

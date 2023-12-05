@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_vendor/helper.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -52,73 +53,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
       throw 'Could not launch $url';
     }
   }
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  Future manageOrderForDining(
-      {required String orderId,
-      dynamic vendorId,
-      dynamic fcm,
-      dynamic address,
-      dynamic date,
-      required bool lunchSelected,
-      dynamic slot,
-      dynamic guest,
-      dynamic offer,
-      dynamic docId,
-      dynamic total,
-      dynamic couponDiscount,
-      required Map<String, dynamic> restaurantInfo,
-      required Map<String, dynamic> profileData,
-      required List<dynamic> menuList,
-      dynamic time}) async {
-    try {
-      final slotDocument = firestore.collection("vendor_slot").doc(vendorId.toString()).collection("slot").doc(date.toString());
-      await firestore.runTransaction((transaction) {
-        return transaction.get(slotDocument).then((transactionDoc) {
-          log("transaction data.......        ${transactionDoc.data()}");
-          CreateSlotData createSlotData = CreateSlotData.fromMap(transactionDoc.data() ?? {});
-          createSlotData.morningSlots = createSlotData.morningSlots ?? {};
-          createSlotData.eveningSlots = createSlotData.eveningSlots ?? {};
-          log("transaction data.......        ${createSlotData.toMap()}");
-          // log("transaction data.......        $slot");
 
-          int? availableSeats =
-              lunchSelected ? createSlotData.morningSlots![slot.toString()] : createSlotData.eveningSlots![slot.toString()];
-          log("transaction data.......        ${slot}    ${guest}    $lunchSelected     $availableSeats   ");
-
-          if (availableSeats != null) {
-            if (availableSeats < int.parse("$guest")) {
-              showToast("Some seats are booked\nPlease select seats again".tr);
-              throw Exception();
-            } else {
-              if (lunchSelected) {
-                createSlotData.morningSlots![slot.toString()] = availableSeats - int.parse("$guest");
-              } else {
-                createSlotData.eveningSlots![slot.toString()] = availableSeats - int.parse("$guest");
-              }
-            }
-          } else {
-            showToast("Seats not available".tr);
-            throw Exception();
-          }
-
-          log("transaction data.......        ${createSlotData.toMap()}");
-          // throw Exception();
-          transaction.update(slotDocument, createSlotData.toMap());
-        });
-      }).then(
-        (newPopulation) => print("Population increased to $newPopulation"),
-        onError: (e) {
-          throw Exception(e);
-        },
-      );
-      await firestore.collection('dining_order').doc(docId).update({
-        "order_status": "Order Rejected",
-      });
-      showToast("Order Placed Successfully");
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
 
   @override
   void initState() {
@@ -148,32 +83,31 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Order ID: ${myOrderModel!.orderId.toString()}",
-                            style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
-                          ),
-                          Text(
-                            DateFormat.yMMMMd().format(
-                                DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
-                            style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Order ID: ${myOrderModel!.orderId.toString()}",
+                              style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                            Text(
+                              DateFormat.yMMMMd().format(
+                                  DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
+                              style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                            ),
+                          ],
+                        ),
                       ),
-                      const Spacer(),
-                      FittedBox(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF65CD90),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          child: Text(
-                            myOrderModel!.orderStatus.toString(),
-                            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
-                          ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF65CD90),
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        child: Text(
+                          myOrderModel!.orderStatus.toString(),
+                          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
                         ),
                       )
                     ],
@@ -203,7 +137,6 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final item = myOrderModel!.orderDetails!.menuList![index];
-                                  print("manish ${item.dishName}");
                                   return InkWell(
                                     onTap: () {},
                                     child: Column(
@@ -651,7 +584,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                 height: 40,
               ),
             ],
-          ),
+          ).appPaddingForScreen,
         ));
   }
 }

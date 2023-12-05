@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,13 +8,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:resvago_vendor/model/category_model.dart';
 import 'package:resvago_vendor/model/menu_model.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
@@ -133,8 +131,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
 
         menuItemList.add(MenuItemData.fromMap(gg));
       }
-      print(value.docs);
-
       setState(() {});
     });
   }
@@ -285,6 +281,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       RegisterTextFieldWidget(
                         controller: priceController,
+                        digitValue: FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
                         validator: MultiValidator([
                           RequiredValidator(errorText: 'Please enter price'),
                         ]).call,
@@ -304,7 +301,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: discountNumberController,
                         length: 10,
-                        // validator: RequiredValidator(errorText: 'Please enter discount value').call,
+                        digitValue: FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
                         keyboardType: TextInputType.number,
                         hint: '%',
                       ),
@@ -389,7 +386,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                             ),
                                             Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style: TextStyle(fontSize: 16, color: Colors.black54),
+                                              style: const TextStyle(fontSize: 16, color: Colors.black54),
                                               textAlign: TextAlign.center,
                                             ),
                                             const SizedBox(
@@ -449,8 +446,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                             ),
                                             Text(
                                               'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style:
-                                                  TextStyle(fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
+                                              style: const TextStyle(
+                                                  fontSize: 14, color: Color(0xff141C21), fontWeight: FontWeight.w300),
                                               textAlign: TextAlign.center,
                                             ),
                                             const SizedBox(
@@ -485,7 +482,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                          Text('Delivery'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                          Text('Delivery'.tr,
+                              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       Row(
@@ -509,7 +507,8 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                                   }),
                             ),
                           ),
-                          Text('Dining'.tr, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
+                          Text('Dining'.tr,
+                              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black)),
                         ],
                       ),
                       const SizedBox(
@@ -551,7 +550,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
           'Select Picture from'.tr,
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(

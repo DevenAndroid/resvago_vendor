@@ -6,14 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:resvago_vendor/Setting%20screen.dart';
-import 'package:resvago_vendor/routers/routers.dart';
-import 'package:resvago_vendor/screen/bottom_nav_bar/menu_list_screen.dart';
 import 'package:resvago_vendor/screen/dashboard/restaurant_open_time.dart';
-import 'package:resvago_vendor/screen/login_screen.dart';
-import 'package:resvago_vendor/screen/reviwe_screen.dart';
-import 'package:resvago_vendor/screen/slot_screens/slot_list.dart';
-import 'package:resvago_vendor/screen/total%20earning%20screen.dart';
 import 'package:resvago_vendor/screen/user_profile.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
@@ -23,9 +16,7 @@ import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
-import '../Menu/menu_screen.dart';
-import '../Promo_code_list.dart';
-import '../bank_details_screen.dart';
+import '../bottom_nav_bar/oder_list_screen.dart';
 import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
@@ -217,7 +208,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [],
                     ),
                   ),
@@ -228,8 +219,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   // physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: kIsWeb
                       ? SliverGridDelegateWithMaxCrossAxisExtent(
-                          mainAxisExtent: AddSize.screenHeight * .20,
-                          maxCrossAxisExtent: 240,
+                          mainAxisExtent: AddSize.screenHeight * .15,
+                          maxCrossAxisExtent: 260,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 5,
                         )
@@ -239,7 +230,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           mainAxisSpacing: 0,
                           mainAxisExtent: AddSize.screenHeight * .15),
                   itemBuilder: (BuildContext context, int index) {
-                    return Column(children: [
+                    return Column(
+                        children: [
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: AddSize.padding14, vertical: AddSize.padding10),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppTheme.backgroundcolor),
@@ -313,10 +305,10 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                         fontWeight: FontWeight.w600,
                                         fontSize: AddSize.font16),
                                   ),
-                                  TextButton(
-                                      onPressed: () {
-                                        // Get.toNamed(VendorOrderList
-                                        //     .vendorOrderList);
+                                  GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Get.to(()=>OderListScreen(back: 'Back'));
                                       },
                                       child: Text(
                                         "See All".tr,

@@ -299,7 +299,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.red, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child:  Center(
+                                                        child: Center(
                                                             child: Text(
                                                           "Cancel".tr,
                                                           style: TextStyle(color: Colors.white),
@@ -322,7 +322,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                                             color: Colors.green, borderRadius: BorderRadius.circular(11)),
                                                         width: 100,
                                                         padding: const EdgeInsets.all(14),
-                                                        child:  Center(
+                                                        child: Center(
                                                             child: Text(
                                                           "okay".tr,
                                                           style: TextStyle(color: Colors.white),
@@ -353,7 +353,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ],
                               );
                             })
-                        :  Center(
+                        : Center(
                             child: Text("No Menu Created".tr),
                           );
                   }

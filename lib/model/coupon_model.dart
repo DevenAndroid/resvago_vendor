@@ -5,7 +5,7 @@ class CouponData {
   final dynamic startDate;
   final dynamic endDate;
   final dynamic maxDiscount;
-  final dynamic? docid;
+  final dynamic docid;
   final bool deactivate;
 
 

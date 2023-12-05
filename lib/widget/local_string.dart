@@ -13,6 +13,7 @@ class LocaleString extends Translations {
       nameName: 'You first',
       noOrderFee: 'We don’t charge you order fees. We don’t spy on you. We just help you enjoy your meals',
       'english' : "English",
+      'Change Language' : 'Change Language',
       'Restaurant Name' : 'Restaurant Name',
       'Beautifully-designed menus' : 'Beautifully-designed menus',
       'Every menu item is manually reviewed by our team' : 'Every menu item is manually reviewed by our team',
@@ -207,6 +208,7 @@ class LocaleString extends Translations {
 
     //Spanish LANGUAGE
     'es_ES': {
+      'Change Language' : 'Cambiar idioma',
       'english' : "inglesa",
       'You first' :'tú primero',
       'Restaurant Name' : 'Nombre del restaurante',
@@ -410,6 +412,7 @@ class LocaleString extends Translations {
 
     // french Language
     'fr_FR' : {
+      'Change Language' : 'Changer de langue',
       'English': 'anglaise',
        'Restaurant Name' : '',
       'You first': 'Toi en premier',
@@ -605,6 +608,7 @@ class LocaleString extends Translations {
 
     // Arabic Language
     'ar_AE' : {
+      'Change Language' : 'تغيير اللغة',
       'English' : 'إنجليزي',
       'Restaurant Name' : '',
       'You first': 'أنت أولاً',

@@ -9,7 +9,6 @@ import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../../model/dining_order_modal.dart';
 import '../../model/order_details_modal.dart';
-import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../oder_details_screen.dart';
 
@@ -143,8 +142,9 @@ class _OderListScreenState extends State<OderListScreen> {
                                         onTap: () {
                                           dropDownValue1.value = 'No';
                                         },
-                                        child:  Text('No'.tr,
-                                            style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                        child: Text('No'.tr,
+                                            style: const TextStyle(
+                                                fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                       ),
                                     ],
                                   )),
@@ -157,8 +157,9 @@ class _OderListScreenState extends State<OderListScreen> {
                                             dropDownValue1.value = 'Yes';
                                           });
                                         },
-                                        child:  Text('Yes'.tr,
-                                            style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                        child: Text('Yes'.tr,
+                                            style: const TextStyle(
+                                                fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                       ),
                                     ],
                                   )),
@@ -202,7 +203,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 20),
+                        const SizedBox(width: 20),
                         Expanded(
                           child: SizedBox(
                             height: 50,
@@ -225,7 +226,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         Get.back();
                                       },
                                       child: Text('False'.tr,
-                                          style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                          style:
+                                              const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
                                 )),
@@ -240,7 +242,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         });
                                       },
                                       child: Text('True'.tr,
-                                          style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                                          style:
+                                              const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
                                     ),
                                   ],
                                 )),
@@ -319,7 +322,7 @@ class _OderListScreenState extends State<OderListScreen> {
                   ]),
                 ),
               ),
-               TabBar(labelColor: Color(0xFF454B5C), indicatorColor: Color(0xFF3B5998), indicatorWeight: 4, tabs: [
+              TabBar(labelColor: const Color(0xFF454B5C), indicatorColor: const Color(0xFF3B5998), indicatorWeight: 4, tabs: [
                 Tab(
                   text: "Dining Orders".tr,
                 ),
@@ -379,9 +382,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
                                           final item = users[index];
-                                          DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(item.time * 1000);
-
-                                          return InkWell(
+                                          return GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
                                             onTap: () {
                                               Get.to(() => OderDetailsScreen(
                                                     myDiningOrderModel: item,
@@ -439,11 +441,10 @@ class _OderListScreenState extends State<OderListScreen> {
                                             ),
                                           );
                                         })
-                                    :  Center(
+                                    : Center(
                                         child: Text("No User Found".tr),
                                       );
                               }
-                              return const CircularProgressIndicator();
                             },
                           )
                         ],
@@ -501,7 +502,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
                                           final item = users[index];
-                                          return InkWell(
+                                          return GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
                                             onTap: () {
                                               Get.to(() => DeliveryOderDetailsScreen(
                                                     model: item,
@@ -585,13 +587,11 @@ class _OderListScreenState extends State<OderListScreen> {
         .snapshots()
         .map((querySnapshot) {
       List<MyOrderModel> orders = [];
-      print(orders);
       try {
         for (var doc in querySnapshot.docs) {
           orders.add(MyOrderModel.fromJson(doc.data(), doc.id));
         }
       } catch (e) {
-        print(e.toString());
         throw Exception(e.toString());
       }
       return orders;
