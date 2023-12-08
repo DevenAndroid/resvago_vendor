@@ -345,9 +345,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
-                              const SizedBox(
-                                width: 1,
-                              ),
+
                               Text(
                                 "Status".tr,
                                 style: GoogleFonts.poppins(
@@ -446,7 +444,8 @@ class _OderListScreenState extends State<OderListScreen> {
                                       );
                               }
                             },
-                          )
+                          ),
+                          SizedBox(height: 50,)
                         ],
                       ),
                     ),
@@ -463,9 +462,6 @@ class _OderListScreenState extends State<OderListScreen> {
                                 "Order No.".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
-                              ),
-                              const SizedBox(
-                                width: 1,
                               ),
                               Text(
                                 "Status".tr,
@@ -567,7 +563,8 @@ class _OderListScreenState extends State<OderListScreen> {
                               }
                               return const CircularProgressIndicator();
                             },
-                          )
+                          ),
+                          SizedBox(height: 30,)
                         ],
                       ),
                     ),

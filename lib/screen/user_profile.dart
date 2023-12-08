@@ -719,7 +719,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           CommonButtonBlue(
                             onPressed: () {
-                              updateProfileToFirestore();
+                              if(_formKeySignup.currentState!.validate() && _address !=""){
+                                updateProfileToFirestore();
+                              }
+                              else{
+                                showValidation1.value = true;
+                                setState(() {});
+                              }
                             },
                             title: 'Save'.tr,
                           ),
@@ -745,7 +751,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
         title: Text(
           'Select Picture from'.tr,
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(

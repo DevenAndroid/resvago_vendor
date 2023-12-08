@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -89,12 +90,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                           children: [
                             Text(
                               "Order ID: ${myOrderModel!.orderId.toString()}",
-                              style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                             Text(
                               DateFormat.yMMMMd().format(
                                   DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
-                              style: GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                             ),
                           ],
                         ),
@@ -468,7 +471,24 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                             deviceToken: myOrderModel!.fcmToken,
                             image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
                             title: "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
-                            orderID: myOrderModel!.orderId);
+                            orderID: myOrderModel!.orderId).then((value) async {
+                          FirebaseFirestore.instance.collection('notification').add({
+                            'title': "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                            'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
+                            'date': DateTime.now(),
+                            'userId': myOrderModel!.userId
+                          });
+                          final Email sendEmail = Email(
+                            body: 'body of email',
+                            subject: 'subject of email',
+                            recipients: ['mailto:manishprajapat207@gmail.com'],
+                            cc: ['mailto:example_cc@ex.com'],
+                            bcc: ['mailto:example_bcc@ex.com'],
+                            isHTML: false,
+                          );
+                          showToast('Email Send');
+                          await FlutterEmailSender.send(sendEmail);
+                        });
 
                         showToast("Order is Completed");
                       },
@@ -523,11 +543,30 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                   .doc(myOrderModel!.docid)
                                   .update({'order_status': 'Order Accepted'});
                               sendPushNotification(
-                                  body: myOrderModel!.orderDetails.toString(),
-                                  deviceToken: myOrderModel!.fcmToken,
-                                  image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                  title: "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
-                                  orderID: myOrderModel!.orderId);
+                                      body: myOrderModel!.orderDetails.toString(),
+                                      deviceToken: myOrderModel!.fcmToken,
+                                      image:
+                                          "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                      title: "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
+                                      orderID: myOrderModel!.orderId)
+                                  .then((value) async {
+                                FirebaseFirestore.instance.collection('notification').add({
+                                  'title': "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                  'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
+                                  'date': DateTime.now(),
+                                  'userId': myOrderModel!.userId
+                                });
+                                final Email sendEmail = Email(
+                                  body: 'body of email',
+                                  subject: 'subject of email',
+                                  recipients: ['mailto:manishprajapat207@gmail.com'],
+                                  cc: ['mailto:example_cc@ex.com'],
+                                  bcc: ['mailto:example_bcc@ex.com'],
+                                  isHTML: false,
+                                );
+                                showToast('Email Send');
+                                await FlutterEmailSender.send(sendEmail);
+                              });
 
                               showToast("Order is Accepted");
                             },
@@ -558,11 +597,30 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     .update({'order_status': 'Order Rejected'});
 
                                 sendPushNotification(
-                                    body: myOrderModel!.orderDetails.toString(),
-                                    deviceToken: myOrderModel!.fcmToken,
-                                    image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                    title: "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
-                                    orderID: myOrderModel!.orderId);
+                                        body: myOrderModel!.orderDetails.toString(),
+                                        deviceToken: myOrderModel!.fcmToken,
+                                        image:
+                                            "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                        title: "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                        orderID: myOrderModel!.orderId)
+                                    .then((value) async {
+                                  FirebaseFirestore.instance.collection('notification').add({
+                                    'title': "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                    'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
+                                    'date': DateTime.now(),
+                                    'userId': myOrderModel!.userId
+                                  });
+                                  final Email sendEmail = Email(
+                                    body: 'body of email',
+                                    subject: 'subject of email',
+                                    recipients: ['mailto:manishprajapat207@gmail.com'],
+                                    cc: ['mailto:example_cc@ex.com'],
+                                    bcc: ['mailto:example_bcc@ex.com'],
+                                    isHTML: false,
+                                  );
+                                  showToast('Email Send');
+                                  await FlutterEmailSender.send(sendEmail);
+                                });
 
                                 showToast("Order is Rejected");
                               },
@@ -574,7 +632,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               ),
                               child: Text(
                                 "Reject Order".tr,
-                                style: Theme.of(context).textTheme.headline5!.copyWith(
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                     color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                               )))
                     ],

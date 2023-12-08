@@ -97,7 +97,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                           children: [
                             Text(
                               'LANGUAGE'.tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: AppTheme.blackcolor, fontSize: 16),
                             ),
                             const Icon(Icons.keyboard_arrow_right)
@@ -131,10 +131,10 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "ENGLISH".tr,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
-                        locale = Locale('en', 'US');
+                        locale = const Locale('en', 'US');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
                         updateLanguage("english");
@@ -145,7 +145,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "SPANISH".tr,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
                         locale = const Locale('es', 'ES');

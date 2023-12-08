@@ -678,11 +678,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       CommonButtonBlue(
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
+                          if (formKey.currentState!.validate() && value) {
                             checkEmailInFirestore();
                           } else {
-                            // showValidationImg = true;
-                            // showValidation = true;
+                            showValidationImg = true;
+                            showValidation = true;
                             setState(() {});
                           }
                         },

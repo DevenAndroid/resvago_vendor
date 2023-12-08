@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -10,7 +9,6 @@ import 'package:intl/intl.dart' as format;
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import '../model/coupon_model.dart';
-import '../widget/addsize.dart';
 import '../widget/custom_textfield.dart';
 
 class PromoCodeList extends StatefulWidget {
@@ -77,203 +75,199 @@ class _PromoCodeListState extends State<PromoCodeList> {
                           DateTime date = format.DateFormat("dd-MMM-yyyy").parse(item.endDate.toString());
                           int dateAsInt = date.millisecondsSinceEpoch;
                           log(dateAsInt.toString());
-                          return dateAsInt < DateTime.now().millisecondsSinceEpoch
-                              ? Stack(children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Container(
-                                          width: AddSize.screenWidth,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey.shade200,
-                                                blurRadius: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 28, top: 7),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                          return Stack(children: [
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    width: MediaQuery.sizeOf(context).width,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade200,
+                                          blurRadius: 10,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 28, top: 7),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      RichText(
-                                                        overflow: TextOverflow.clip,
-                                                        textAlign: TextAlign.end,
-                                                        textDirection: TextDirection.rtl,
-                                                        softWrap: true,
-                                                        maxLines: 1,
-                                                        textScaleFactor: 1,
-                                                        text: TextSpan(
-                                                          text: item.promoCodeName.toString(),
-                                                          style: DefaultTextStyle.of(context).style,
-                                                          children: const <TextSpan>[],
-                                                        ),
-                                                      ),
-                                                      item.deactivate
-                                                          ? const Icon(
-                                                              Icons.block,
-                                                              color: Colors.red,
-                                                            )
-                                                          : const SizedBox(),
-                                                      PopupMenuButton(
-                                                          iconSize: 20,
-                                                          onSelected: (value) {
-                                                            setState(() {
-                                                              selectedItem = value.toString();
-                                                            });
-                                                            if (kDebugMode) {
-                                                              print(value);
-                                                            }
-                                                            Navigator.pushNamed(context, value.toString());
+                                                RichText(
+                                                  overflow: TextOverflow.clip,
+                                                  textAlign: TextAlign.end,
+                                                  textDirection: TextDirection.rtl,
+                                                  softWrap: true,
+                                                  maxLines: 1,
+                                                  textScaleFactor: 1,
+                                                  text: TextSpan(
+                                                    text: item.promoCodeName.toString(),
+                                                    style: DefaultTextStyle.of(context).style,
+                                                    children: const <TextSpan>[],
+                                                  ),
+                                                ),
+                                                item.deactivate
+                                                    ? const Icon(
+                                                        Icons.block,
+                                                        color: Colors.red,
+                                                      )
+                                                    : const SizedBox(),
+                                                PopupMenuButton(
+                                                    iconSize: 20,
+                                                    onSelected: (value) {
+                                                      setState(() {
+                                                        selectedItem = value.toString();
+                                                      });
+                                                      if (kDebugMode) {
+                                                        print(value);
+                                                      }
+                                                      Navigator.pushNamed(context, value.toString());
+                                                    },
+                                                    itemBuilder: (ac) {
+                                                      return [
+                                                        PopupMenuItem(
+                                                          child: Text("Edit".tr),
+                                                          onTap: () {
+                                                            Get.to(CreatePromoCodeScreen(
+                                                              isEditMode: true,
+                                                              promoCodeName: item.promoCodeName,
+                                                              code: item.code,
+                                                              discount: item.discount,
+                                                              startDate: item.startDate,
+                                                              endDate: item.endDate,
+                                                              maxDiscount: item.maxDiscount,
+                                                              documentId: item.docid,
+                                                            ));
                                                           },
-                                                          itemBuilder: (ac) {
-                                                            return [
-                                                              PopupMenuItem(
-                                                                child: Text("Edit".tr),
-                                                                onTap: () {
-                                                                  Get.to(CreatePromoCodeScreen(
-                                                                    isEditMode: true,
-                                                                    promoCodeName: item.promoCodeName,
-                                                                    code: item.code,
-                                                                    discount: item.discount,
-                                                                    startDate: item.startDate,
-                                                                    endDate: item.endDate,
-                                                                    maxDiscount: item.maxDiscount,
-                                                                    documentId: item.docid,
-                                                                  ));
-                                                                },
-                                                              ),
-                                                              PopupMenuItem(
-                                                                child: Text(item.deactivate ? "Activate".tr : "Deactivate".tr),
-                                                                onTap: () {
-                                                                  item.deactivate
-                                                                      ? FirebaseFirestore.instance
-                                                                          .collection('Coupon_data')
-                                                                          .doc(item.docid)
-                                                                          .update({"deactivate": false})
-                                                                      : FirebaseFirestore.instance
-                                                                          .collection('Coupon_data')
-                                                                          .doc(item.docid)
-                                                                          .update({"deactivate": true});
-                                                                  setState(() {});
-                                                                },
-                                                              )
-                                                            ];
-                                                          })
-                                                    ],
-                                                  ),
-                                                ),
-                                                // const SizedBox(height: 0,),
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: Text(item.deactivate ? "Activate".tr : "Deactivate".tr),
+                                                          onTap: () {
+                                                            item.deactivate
+                                                                ? FirebaseFirestore.instance
+                                                                    .collection('Coupon_data')
+                                                                    .doc(item.docid)
+                                                                    .update({"deactivate": false})
+                                                                : FirebaseFirestore.instance
+                                                                    .collection('Coupon_data')
+                                                                    .doc(item.docid)
+                                                                    .update({"deactivate": true});
+                                                            setState(() {});
+                                                          },
+                                                        )
+                                                      ];
+                                                    })
+                                              ],
+                                            ),
+                                          ),
+                                          // const SizedBox(height: 0,),
+                                          Text(
+                                            item.code.toString(),
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFFFAAF40), fontWeight: FontWeight.w300, fontSize: 14),
+                                          ),
+                                          const SizedBox(
+                                            height: 30,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 2.0, right: 25),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
                                                 Text(
-                                                  item.code.toString(),
+                                                  "Discount".tr,
                                                   style: GoogleFonts.poppins(
-                                                      color: const Color(0xFFFAAF40), fontWeight: FontWeight.w300, fontSize: 14),
+                                                      color: const Color(0xFF304048), fontWeight: FontWeight.w400, fontSize: 16),
                                                 ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 2.0, right: 25),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "Discount".tr,
-                                                        style: GoogleFonts.poppins(
-                                                            color: const Color(0xFF304048),
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: 16),
-                                                      ),
-                                                      Text(
-                                                        "${item.discount.toString()}%",
-                                                        style: GoogleFonts.poppins(
-                                                            color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 6,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 2.0, right: 25),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        item.startDate.toString(),
-                                                        style: GoogleFonts.poppins(
-                                                            color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
-                                                      ),
-                                                      Text(
-                                                        "To".tr,
-                                                        style: GoogleFonts.poppins(
-                                                            color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
-                                                      ),
-                                                      Text(
-                                                        item.endDate.toString(),
-                                                        style: GoogleFonts.poppins(
-                                                            color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
+                                                Text(
+                                                  "${item.discount.toString()}%",
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Positioned(
-                                      top: 80,
-                                      left: -10,
-                                      right: -10,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor: Colors.grey[100],
+                                          const SizedBox(
+                                            height: 6,
                                           ),
-                                          //Image.asset('assets/images/abc.png',height: 30,width: 30,),
-                                          Expanded(
-                                            child: FittedBox(
-                                              child: Row(
-                                                children: List.generate(
-                                                    kIsWeb ? 60 : 25,
-                                                    (index) => Padding(
-                                                          padding: const EdgeInsets.only(left: 2, right: 2),
-                                                          child: Container(
-                                                            color: Colors.grey[200],
-                                                            height: 1,
-                                                            width: 5,
-                                                          ),
-                                                        )),
-                                              ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 2.0, right: 25),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  item.startDate.toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
+                                                ),
+                                                Text(
+                                                  "To".tr,
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 16),
+                                                ),
+                                                Text(
+                                                  item.endDate.toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.grey, fontWeight: FontWeight.w300, fontSize: 14),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor: Colors.grey[100],
+                                          const SizedBox(
+                                            height: 20,
                                           ),
                                         ],
-                                      )),
-                                ])
-                              : SizedBox();
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                                top: 80,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.grey[100],
+                                    ),
+                                    //Image.asset('assets/images/abc.png',height: 30,width: 30,),
+                                    Expanded(
+                                      child: FittedBox(
+                                        child: Row(
+                                          children: List.generate(
+                                              kIsWeb ? 60 : 25,
+                                              (index) => Padding(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2),
+                                                    child: Container(
+                                                      color: Colors.grey[200],
+                                                      height: 1,
+                                                      width: 5,
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.grey[100],
+                                    ),
+                                  ],
+                                )),
+                          ]);
                         })
                     : Center(
                         child: Text("No Coupon Found".tr),
