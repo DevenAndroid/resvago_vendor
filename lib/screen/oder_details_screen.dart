@@ -667,8 +667,21 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           body: myDiningOrderModel!.orderType.toString(),
                           deviceToken: myDiningOrderModel!.fcmToken,
                           image: myDiningOrderModel!.restaurantInfo!.image,
-                          title: "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
-                          orderID: myDiningOrderModel!.orderId);
+                          title:
+                          "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
+                          orderID: myDiningOrderModel!.orderId)
+                          .then((value) {
+                        FirebaseFirestore.instance
+                            .collection('notification')
+                            .add({
+                          'title':
+                          "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
+                          'body': myDiningOrderModel!
+                              .restaurantInfo!.restaurantName,
+                          'date': DateTime.now(),
+                          'userId': myDiningOrderModel!.userId
+                        });
+                      });
 
                       showToast("Order is Completed");
                     },
@@ -723,11 +736,26 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 .doc(myDiningOrderModel!.docid)
                                 .update({'order_status': 'Order Accepted'});
                             sendPushNotification(
-                                body: myDiningOrderModel!.orderType.toString(),
+                                body: myDiningOrderModel!.orderType
+                                    .toString(),
                                 deviceToken: myDiningOrderModel!.fcmToken,
-                                image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                title: "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
-                                orderID: myDiningOrderModel!.orderId);
+                                image:
+                                "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                title:
+                                "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
+                                orderID: myDiningOrderModel!.orderId)
+                                .then((value) {
+                              FirebaseFirestore.instance
+                                  .collection('notification')
+                                  .add({
+                                'title':
+                                "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
+                                'body': myDiningOrderModel!
+                                    .restaurantInfo!.restaurantName,
+                                'date': DateTime.now(),
+                                'userId': myDiningOrderModel!.userId
+                              });
+                            });
 
                             showToast("Order is Accepted");
                           },
@@ -770,11 +798,26 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   docId: myDiningOrderModel!.docid,
                                   vendorId: myDiningOrderModel!.restaurantInfo!.userID);
                               sendPushNotification(
-                                  body: myDiningOrderModel!.orderType.toString(),
+                                  body: myDiningOrderModel!.orderType
+                                      .toString(),
                                   deviceToken: myDiningOrderModel!.fcmToken,
-                                  image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                  title: "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
-                                  orderID: myDiningOrderModel!.orderId);
+                                  image:
+                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                  title:
+                                  "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
+                                  orderID: myDiningOrderModel!.orderId)
+                                  .then((value) {
+                                FirebaseFirestore.instance
+                                    .collection('notification')
+                                    .add({
+                                  'title':
+                                  "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
+                                  'body': myDiningOrderModel!
+                                      .restaurantInfo!.restaurantName,
+                                  'date': DateTime.now(),
+                                  'userId': myDiningOrderModel!.userId
+                                });
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.maxFinite, 50),
