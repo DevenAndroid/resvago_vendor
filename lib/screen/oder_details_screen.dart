@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -670,7 +671,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           title:
                           "Your Order is Completed with Order ID ${myDiningOrderModel!.orderId}",
                           orderID: myDiningOrderModel!.orderId)
-                          .then((value) {
+                          .then((value) async {
                         FirebaseFirestore.instance
                             .collection('notification')
                             .add({
@@ -681,6 +682,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           'date': DateTime.now(),
                           'userId': myDiningOrderModel!.userId
                         });
+                        final Email send_email = Email(
+                          body: 'body of email',
+                          subject: 'subject of email',
+                          recipients: ['manishprajapat207@gmail.com'],
+                          cc: ['example_cc@ex.com'],
+                          bcc: ['example_bcc@ex.com'],
+                          isHTML: false,
+                        );
+                         showToast('Email Send');
+                        await FlutterEmailSender.send(send_email);
                       });
 
                       showToast("Order is Completed");
@@ -744,7 +755,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 title:
                                 "Your Order is Accepted with Order ID ${myDiningOrderModel!.orderId}",
                                 orderID: myDiningOrderModel!.orderId)
-                                .then((value) {
+                                .then((value) async {
                               FirebaseFirestore.instance
                                   .collection('notification')
                                   .add({
@@ -755,6 +766,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 'date': DateTime.now(),
                                 'userId': myDiningOrderModel!.userId
                               });
+                              final Email send_email = Email(
+                                body: 'body of email',
+                                subject: 'subject of email',
+                                recipients: ['manishprajapat207@gmail.com'],
+                                cc: ['example_cc@ex.com'],
+                                bcc: ['example_bcc@ex.com'],
+                                isHTML: false,
+                              );
+                              showToast('Email Send');
+                              await FlutterEmailSender.send(send_email);
                             });
 
                             showToast("Order is Accepted");
@@ -806,7 +827,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   title:
                                   "Your Order is Rejected with Order ID ${myDiningOrderModel!.orderId}",
                                   orderID: myDiningOrderModel!.orderId)
-                                  .then((value) {
+                                  .then((value) async {
                                 FirebaseFirestore.instance
                                     .collection('notification')
                                     .add({
@@ -817,6 +838,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   'date': DateTime.now(),
                                   'userId': myDiningOrderModel!.userId
                                 });
+                                final Email send_email = Email(
+                                  body: 'body of email',
+                                  subject: 'subject of email',
+                                  recipients: ['manishprajapat207@gmail.com'],
+                                  cc: ['example_cc@ex.com'],
+                                  bcc: ['example_bcc@ex.com'],
+                                  isHTML: false,
+                                );
+                                showToast('Email Send');
+                                await FlutterEmailSender.send(send_email);
                               });
                             },
                             style: ElevatedButton.styleFrom(
