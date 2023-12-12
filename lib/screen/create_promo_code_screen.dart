@@ -77,7 +77,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
         FirebaseFirestore.instance.collection('Coupon_data').doc(widget.documentId).update({
           "promoCodeName": promocodenameController.text,
           "code": codeController.text,
-          "maxDiscount": maxDiscountController.text,
+          "maxDiscount": int.parse(maxDiscountController.text.trim()),
           "discount": discountController.text,
           "startDate": startDateController.text,
           "endDate": endDateController.text,
@@ -90,7 +90,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
             .manageCouponCode(
           promoCodeName: promocodenameController.text.trim(),
           code: codeController.text.trim(),
-          maxDiscount: maxDiscountController.text.trim(),
+          maxDiscount: int.parse(maxDiscountController.text.trim()),
           discount: discountController.text.trim(),
           startDate: startDateController.text.trim(),
           endDate: endDateController.text.trim(),

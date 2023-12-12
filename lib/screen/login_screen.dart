@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -49,9 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      print(result.docs.first.data());
+      if (kDebugMode) {
+        print(result.docs.first.data());
+      }
       Map kk = result.docs.first.data() as Map;
-      print(kk["email"]);
+      if (kDebugMode) {
+        print(kk["email"]);
+      }
       if (kk["deactivate"] == false) {
         myauth.setConfig(
             appEmail: "contact@hdevcoder.com",
@@ -94,8 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
         login(kk["email"].toString());
       }
     } else {
+      logError('An error occurred:');
       Fluttertoast.showToast(msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
     }
+  }
+
+  void logError(String message) {
+    FirebaseCrashlytics.instance.log(message);
   }
 
   login(String email) async {
@@ -129,11 +141,23 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
       Helper.hideLoader(loader);
-    } catch (e) {
+    } catch (e, stack) {
+      logError('An error occurred: $e');
+      FirebaseCrashlytics.instance.recordError(e, stack);
       Helper.hideLoader(loader);
       showToast(e);
     }
   }
+
+  // sendLoginInformationEvent() async {
+  //   await analytics.logEvent(
+  //     name: "login_information",
+  //     parameters: <String, dynamic>{
+  //       'user_id': emailController.text,
+  //       'password': otpController.text,
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Text(
                                 "Login With Mobile Number".tr,
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ],
                           ),
@@ -206,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
+                              Text("Login With Email Address".tr, style: const TextStyle(color: Colors.white)),
                             ],
                           ),
                           if (loginOption == LoginOption.Mobile)
@@ -298,6 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         onTap: () {
                                           if (_formKey.currentState!.validate()) {
                                             checkEmailInFirestore();
+                                            // sendLoginInformationEvent();
                                           }
                                         },
                                         child: const Text(
@@ -406,6 +431,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             checkPhoneNumberInFirestore();
+                                            throw Error();
+                                            // sendLoginInformationEvent();
                                           }
                                         },
                                         title: 'Login'.tr,

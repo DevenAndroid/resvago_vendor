@@ -159,7 +159,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "French".tr,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
                         locale = const Locale('fr', 'FR');

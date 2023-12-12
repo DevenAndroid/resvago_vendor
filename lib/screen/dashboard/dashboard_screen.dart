@@ -458,8 +458,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                       color: const Color(0xff8C9BB2)),
                                 ),
                                 Text(
-                                  "10%",
-                                  //"10%",
+                                  "0%",
                                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                       height: 1.5, fontWeight: FontWeight.w600, fontSize: AddSize.font12, color: Colors.green),
                                 ),
@@ -597,7 +596,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               }
                             },
                           ),
-                          SizedBox(height: 50,)
+                          SizedBox(
+                            height: 50,
+                          )
                         ],
                       ),
                     ),
@@ -716,7 +717,9 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               return const CircularProgressIndicator();
                             },
                           ),
-                          SizedBox(height: 50,)
+                          const SizedBox(
+                            height: 50,
+                          )
                         ],
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
   final loginController = Get.put(LoginController());
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   List<TextEditingController> otpControllers = List.generate(6, (index) => TextEditingController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
@@ -80,6 +82,35 @@ class _OtpScreenState extends State<OtpScreen> {
       log("Error: $e");
     }
   }
+
+  // sendLoginInformationEvent() async {
+  //   await analytics.logEvent(
+  //     name: "login_information",
+  //     parameters: <String, dynamic>{
+  //       'user_id': widget.code + loginController.mobileController.text,
+  //       'password': otpController.text,
+  //     },
+  //   );
+  // }
+
+  Future<void> logVerifyOtpEvent() async {
+    try {
+      await analytics.logEvent(
+        name: "verify_otp",
+        parameters: <String, dynamic>{
+          'user_id': widget.code + loginController.mobileController.text,
+        },
+      );
+      if (kDebugMode) {
+        print("Verify OTP event logged successfully");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error logging verify OTP event: $e");
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +175,8 @@ class _OtpScreenState extends State<OtpScreen> {
                                                     }
                                                     if (otpControllers.map((e) => e.text.trim()).join("").length == 6) {
                                                       verifyOtp();
+                                                      logVerifyOtpEvent();
+                                                      // sendLoginInformationEvent();
                                                     }
                                                   },
                                                   keyboardType: TextInputType.number,
@@ -178,6 +211,8 @@ class _OtpScreenState extends State<OtpScreen> {
                                     ),
                                     onComplete: (output) {
                                       verifyOtp();
+                                      logVerifyOtpEvent();
+                                      // sendLoginInformationEvent();
                                     },
                                   ),
                                 ),

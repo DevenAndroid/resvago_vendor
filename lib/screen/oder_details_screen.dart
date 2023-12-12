@@ -572,39 +572,39 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                         const SizedBox(
                           height: 6,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Service Fees".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
-                            ),
-                            Text(
-                              "\$0.00",
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 6,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Meat Pasta".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
-                            ),
-                            Text(
-                              "\$0.00",
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       "Service Fees".tr,
+                        //       style:
+                        //           GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
+                        //     ),
+                        //     Text(
+                        //       "\$0.00",
+                        //       style:
+                        //           GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const SizedBox(
+                        //   height: 6,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       "Meat Pasta".tr,
+                        //       style:
+                        //           GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
+                        //     ),
+                        //     Text(
+                        //       "\$0.00",
+                        //       style:
+                        //           GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
+                        //     ),
+                        //   ],
+                        // ),
                         Divider(
                           thickness: 1,
                           color: Colors.grey.withOpacity(.3),

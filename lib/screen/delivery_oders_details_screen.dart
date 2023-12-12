@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +17,14 @@ import '../model/createslot_model.dart';
 import '../model/order_details_modal.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
+import 'package:http/http.dart' as http;
 
 class DeliveryOderDetailsScreen extends StatefulWidget {
   const DeliveryOderDetailsScreen({super.key, required this.model});
   final MyOrderModel model;
 
   @override
-  State<DeliveryOderDetailsScreen> createState() =>
-      _DeliveryOderDetailsScreenState();
+  State<DeliveryOderDetailsScreen> createState() => _DeliveryOderDetailsScreenState();
 }
 
 class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
@@ -55,6 +55,26 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
     }
   }
 
+  final HttpsCallable sendEmail = FirebaseFunctions.instance.httpsCallable(
+    'sendEmail',
+    options: HttpsCallableOptions(
+      timeout: const Duration(seconds: 10),
+    ),
+  );
+
+  Future<void> sendEmailFunction() async {
+    try {
+      await sendEmail.call(<String, dynamic>{
+        'to': 'anjalikumari5845@email.com',
+        'subject': 'Test Subject',
+        'text': 'Test email body',
+      });
+      print('Email sent successfully');
+    } catch (e) {
+      print('Error sending email: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,9 +91,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                   padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     // crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,38 +109,27 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                           children: [
                             Text(
                               "Order ID: ${myOrderModel!.orderId.toString()}",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF423E5E),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                             Text(
-                              DateFormat.yMMMMd().format(DateTime.parse(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                          myOrderModel!.time)
-                                      .toLocal()
-                                      .toString())),
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF303C5E),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 11),
+                              DateFormat.yMMMMd().format(
+                                  DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                             ),
                           ],
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 7),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                         decoration: BoxDecoration(
                           color: const Color(0xFF65CD90),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
                           myOrderModel!.orderStatus.toString(),
-                          style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 11),
+                          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
                         ),
                       )
                     ],
@@ -133,19 +140,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Selected Items".tr,
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 11,
@@ -153,27 +155,22 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                           if (myOrderModel!.orderDetails!.menuList != null)
                             ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: myOrderModel!
-                                    .orderDetails!.menuList!.length,
+                                itemCount: myOrderModel!.orderDetails!.menuList!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  final item = myOrderModel!
-                                      .orderDetails!.menuList![index];
+                                  final item = myOrderModel!.orderDetails!.menuList![index];
                                   return InkWell(
                                     onTap: () {},
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                                    borderRadius: BorderRadius.circular(10),
                                                     child: Image.network(
                                                       item.image.toString(),
                                                       height: 60,
@@ -186,21 +183,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                                   ),
                                                   Expanded(
                                                     child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
                                                           item.dishName,
                                                           style: GoogleFonts.poppins(
-                                                              color: const Color(
-                                                                  0xFF1A2E33),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                              color: const Color(0xFF1A2E33),
+                                                              fontWeight: FontWeight.w600,
                                                               fontSize: 15),
                                                         ),
                                                         const SizedBox(
@@ -210,11 +200,8 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                                           "Qty: ${item.qty}",
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w300,
-                                                              color: const Color(
-                                                                  0xFF3B5998)),
+                                                              fontWeight: FontWeight.w300,
+                                                              color: const Color(0xFF3B5998)),
                                                         ),
                                                         const SizedBox(
                                                           height: 4,
@@ -231,17 +218,13 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                             Text(
                                               "\$${item.price}",
                                               style: GoogleFonts.poppins(
-                                                  color:
-                                                      const Color(0xFF384953),
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 15),
+                                                  color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 15),
                                             ),
                                           ],
                                         ),
                                         Divider(
                                           thickness: 1,
-                                          color:
-                                              Colors.black12.withOpacity(0.09),
+                                          color: Colors.black12.withOpacity(0.09),
                                         ),
                                       ],
                                     ),
@@ -253,19 +236,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Customer Details".tr,
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 6,
@@ -288,16 +266,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     Text(
                                       "Customer Name".tr,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF486769),
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14),
+                                          color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
                                       myOrderModel!.customerData!.userName,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF21283D),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
+                                          color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -327,24 +301,19 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     Text(
                                       "Customer Number".tr,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF486769),
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14),
+                                          color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
                                       myOrderModel!.customerData!.mobileNumber,
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFF21283D),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
+                                          color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
                                   ],
                                 ),
                                 const Spacer(),
                                 GestureDetector(
                                   onTap: () {
-                                    String phoneNumber = myOrderModel!
-                                        .customerData!
+                                    String phoneNumber = myOrderModel!.customerData!
                                         .mobileNumber; // Replace with the actual phone number retrieved from your API
                                     launchPhoneCall(phoneNumber);
                                   },
@@ -373,22 +342,17 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Customer Address".tr,
                                         style: GoogleFonts.poppins(
-                                            color: const Color(0xFF486769),
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 14),
+                                            color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                       ),
                                       Text(
                                         myOrderModel!.address.toString(),
                                         style: GoogleFonts.poppins(
-                                            color: const Color(0xFF21283D),
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
+                                            color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                       ),
                                     ],
                                   ),
@@ -409,9 +373,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         children: [
                           Row(
@@ -420,63 +382,51 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Subtotal".tr,
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
+                                    color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
                               ),
                               Text(
                                 "\$${myOrderModel!.total.toString()}",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
                           const SizedBox(
                             height: 6,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Service Fees".tr,
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
-                              ),
-                              Text(
-                                "\$0.00",
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Meat Pasta".tr,
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF1E2538),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14),
-                              ),
-                              Text(
-                                "\$0.00",
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text(
+                          //       "Service Fees".tr,
+                          //       style: GoogleFonts.poppins(
+                          //           color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
+                          //     ),
+                          //     Text(
+                          //       "\$0.00",
+                          //       style: GoogleFonts.poppins(
+                          //           color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(
+                          //   height: 6,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text(
+                          //       "Meat Pasta".tr,
+                          //       style: GoogleFonts.poppins(
+                          //           color: const Color(0xFF1E2538), fontWeight: FontWeight.w300, fontSize: 14),
+                          //     ),
+                          //     Text(
+                          //       "\$0.00",
+                          //       style: GoogleFonts.poppins(
+                          //           color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
+                          //     ),
+                          //   ],
+                          // ),
                           Divider(
                             thickness: 1,
                             color: Colors.grey.withOpacity(.3),
@@ -490,16 +440,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                               Text(
                                 "Total".tr,
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                               Text(
                                 "\$${myOrderModel!.total.toString()}",
                                 style: GoogleFonts.poppins(
-                                    color: const Color(0xFF3A3A3A),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
+                                    color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                             ],
                           ),
@@ -517,15 +463,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: Colors.blue,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Order Completed".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Accepted")
@@ -543,19 +488,13 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         sendPushNotification(
                                 body: myOrderModel!.orderDetails.toString(),
                                 deviceToken: myOrderModel!.fcmToken,
-                                image:
-                                    "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                title:
-                                    "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
+                                image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                title: "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
                                 orderID: myOrderModel!.orderId)
                             .then((value) {
-                          FirebaseFirestore.instance
-                              .collection('notification')
-                              .add({
-                            'title':
-                                "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
-                            'body': myOrderModel!
-                                .orderDetails!.restaurantInfo!.restaurantName,
+                          FirebaseFirestore.instance.collection('notification').add({
+                            'title': "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
+                            'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                             'date': DateTime.now(),
                             'userId': myOrderModel!.userId
                           });
@@ -567,15 +506,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: const Color(0xFFFF6559),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Delivery Order".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Rejected")
@@ -587,15 +525,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: const Color(0xFFFF6559),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         "Order Rejected".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus != "Order Accepted" &&
@@ -616,46 +553,36 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                   .doc(myOrderModel!.docid)
                                   .update({'order_status': 'Order Accepted'});
                               sendPushNotification(
-                                  body:
-                                  myOrderModel!.orderDetails.toString(),
-                                  deviceToken: myOrderModel!.fcmToken,
-                                  image:
-                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                  title:
-                                  "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
-                                  orderID: myOrderModel!.orderId)
-                                  .then((value) {
-                                FirebaseFirestore.instance
-                                    .collection('notification')
-                                    .add({
-                                  'title':
-                                  "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
-                                  'body': myOrderModel!.orderDetails!
-                                      .restaurantInfo!.restaurantName,
+                                      body: myOrderModel!.orderDetails.toString(),
+                                      deviceToken: myOrderModel!.fcmToken,
+                                      image:
+                                          "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                      title: "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
+                                      orderID: myOrderModel!.orderId)
+                                  .then((value) async {
+                                FirebaseFirestore.instance.collection('notification').add({
+                                  'title': "Your Order is Accepted with Order ID ${myOrderModel!.orderId}",
+                                  'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                   'date': DateTime.now(),
                                   'userId': myOrderModel!.userId
                                 });
+                                // sendEmailFunction();
+                                var res = await http.get(Uri.parse('https://us-central1-resvago-ire.cloudfunctions.net/sendMail'));
+                                print(res.body);
                               });
 
                               showToast("Order is Accepted");
                             },
-
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.maxFinite, 50),
                               primary: Colors.green,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: Text(
                               "Accept Order".tr,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                      color: AppTheme.backgroundcolor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: AddSize.font18),
+                              style: Theme.of(context).textTheme.headline5!.copyWith(
+                                  color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                             )),
                       ),
                       const SizedBox(
@@ -673,22 +600,16 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     .update({'order_status': 'Order Rejected'});
 
                                 sendPushNotification(
-                                    body: myOrderModel!.orderDetails
-                                        .toString(),
-                                    deviceToken: myOrderModel!.fcmToken,
-                                    image:
-                                    "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                    title:
-                                    "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
-                                    orderID: myOrderModel!.orderId)
+                                        body: myOrderModel!.orderDetails.toString(),
+                                        deviceToken: myOrderModel!.fcmToken,
+                                        image:
+                                            "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                        title: "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                        orderID: myOrderModel!.orderId)
                                     .then((value) {
-                                  FirebaseFirestore.instance
-                                      .collection('notification')
-                                      .add({
-                                    'title':
-                                    "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
-                                    'body': myOrderModel!.orderDetails!
-                                        .restaurantInfo!.restaurantName,
+                                  FirebaseFirestore.instance.collection('notification').add({
+                                    'title': "Your Order is Rejected with Order ID ${myOrderModel!.orderId}",
+                                    'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                     'date': DateTime.now(),
                                     'userId': myOrderModel!.userId
                                   });
@@ -700,18 +621,12 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                 minimumSize: const Size(double.maxFinite, 50),
                                 primary: const Color(0xFFFF6559),
                                 elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               ),
                               child: Text(
                                 "Reject Order".tr,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                        color: AppTheme.backgroundcolor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: AddSize.font18),
+                                style: Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                               )))
                     ],
                   ),

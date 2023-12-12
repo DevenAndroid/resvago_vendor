@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,17 +12,17 @@ Future<void> main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "AIzaSyBCol-O-qoqmOCLI_aRN0PeJ5KPvGPVQB8",
-        projectId: "resvago-b7bd4",
-        messagingSenderId: "671324938172",
-        appId: "1:671324938172:web:d017a2cf72416c24aed5b9",
-        storageBucket: "resvago-b7bd4.appspot.com",
+          apiKey: "AIzaSyBN7-pBlJcY6p8stbdeDRgo-JVF6MO2K30",
+          projectId: "resvago-ire",
+          storageBucket: "resvago-ire.appspot.com",
+          messagingSenderId: "382013840274",
+          appId: "1:382013840274:web:6e7442ab8927e2b4abff4b",
       ),
     );
   } else {
     await Firebase.initializeApp();
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   }
-
   runApp(const MyApp());
 }
 

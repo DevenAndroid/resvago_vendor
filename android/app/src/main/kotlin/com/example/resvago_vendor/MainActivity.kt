@@ -1,4 +1,4 @@
-package com.resvago.resvago_vendor
+package com.resvago.vendor
 
 import io.flutter.embedding.android.FlutterActivity
 

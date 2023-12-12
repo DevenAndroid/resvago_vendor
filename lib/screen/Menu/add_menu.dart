@@ -83,10 +83,6 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           imageUrl = fileUrl;
         }
       } else {
-        // if (menuItemData != null) {
-        //   Reference gg = FirebaseStorage.instance.refFromURL(menuItemData!.image.toString());
-        //   await gg.delete();
-        // }
         if (!categoryFile.path.contains("https") && categoryFile.path.isNotEmpty) {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref("categoryImages")
