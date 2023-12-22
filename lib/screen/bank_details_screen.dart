@@ -153,7 +153,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                         ],
                       )))
             ],
-          ).appPaddingTextField,
+          ).appPaddingForScreen,
         ),
       ),
     );

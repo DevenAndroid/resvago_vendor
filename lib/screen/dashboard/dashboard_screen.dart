@@ -12,6 +12,7 @@ import 'package:resvago_vendor/screen/user_profile.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/bottomnavbar_controller.dart';
+import '../../controllers/profile_controller.dart';
 import '../../model/dining_order_modal.dart';
 import '../../model/order_details_modal.dart';
 import '../../model/profile_model.dart';
@@ -19,14 +20,15 @@ import '../../model/signup_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
-import '../bottom_nav_bar/oder_list_screen.dart';
 import '../delivery_oders_details_screen.dart';
 import '../oder_details_screen.dart';
 import '../set_store_time/set_store_time.dart';
 
 class VendorDashboard extends StatefulWidget {
   const VendorDashboard({super.key});
+
   static var vendorDashboard = "/vendorDashboard";
+
   @override
   State<VendorDashboard> createState() => _VendorDashboardState();
 }
@@ -66,6 +68,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
       firebaseService.updateFirebaseToken();
     }
     restaurantData();
+    fetchTotalEarnings();
   }
 
   Future<int> totalSoldItem() async {
@@ -82,6 +85,44 @@ class _VendorDashboardState extends State<VendorDashboard> {
         .count()
         .get();
     return item1.count + item2.count;
+  }
+
+  Future<int> totalReceivedItem() async {
+    final item1 = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .count()
+        .get();
+    final item2 = await FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .count()
+        .get();
+    return item1.count + item2.count;
+  }
+
+  double totalEarnings = 0;
+
+  Future<double> calculateTotalEarnings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = double.parse(documentSnapshot.data()["total"]);
+      totalEarnings += orderAmount;
+    }
+
+    return totalEarnings;
+  }
+
+  Future<void> fetchTotalEarnings() async {
+    double earnings = await calculateTotalEarnings();
+    setState(() {
+      totalEarnings = earnings;
+      log("dgdfhdfh$totalEarnings");
+    });
   }
 
   @override
@@ -127,10 +168,10 @@ class _VendorDashboardState extends State<VendorDashboard> {
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Restaurant Time:".tr,
+                            "Restaurant Time: ".tr,
                             style: GoogleFonts.ibmPlexSansArabic(
                                 fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
                           ),
@@ -159,7 +200,6 @@ class _VendorDashboardState extends State<VendorDashboard> {
               ),
             ],
           ),
-
           actions: [
             Column(
               children: [
@@ -309,7 +349,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               child: Image.asset(imgList[1].toString()),
                             ),
                             Text(
-                              "0",
+                              "\$${totalEarnings.toString()}",
                               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                   height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
                             ),
@@ -372,6 +412,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               future: totalSoldItem(),
                               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                                 if (snapshot.hasData) {
+                                  log(snapshot.data.toString());
                                   return Text(
                                     (snapshot.data ?? "0").toString(),
                                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -441,10 +482,29 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               width: 40,
                               child: Image.asset(imgList[3].toString()),
                             ),
-                            Text(
-                              (profileData.order_count ?? "").toString(),
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  height: 1.5, fontWeight: FontWeight.w500, fontSize: AddSize.font20, color: AppTheme.blackcolor),
+                            FutureBuilder(
+                              future: totalReceivedItem(),
+                              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                if (snapshot.hasData) {
+                                  log(snapshot.data.toString());
+                                  return Text(
+                                    (snapshot.data ?? "0").toString(),
+                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                        height: 1.5,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: AddSize.font20,
+                                        color: AppTheme.blackcolor),
+                                  );
+                                }
+                                return Text(
+                                  "0",
+                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                      height: 1.5,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: AddSize.font20,
+                                      color: AppTheme.blackcolor),
+                                );
+                              },
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -591,12 +651,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                           );
                                         })
                                     : Center(
-                                        child: Text("No User Found".tr),
+                                        child: Text("No order received yet".tr),
                                       );
                               }
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 50,
                           )
                         ],
@@ -711,7 +771,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                           );
                                         })
                                     : Center(
-                                        child: Text("No User Found".tr),
+                                        child: Text("No order received yet".tr),
                                       );
                               }
                               return const CircularProgressIndicator();
@@ -732,6 +792,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
   }
 
   List<MyOrderModel> orders = [];
+
   Stream<List<MyOrderModel>> getOrdersStreamFromFirestore() {
     return FirebaseFirestore.instance
         .collection('order')

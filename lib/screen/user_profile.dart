@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +19,8 @@ import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:resvago_vendor/controllers/profile_controller.dart';
 import 'package:resvago_vendor/model/profile_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../Firebase_service/firebase_service.dart';
@@ -24,6 +28,7 @@ import '../controllers/Register_controller.dart';
 import '../controllers/add_product_controller.dart';
 import '../helper.dart';
 import '../model/category_model.dart';
+import '../model/google_places_model.dart';
 import '../utils/helper.dart';
 import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
@@ -61,6 +66,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final picker = ImagePicker();
   final controller = Get.put(AddProductController());
 
+  int kk = 0;
+
   TextEditingController mobileController = TextEditingController();
   TextEditingController restaurantController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -86,6 +93,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   dynamic latitude = "";
   dynamic longitude = "";
   bool deactivated = false;
+
+  final TextEditingController _searchController = TextEditingController();
+  GooglePlacesModel? googlePlacesModel;
+  Places? selectedPlace;
+
+  Future<void> _searchPlaces(String query) async {
+    const cloudFunctionUrl = 'https://us-central1-resvago-ire.cloudfunctions.net/searchPlaces';
+    FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?query=$query')).call().then((value) {
+      List<Places> places = [];
+      if (value.data != null) {
+        value.data.forEach((v) {
+          places.add(Places.fromJson(v));
+        });
+      }
+      googlePlacesModel = GooglePlacesModel(places: places);
+      setState(() {});
+    });
+  }
+
+  Timer? timer;
+
+  makeDelay({
+    required Function() delay,
+  }) {
+    if (timer != null) timer!.cancel();
+    timer = Timer(const Duration(milliseconds: 300), delay);
+  }
+
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       categoryList ??= [];
@@ -127,32 +162,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imageUrlProfile = await snapshot.ref.getDownloadURL();
         }
       }
-      for (var element in controller.galleryImages.asMap().entries) {
-        if (element.value.path.contains("http")) {
-          imagesLink.add(element.value.path);
-        } else {
-          UploadTask uploadTask =
-              FirebaseStorage.instance.ref("restaurant_images").child("${element.key}image").putFile(element.value);
-          TaskSnapshot snapshot = await uploadTask;
-          String imageUrl = await snapshot.ref.getDownloadURL();
-          imagesLink.add(imageUrl);
+      if (!kIsWeb) {
+        for (var element in controller.galleryImages.asMap().entries) {
+          if (element.value.path.contains("http")) {
+            imagesLink.add(element.value.path);
+          } else {
+            UploadTask uploadTask =
+                FirebaseStorage.instance.ref("restaurant_images").child("${element.key}image").putFile(element.value);
+            TaskSnapshot snapshot = await uploadTask;
+            String imageUrl = await snapshot.ref.getDownloadURL();
+            imagesLink.add(imageUrl);
+          }
         }
-      }
-      for (var element in controller.menuGallery.asMap().entries) {
-        if (element.value.path.contains("http")) {
-          menuPhotoLink.add(element.value.path);
-        } else {
-          UploadTask uploadMenuImage =
-              FirebaseStorage.instance.ref("menu_images").child("${element.key}image").putFile(element.value);
+        for (var element in controller.menuGallery.asMap().entries) {
+          if (element.value.path.contains("http")) {
+            menuPhotoLink.add(element.value.path);
+          } else {
+            UploadTask uploadMenuImage =
+                FirebaseStorage.instance.ref("menu_images").child("${element.key}image").putFile(element.value);
 
-          TaskSnapshot snapshot1 = await uploadMenuImage;
-          String imageUrl1 = await snapshot1.ref.getDownloadURL();
-          menuPhotoLink.add(imageUrl1);
+            TaskSnapshot snapshot1 = await uploadMenuImage;
+            String imageUrl1 = await snapshot1.ref.getDownloadURL();
+            menuPhotoLink.add(imageUrl1);
+          }
         }
       }
       await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
-        "address": _address,
+        "address": _searchController.text.trim(),
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
@@ -161,6 +198,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "image": imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
+        "code": code,
+        "country": country,
         "confirmPassword": confirmPassController.text.trim(),
         "preparationTime": preparationTime,
         "averageMealForMember": averageMealForMember,
@@ -194,13 +233,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         } else {
           fileUrl = profileData.image ?? "";
         }
-        mobileController.text = profileData.mobileNumber.toString();
+        mobileController.text = (profileData.mobileNumber ?? "").toString();
+        code = (profileData.code ?? "").toString();
+        country = (profileData.country ?? "").toString();
         restaurantController.text = profileData.restaurantName.toString();
-        categoryController.text = profileData.category.toString();
+        categoryController.text = (profileData.category ?? "").toString();
         emailController.text = profileData.email.toString();
         latitude = profileData.latitude.toString();
         longitude = profileData.longitude.toString();
-        _address = profileData.address.toString();
+        _searchController.text = (profileData.address ?? "").toString();
         preparationTime = (profileData.preparationTime ?? "").toString();
         averageMealForMember = (profileData.averageMealForMember ?? "").toString();
         setDelivery = (profileData.setDelivery);
@@ -220,6 +261,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           controller.menuGallery.add(File(element));
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         }
+        kk++;
+        setState(() {});
         if (!categoryList!.map((e) => e.name.toString()).toList().contains(profileData.category)) {
           categoryValue = "";
         }
@@ -237,12 +280,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     getVendorCategories();
   }
 
-  // String code = "+91";
+  String code = "+353";
+  String country = "IE";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
+      appBar: AppBar(
+        leading: BackButton(
+          color: Colors.black,
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         child: Form(
           key: _formKeySignup,
@@ -369,13 +425,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 child: controller.categoryFile.path.contains("http") ||
                                                         controller.categoryFile.path == ""
                                                     ? Image.network(
-                                                        profileData.image ?? "",
-                                                        height: AddSize.size30,
-                                                        width: AddSize.size30,
+                                                        profileData.image.toString(),
                                                         fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => const Icon(
-                                                          Icons.person,
-                                                          size: 60,
+                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: profileData.image.toString(),
+                                                          height: AddSize.size30,
+                                                          width: AddSize.size30,
+                                                          errorWidget: (_, __, ___) => const Icon(
+                                                            Icons.person,
+                                                            size: 20,
+                                                            color: Colors.black,
+                                                          ),
+                                                          placeholder: (_, __) => const SizedBox(),
                                                         ),
                                                       )
                                                     : Image.file(
@@ -508,9 +570,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               readOnly: true,
                               controller: categoryController,
                               // length: 10,
-                              validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter your category'.tr),
-                              ]).call,
+                              // validator: MultiValidator([
+                              //   RequiredValidator(errorText: 'Please enter your category'.tr),
+                              // ]).call,
                               keyboardType: TextInputType.emailAddress,
                               hint: 'Select category'.tr,
                               onTap: () {
@@ -577,15 +639,55 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             height: 10,
                           ),
-                          RegisterTextFieldWidget(
-                            readOnly: true,
+                          IntlPhoneField(
+                            key: ValueKey(kk),
+                            cursorColor: Colors.black,
+                            dropdownIcon: const Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: Colors.black,
+                            ),
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: 'Please enter your phone number'.tr),
+                            ]).call,
+                            dropdownTextStyle: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
+                            flagsButtonPadding: const EdgeInsets.all(8),
+                            dropdownIconPosition: IconPosition.trailing,
                             controller: mobileController,
-                            length: 10,
-                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number'.tr).call,
+                            decoration: InputDecoration(
+                                hintStyle: const TextStyle(
+                                  color: Color(0xFF384953),
+                                  fontSize: 14,
+                                  // fontFamily: 'poppins',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                hintText: 'Phone Number'.tr,
+                                // labelStyle: TextStyle(color: Colors.black),
+                                border: const OutlineInputBorder(
+                                  borderSide: BorderSide(),
+                                ),
+                                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
+                            initialCountryCode: country,
                             keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.next,
-                            hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
+                            onCountryChanged: (phone) {
+                              setState(() {
+                                code = "+${phone.dialCode}";
+                                country = "${phone.code}";
+                                log(phone.code.toString());
+                                log(phone.dialCode.toString());
+                              });
+                            },
                           ),
+                          // RegisterTextFieldWidget(
+                          //   // readOnly: true,
+                          //   controller: mobileController,
+                          //   length: 10,
+                          //   // validator: RequiredValidator(errorText: 'Please enter your Mobile Number'.tr).call,
+                          //   keyboardType: TextInputType.number,
+                          //   // textInputAction: TextInputAction.next,
+                          //   hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
+                          // ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -597,6 +699,51 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 10,
                           ),
 
+                          RegisterTextFieldWidget(
+                            controller: _searchController,
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: 'Please enter your location'.tr),
+                            ]).call,
+                            keyboardType: TextInputType.emailAddress,
+                            hint: 'Search your location',
+                            onChanged: (value) {
+                              makeDelay(delay: () {
+                                _searchPlaces(value);
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          googlePlacesModel != null
+                              ? Container(
+                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                                  child: ListView.builder(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    itemCount: googlePlacesModel!.places!.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final item = googlePlacesModel!.places![index];
+                                      return InkWell(
+                                          onTap: () {
+                                            _searchController.text = item.name ?? "";
+                                            selectedPlace = item;
+                                            googlePlacesModel = null;
+                                            latitude = selectedPlace!.geometry!.location!.lat;
+                                            longitude = selectedPlace!.geometry!.location!.lng;
+                                            log(selectedPlace!.geometry!.toJson().toString());
+                                            setState(() {});
+                                            // places = [];
+                                            // setState(() {});
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                            child: Text(item.name ?? ""),
+                                          ));
+                                    },
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                           // RegisterTextFieldWidget(
                           //   readOnly: true,
                           //   controller: locationUsController,
@@ -606,72 +753,72 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           //   // textInputAction: TextInputAction.next,
                           //   hint: profileData.address == null ? "Address" : profileData.address.toString(),
                           // ),
-                          InkWell(
-                              onTap: () async {
-                                var place = await PlacesAutocomplete.show(
-                                    hint: "Location".tr,
-                                    context: context,
-                                    apiKey: googleApikey,
-                                    mode: Mode.overlay,
-                                    types: [],
-                                    strictbounds: false,
-                                    onError: (err) {
-                                      log("error.....   ${err.errorMessage}");
-                                    });
-                                if (place != null) {
-                                  setState(() {
-                                    _address = (place.description ?? "Location").toString();
-                                  });
-                                  final plist = GoogleMapsPlaces(
-                                    apiKey: googleApikey,
-                                    apiHeaders: await const GoogleApiHeaders().getHeaders(),
-                                  );
-                                  print(plist);
-                                  String placeid = place.placeId ?? "0";
-                                  final detail = await plist.getDetailsByPlaceId(placeid);
-                                  final geometry = detail.result.geometry!;
-                                  final lat = geometry.location.lat;
-                                  final lang = geometry.location.lng;
-                                  setState(() {
-                                    _address = (place.description ?? "Location").toString();
-                                    latitude = lat;
-                                    longitude = lang;
-                                  });
-                                }
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      height: 55,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: !checkValidation(showValidation1.value, _address == "")
-                                                  ? Colors.grey.shade300
-                                                  : Colors.red),
-                                          borderRadius: BorderRadius.circular(5.0),
-                                          color: Colors.white),
-                                      // width: MediaQuery.of(context).size.width - 40,
-                                      child: ListTile(
-                                        leading: const Icon(Icons.location_on),
-                                        title: Text(
-                                          _address ?? "Location".toString(),
-                                          style: TextStyle(fontSize: AddSize.font14),
-                                        ),
-                                        trailing: const Icon(Icons.search),
-                                        dense: true,
-                                      )),
-                                  checkValidation(showValidation1.value, _address == "")
-                                      ? Padding(
-                                          padding: EdgeInsets.only(top: AddSize.size5),
-                                          child: Text(
-                                            "Location is required".tr,
-                                            style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
-                                          ),
-                                        )
-                                      : const SizedBox()
-                                ],
-                              )),
+                          // InkWell(
+                          //     onTap: () async {
+                          //       var place = await PlacesAutocomplete.show(
+                          //           hint: "Location".tr,
+                          //           context: context,
+                          //           apiKey: googleApikey,
+                          //           mode: Mode.overlay,
+                          //           types: [],
+                          //           strictbounds: false,
+                          //           onError: (err) {
+                          //             log("error.....   ${err.errorMessage}");
+                          //           });
+                          //       if (place != null) {
+                          //         setState(() {
+                          //           _address = (place.description ?? "Location").toString();
+                          //         });
+                          //         final plist = GoogleMapsPlaces(
+                          //           apiKey: googleApikey,
+                          //           apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                          //         );
+                          //         print(plist);
+                          //         String placeid = place.placeId ?? "0";
+                          //         final detail = await plist.getDetailsByPlaceId(placeid);
+                          //         final geometry = detail.result.geometry!;
+                          //         final lat = geometry.location.lat;
+                          //         final lang = geometry.location.lng;
+                          //         setState(() {
+                          //           _address = (place.description ?? "Location").toString();
+                          //           latitude = lat;
+                          //           longitude = lang;
+                          //         });
+                          //       }
+                          //     },
+                          //     child: Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       children: [
+                          //         Container(
+                          //             height: 55,
+                          //             decoration: BoxDecoration(
+                          //                 border: Border.all(
+                          //                     color: !checkValidation(showValidation1.value, _address == "")
+                          //                         ? Colors.grey.shade300
+                          //                         : Colors.red),
+                          //                 borderRadius: BorderRadius.circular(5.0),
+                          //                 color: Colors.white),
+                          //             // width: MediaQuery.of(context).size.width - 40,
+                          //             child: ListTile(
+                          //               leading: const Icon(Icons.location_on),
+                          //               title: Text(
+                          //                 _address ?? "Location".toString(),
+                          //                 style: TextStyle(fontSize: AddSize.font14),
+                          //               ),
+                          //               trailing: const Icon(Icons.search),
+                          //               dense: true,
+                          //             )),
+                          //         checkValidation(showValidation1.value, _address == "")
+                          //             ? Padding(
+                          //                 padding: EdgeInsets.only(top: AddSize.size5),
+                          //                 child: Text(
+                          //                   "Location is required".tr,
+                          //                   style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
+                          //                 ),
+                          //               )
+                          //             : const SizedBox()
+                          //       ],
+                          //     )),
                           const SizedBox(
                             height: 20,
                           ),
@@ -686,43 +833,49 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             controller: aboutUsController,
                             minLines: 5,
                             maxLines: 5,
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter about yourself'.tr),
-                            ]).call,
+                            // validator: MultiValidator([
+                            //   RequiredValidator(errorText: 'Please enter about yourself'.tr),
+                            // ]).call,
                             keyboardType: TextInputType.text,
                             hint: 'About Us',
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-                          Text(
-                            "Upload Restaurant Images or Videos".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const ProductGalleryImages(),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Upload Restaurant Menu Card".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const ProductMenuImages(),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          if (!kIsWeb)
+                            Column(
+                              children: [
+                                Text(
+                                  "Upload Restaurant Images or Videos".tr,
+                                  style: GoogleFonts.poppins(
+                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const ProductGalleryImages(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "Upload Restaurant Menu Card".tr,
+                                  style: GoogleFonts.poppins(
+                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const ProductMenuImages(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
                           CommonButtonBlue(
                             onPressed: () {
-                              if(_formKeySignup.currentState!.validate() && _address !=""){
+                              if (_formKeySignup.currentState!.validate() && _searchController.text != "") {
                                 updateProfileToFirestore();
-                              }
-                              else{
+                              } else {
                                 showValidation1.value = true;
                                 setState(() {});
                               }

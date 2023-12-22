@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,10 +9,10 @@ import 'apptheme.dart';
 
 
 
-Locale locale = Locale('en', 'US');
+Locale locale = const Locale('en', 'US');
 
 class LanguageChangeScreen extends StatefulWidget {
-  const LanguageChangeScreen({Key? key}) : super(key: key);
+  const LanguageChangeScreen({super.key});
   static var languageChangeScreen = "/languageChangeScreen";
 
   @override
@@ -37,16 +38,15 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   checkLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? appLanguage = sharedPreferences.getString("app_language");
-
-    if (appLanguage == null || appLanguage == "english") {
+    if (appLanguage == null || appLanguage == "English") {
       Get.updateLocale(const Locale('en', 'US'));
       selectedLAnguage.value = "English";
-    } else if (appLanguage == "spanish") {
+    } else if (appLanguage == "Spanish") {
       Get.updateLocale(const Locale('es', 'ES'));
       selectedLAnguage.value = "Spanish";
-    } else if (appLanguage == "french") {
+    } else if (appLanguage == "French") {
       Get.updateLocale(const Locale('fr', 'FR'));
-      selectedLAnguage.value = "french";
+      selectedLAnguage.value = "French";
     } else if (appLanguage == "Arabic") {
       Get.updateLocale(const Locale('ar', 'AE'));
       selectedLAnguage.value = "Arabic";
@@ -109,7 +109,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                   ],
                 ),
               ),
-            ]),
+            ]).appPaddingForScreen,
         );
   }
 
@@ -137,7 +137,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         locale = const Locale('en', 'US');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
-                        updateLanguage("english");
+                        updateLanguage("English");
                         setState(() {});
                         print(selectedLAnguage);
                       }),
@@ -155,7 +155,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "french",
+                  RadioListTile( value: "French",
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "French".tr,
@@ -165,7 +165,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         locale = const Locale('fr', 'FR');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
-                        updateLanguage("french");
+                        updateLanguage("French");
                         setState(() {});
                         print(selectedLAnguage);
                       }),

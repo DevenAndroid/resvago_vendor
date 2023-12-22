@@ -145,7 +145,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                               discount: item.discount,
                                                               startDate: item.startDate,
                                                               endDate: item.endDate,
-                                                              maxDiscount: item.maxDiscount,
+                                                              maxDiscount: item.maxDiscount.toString(),
                                                               documentId: item.docid,
                                                             ));
                                                           },

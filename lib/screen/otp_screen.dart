@@ -1,25 +1,24 @@
 import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import '../controllers/login_controller.dart';
+import '../helper.dart';
 import '../widget/appassets.dart';
 import '../widget/custom_textfield.dart';
-import 'dashboard/dashboard_chart.dart';
 
 class OtpScreen extends StatefulWidget {
   String verificationId;
   String code;
   final String email;
-  OtpScreen({super.key, required this.verificationId, required this.code, required this.email});
+  OtpScreen({super.key, required this.verificationId, required this.code, required this.email,});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -32,31 +31,75 @@ class _OtpScreenState extends State<OtpScreen> {
   List<TextEditingController> otpControllers = List.generate(6, (index) => TextEditingController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
+  // reSend() async {
+  //   try {
+  //     final String phoneNumber = widget.code + loginController.mobileController.text; // Include the country code
+  //     await _auth.verifyPhoneNumber(
+  //       phoneNumber: phoneNumber,
+  //       verificationCompleted: (PhoneAuthCredential credential) {},
+  //       verificationFailed: (FirebaseAuthException e) {
+  //         log("Verification Failed: $e");
+  //       },
+  //       codeSent: (String verificationId, [int? resendToken]) {
+  //         // Update the parameter to accept nullable int
+  //         log("Code Sent: $verificationId");
+  //         this.verificationId = verificationId;
+  //         Get.to(() => OtpScreen(
+  //               verificationId: verificationId,
+  //               code: widget.code,
+  //               email: widget.email,
+  //             ));
+  //       },
+  //       codeAutoRetrievalTimeout: (String verificationId) {
+  //         log("Auto Retrieval Timeout: $verificationId");
+  //       },
+  //     );
+  //   } catch (e) {
+  //     log("Error: $e");
+  //   }
+  // }
+
+
   reSend() async {
+    otpController.clear();
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     try {
-      final String phoneNumber = widget.code + loginController.mobileController.text; // Include the country code
+      final String phoneNumber = widget.code + loginController.mobileController.text;
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationCompleted: (PhoneAuthCredential credential) {
+          if (kDebugMode) {
+            print("Verification credential: $credential");
+          }
+        },
         verificationFailed: (FirebaseAuthException e) {
-          log("Verification Failed: $e");
+          if (kDebugMode) {
+            print("Verification Failed: $e");
+          }
         },
         codeSent: (String verificationId, [int? resendToken]) {
-          // Update the parameter to accept nullable int
-          log("Code Sent: $verificationId");
-          this.verificationId = verificationId;
+          if (kDebugMode) {
+            print("Code Sent: $verificationId");
+          }
+          verificationId = verificationId;
+          showToast("Otp send successfully");
           Get.to(() => OtpScreen(
-                verificationId: verificationId,
-                code: widget.code,
-                email: widget.email,
-              ));
+            verificationId: verificationId,
+            code: widget.code,
+            email: widget.email,
+          ));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          log("Auto Retrieval Timeout: $verificationId");
+          if (kDebugMode) {
+            print("Auto Retrieval Timeout: $verificationId");
+          }
         },
       );
-    } catch (e) {
-      log("Error: $e");
+      Helper.hideLoader(loader);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      Helper.hideLoader(loader);
     }
   }
 
@@ -137,7 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Sent OTP  to verify your number'.tr,
-                                  style: GoogleFonts.poppins(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 18,
@@ -204,7 +247,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     autoHideKeyboard: true,
                                     fieldBackgroundColor: Colors.white.withOpacity(.10),
                                     borderColor: Colors.white,
-                                    textStyle: GoogleFonts.poppins(
+                                    textStyle: const TextStyle(
                                       fontSize: 25.0,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
@@ -227,7 +270,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   children: [
                                     Text(
                                       'Enter the OTP Send to'.tr,
-                                      style: GoogleFonts.poppins(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 18,
@@ -236,7 +279,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     ),
                                     Text(
                                       loginController.mobileController.text,
-                                      style: GoogleFonts.poppins(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 18,
@@ -256,7 +299,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 child: Center(
                                   child: Text(
                                     'RESEND OTP'.tr,
-                                    style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),

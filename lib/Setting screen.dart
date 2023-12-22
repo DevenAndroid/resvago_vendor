@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,12 +9,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:resvago_vendor/model/setting_model.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
-
 import 'Firebase_service/firebase_service.dart';
 import 'controllers/add_product_controller.dart';
 import 'helper.dart';
@@ -141,8 +138,8 @@ class _SettingScreenState extends State<SettingScreen> {
         "cancellation": state1,
         "menuSelection": state2,
         "userID": FirebaseAuth.instance.currentUser!.uid,
-      }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
-      Get.back();
+      }).then((value) => Fluttertoast.showToast(msg: "Setting Updated"));
+      // Get.back();
       Helpers.hideLoader(loader);
     } catch (e) {
       Helpers.hideLoader(loader);
@@ -152,6 +149,7 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  String code = '';
   ProfileData profileData = ProfileData();
   void fetchData() {
     FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
@@ -160,7 +158,8 @@ class _SettingScreenState extends State<SettingScreen> {
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
         categoryFile = File(profileData.image.toString());
-        mobileController.text = profileData.mobileNumber.toString();
+        mobileController.text = (profileData.mobileNumber ?? "").toString();
+        code = (profileData.code ?? "").toString();
         restaurantController.text = profileData.restaurantName.toString();
         categoryController.text = profileData.category.toString();
         emailController.text = profileData.email.toString();
@@ -301,7 +300,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   RequiredValidator(errorText: 'Please enter your preparation Time'),
                 ]).call,
                 keyboardType: TextInputType.number,
-                hint: '20 Mint',
+                hint: 'Preparation time',
               ),
               const SizedBox(
                 height: 20,
@@ -319,7 +318,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   RequiredValidator(errorText: 'Please enter your average Meal For 1 Member'),
                 ]).call,
                 keyboardType: TextInputType.number,
-                hint: '100',
+                hint: '\$0.00',
               ),
               const SizedBox(
                 height: 170,

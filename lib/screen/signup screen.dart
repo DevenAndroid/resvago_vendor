@@ -1,34 +1,29 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
-import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
-import 'package:google_api_headers/google_api_headers.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import 'package:resvago_vendor/utils/helper.dart';
-import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
 import '../helper.dart';
 import '../model/category_model.dart';
+import '../model/google_places_model.dart';
 import '../routers/routers.dart';
-import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -89,14 +84,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
-    final QuerySnapshot phoneResult = await FirebaseFirestore.instance
-        .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: code + mobileNumberController.text)
-        .get();
-    if (phoneResult.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Mobile Number already exits');
-      return;
-    }
+    // final QuerySnapshot phoneResult = await FirebaseFirestore.instance
+    //     .collection('vendor_users')
+    //     .where('mobileNumber', isEqualTo: code + mobileNumberController.text)
+    //     .get();
+    // if (phoneResult.docs.isNotEmpty) {
+    //   Fluttertoast.showToast(msg: 'Mobile Number already exits');
+    //   return;
+    // }
     addUserToFirestore();
   }
 
@@ -109,58 +104,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
       geo = Geoflutterfire();
       GeoFirePoint geoFirePoint =
           geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
-      String? imageUrl;
-      if (kIsWeb) {
-        UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
-        TaskSnapshot snapshot = await uploadTask;
-        imageUrl = await snapshot.ref.getDownloadURL();
-      } else {
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref("categoryImages")
-            .child(DateTime.now().millisecondsSinceEpoch.toString())
-            .putFile(categoryFile.value);
-        TaskSnapshot snapshot = await uploadTask;
-        imageUrl = await snapshot.ref.getDownloadURL();
-      }
-      if (kDebugMode) {
-        print("got image url.........    $imageUrl");
-      }
+      // String? imageUrl;
+      // if (kIsWeb) {
+      //   UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
+      //   TaskSnapshot snapshot = await uploadTask;
+      //   imageUrl = await snapshot.ref.getDownloadURL();
+      // } else {
+      //   UploadTask uploadTask = FirebaseStorage.instance
+      //       .ref("categoryImages")
+      //       .child(DateTime.now().millisecondsSinceEpoch.toString())
+      //       .putFile(categoryFile.value);
+      //   TaskSnapshot snapshot = await uploadTask;
+      //   imageUrl = await snapshot.ref.getDownloadURL();
+      // }
+      // if (kDebugMode) {
+      //   print("got image url.........    $imageUrl");
+      // }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
       if (FirebaseAuth.instance.currentUser != null) {
-        await firebaseService
+        firebaseService
             .manageRegisterUsers(
           restaurantName: restaurantNameController.text.trim(),
-          category: categoryController.text.trim(),
+          // category: categoryController.text.trim(),
           email: emailController.text.trim(),
-          mobileNumber: code + mobileNumberController.text.trim(),
-          address: _address,
-          latitude: latitude.toString(),
-          longitude: longitude.toString(),
+          // mobileNumber: code + mobileNumberController.text.trim(),
+          address: _searchController.text.trim(),
+          latitude: selectedPlace!.geometry!.location!.lat.toString(),
+          longitude: selectedPlace!.geometry!.location!.lng.toString(),
           password: "123456",
-          image: imageUrl,
+          // image: imageUrl,
           restaurant_position: geoFirePoint.data.toString(),
         )
             .then((value) async {
-          await FirebaseAuth.instance.signOut();
-          Get.toNamed(MyRouters.thankYouScreen);
           Helper.hideLoader(loader);
+          // print("asgsdgsdfdf");
+          // await FirebaseAuth.instance.signOut();
+          Get.toNamed(MyRouters.thankYouScreen);
         }).catchError((e) async {
           await FirebaseAuth.instance.signOut();
         });
       }
     } catch (e) {
       showToast(e);
-      await FirebaseAuth.instance.signOut();
+      // await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
       throw Exception(e);
     } finally {
-      await FirebaseAuth.instance.signOut();
+      // await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
     }
   }
 
   bool isDescendingOrder = true;
-
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -178,6 +173,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getVendorCategories();
     });
+  }
+
+  final TextEditingController _searchController = TextEditingController();
+  GooglePlacesModel? googlePlacesModel;
+  Places? selectedPlace;
+
+  Future<void> _searchPlaces(String query) async {
+    const cloudFunctionUrl = 'https://us-central1-resvago-ire.cloudfunctions.net/searchPlaces';
+    FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?query=$query')).call().then((value) {
+      List<Places> places = [];
+      if (value.data != null) {
+        value.data.forEach((v) {
+          places.add(Places.fromJson(v));
+        });
+      }
+      googlePlacesModel = GooglePlacesModel(places: places);
+      setState(() {});
+    });
+  }
+
+  Timer? timer;
+
+  makeDelay({
+    required Function() delay,
+  }) {
+    if (timer != null) timer!.cancel();
+    timer = Timer(const Duration(milliseconds: 300), delay);
   }
 
   @override
@@ -209,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         "Restaurant Name".tr,
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -222,66 +244,116 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         // textInputAction: TextInputAction.next,
                         hint: 'Mac Restaurant',
                       ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      // Text(
+                      //   "Category".tr,
+                      //   style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                      // ),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // if (categoryList != null)
+                      //   RegisterTextFieldWidget(
+                      //     readOnly: true,
+                      //     controller: categoryController,
+                      //     length: 10,
+                      //     validator: MultiValidator([
+                      //       RequiredValidator(errorText: 'Please enter your category'.tr),
+                      //     ]).call,
+                      //     keyboardType: TextInputType.emailAddress,
+                      //     hint: 'Select category',
+                      //     onTap: () {
+                      //       showDialog(
+                      //         context: context,
+                      //         builder: (ctx) => AlertDialog(
+                      //           content: SizedBox(
+                      //             height: 400,
+                      //             width: double.maxFinite,
+                      //             child: ListView.builder(
+                      //               physics: const AlwaysScrollableScrollPhysics(),
+                      //               itemCount: categoryList!.length,
+                      //               shrinkWrap: true,
+                      //               itemBuilder: (BuildContext context, int index) {
+                      //                 return InkWell(
+                      //                     onTap: () {
+                      //                       categoryController.text = categoryList![index].name;
+                      //                       Get.back();
+                      //                       setState(() {});
+                      //                     },
+                      //                     child: Padding(
+                      //                       padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      //                       child: Text(categoryList![index].name),
+                      //                     ));
+                      //               },
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     },
+                      //   )
+                      // else
+                      //   Center(
+                      //     child: Text("No Category Available".tr),
+                      //   ),
                       const SizedBox(
                         height: 20,
                       ),
                       Text(
-                        "Category".tr,
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        "Address".tr,
+                        style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      if (categoryList != null)
-                        RegisterTextFieldWidget(
-                          readOnly: true,
-                          controller: categoryController,
-                          // length: 10,
-                          validator: MultiValidator([
-                            RequiredValidator(errorText: 'Please enter your category'.tr),
-                          ]).call,
-                          keyboardType: TextInputType.emailAddress,
-                          hint: 'Select category',
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                content: SizedBox(
-                                  height: 400,
-                                  width: double.maxFinite,
-                                  child: ListView.builder(
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    itemCount: categoryList!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return InkWell(
-                                          onTap: () {
-                                            categoryController.text = categoryList![index].name;
-                                            Get.back();
-                                            setState(() {});
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                            child: Text(categoryList![index].name),
-                                          ));
-                                    },
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      else
-                        Center(
-                          child: Text("No Category Available".tr),
-                        ),
-                      const SizedBox(
-                        height: 20,
+                      RegisterTextFieldWidget(
+                        controller: _searchController,
+                        validator: MultiValidator([
+                          RequiredValidator(errorText: 'Please enter your location'.tr),
+                        ]).call,
+                        keyboardType: TextInputType.emailAddress,
+                        hint: 'Search your location',
+                        onChanged: (value) {
+                          makeDelay(delay: () {
+                            _searchPlaces(value);
+                          });
+                        },
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      googlePlacesModel != null
+                          ? Container(
+                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: googlePlacesModel!.places!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final item = googlePlacesModel!.places![index];
+                                  return InkWell(
+                                      onTap: () {
+                                        _searchController.text = item.name ?? "";
+                                        selectedPlace = item;
+                                        googlePlacesModel = null;
+                                        log(selectedPlace!.geometry!.toJson().toString());
+                                        setState(() {});
+                                        // places = [];
+                                        // setState(() {});
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                        child: Text(item.name ?? ""),
+                                      ));
+                                },
+                              ),
+                            )
+                          : const SizedBox.shrink(),
 
                       Text(
                         "Email".tr,
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                        style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
                         height: 10,
@@ -300,322 +372,284 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 20,
                       ),
+                      // IntlPhoneField(
+                      //   cursorColor: Colors.black,
+                      //   dropdownIcon: const Icon(
+                      //     Icons.arrow_drop_down_rounded,
+                      //     color: Colors.black,
+                      //   ),
+                      //   validator: MultiValidator([
+                      //     RequiredValidator(errorText: 'Please enter your phone number'.tr),
+                      //   ]).call,
+                      //   dropdownTextStyle: const TextStyle(color: Colors.black),
+                      //   style: const TextStyle(color: Colors.black),
+                      //   flagsButtonPadding: const EdgeInsets.all(8),
+                      //   dropdownIconPosition: IconPosition.trailing,
+                      //   controller: mobileNumberController,
+                      //   decoration: InputDecoration(
+                      //       hintStyle: const TextStyle(
+                      //         color: Color(0xFF384953),
+                      //         fontSize: 14,
+                      //         // fontFamily: 'poppins',
+                      //         fontWeight: FontWeight.w300,
+                      //       ),
+                      //       hintText: 'Phone Number'.tr,
+                      //       // labelStyle: TextStyle(color: Colors.black),
+                      //       border: const OutlineInputBorder(
+                      //         borderSide: BorderSide(),
+                      //       ),
+                      //       enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                      //       focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
+                      //   initialCountryCode: 'IE',
+                      //   keyboardType: TextInputType.number,
+                      //   onCountryChanged: (phone) {
+                      //     setState(() {
+                      //       code = "+${phone.dialCode}";
+                      //       log(phone.code.toString());
+                      //     });
+                      //   },
+                      // ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
                       // Text(
-                      //   "Password",
-                      //   style: GoogleFonts.poppins(
-                      //       color: AppTheme.registortext,
-                      //       fontWeight: FontWeight.w500,
-                      //       fontSize: 15),
+                      //   "Address".tr,
+                      //   style: TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       // ),
                       // const SizedBox(
                       //   height: 10,
                       // ),
-                      // RegisterTextFieldWidget(
-                      //   controller: passwordController,
-                      //    length: 10,
-                      //   keyboardType: TextInputType.visiblePassword,
-                      //   hint: 'MacRestaurant@12',
-                      // ),
+                      // // if (kIsWeb)
+                      // //   RegisterTextFieldWidget(
+                      // //     controller: location,
+                      // //     // length: 10,
+                      // //     validator: MultiValidator([
+                      // //       RequiredValidator(errorText: 'Please enter your address'.tr),
+                      // //     ]).call,
+                      // //     keyboardType: TextInputType.emailAddress,
+                      // //     // textInputAction: TextInputAction.next,
+                      // //     hint: 'Enter your address',
+                      // //   ),
+                      // InkWell(
+                      //     onTap: () async {
+                      //       var place = await PlacesAutocomplete.show(
+                      //           hint: "Location".tr,
+                      //           context: context,
+                      //           apiKey: googleApikey,
+                      //           mode: Mode.overlay,
+                      //           types: [],
+                      //           strictbounds: false,
+                      //           onError: (err) {
+                      //             log("error.....   ${err.errorMessage}");
+                      //           });
+                      //       if (place != null) {
+                      //         setState(() {
+                      //           _address = (place.description ?? "Location").toString();
+                      //         });
+                      //         final plist = GoogleMapsPlaces(
+                      //           apiKey: googleApikey,
+                      //           apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                      //         );
+                      //         if (kDebugMode) {
+                      //           print(plist);
+                      //         }
+                      //         String placeid = place.placeId ?? "0";
+                      //         final detail = await plist.getDetailsByPlaceId(placeid);
+                      //         final geometry = detail.result.geometry!;
+                      //         final lat = geometry.location.lat;
+                      //         final lang = geometry.location.lng;
+                      //         setState(() {
+                      //           _address = (place.description ?? "Location").toString();
+                      //           latitude = lat;
+                      //           longitude = lang;
+                      //           if (kDebugMode) {
+                      //             print("Address iss...$_address");
+                      //           }
+                      //         });
+                      //       }
+                      //     },
+                      //     child: Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         Container(
+                      //             height: 55,
+                      //             decoration: BoxDecoration(
+                      //                 border: Border.all(
+                      //                     color: !checkValidation(showValidation1.value, _address == "")
+                      //                         ? Colors.grey.shade300
+                      //                         : Colors.red),
+                      //                 borderRadius: BorderRadius.circular(5.0),
+                      //                 color: Colors.white),
+                      //             // width: MediaQuery.of(context).size.width - 40,
+                      //             child: ListTile(
+                      //               leading: const Icon(Icons.location_on),
+                      //               title: Text(
+                      //                 _address ?? "Location".toString(),
+                      //                 style: TextStyle(fontSize: AddSize.font14),
+                      //               ),
+                      //               trailing: const Icon(Icons.search),
+                      //               dense: true,
+                      //             )),
+                      //         checkValidation(showValidation1.value, _address == "")
+                      //             ? Padding(
+                      //                 padding: EdgeInsets.only(top: AddSize.size5),
+                      //                 child: Text(
+                      //                   "Location is required".tr,
+                      //                   style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
+                      //                 ),
+                      //               )
+                      //             : const SizedBox()
+                      //       ],
+                      //     )),
+                      //
                       // const SizedBox(
                       //   height: 20,
                       // ),
-                      Text(
-                        "Mobile Number".tr,
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      IntlPhoneField(
-                        cursorColor: Colors.black,
-                        dropdownIcon: const Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: Colors.black,
-                        ),
-                        validator: MultiValidator([
-                          RequiredValidator(errorText: 'Please enter your phone number'.tr),
-                        ]).call,
-                        dropdownTextStyle: const TextStyle(color: Colors.black),
-                        style: const TextStyle(color: Colors.black),
-                        flagsButtonPadding: const EdgeInsets.all(8),
-                        dropdownIconPosition: IconPosition.trailing,
-                        controller: mobileNumberController,
-                        decoration: InputDecoration(
-                            hintStyle: GoogleFonts.poppins(
-                              color: const Color(0xFF384953),
-                              textStyle: GoogleFonts.poppins(
-                                color: const Color(0xFF384953),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                              ),
-                              fontSize: 14,
-                              // fontFamily: 'poppins',
-                              fontWeight: FontWeight.w300,
-                            ),
-                            hintText: 'Phone Number'.tr,
-                            // labelStyle: TextStyle(color: Colors.black),
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
-                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
-                        initialCountryCode: 'IE',
-                        keyboardType: TextInputType.number,
-                        onCountryChanged: (phone) {
-                          setState(() {
-                            code = "+${phone.dialCode}";
-                            log(phone.code.toString());
-                          });
-                        },
-                        onChanged: (phone) {
-                          // log("fhdfhdf");
-                          // setState(() {
-                          //   code = phone.countryCode.toString();
-                          //   log(code.toString());
-                          // });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        "Address".tr,
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      // if (kIsWeb)
-                      //   RegisterTextFieldWidget(
-                      //     controller: location,
-                      //     // length: 10,
-                      //     validator: MultiValidator([
-                      //       RequiredValidator(errorText: 'Please enter your address'.tr),
-                      //     ]).call,
-                      //     keyboardType: TextInputType.emailAddress,
-                      //     // textInputAction: TextInputAction.next,
-                      //     hint: 'Enter your address',
-                      //   ),
-                      InkWell(
-                          onTap: () async {
-                            var place = await PlacesAutocomplete.show(
-                                hint: "Location".tr,
-                                context: context,
-                                apiKey: googleApikey,
-                                mode: Mode.overlay,
-                                types: [],
-                                strictbounds: false,
-                                onError: (err) {
-                                  log("error.....   ${err.errorMessage}");
-                                });
-                            if (place != null) {
-                              setState(() {
-                                _address = (place.description ?? "Location").toString();
-                              });
-                              final plist = GoogleMapsPlaces(
-                                apiKey: googleApikey,
-                                apiHeaders: await const GoogleApiHeaders().getHeaders(),
-                              );
-                              if (kDebugMode) {
-                                print(plist);
-                              }
-                              String placeid = place.placeId ?? "0";
-                              final detail = await plist.getDetailsByPlaceId(placeid);
-                              final geometry = detail.result.geometry!;
-                              final lat = geometry.location.lat;
-                              final lang = geometry.location.lng;
-                              setState(() {
-                                _address = (place.description ?? "Location").toString();
-                                latitude = lat;
-                                longitude = lang;
-                                if (kDebugMode) {
-                                  print("Address iss...$_address");
-                                }
-                              });
-                            }
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: !checkValidation(showValidation1.value, _address == "")
-                                              ? Colors.grey.shade300
-                                              : Colors.red),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      color: Colors.white),
-                                  // width: MediaQuery.of(context).size.width - 40,
-                                  child: ListTile(
-                                    leading: const Icon(Icons.location_on),
-                                    title: Text(
-                                      _address ?? "Location".toString(),
-                                      style: TextStyle(fontSize: AddSize.font14),
-                                    ),
-                                    trailing: const Icon(Icons.search),
-                                    dense: true,
-                                  )),
-                              checkValidation(showValidation1.value, _address == "")
-                                  ? Padding(
-                                      padding: EdgeInsets.only(top: AddSize.size5),
-                                      child: Text(
-                                        "Location is required".tr,
-                                        style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
-                                      ),
-                                    )
-                                  : const SizedBox()
-                            ],
-                          )),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      kIsWeb
-                          ? DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(20),
-                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
-                              dashPattern: const [6],
-                              strokeWidth: 1,
-                              child: InkWell(
-                                onTap: () {
-                                  // showActionSheet(context);
-                                  Helper.addFilePicker().then((value) {
-                                    if (kIsWeb) {
-                                      pickedFile = value;
-                                      setState(() {});
-                                      return;
-                                    }
-                                    setState(() {});
-                                    categoryFile.value = value;
-                                    if (kDebugMode) {
-                                      print("Image----${categoryFile.value}");
-                                    }
-                                  });
-                                },
-                                child: pickedFile != null
-                                    ? Stack(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              color: Colors.white,
-                                            ),
-                                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                            width: double.maxFinite,
-                                            height: 180,
-                                            alignment: Alignment.center,
-                                            child: kIsWeb
-                                                ? pickedFile != null
-                                                    ? Image.memory(pickedFile!)
-                                                    : Image.asset(
-                                                        AppAssets.gallery,
-                                                        height: 60,
-                                                        width: 50,
-                                                      )
-                                                : Image.memory(pickedFile!,
-                                                    errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
-                                                        errorBuilder: (_, __, ___) => const SizedBox())),
-                                          ),
-                                        ],
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                        width: double.maxFinite,
-                                        height: 130,
-                                        alignment: Alignment.center,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              AppAssets.gallery,
-                                              height: 60,
-                                              width: 50,
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style: const TextStyle(fontSize: 16, color: Colors.black54),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(
-                                              height: 11,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                              ),
-                            )
-                          : DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(20),
-                              padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                              color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
-                              dashPattern: const [6],
-                              strokeWidth: 1,
-                              child: InkWell(
-                                onTap: () {
-                                  showActionSheet(context);
-                                  // Helper.addFilePicker().then((value) {
-                                  //   categoryFile.value = value;
-                                  //   print("Image----${categoryFile.value}");
-                                  // });
-                                },
-                                child: categoryFile.value.path != ""
-                                    ? Obx(() {
-                                        return Stack(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: Colors.white,
-                                              ),
-                                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                              width: double.maxFinite,
-                                              height: 180,
-                                              alignment: Alignment.center,
-                                              child: Image.file(categoryFile.value,
-                                                  errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
-                                                      errorBuilder: (_, __, ___) => const SizedBox())),
-                                            ),
-                                          ],
-                                        );
-                                      })
-                                    : Container(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                        width: double.maxFinite,
-                                        height: 130,
-                                        alignment: Alignment.center,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              AppAssets.gallery,
-                                              height: 60,
-                                              width: 50,
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
-                                              style: const TextStyle(fontSize: 16, color: Colors.black54),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(
-                                              height: 11,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                              ),
-                            ),
+                      // kIsWeb
+                      //     ? DottedBorder(
+                      //         borderType: BorderType.RRect,
+                      //         radius: const Radius.circular(20),
+                      //         padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                      //         color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                      //         dashPattern: const [6],
+                      //         strokeWidth: 1,
+                      //         child: InkWell(
+                      //           onTap: () {
+                      //             // showActionSheet(context);
+                      //             Helper.addFilePicker().then((value) {
+                      //               if (kIsWeb) {
+                      //                 pickedFile = value;
+                      //                 setState(() {});
+                      //                 return;
+                      //               }
+                      //               setState(() {});
+                      //               categoryFile.value = value;
+                      //               if (kDebugMode) {
+                      //                 print("Image----${categoryFile.value}");
+                      //               }
+                      //             });
+                      //           },
+                      //           child: pickedFile != null
+                      //               ? Stack(
+                      //                   children: [
+                      //                     Container(
+                      //                       decoration: BoxDecoration(
+                      //                         borderRadius: BorderRadius.circular(10),
+                      //                         color: Colors.white,
+                      //                       ),
+                      //                       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      //                       width: double.maxFinite,
+                      //                       height: 180,
+                      //                       alignment: Alignment.center,
+                      //                       child: kIsWeb
+                      //                           ? pickedFile != null
+                      //                               ? Image.memory(pickedFile!)
+                      //                               : Image.asset(
+                      //                                   AppAssets.gallery,
+                      //                                   height: 60,
+                      //                                   width: 50,
+                      //                                 )
+                      //                           : Image.memory(pickedFile!,
+                      //                               errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
+                      //                                   errorBuilder: (_, __, ___) => const SizedBox())),
+                      //                     ),
+                      //                   ],
+                      //                 )
+                      //               : Container(
+                      //                   padding: const EdgeInsets.only(top: 8),
+                      //                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      //                   width: double.maxFinite,
+                      //                   height: 130,
+                      //                   alignment: Alignment.center,
+                      //                   child: Column(
+                      //                     mainAxisAlignment: MainAxisAlignment.center,
+                      //                     children: [
+                      //                       Image.asset(
+                      //                         AppAssets.gallery,
+                      //                         height: 60,
+                      //                         width: 50,
+                      //                       ),
+                      //                       const SizedBox(
+                      //                         height: 5,
+                      //                       ),
+                      //                       Text(
+                      //                         'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
+                      //                         style: const TextStyle(fontSize: 16, color: Colors.black54),
+                      //                         textAlign: TextAlign.center,
+                      //                       ),
+                      //                       const SizedBox(
+                      //                         height: 11,
+                      //                       ),
+                      //                     ],
+                      //                   ),
+                      //                 ),
+                      //         ),
+                      //       )
+                      //     : DottedBorder(
+                      //         borderType: BorderType.RRect,
+                      //         radius: const Radius.circular(20),
+                      //         padding: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
+                      //         color: showValidationImg == false ? const Color(0xFFFAAF40) : Colors.red,
+                      //         dashPattern: const [6],
+                      //         strokeWidth: 1,
+                      //         child: InkWell(
+                      //           onTap: () {
+                      //             showActionSheet(context);
+                      //             // Helper.addFilePicker().then((value) {
+                      //             //   categoryFile.value = value;
+                      //             //   print("Image----${categoryFile.value}");
+                      //             // });
+                      //           },
+                      //           child: categoryFile.value.path != ""
+                      //               ? Obx(() {
+                      //                   return Stack(
+                      //                     children: [
+                      //                       Container(
+                      //                         decoration: BoxDecoration(
+                      //                           borderRadius: BorderRadius.circular(10),
+                      //                           color: Colors.white,
+                      //                         ),
+                      //                         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      //                         width: double.maxFinite,
+                      //                         height: 180,
+                      //                         alignment: Alignment.center,
+                      //                         child: Image.file(categoryFile.value,
+                      //                             errorBuilder: (_, __, ___) => Image.network(categoryFile.value.path,
+                      //                                 errorBuilder: (_, __, ___) => const SizedBox())),
+                      //                       ),
+                      //                     ],
+                      //                   );
+                      //                 })
+                      //               : Container(
+                      //                   padding: const EdgeInsets.only(top: 8),
+                      //                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      //                   width: double.maxFinite,
+                      //                   height: 130,
+                      //                   alignment: Alignment.center,
+                      //                   child: Column(
+                      //                     mainAxisAlignment: MainAxisAlignment.center,
+                      //                     children: [
+                      //                       Image.asset(
+                      //                         AppAssets.gallery,
+                      //                         height: 60,
+                      //                         width: 50,
+                      //                       ),
+                      //                       const SizedBox(
+                      //                         height: 5,
+                      //                       ),
+                      //                       Text(
+                      //                         'Accepted file types: JPEG, Doc, PDF, PNG'.tr,
+                      //                         style: const TextStyle(fontSize: 16, color: Colors.black54),
+                      //                         textAlign: TextAlign.center,
+                      //                       ),
+                      //                       const SizedBox(
+                      //                         height: 11,
+                      //                       ),
+                      //                     ],
+                      //                   ),
+                      //                 ),
+                      //         ),
+                      //       ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -666,7 +700,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           },
                                         );
                                       },
-                                    text: 'Terms And Conditions'.tr,
+                                    text: ' Terms And Conditions'.tr,
                                     style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.red)),
                               ],
                             ),
@@ -677,16 +711,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       CommonButtonBlue(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate() && value) {
                             checkEmailInFirestore();
+                            await FirebaseAuth.instance.signOut();
                           } else {
                             showValidationImg = true;
                             showValidation = true;
                             setState(() {});
                           }
                         },
-                        title: 'Save',
+                        title: 'Signup',
                       ),
                       const SizedBox(
                         height: 20,

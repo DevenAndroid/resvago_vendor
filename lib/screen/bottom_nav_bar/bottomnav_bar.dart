@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ import 'package:resvago_vendor/widget/language_change.dart';
 import '../../Setting screen.dart';
 import '../../controllers/add_product_controller.dart';
 import '../../controllers/bottomnavbar_controller.dart';
+import '../../controllers/profile_controller.dart';
 import '../../model/profile_model.dart';
 import '../../widget/apptheme.dart';
 import '../Menu/menu_screen.dart';
@@ -54,15 +56,25 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   final pages = [
     const VendorDashboard(),
-    MenuScreen(back: 'Back',),
+    MenuScreen(
+      back: 'Back',
+    ),
     OderListScreen(back: 'Back'),
     WalletScreen(back: 'Back'),
   ];
+  // final profileController = Get.put(ProfileController());
 
   @override
   void initState() {
     super.initState();
+    // profileController.getProfileData();
     restaurantData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // profileController.cancelStream();
   }
 
   @override
@@ -99,38 +111,42 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 color: Colors.white,
                               ),
                               child: Image.network(
-                                profileData.image ?? "",
+                                profileData.image.toString(),
+                                fit: BoxFit.cover,
                                 height: screenSize.height * 0.12,
                                 width: screenSize.height * 0.12,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => SizedBox(
+                                errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: profileData.image.toString(),
                                   height: screenSize.height * 0.12,
                                   width: screenSize.height * 0.12,
-                                  child: const Icon(
+                                  errorWidget: (_, __, ___) => const Icon(
                                     Icons.person,
-                                    size: 60,
+                                    size: 20,
+                                    color: Colors.black,
                                   ),
+                                  placeholder: (_, __) => const SizedBox(),
                                 ),
                               )
-                              // Image.network(
-                              //   profileData.image.toString(),
-                              //   fit: BoxFit.cover,
-                              //   height: screenSize.height * 0.12,
-                              //   width: screenSize.height * 0.12,
-                              //   errorBuilder: (_, __, ___) => CachedNetworkImage(
-                              //     fit: BoxFit.cover,
-                              //     imageUrl: profileData.image.toString(),
-                              //     height: screenSize.height * 0.12,
-                              //     width: screenSize.height * 0.12,
-                              //     errorWidget: (_, __, ___) => const Icon(
-                              //       Icons.person,
-                              //       size: 20,
-                              //       color: Colors.black,
-                              //     ),
-                              //     placeholder: (_, __) => const SizedBox(),
-                              //   ),
-                              // )
-                              ),
+                            // Image.network(
+                            //   profileData.image.toString(),
+                            //   fit: BoxFit.cover,
+                            //   height: screenSize.height * 0.12,
+                            //   width: screenSize.height * 0.12,
+                            //   errorBuilder: (_, __, ___) => CachedNetworkImage(
+                            //     fit: BoxFit.cover,
+                            //     imageUrl: profileData.image.toString(),
+                            //     height: screenSize.height * 0.12,
+                            //     width: screenSize.height * 0.12,
+                            //     errorWidget: (_, __, ___) => const Icon(
+                            //       Icons.person,
+                            //       size: 20,
+                            //       color: Colors.black,
+                            //     ),
+                            //     placeholder: (_, __) => const SizedBox(),
+                            //   ),
+                            // )
+                          ),
                           Text(profileData.restaurantName ?? "",
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
@@ -146,7 +162,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 )),
                           ),
                         ],
-                      ),
+                      )
                     )),
               ),
               ListTile(
@@ -161,6 +177,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 0;
+                    restaurantData();
                     Get.back();
                   });
                 },
@@ -182,6 +199,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 1;
+                    restaurantData();
                     Get.to(() => MenuScreen(
                           back: '',
                         ));
@@ -205,6 +223,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 onTap: () {
                   setState(() {
                     currentDrawer = 3;
+                    restaurantData();
                     Get.to(const PromoCodeList());
                   });
                 },

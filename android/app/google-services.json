@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "382013840274",
+    "firebase_url": "https://resvago-ire-default-rtdb.firebaseio.com",
     "project_id": "resvago-ire",
     "storage_bucket": "resvago-ire.appspot.com"
   },
@@ -10,6 +11,44 @@
         "mobilesdk_app_id": "1:382013840274:android:61d7a4be3aedc5dfabff4b",
         "android_client_info": {
           "package_name": "com.example.resvago_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe5GeNtsncALR0d8kEimeidgRxDYYHYWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382013840274:android:d3225b914086e373abff4b",
+        "android_client_info": {
+          "package_name": "com.resvago.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe5GeNtsncALR0d8kEimeidgRxDYYHYWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382013840274:android:9c98fd948de915e9abff4b",
+        "android_client_info": {
+          "package_name": "com.resvago.customer"
         }
       },
       "oauth_client": [],

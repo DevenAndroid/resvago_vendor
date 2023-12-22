@@ -55,26 +55,6 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
     }
   }
 
-  final HttpsCallable sendEmail = FirebaseFunctions.instance.httpsCallable(
-    'sendEmail',
-    options: HttpsCallableOptions(
-      timeout: const Duration(seconds: 10),
-    ),
-  );
-
-  Future<void> sendEmailFunction() async {
-    try {
-      await sendEmail.call(<String, dynamic>{
-        'to': 'anjalikumari5845@email.com',
-        'subject': 'Test Subject',
-        'text': 'Test email body',
-      });
-      print('Email sent successfully');
-    } catch (e) {
-      print('Error sending email: $e');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -458,7 +438,8 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 50, left: 50),
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: Colors.blue,
@@ -498,8 +479,16 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                             'date': DateTime.now(),
                             'userId': myOrderModel!.userId
                           });
+                        }).then((value1){
+                          FirebaseFirestore.instance.collection("send_mail").add({
+                            "to": "${myOrderModel!.customerData!.email}",
+                            "message": {
+                              "subject": "This is a basic email",
+                              "html": "Your order has been completed",
+                              "text": "asdfgwefddfgwefwn",
+                            }
+                          });
                         });
-
                         showToast("Order is Completed");
                       },
                       style: ElevatedButton.styleFrom(
@@ -565,10 +554,16 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                   'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                   'date': DateTime.now(),
                                   'userId': myOrderModel!.userId
+                                }).then((value1){
+                                  FirebaseFirestore.instance.collection("send_mail").add({
+                                    "to": "${myOrderModel!.customerData!.email}",
+                                    "message": {
+                                      "subject": "This is a basic email",
+                                      "html": "Your order has been accepted",
+                                      "text": "asdfgwefddfgwefwn",
+                                    }
+                                  });
                                 });
-                                // sendEmailFunction();
-                                var res = await http.get(Uri.parse('https://us-central1-resvago-ire.cloudfunctions.net/sendMail'));
-                                print(res.body);
                               });
 
                               showToast("Order is Accepted");
@@ -598,7 +593,6 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     .collection('order')
                                     .doc(myOrderModel!.docid)
                                     .update({'order_status': 'Order Rejected'});
-
                                 sendPushNotification(
                                         body: myOrderModel!.orderDetails.toString(),
                                         deviceToken: myOrderModel!.fcmToken,
@@ -612,6 +606,15 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                     'date': DateTime.now(),
                                     'userId': myOrderModel!.userId
+                                  }).then((value1){
+                                    FirebaseFirestore.instance.collection("send_mail").add({
+                                      "to": "${myOrderModel!.customerData!.email}",
+                                      "message": {
+                                        "subject": "This is a basic email",
+                                        "html": "Your order has been rejected",
+                                        "text": "asdfgwefddfgwefwn",
+                                      }
+                                    });
                                   });
                                 });
 

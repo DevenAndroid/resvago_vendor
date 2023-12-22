@@ -189,7 +189,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: dishNameController,
                         validator: RequiredValidator(errorText: 'Please enter your menu name ').call,
-                        hint: 'Meat Pasta',
+                        hint: 'Dish Name',
                       ),
                       const SizedBox(
                         height: 20,
@@ -288,7 +288,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Discount".tr,
+                        "Discount %".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -296,10 +296,16 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       ),
                       RegisterTextFieldWidget(
                         controller: discountNumberController,
-                        length: 10,
+                        // length:5,
                         digitValue: FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
                         keyboardType: TextInputType.number,
                         hint: '%',
+                        validator: (v) {
+                          if (v != null && v.trim().isNotEmpty && (double.tryParse(v.toString()) ?? 0) > 100) {
+                            return "Discount should be less than or equal to 100";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(
                         height: 20,

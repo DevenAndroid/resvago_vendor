@@ -88,7 +88,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$450.00",
+                                "\$0.00",
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 28),
                               ),
                               Text(
@@ -345,7 +345,6 @@ class _OderListScreenState extends State<OderListScreen> {
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                               ),
-
                               Text(
                                 "Status".tr,
                                 style: GoogleFonts.poppins(
@@ -440,12 +439,14 @@ class _OderListScreenState extends State<OderListScreen> {
                                           );
                                         })
                                     : Center(
-                                        child: Text("No User Found".tr),
+                                        child: Text("No order received yet".tr),
                                       );
                               }
                             },
                           ),
-                          SizedBox(height: 50,)
+                          const SizedBox(
+                            height: 50,
+                          )
                         ],
                       ),
                     ),
@@ -558,13 +559,15 @@ class _OderListScreenState extends State<OderListScreen> {
                                           );
                                         })
                                     : Center(
-                                        child: Text("No User Found".tr),
+                                        child: Text("No order received yet".tr),
                                       );
                               }
                               return const CircularProgressIndicator();
                             },
                           ),
-                          SizedBox(height: 30,)
+                          const SizedBox(
+                            height: 30,
+                          )
                         ],
                       ),
                     ),

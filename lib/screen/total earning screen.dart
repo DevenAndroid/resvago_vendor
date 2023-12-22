@@ -156,7 +156,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SvgPicture.asset(AppAssets.arrowDown),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 12,
                                       ),
                                       Column(
@@ -168,7 +168,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 3,
                                           ),
                                           Text(
@@ -176,7 +176,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 3,
                                           ),
                                           Text(
@@ -184,7 +184,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 3,
                                           ),
                                           Text(
@@ -207,7 +207,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                           style: GoogleFonts.poppins(
                                               color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 3,
                                         ),
                                         Text(
@@ -215,7 +215,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                           style: GoogleFonts.poppins(
                                               color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 3,
                                         ),
                                         Text(
@@ -223,7 +223,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                           style: GoogleFonts.poppins(
                                               color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 3,
                                         ),
                                         Text(
@@ -236,7 +236,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                   ),
                                 ],
                               )),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           )
                         ],
