@@ -10,17 +10,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
-import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:resvago_vendor/controllers/profile_controller.dart';
 import 'package:resvago_vendor/model/profile_model.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import '../Firebase_service/firebase_service.dart';
@@ -149,10 +144,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           imageUrlProfile = fileUrl;
         }
       } else {
-        // if (profileData.image.toString().isNotEmpty) {
-        //   Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
-        //   await gg.delete();
-        // }
+        if (profileData.image.toString().isNotEmpty) {
+          Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
+          await gg.delete();
+        }
         if (!controller.categoryFile.path.contains("http") && controller.categoryFile.path.isNotEmpty) {
           UploadTask uploadTask = FirebaseStorage.instance
               .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
@@ -842,7 +837,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          if (!kIsWeb)
+                          // if (!kIsWeb)
                             Column(
                               children: [
                                 Text(
@@ -910,30 +905,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
-                // CroppedFile? croppedFile = await ImageCropper().cropImage(
-                //   sourcePath: value.path,
-                //   aspectRatioPresets: [
-                //     CropAspectRatioPreset.square,
-                //     CropAspectRatioPreset.ratio3x2,
-                //     CropAspectRatioPreset.original,
-                //     CropAspectRatioPreset.ratio4x3,
-                //     CropAspectRatioPreset.ratio16x9
-                //   ],
-                //   uiSettings: [
-                //     AndroidUiSettings(
-                //         toolbarTitle: 'Cropper',
-                //         toolbarColor: Colors.deepOrange,
-                //         toolbarWidgetColor: Colors.white,
-                //         initAspectRatio: CropAspectRatioPreset.original,
-                //         lockAspectRatio: false),
-                //     IOSUiSettings(
-                //       title: 'Cropper',
-                //     ),
-                //     WebUiSettings(
-                //       context: context,
-                //     ),
-                //   ],
-                // );
                 if (value != null) {
                   controller.categoryFile = File(value.path);
                   setState(() {});
@@ -947,30 +918,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
-                // CroppedFile? croppedFile = await ImageCropper().cropImage(
-                //   sourcePath: value.path,
-                //   aspectRatioPresets: [
-                //     CropAspectRatioPreset.square,
-                //     CropAspectRatioPreset.ratio3x2,
-                //     CropAspectRatioPreset.original,
-                //     CropAspectRatioPreset.ratio4x3,
-                //     CropAspectRatioPreset.ratio16x9
-                //   ],
-                //   uiSettings: [
-                //     AndroidUiSettings(
-                //         toolbarTitle: 'Cropper',
-                //         toolbarColor: Colors.deepOrange,
-                //         toolbarWidgetColor: Colors.white,
-                //         initAspectRatio: CropAspectRatioPreset.original,
-                //         lockAspectRatio: false),
-                //     IOSUiSettings(
-                //       title: 'Cropper',
-                //     ),
-                //     WebUiSettings(
-                //       context: context,
-                //     ),
-                //   ],
-                // );
                 if (value != null) {
                   controller.categoryFile = File(value.path);
                   setState(() {});
@@ -1244,7 +1191,16 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                       },
                                       child: Container(
                                         constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                        child: Image.file(
+                                        child: kIsWeb ? Image.network(
+                                          e.value.path,
+                                          errorBuilder: (_, __, ___) => Image.network(
+                                            e.value.path,
+                                            errorBuilder: (_, __, ___) => const Icon(
+                                              Icons.video_collection_rounded,
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        ) : Image.file(
                                           e.value,
                                           errorBuilder: (_, __, ___) => Image.network(
                                             e.value.path,
@@ -1486,7 +1442,17 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                       },
                                       child: Container(
                                         constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                        child: Image.file(
+                                        child: kIsWeb ? Image.network(
+                                          e.value.path,
+                                          errorBuilder: (_, __, ___) => Image.network(
+                                            e.value.path,
+                                            errorBuilder: (_, __, ___) => const Icon(
+                                              Icons.error_outline,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ) :
+                                        Image.file(
                                           e.value,
                                           errorBuilder: (_, __, ___) => Image.network(
                                             e.value.path,

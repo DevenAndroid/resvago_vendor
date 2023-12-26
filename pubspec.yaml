@@ -49,6 +49,7 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.0
   cached_network_image:
+  lecle_yoyo_player: ^0.0.8
   image_cropper: ^5.0.0
   flutter_google_places_hoc081098: ^2.0.0-beta.0
   multiple_images_picker: ^1.0.1

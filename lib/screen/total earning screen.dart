@@ -60,7 +60,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                           ],
                         ),
                         Text(
-                          "\$46,438.39",
+                          "\$ 0",
                           style: GoogleFonts.poppins(color: Colors.white, fontSize: 45, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
@@ -130,118 +130,118 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                 ),
               ]),
             ),
-            ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 6,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16),
-                      child: Column(
-                        children: [
-                          Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    // offset: Offset(2, 2),
-                                    blurRadius: 05)
-                              ]),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SvgPicture.asset(AppAssets.arrowDown),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Order ID:",
-                                            style: GoogleFonts.poppins(
-                                                color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
-                                          ),
-                                          const SizedBox(
-                                            height: 3,
-                                          ),
-                                          Text(
-                                            "Amount:",
-                                            style: GoogleFonts.poppins(
-                                                color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
-                                          ),
-                                          const SizedBox(
-                                            height: 3,
-                                          ),
-                                          Text(
-                                            "Admin Commission:",
-                                            style: GoogleFonts.poppins(
-                                                color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
-                                          ),
-                                          const SizedBox(
-                                            height: 3,
-                                          ),
-                                          Text(
-                                            "Earning:",
-                                            style: GoogleFonts.poppins(
-                                                color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "#1234",
-                                          style: GoogleFonts.poppins(
-                                              color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
-                                        ),
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                          "\$100.00",
-                                          style: GoogleFonts.poppins(
-                                              color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
-                                        ),
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                          "\$10.00",
-                                          style: GoogleFonts.poppins(
-                                              color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
-                                        ),
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                          "\$90.00",
-                                          style: GoogleFonts.poppins(
-                                              color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      ));
-                })
+            // ListView.builder(
+            //     physics: const NeverScrollableScrollPhysics(),
+            //     shrinkWrap: true,
+            //     itemCount: 6,
+            //     itemBuilder: (BuildContext context, int index) {
+            //       return Padding(
+            //           padding: const EdgeInsets.only(left: 16.0, right: 16),
+            //           child: Column(
+            //             children: [
+            //               Container(
+            //                   padding: const EdgeInsets.all(8),
+            //                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+            //                     BoxShadow(
+            //                         color: Colors.grey.shade300,
+            //                         // offset: Offset(2, 2),
+            //                         blurRadius: 05)
+            //                   ]),
+            //                   child: Row(
+            //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                     crossAxisAlignment: CrossAxisAlignment.start,
+            //                     children: [
+            //                       Row(
+            //                         mainAxisAlignment: MainAxisAlignment.start,
+            //                         crossAxisAlignment: CrossAxisAlignment.start,
+            //                         children: [
+            //                           SvgPicture.asset(AppAssets.arrowDown),
+            //                           const SizedBox(
+            //                             width: 12,
+            //                           ),
+            //                           Column(
+            //                             mainAxisAlignment: MainAxisAlignment.start,
+            //                             crossAxisAlignment: CrossAxisAlignment.start,
+            //                             children: [
+            //                               Text(
+            //                                 "Order ID:",
+            //                                 style: GoogleFonts.poppins(
+            //                                     color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
+            //                               ),
+            //                               const SizedBox(
+            //                                 height: 3,
+            //                               ),
+            //                               Text(
+            //                                 "Amount:",
+            //                                 style: GoogleFonts.poppins(
+            //                                     color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
+            //                               ),
+            //                               const SizedBox(
+            //                                 height: 3,
+            //                               ),
+            //                               Text(
+            //                                 "Admin Commission:",
+            //                                 style: GoogleFonts.poppins(
+            //                                     color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
+            //                               ),
+            //                               const SizedBox(
+            //                                 height: 3,
+            //                               ),
+            //                               Text(
+            //                                 "Earning:",
+            //                                 style: GoogleFonts.poppins(
+            //                                     color: const Color(0xFF21283D), fontSize: 12, fontWeight: FontWeight.w400),
+            //                               ),
+            //                             ],
+            //                           ),
+            //                         ],
+            //                       ),
+            //                       Padding(
+            //                         padding: const EdgeInsets.only(right: 8.0),
+            //                         child: Column(
+            //                           mainAxisAlignment: MainAxisAlignment.start,
+            //                           crossAxisAlignment: CrossAxisAlignment.start,
+            //                           children: [
+            //                             Text(
+            //                               "#1234",
+            //                               style: GoogleFonts.poppins(
+            //                                   color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
+            //                             ),
+            //                             const SizedBox(
+            //                               height: 3,
+            //                             ),
+            //                             Text(
+            //                               "\$100.00",
+            //                               style: GoogleFonts.poppins(
+            //                                   color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
+            //                             ),
+            //                             const SizedBox(
+            //                               height: 3,
+            //                             ),
+            //                             Text(
+            //                               "\$10.00",
+            //                               style: GoogleFonts.poppins(
+            //                                   color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
+            //                             ),
+            //                             const SizedBox(
+            //                               height: 3,
+            //                             ),
+            //                             Text(
+            //                               "\$90.00",
+            //                               style: GoogleFonts.poppins(
+            //                                   color: const Color(0xFF424750), fontSize: 12, fontWeight: FontWeight.w300),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     ],
+            //                   )),
+            //               const SizedBox(
+            //                 height: 10,
+            //               )
+            //             ],
+            //           ));
+            //     })
           ],
         ).appPaddingForScreen,
       ),
