@@ -26,9 +26,10 @@ import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
 class AddMenuScreen extends StatefulWidget {
-  const AddMenuScreen({super.key, required this.menuId, this.menuItemData});
+  const AddMenuScreen({super.key, required this.menuId, this.menuItemData,required this.isEdit});
   final String menuId;
   final MenuData? menuItemData;
+  final bool isEdit;
   @override
   State<AddMenuScreen> createState() => _AddMenuScreenState();
 }
@@ -93,24 +94,48 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
           imageUrl = await snapshot.ref.getDownloadURL();
         }
       }
-      await firebaseService
-          .manageMenu(
-        menuId: menuId,
-        vendorId: FirebaseAuth.instance.currentUser!.uid,
-        dishName: dishNameController.text.trim(),
-        category: categoryValue,
-        price: priceController.text.trim(),
-        discount: discountNumberController.text.trim(),
-        description: descriptionController.text,
-        bookingForDining: dining,
-        bookingForDelivery: delivery,
-        image: imageUrl,
-        time: DateTime.now().millisecondsSinceEpoch,
-      )
-          .then((value) {
-        Get.back();
-        Helper.hideLoader(loader);
-      });
+      if(widget.isEdit){
+        await firebaseService
+            .manageMenu(
+          menuId: menuId,
+          vendorId: FirebaseAuth.instance.currentUser!.uid,
+          dishName: dishNameController.text.trim(),
+          category: categoryValue,
+          price: priceController.text.trim(),
+          discount: discountNumberController.text.trim(),
+          description: descriptionController.text,
+          bookingForDining: dining,
+          bookingForDelivery: delivery,
+          image: imageUrl,
+          time: DateTime.now().millisecondsSinceEpoch,
+        )
+            .then((value) {
+          Get.back();
+          showToast("Menu Edited Successfully");
+          Helper.hideLoader(loader);
+        });
+      }else{
+        await firebaseService
+            .manageMenu(
+          menuId: menuId,
+          vendorId: FirebaseAuth.instance.currentUser!.uid,
+          dishName: dishNameController.text.trim(),
+          category: categoryValue,
+          price: priceController.text.trim(),
+          discount: discountNumberController.text.trim(),
+          description: descriptionController.text,
+          bookingForDining: dining,
+          bookingForDelivery: delivery,
+          image: imageUrl,
+          time: DateTime.now().millisecondsSinceEpoch,
+        )
+            .then((value) {
+          Get.back();
+          showToast("Menu Added Successfully");
+          Helper.hideLoader(loader);
+        });
+      }
+
     } catch (e) {
       Helper.hideLoader(loader);
       showToast(e.toString());
@@ -157,7 +182,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
-      appBar: backAppBar(title: "Add Menu".tr, context: context, backgroundColor: Colors.white),
+      appBar: backAppBar(title: widget.isEdit ? "Edit Menu".tr : "Add Menu".tr, context: context, backgroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -530,7 +555,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                             }
                           }
                         },
-                        title: 'Save'.tr,
+                        title: widget.isEdit ? "Update" :'Save'.tr,
                       ),
                       const SizedBox(
                         height: 20,

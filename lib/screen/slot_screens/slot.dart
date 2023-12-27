@@ -176,7 +176,7 @@ class _BookableUIState extends State<BookableUI> {
                                         firstDate: slotController.selectedStartDateTime);
                                   },
                                   controller: slotController.endDate,
-                                  key: slotController.endDate.getKey,
+                                  // key: slotController.endDate.getKey,
                                   // key: endTime.getKey,
                                   validator: (value) {
                                     if (slotController.selectedEndDateTIme == null) {
@@ -201,7 +201,7 @@ class _BookableUIState extends State<BookableUI> {
                                     );
                                   },
                                   controller: slotController.startDate,
-                                  key: slotController.startDate.getKey,
+                                  // key: slotController.startDate.getKey,
                                   // key: startTime.getKey,
                                   validator: (value) {
                                     if (value!.trim().isEmpty) {

@@ -115,7 +115,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
-                      Get.to(() => AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString()));
+                      Get.to(() => AddMenuScreen(menuId: DateTime.now().millisecondsSinceEpoch.toString(),isEdit: false,));
                     },
                     child: Container(
                       height: AddSize.size20 * 2.2,
@@ -263,6 +263,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                               Get.to(() => AddMenuScreen(
                                                     menuId: menuItem.menuId,
                                                     menuItemData: menuItem,
+                                                    isEdit: true,
+
                                                   ));
                                             },
                                             child: Container(
@@ -316,6 +318,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                                           setState(() {});
                                                         });
                                                         Navigator.of(ctx).pop();
+                                                        showToast("Menu Deleted successfully");
                                                       },
                                                       child: Container(
                                                         decoration: BoxDecoration(

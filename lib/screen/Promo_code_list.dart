@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as format;
 import 'package:resvago_vendor/screen/create_promo_code_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
+import '../helper.dart';
 import '../model/coupon_model.dart';
 import '../widget/custom_textfield.dart';
 
@@ -157,12 +158,70 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                                 ? FirebaseFirestore.instance
                                                                     .collection('Coupon_data')
                                                                     .doc(item.docid)
-                                                                    .update({"deactivate": false})
+                                                                    .update({"deactivate": false}).then((value) {
+                                                                      showToast('Promo Code Activate');
+                                                            })
                                                                 : FirebaseFirestore.instance
                                                                     .collection('Coupon_data')
                                                                     .doc(item.docid)
-                                                                    .update({"deactivate": true});
+                                                                    .update({"deactivate": true}).then((value) {
+                                                              showToast('Promo Code Deactivate');
+                                                            });
                                                             setState(() {});
+                                                          },
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: const Text('Delete'),
+                                                          onTap: () {
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (ctx) => AlertDialog(
+                                                                title: Text("Delete Menu".tr),
+                                                                content: Text("Are you sure you want to delete this Promo code".tr),
+                                                                actions: <Widget>[
+                                                                  TextButton(
+                                                                    onPressed: () {
+                                                                      Navigator.of(ctx).pop();
+                                                                    },
+                                                                    child: Container(
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors.red, borderRadius: BorderRadius.circular(11)),
+                                                                      width: 100,
+                                                                      padding: const EdgeInsets.all(14),
+                                                                      child: Center(
+                                                                          child: Text(
+                                                                            "Cancel".tr,
+                                                                            style: TextStyle(color: Colors.white),
+                                                                          )),
+                                                                    ),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed: () {
+                                                                      FirebaseFirestore.instance
+                                                                          .collection('Coupon_data')
+                                                                          .doc(item.docid)
+                                                                          .delete()
+                                                                          .then((value) {
+                                                                        setState(() {});
+                                                                      });
+                                                                      Navigator.of(ctx).pop();
+                                                                      showToast("Menu Deleted successfully");
+                                                                    },
+                                                                    child: Container(
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors.green, borderRadius: BorderRadius.circular(11)),
+                                                                      width: 100,
+                                                                      padding: const EdgeInsets.all(14),
+                                                                      child: Center(
+                                                                          child: Text(
+                                                                            "okay".tr,
+                                                                            style: TextStyle(color: Colors.white),
+                                                                          )),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
                                                           },
                                                         )
                                                       ];

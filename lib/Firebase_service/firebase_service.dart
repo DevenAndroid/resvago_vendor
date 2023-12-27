@@ -127,7 +127,7 @@ class FirebaseService{
         "bookingForDelivery": bookingForDelivery,
         "searchName": searchName,
       });
-      showToast("Menu Added Successfully");
+
     } catch (e) {
       throw Exception(e);
     }

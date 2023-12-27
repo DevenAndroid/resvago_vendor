@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_vendor/helper.dart';
 import 'package:resvago_vendor/model/createslot_model.dart';
 import 'package:resvago_vendor/screen/slot_screens/add_booking_slot_screen.dart';
 import 'package:resvago_vendor/screen/slot_screens/slotViwe%20screen.dart';
@@ -262,6 +263,7 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                           slotsList!.removeAt(index);
                                                           setState(() {});
                                                           Get.back();
+                                                          showToast('Slot Deleted successfully');
                                                         },
                                                         child: Container(
                                                           decoration: BoxDecoration(

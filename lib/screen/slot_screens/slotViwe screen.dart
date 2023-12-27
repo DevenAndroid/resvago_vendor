@@ -10,6 +10,15 @@ import 'package:resvago_vendor/widget/custom_textfield.dart';
 
 import '../../model/createslot_model.dart';
 
+class ManageTime{
+  dynamic time;
+  dynamic seats;
+  ManageTime({
+    required this.time,
+    required this.seats,
+});
+}
+
 class SlotViewScreen extends StatefulWidget {
   // final String slotId;
   final CreateSlotData? slotDataList;
@@ -28,6 +37,19 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
     if (kDebugMode) {
       print(slotDataList!.eveningSlots!);
     }
+    final DateFormat timeFormat = DateFormat("hh:mm a");
+    List<ManageTime> morningSlots = slotDataList!.morningSlots!.entries.map((e) => ManageTime(time: e.key,seats: e.value)).toList();
+    List<ManageTime> eveningSlots = slotDataList!.eveningSlots!.entries.map((e) => ManageTime(time: e.key,seats: e.value)).toList();
+    morningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a.time.split(",").last));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.time.split(",").last));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
+    eveningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a.time.split(",").last));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.time.split(",").last));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
     return Scaffold(
         appBar: backAppBar(title: "Slot View".tr, context: context),
         body: SingleChildScrollView(
@@ -45,13 +67,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Start Date".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
                               DateFormat("dd-MMM-yyy").format(DateTime.fromMillisecondsSinceEpoch(slotDataList!.slotDate!)),
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -64,7 +86,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                kIsWeb ? 100: 25,
+                                kIsWeb ? 100 : 25,
                                 (index) => Padding(
                                       padding: const EdgeInsets.only(left: 2, right: 2),
                                       child: Container(
@@ -83,13 +105,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Lunch Time Slots".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             Text(
                               "Seats".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             // Text(
                             //   slotDataList!.morningSlots!.entries.toList()[0].key.split(",").first,
@@ -101,18 +123,19 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        ...slotDataList!.morningSlots!.entries.map((e) => Padding(
+
+                        ...morningSlots.map((e) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    e.key,
+                                    e.time.toString(),
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w400, fontSize: 16),
                                   ),
                                   Text(
-                                    e.value.toString(),
+                                    e.seats.toString(),
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
@@ -128,15 +151,15 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                kIsWeb ? 100: 25,
-                                    (index) => Padding(
-                                  padding: const EdgeInsets.only(left: 2, right: 2),
-                                  child: Container(
-                                    color: Colors.grey[200],
-                                    height: 2,
-                                    width: 10,
-                                  ),
-                                )),
+                                kIsWeb ? 100 : 25,
+                                (index) => Padding(
+                                      padding: const EdgeInsets.only(left: 2, right: 2),
+                                      child: Container(
+                                        color: Colors.grey[200],
+                                        height: 2,
+                                        width: 10,
+                                      ),
+                                    )),
                           ),
                         ),
                         const SizedBox(
@@ -147,13 +170,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Dinner Start Time".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             Text(
                               "Seats".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -184,15 +207,15 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         FittedBox(
                           child: Row(
                             children: List.generate(
-                                kIsWeb ? 100: 25,
-                                    (index) => Padding(
-                                  padding: const EdgeInsets.only(left: 2, right: 2),
-                                  child: Container(
-                                    color: Colors.grey[200],
-                                    height: 2,
-                                    width: 10,
-                                  ),
-                                )),
+                                kIsWeb ? 100 : 25,
+                                (index) => Padding(
+                                      padding: const EdgeInsets.only(left: 2, right: 2),
+                                      child: Container(
+                                        color: Colors.grey[200],
+                                        height: 2,
+                                        width: 10,
+                                      ),
+                                    )),
                           ),
                         ),
                         const SizedBox(
@@ -203,13 +226,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Number of Guest".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
                               slotDataList!.noOfGuest ?? "".toString(),
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -221,13 +244,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Interval TIme".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
                               "30 Mins".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -257,13 +280,13 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           children: [
                             Text(
                               "Offers".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
                               "${slotDataList!.setOffer ?? "".toString()}%",
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ],
                         ),
@@ -273,5 +296,14 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
             ],
           ).appPaddingForScreen,
         ));
+  }
+}
+
+class Helper {
+  static TimeOfDay parseTime(String timeString) {
+    List<String> components = timeString.split(":");
+    int hour = int.parse(components[0]);
+    int minute = int.parse(components[1]);
+    return TimeOfDay(hour: hour, minute: minute);
   }
 }
