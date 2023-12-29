@@ -218,6 +218,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   ProfileData profileData = ProfileData();
   void fetchdata() {
+    controller.galleryImages.clear();
+  controller.menuGallery.clear();
     FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
@@ -539,7 +541,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           Text(
                             'Restaurant Name'.tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -547,15 +550,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: restaurantController,
                             validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
-                            hint:
-                                profileData.restaurantName == null ? "restaurant name".tr : profileData.restaurantName.toString(),
+                            hint: profileData.restaurantName == null
+                                ? "restaurant name".tr
+                                : profileData.restaurantName.toString(),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Category".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -608,7 +613,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Email".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -629,7 +635,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Mobile Number".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -688,7 +695,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "Address".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -819,7 +827,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           Text(
                             "About Us".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            style:
+                                GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -838,34 +847,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             height: 20,
                           ),
                           // if (!kIsWeb)
-                            Column(
-                              children: [
-                                Text(
-                                  "Upload Restaurant Images or Videos".tr,
-                                  style: GoogleFonts.poppins(
-                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const ProductGalleryImages(),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Upload Restaurant Menu Card".tr,
-                                  style: GoogleFonts.poppins(
-                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const ProductMenuImages(),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
+                          Column(
+                            children: [
+                              Text(
+                                "Upload Restaurant Images or Videos".tr,
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const ProductGalleryImages(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Upload Restaurant Menu Card".tr,
+                                style: GoogleFonts.poppins(
+                                    color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const ProductMenuImages(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
                           CommonButtonBlue(
                             onPressed: () {
                               if (_formKeySignup.currentState!.validate() && _searchController.text != "") {
@@ -1191,25 +1200,27 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                       },
                                       child: Container(
                                         constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                        child: kIsWeb ? Image.network(
-                                          e.value.path,
-                                          errorBuilder: (_, __, ___) => Image.network(
-                                            e.value.path,
-                                            errorBuilder: (_, __, ___) => const Icon(
-                                              Icons.video_collection_rounded,
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                        ) : Image.file(
-                                          e.value,
-                                          errorBuilder: (_, __, ___) => Image.network(
-                                            e.value.path,
-                                            errorBuilder: (_, __, ___) => const Icon(
-                                              Icons.video_collection_rounded,
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                        ),
+                                        child: kIsWeb
+                                            ? Image.network(
+                                                e.value.path,
+                                                errorBuilder: (_, __, ___) => Image.network(
+                                                  e.value.path,
+                                                  errorBuilder: (_, __, ___) => const Icon(
+                                                    Icons.video_collection_rounded,
+                                                    color: Colors.blue,
+                                                  ),
+                                                ),
+                                              )
+                                            : Image.file(
+                                                e.value,
+                                                errorBuilder: (_, __, ___) => Image.network(
+                                                  e.value.path,
+                                                  errorBuilder: (_, __, ___) => const Icon(
+                                                    Icons.video_collection_rounded,
+                                                    color: Colors.blue,
+                                                  ),
+                                                ),
+                                              ),
                                       )),
                                 ))
                             .toList(),
@@ -1442,26 +1453,27 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                       },
                                       child: Container(
                                         constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                        child: kIsWeb ? Image.network(
-                                          e.value.path,
-                                          errorBuilder: (_, __, ___) => Image.network(
-                                            e.value.path,
-                                            errorBuilder: (_, __, ___) => const Icon(
-                                              Icons.error_outline,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ) :
-                                        Image.file(
-                                          e.value,
-                                          errorBuilder: (_, __, ___) => Image.network(
-                                            e.value.path,
-                                            errorBuilder: (_, __, ___) => const Icon(
-                                              Icons.error_outline,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ),
+                                        child: kIsWeb
+                                            ? Image.network(
+                                                e.value.path,
+                                                errorBuilder: (_, __, ___) => Image.network(
+                                                  e.value.path,
+                                                  errorBuilder: (_, __, ___) => const Icon(
+                                                    Icons.error_outline,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              )
+                                            : Image.file(
+                                                e.value,
+                                                errorBuilder: (_, __, ___) => Image.network(
+                                                  e.value.path,
+                                                  errorBuilder: (_, __, ___) => const Icon(
+                                                    Icons.error_outline,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
                                       )),
                                 ))
                             .toList(),

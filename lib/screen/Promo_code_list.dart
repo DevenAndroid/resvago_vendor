@@ -159,14 +159,14 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                                     .collection('Coupon_data')
                                                                     .doc(item.docid)
                                                                     .update({"deactivate": false}).then((value) {
-                                                                      showToast('Promo Code Activate');
-                                                            })
+                                                                    showToast('Promo Code Activate');
+                                                                  })
                                                                 : FirebaseFirestore.instance
                                                                     .collection('Coupon_data')
                                                                     .doc(item.docid)
                                                                     .update({"deactivate": true}).then((value) {
-                                                              showToast('Promo Code Deactivate');
-                                                            });
+                                                                    showToast('Promo Code Deactivate');
+                                                                  });
                                                             setState(() {});
                                                           },
                                                         ),
@@ -176,8 +176,9 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                             showDialog(
                                                               context: context,
                                                               builder: (ctx) => AlertDialog(
-                                                                title: Text("Delete Menu".tr),
-                                                                content: Text("Are you sure you want to delete this Promo code".tr),
+                                                                title: Text("Delete Promo Code".tr),
+                                                                content: Text(
+                                                                    "Are you sure you want to delete this Promo code".tr),
                                                                 actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed: () {
@@ -185,14 +186,15 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                                     },
                                                                     child: Container(
                                                                       decoration: BoxDecoration(
-                                                                          color: Colors.red, borderRadius: BorderRadius.circular(11)),
+                                                                          color: Colors.red,
+                                                                          borderRadius: BorderRadius.circular(11)),
                                                                       width: 100,
                                                                       padding: const EdgeInsets.all(14),
                                                                       child: Center(
                                                                           child: Text(
-                                                                            "Cancel".tr,
-                                                                            style: TextStyle(color: Colors.white),
-                                                                          )),
+                                                                        "Cancel".tr,
+                                                                        style: TextStyle(color: Colors.white),
+                                                                      )),
                                                                     ),
                                                                   ),
                                                                   TextButton(
@@ -205,18 +207,19 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                                         setState(() {});
                                                                       });
                                                                       Navigator.of(ctx).pop();
-                                                                      showToast("Menu Deleted successfully");
+                                                                      showToast("Promo code Deleted successfully");
                                                                     },
                                                                     child: Container(
                                                                       decoration: BoxDecoration(
-                                                                          color: Colors.green, borderRadius: BorderRadius.circular(11)),
+                                                                          color: Colors.green,
+                                                                          borderRadius: BorderRadius.circular(11)),
                                                                       width: 100,
                                                                       padding: const EdgeInsets.all(14),
                                                                       child: Center(
                                                                           child: Text(
-                                                                            "okay".tr,
-                                                                            style: TextStyle(color: Colors.white),
-                                                                          )),
+                                                                        "okay".tr,
+                                                                        style: TextStyle(color: Colors.white),
+                                                                      )),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -246,7 +249,9 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                 Text(
                                                   "Discount".tr,
                                                   style: GoogleFonts.poppins(
-                                                      color: const Color(0xFF304048), fontWeight: FontWeight.w400, fontSize: 16),
+                                                      color: const Color(0xFF304048),
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 16),
                                                 ),
                                                 Text(
                                                   "${item.discount.toString()}%",

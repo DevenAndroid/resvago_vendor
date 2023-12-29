@@ -38,7 +38,7 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   final bottomController = Get.put(BottomNavBarController());
-  final controller = Get.put(AddProductController());
+  // final controller = Get.put(AddProductController());
   int currentDrawer = 0;
   ProfileData profileData = ProfileData();
 

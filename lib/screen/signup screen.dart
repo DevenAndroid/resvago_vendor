@@ -75,7 +75,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // File categoryFile = File("");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
-  final controller = Get.put(AddProductController());
 
   void checkEmailInFirestore() async {
     final QuerySnapshot result =

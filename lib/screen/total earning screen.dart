@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,38 @@ class TotalEarningScreen extends StatefulWidget {
 }
 
 class _TotalEarningScreenState extends State<TotalEarningScreen> {
+  double total = 0;
+  double total1 = 0;
+  double combinedTotal = 0; // Variable to store the sum
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance.collection("dining_order").get().then((value) {
+      total = 0;
+      for (var element in value.docs) {
+        total += double.tryParse(element.get("total").toString()) ?? 0;
+      }
+      updateCombinedTotal();
+    });
+
+    FirebaseFirestore.instance.collection("order").get().then((value) {
+      total1 = 0;
+      for (var element in value.docs) {
+        total1 += double.tryParse(element.get("total").toString()) ?? 0;
+      }
+      updateCombinedTotal();
+    });
+  }
+
+  void updateCombinedTotal() {
+    if (total != 0 && total1 != 0) {
+      combinedTotal = total + total1;
+      setState(() {});
+      print('Combined Total: $combinedTotal');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +93,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                           ],
                         ),
                         Text(
-                          "\$ 0",
+                          "\$ ${combinedTotal}",
                           style: GoogleFonts.poppins(color: Colors.white, fontSize: 45, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,10 +22,90 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
   final List<String> moneyList = ["500", "800", "1000"];
   final TextEditingController addMoneyController = TextEditingController();
+  // List<dynamic> diningOrderValues = [];
+  // List<dynamic> deliveryOrderValues = [];
+
+  // Future<List<String>> getDiningOrderValues() async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("dining_order").get();
+  //
+  //     for (var doc in querySnapshot.docs) {
+  //       if (doc.exists) {
+  //         String fieldValue = doc.get("total");
+  //         print("hhhhhhhh${diningOrderValues}");
+  //         diningOrderValues.add(fieldValue);
+  //       }
+  //     }
+  //
+  //     return diningOrderValues;
+  //   } catch (e) {
+  //     print('Error: $e');
+  //     return [];
+  //   }
+  // }
+  //
+  // Future<List<int>> getDeliveryOrderValues() async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("order").get();
+  //
+  //     for (var doc in querySnapshot.docs) {
+  //       if (doc.exists) {
+  //         int fieldValue = doc.get("total");
+  //         print("hhhhhhhh${deliveryOrderValues}");
+  //         deliveryOrderValues.add(fieldValue);
+  //       }
+  //     }
+  //
+  //     return deliveryOrderValues;
+  //   } catch (e) {
+  //
+  //
+  //
+  //
+  //     print('Error: $e');
+  //     return [];
+  //   }
+  // }
+
+  double total = 0;
+  double total1 = 0;
+  double combinedTotal = 0; // Variable to store the sum
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance.collection("dining_order").get().then((value) {
+      total = 0;
+      for (var element in value.docs) {
+        total += double.tryParse(element.get("total").toString()) ?? 0;
+      }
+      updateCombinedTotal();
+    });
+
+    FirebaseFirestore.instance.collection("order").get().then((value) {
+      total1 = 0;
+      for (var element in value.docs) {
+        total1 += double.tryParse(element.get("total").toString()) ?? 0;
+      }
+      updateCombinedTotal();
+    });
+  }
+
+  void updateCombinedTotal() {
+    if (total != 0 && total1 != 0) {
+      combinedTotal = total + total1;
+      setState(() {});
+      print('Combined Total: $combinedTotal');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    print(total);
     return Scaffold(
-      appBar: backAppBar(title: "Withdrawal Money".tr, context: context,dispose: widget.back),
+      appBar: backAppBar(title: "Withdrawal Money".tr, context: context, dispose: widget.back),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -39,13 +120,13 @@ class _WalletScreenState extends State<WalletScreen> {
                           children: [
                             Text(
                               "My Balance".tr,
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w400, fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w400, fontSize: 16),
                             ),
                             Text(
-                              "\$2400",
-                              style:
-                                  GoogleFonts.poppins(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w600, fontSize: 31),
+                              "\$${combinedTotal.toString()}",
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w600, fontSize: 31),
                             ),
                           ],
                         ),
@@ -75,7 +156,8 @@ class _WalletScreenState extends State<WalletScreen> {
                             // validator: validateMoney,
                             decoration: const InputDecoration(
                               hintText: "+\$100",
-                              hintStyle: TextStyle(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w600, fontSize: 31),
+                              hintStyle:
+                                  TextStyle(color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w600, fontSize: 31),
                             )),
                         SizedBox(
                           height: AddSize.size15,
@@ -110,16 +192,19 @@ class _WalletScreenState extends State<WalletScreen> {
                       children: [
                         Text(
                           "Amount".tr,
-                          style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                          style:
+                              GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         // const SizedBox(width: 0,),
                         Text(
                           "Date".tr,
-                          style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                          style:
+                              GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                         Text(
                           "Status".tr,
-                          style: GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
+                          style:
+                              GoogleFonts.poppins(color: const Color(0xFF3B5998), fontWeight: FontWeight.w600, fontSize: 12),
                         ),
                       ],
                     ),
