@@ -105,11 +105,16 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
   }
 
   Future uploadWeekSchedule(String userId, List<Map<dynamic, dynamic>> weekSchedule) async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     await FirebaseFirestore.instance.collection('week_schedules').doc(userId).set({
       'schedule': weekSchedule,
     }).then((value) {
+      Helpers.hideLoader(loader);
       showToast("Availability updated Successfully");
+      Get.back();
     }).catchError((error) {
+      Helpers.hideLoader(loader);
       if (kDebugMode) {
         print('Failed to upload week schedule: $error');
       }

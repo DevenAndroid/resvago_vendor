@@ -38,6 +38,7 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   final bottomController = Get.put(BottomNavBarController());
+
   // final controller = Get.put(AddProductController());
   int currentDrawer = 0;
   ProfileData profileData = ProfileData();
@@ -62,30 +63,28 @@ class _BottomNavbarState extends State<BottomNavbar> {
     OderListScreen(back: 'Back'),
     WalletScreen(back: 'Back'),
   ];
-  // final profileController = Get.put(ProfileController());
+  final profileController = Get.put(ProfileController());
 
   @override
   void initState() {
     super.initState();
-    // profileController.getProfileData();
+    profileController.getProfileData();
     restaurantData();
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    // profileController.cancelStream();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery
+        .of(context)
+        .size;
     return Obx(() {
       return Scaffold(
         key: bottomController.scaffoldKey,
         drawer: Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          width: kIsWeb ? 300 : MediaQuery.sizeOf(context).width * .70,
+          width: kIsWeb ? 300 : MediaQuery
+              .sizeOf(context)
+              .width * .70,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -94,75 +93,81 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 child: DrawerHeader(
                     decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                      colors: [
-                        AppTheme.primaryColor,
-                        AppTheme.primaryColor,
-                      ],
-                    )),
+                          colors: [
+                            AppTheme.primaryColor,
+                            AppTheme.primaryColor,
+                          ],
+                        )),
                     child: Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.all(4),
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: const ShapeDecoration(
-                                shape: CircleBorder(),
-                                color: Colors.white,
-                              ),
-                              child: Image.network(
-                                profileData.image.toString(),
-                                fit: BoxFit.cover,
-                                height: screenSize.height * 0.12,
-                                width: screenSize.height * 0.12,
-                                errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: profileData.image.toString(),
-                                  height: screenSize.height * 0.12,
-                                  width: screenSize.height * 0.12,
-                                  errorWidget: (_, __, ___) => const Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color: Colors.black,
+                        alignment: Alignment.center,
+                        child: Obx(() {
+                          if (profileController.refreshInt.value > 0) {}
+                          return profileController.profileData != null ?
+                           Column(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.all(4),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  decoration: const ShapeDecoration(
+                                    shape: CircleBorder(),
+                                    color: Colors.white,
                                   ),
-                                  placeholder: (_, __) => const SizedBox(),
-                                ),
-                              )
-                            // Image.network(
-                            //   profileData.image.toString(),
-                            //   fit: BoxFit.cover,
-                            //   height: screenSize.height * 0.12,
-                            //   width: screenSize.height * 0.12,
-                            //   errorBuilder: (_, __, ___) => CachedNetworkImage(
-                            //     fit: BoxFit.cover,
-                            //     imageUrl: profileData.image.toString(),
-                            //     height: screenSize.height * 0.12,
-                            //     width: screenSize.height * 0.12,
-                            //     errorWidget: (_, __, ___) => const Icon(
-                            //       Icons.person,
-                            //       size: 20,
-                            //       color: Colors.black,
-                            //     ),
-                            //     placeholder: (_, __) => const SizedBox(),
-                            //   ),
-                            // )
-                          ),
-                          Text(profileData.restaurantName ?? "",
-                              style: GoogleFonts.poppins(
-                                fontSize: 15,
-                                color: const Color(0xFFFFFFFF),
-                                fontWeight: FontWeight.w600,
-                              )),
-                          Expanded(
-                            child: Text(profileData.email ?? "",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  color: const Color(0xFFFFFFFF),
-                                  fontWeight: FontWeight.w400,
-                                )),
-                          ),
-                        ],
-                      )
+                                  child: Image.network(
+                                    profileController.profileData!.image.toString(),
+                                    fit: BoxFit.cover,
+                                    height: screenSize.height * 0.12,
+                                    width: screenSize.height * 0.12,
+                                    errorBuilder: (_, __, ___) =>
+                                        CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: profileController.profileData!.image.toString(),
+                                          height: screenSize.height * 0.12,
+                                          width: screenSize.height * 0.12,
+                                          errorWidget: (_, __, ___) =>
+                                          const Icon(
+                                            Icons.person,
+                                            size: 20,
+                                            color: Colors.black,
+                                          ),
+                                          placeholder: (_, __) => const SizedBox(),
+                                        ),
+                                  )
+                                // Image.network(
+                                //   profileData.image.toString(),
+                                //   fit: BoxFit.cover,
+                                //   height: screenSize.height * 0.12,
+                                //   width: screenSize.height * 0.12,
+                                //   errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                //     fit: BoxFit.cover,
+                                //     imageUrl: profileData.image.toString(),
+                                //     height: screenSize.height * 0.12,
+                                //     width: screenSize.height * 0.12,
+                                //     errorWidget: (_, __, ___) => const Icon(
+                                //       Icons.person,
+                                //       size: 20,
+                                //       color: Colors.black,
+                                //     ),
+                                //     placeholder: (_, __) => const SizedBox(),
+                                //   ),
+                                // )
+                              ),
+                              Text(profileController.profileData!.restaurantName ?? "",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    color: const Color(0xFFFFFFFF),
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                              Expanded(
+                                child: Text(profileController.profileData!.email ?? "",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 15,
+                                      color: const Color(0xFFFFFFFF),
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                              ),
+                            ],
+                          ):const SizedBox();
+                        })
                     )),
               ),
               ListTile(
@@ -200,7 +205,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
                   setState(() {
                     currentDrawer = 1;
                     restaurantData();
-                    Get.to(() => MenuScreen(
+                    Get.to(() =>
+                        MenuScreen(
                           back: '',
                         ));
                   });
@@ -445,22 +451,22 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 0
                               ? SvgPicture.asset(
-                                  AppAssets.home,
-                                  color: AppTheme.primaryColor,
-                                )
+                            AppAssets.home,
+                            color: AppTheme.primaryColor,
+                          )
                               : SvgPicture.asset(AppAssets.home),
                           const SizedBox(
                             height: 6,
                           ),
                           bottomController.pageIndex.value == 0
                               ? Text(
-                                  " Dashboard".tr,
-                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            " Dashboard".tr,
+                            style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                               : Text(
-                                  " Dashboard".tr,
-                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            " Dashboard".tr,
+                            style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                         ],
                       ),
                     ),
@@ -478,25 +484,25 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 1
                               ? SvgPicture.asset(
-                                  AppAssets.menu,
-                                  color: AppTheme.primaryColor,
-                                )
+                            AppAssets.menu,
+                            color: AppTheme.primaryColor,
+                          )
                               : SvgPicture.asset(
-                                  AppAssets.menu,
-                                  color: Colors.black,
-                                ),
+                            AppAssets.menu,
+                            color: Colors.black,
+                          ),
                           const SizedBox(
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
                               ? Text(
-                                  "Menu".tr,
-                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Menu".tr,
+                            style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                               : Text(
-                                  "Menu".tr,
-                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Menu".tr,
+                            style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                         ],
                       ),
                     ),
@@ -514,22 +520,22 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 2
                               ? SvgPicture.asset(
-                                  AppAssets.oders,
-                                  color: AppTheme.primaryColor,
-                                )
+                            AppAssets.oders,
+                            color: AppTheme.primaryColor,
+                          )
                               : SvgPicture.asset(AppAssets.oders),
                           const SizedBox(
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
                               ? Text(
-                                  "Orders".tr,
-                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Orders".tr,
+                            style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                               : Text(
-                                  "Orders".tr,
-                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Orders".tr,
+                            style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                         ],
                       ),
                     ),
@@ -547,22 +553,22 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 3
                               ? SvgPicture.asset(
-                                  AppAssets.wallet,
-                                  color: AppTheme.primaryColor,
-                                )
+                            AppAssets.wallet,
+                            color: AppTheme.primaryColor,
+                          )
                               : SvgPicture.asset(AppAssets.wallet),
                           const SizedBox(
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
                               ? Text(
-                                  "Wallet".tr,
-                                  style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Wallet".tr,
+                            style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                               : Text(
-                                  "Wallet".tr,
-                                  style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
-                                )
+                            "Wallet".tr,
+                            style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
+                          )
                         ],
                       ),
                     ),

@@ -8,6 +8,7 @@ import 'package:resvago_vendor/utils/helper.dart';
 import '../../Firebase_service/firebase_service.dart';
 import '../../controllers/edit_controller.dart';
 import '../../controllers/slot_controller.dart';
+import '../../helper.dart';
 import '../../model/createslot_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
@@ -100,6 +101,7 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                                 eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
                                 morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
                             );
+                            showToast("Slot Updated Successfully");
                             widget.refreshValues();
                             Get.back();
                           }

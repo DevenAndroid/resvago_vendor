@@ -35,6 +35,7 @@ class VendorDashboard extends StatefulWidget {
 
 class _VendorDashboardState extends State<VendorDashboard> {
   final bottomController = Get.put(BottomNavBarController());
+  final profileController = Get.put(ProfileController());
   final FirebaseService firebaseService = FirebaseService();
   DateTime? time;
   DateTime? time1;
@@ -68,6 +69,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
       firebaseService.updateFirebaseToken();
     }
     restaurantData();
+    profileController.getProfileData();
     fetchTotalEarnings();
   }
 
@@ -152,111 +154,122 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   child: const Icon(Icons.menu, color: Color(0xff292F45))),
               const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hi, ${(profileData.restaurantName ?? "")}",
-                      style: GoogleFonts.ibmPlexSansArabic(
-                          fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Get.to(const SetTimeScreen());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Restaurant Time: ".tr,
-                            style: GoogleFonts.ibmPlexSansArabic(
-                                fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
-                          ),
-                          Flexible(child: RestaurantTimingScreen(docId: profileData.docid.toString())),
-                          SizedBox(
-                            width: AddSize.size5,
-                          ),
-                          GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () async {
-                              User? currentUser = FirebaseAuth.instance.currentUser;
-                              RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser!.uid);
-                              log(thisUserModel.toString());
-                            },
-                            child: Icon(
-                              Icons.edit,
-                              color: AppTheme.primaryColor,
-                              size: AddSize.size15,
+                child: Obx(() {
+                  if (profileController.refreshInt.value > 0) {}
+                  return profileController.profileData != null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Hi, ${(profileController.profileData!.restaurantName ?? "")}",
+                              style: GoogleFonts.ibmPlexSansArabic(
+                                  fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                            GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                Get.to(const SetTimeScreen());
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Restaurant Time: ".tr,
+                                    style: GoogleFonts.ibmPlexSansArabic(
+                                        fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
+                                  ),
+                                  Flexible(child: RestaurantTimingScreen(docId: profileData.docid.toString())),
+                                  SizedBox(
+                                    width: AddSize.size5,
+                                  ),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () async {
+                                      User? currentUser = FirebaseAuth.instance.currentUser;
+                                      RegisterData? thisUserModel = await service.getUserInfo(uid: currentUser!.uid);
+                                      log(thisUserModel.toString());
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: AppTheme.primaryColor,
+                                      size: AddSize.size15,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox();
+                }),
               ),
             ],
           ),
           actions: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10, top: 5),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Get.to(const UserProfileScreen());
-                    },
-                    child: Stack(
+            Obx(() {
+              if (profileController.refreshInt.value > 0) {}
+              return profileController.profileData != null
+                  ? Column(
                       children: [
-                        SizedBox(
-                          height: 45,
-                          width: 45,
-                          child: Container(
-                            decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), shape: BoxShape.circle),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image.network(
-                                  profileData.image.toString(),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: profileData.image.toString(),
-                                    height: AddSize.size30,
-                                    width: AddSize.size30,
-                                    errorWidget: (_, __, ___) => const Icon(
-                                      Icons.person,
-                                      size: 20,
-                                      color: Colors.black,
-                                    ),
-                                    placeholder: (_, __) => const SizedBox(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10, top: 5),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              Get.to(const UserProfileScreen());
+                            },
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: 45,
+                                  width: 45,
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all(color: Colors.grey, width: 1), shape: BoxShape.circle),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Image.network(
+                                          profileController.profileData!.image.toString(),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            imageUrl: profileController.profileData!.image.toString(),
+                                            height: AddSize.size30,
+                                            width: AddSize.size30,
+                                            errorWidget: (_, __, ___) => const Icon(
+                                              Icons.person,
+                                              size: 20,
+                                              color: Colors.black,
+                                            ),
+                                            placeholder: (_, __) => const SizedBox(),
+                                          ),
+                                        )),
                                   ),
-                                )),
+                                ),
+                                Positioned(
+                                    top: 2,
+                                    left: 0,
+                                    child: Container(
+                                      height: 13,
+                                      width: 13,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.userActive,
+                                        border: Border.all(color: AppTheme.backgroundcolor, width: 2),
+                                        borderRadius: BorderRadius.circular(50),
+                                        // color: Colors.brown
+                                      ),
+                                    ))
+                              ],
+                            ),
                           ),
                         ),
-                        Positioned(
-                            top: 2,
-                            left: 0,
-                            child: Container(
-                              height: 13,
-                              width: 13,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: AppTheme.userActive,
-                                border: Border.all(color: AppTheme.backgroundcolor, width: 2),
-                                borderRadius: BorderRadius.circular(50),
-                                // color: Colors.brown
-                              ),
-                            ))
                       ],
-                    ),
-                  ),
-                ),
-              ],
-            )
+                    )
+                  : const SizedBox();
+            })
           ],
         ),
         body: DefaultTabController(

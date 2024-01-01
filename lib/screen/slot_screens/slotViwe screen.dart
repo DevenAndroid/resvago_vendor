@@ -183,18 +183,18 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        ...slotDataList!.eveningSlots!.entries.map((e) => Padding(
+                        ...eveningSlots.map((e) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    e.key.split(",").first,
+                                    e.time,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w400, fontSize: 16),
                                   ),
                                   Text(
-                                    e.value.toString(),
+                                    e.seats.toString(),
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),

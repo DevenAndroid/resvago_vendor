@@ -197,7 +197,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         height: 20,
                       ),
                       Text(
-                        "Discount".tr,
+                        "Discount %".tr,
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                       const SizedBox(
@@ -207,8 +207,13 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         digitValue: FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
                         controller: discountController,
                         keyboardType: TextInputType.number,
-                        validator: RequiredValidator(errorText: 'Please enter your Discount'.tr).call,
                         hint: '%',
+                        validator: (v) {
+                          if (v != null && v.trim().isNotEmpty && (double.tryParse(v.toString()) ?? 0) > 100) {
+                            return "Discount should be less than or equal to 100";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -225,7 +230,7 @@ class _CreatePromoCodeScreenState extends State<CreatePromoCodeScreen> {
                         controller: maxDiscountController,
                         keyboardType: TextInputType.number,
                         validator: RequiredValidator(errorText: 'Please enter your Discount'.tr).call,
-                        hint: '100',
+                        hint: '\$0.00',
                       ),
                       const SizedBox(
                         height: 20,

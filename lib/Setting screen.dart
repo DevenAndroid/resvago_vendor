@@ -71,6 +71,8 @@ class _SettingScreenState extends State<SettingScreen> {
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController aboutUsController = TextEditingController();
+  TextEditingController latController = TextEditingController();
+  TextEditingController longController = TextEditingController();
   String? _address = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
@@ -123,6 +125,8 @@ class _SettingScreenState extends State<SettingScreen> {
       await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _address,
+        "latitude": latController.text,
+        "longitude": longController.text,
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
@@ -138,7 +142,7 @@ class _SettingScreenState extends State<SettingScreen> {
         "cancellation": state1,
         "menuSelection": state2,
         "userID": FirebaseAuth.instance.currentUser!.uid,
-      }).then((value) => Fluttertoast.showToast(msg: "Setting Updated"));
+      }).then((value) => showToast("Setting Updated"));
       // Get.back();
       Helpers.hideLoader(loader);
     } catch (e) {
@@ -164,6 +168,8 @@ class _SettingScreenState extends State<SettingScreen> {
         categoryController.text = profileData.category.toString();
         emailController.text = profileData.email.toString();
         _address = profileData.address.toString();
+        latController.text = profileData.latitude.toString();
+        longController.text = profileData.longitude.toString();
         preparationTimeController.text = (profileData.preparationTime ?? "").toString();
         averageMealForMemberController.text = (profileData.averageMealForMember ?? "").toString();
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
@@ -288,7 +294,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 20,
               ),
               Text(
-                "Preparation time",
+                "Preparation time(min)",
                 style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
               ),
               const SizedBox(

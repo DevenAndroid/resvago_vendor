@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,31 +26,58 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
   @override
   void initState() {
     super.initState();
-
-    FirebaseFirestore.instance.collection("dining_order").get().then((value) {
-      total = 0;
-      for (var element in value.docs) {
-        total += double.tryParse(element.get("total").toString()) ?? 0;
-      }
-      updateCombinedTotal();
-    });
-
-    FirebaseFirestore.instance.collection("order").get().then((value) {
-      total1 = 0;
-      for (var element in value.docs) {
-        total1 += double.tryParse(element.get("total").toString()) ?? 0;
-      }
-      updateCombinedTotal();
-    });
+    fetchTotalEarnings();
+  //   FirebaseFirestore.instance.collection("dining_order").get().then((value) {
+  //     total = 0;
+  //     for (var element in value.docs) {
+  //       total += double.tryParse(element.get("total").toString()) ?? 0;
+  //     }
+  //     updateCombinedTotal();
+  //   });
+  //
+  //   FirebaseFirestore.instance.collection("order").get().then((value) {
+  //     total1 = 0;
+  //     for (var element in value.docs) {
+  //       total1 += double.tryParse(element.get("total").toString()) ?? 0;
+  //     }
+  //     updateCombinedTotal();
+  //   });
+  // }
+  //
+  // void updateCombinedTotal() {
+  //   if (total != 0 && total1 != 0) {
+  //     combinedTotal = total + total1;
+  //     setState(() {});
+  //     print('Combined Total: $combinedTotal');
+  //   }
   }
 
-  void updateCombinedTotal() {
-    if (total != 0 && total1 != 0) {
-      combinedTotal = total + total1;
-      setState(() {});
-      print('Combined Total: $combinedTotal');
+
+  double totalEarnings = 0;
+
+  Future<double> calculateTotalEarnings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = double.parse(documentSnapshot.data()["total"]);
+      totalEarnings += orderAmount;
     }
+
+    return totalEarnings;
   }
+
+  Future<void> fetchTotalEarnings() async {
+    double earnings = await calculateTotalEarnings();
+    setState(() {
+      totalEarnings = earnings;
+      log("dgdfhdfh$totalEarnings");
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +123,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                           ],
                         ),
                         Text(
-                          "\$ ${combinedTotal}",
+                          "\$$totalEarnings",
                           style: GoogleFonts.poppins(color: Colors.white, fontSize: 45, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(

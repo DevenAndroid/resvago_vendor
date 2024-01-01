@@ -50,6 +50,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
               eveningSlots: slotController.dinnerTimeslots,
               morningSlots: slotController.timeslots)
           .then((value) {
+        showToast("Slot Created Successfully");
         Get.back();
         widget.refreshValues();
         Helper.hideLoader(loader);
