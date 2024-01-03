@@ -358,6 +358,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Form(
           key: _formKeySignup,
           child: Column(

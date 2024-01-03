@@ -223,6 +223,20 @@ class FirebaseService {
     }
   }
 
+  Future withDrawMoney({dynamic time,dynamic amount,dynamic status}) async {
+    try {
+      await FirebaseFirestore.instance.collection('withDrawMoney').add({
+        "userId": FirebaseAuth.instance.currentUser!.uid,
+        "status": status,
+        "amount": amount,
+        "time": time,
+      });
+      showToast("Amount WithDraw Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;
     DocumentSnapshot docSnap = await firestore.collection("vendor_users").doc(uid.trim()).get();

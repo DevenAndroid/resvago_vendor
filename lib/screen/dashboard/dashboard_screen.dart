@@ -103,6 +103,8 @@ class _VendorDashboardState extends State<VendorDashboard> {
     return item1.count + item2.count;
   }
 
+  double totalEarnings1 = 0;
+  double totalEarnings2 = 0;
   double totalEarnings = 0;
 
   Future<double> calculateTotalEarnings() async {
@@ -113,16 +115,33 @@ class _VendorDashboardState extends State<VendorDashboard> {
         .get();
     for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
       double orderAmount = double.parse(documentSnapshot.data()["total"]);
-      totalEarnings += orderAmount;
+      totalEarnings1 += orderAmount;
     }
 
-    return totalEarnings;
+    return totalEarnings1;
+  }
+
+  Future<double> calculateTotalEarnings1() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = double.parse(documentSnapshot.data()["total"].toString());
+      totalEarnings2 += orderAmount;
+    }
+
+    return totalEarnings2;
   }
 
   Future<void> fetchTotalEarnings() async {
     double earnings = await calculateTotalEarnings();
+    double earnings1 = await calculateTotalEarnings1();
     setState(() {
-      totalEarnings = earnings;
+      totalEarnings1 = earnings;
+      totalEarnings2 = earnings1;
+      totalEarnings = earnings + earnings1;
       log("dgdfhdfh$totalEarnings");
     });
   }
@@ -762,7 +781,11 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                                     Text(
                                                       item.orderStatus,
                                                       style: GoogleFonts.poppins(
-                                                          color: const Color(0xFFFFB26B),
+                                                          color: item.orderStatus == "Order Completed"
+                                                              ? Colors.green
+                                                              : item.orderStatus == "Order Rejected"
+                                                                  ? Colors.red
+                                                                  : const Color(0xFFFFB26B),
                                                           fontWeight: FontWeight.w600,
                                                           fontSize: 12),
                                                     ),

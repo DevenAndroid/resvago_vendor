@@ -154,7 +154,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  bool isDescendingOrder = true;
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {

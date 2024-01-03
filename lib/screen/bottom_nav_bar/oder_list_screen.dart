@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,56 @@ class _OderListScreenState extends State<OderListScreen> {
   RxString dropDownValue1 = ''.obs;
   RxString dropDownValue2 = ''.obs;
   String searchQuery = '';
+  int filter = 0;
+  String? selectedValue;
+  double totalEarnings1 = 0;
+  double totalEarnings2 = 0;
+  double totalEarnings = 0;
+
+  Future<double> calculateTotalEarnings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = double.parse(documentSnapshot.data()["total"].toString());
+      totalEarnings1 += orderAmount;
+    }
+
+    return totalEarnings1;
+  }
+
+  Future<double> calculateTotalEarnings1() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = double.parse(documentSnapshot.data()["total"].toString());
+      totalEarnings2 += orderAmount;
+    }
+    return totalEarnings2;
+  }
+
+  Future<void> fetchTotalEarnings() async {
+    double earnings = await calculateTotalEarnings();
+    double earnings1 = await calculateTotalEarnings1();
+    setState(() {
+      totalEarnings1 = earnings;
+      totalEarnings2 = earnings1;
+      totalEarnings = earnings + earnings1;
+      log("dgdfhdfh$totalEarnings");
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchTotalEarnings();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +139,7 @@ class _OderListScreenState extends State<OderListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$0.00",
+                                "\$${totalEarnings}",
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 28),
                               ),
                               Text(
@@ -120,171 +171,132 @@ class _OderListScreenState extends State<OderListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // Expanded(
+                        //   child: SizedBox(
+                        //     height: 50,
+                        //     // width: size.width * .4,
+                        //     child: Padding(
+                        //       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+                        //       child: PopupMenuButton<int>(
+                        //         constraints: const BoxConstraints(maxHeight: 300),
+                        //         position: PopupMenuPosition.under,
+                        //         offset: Offset.fromDirection(1, 1),
+                        //         onSelected: (value) {
+                        //           setState(() {});
+                        //         },
+                        //         // icon: Icon(Icons.keyboard_arrow_down),
+                        //         itemBuilder: (context) => [
+                        //           PopupMenuItem(
+                        //               child: Column(
+                        //             children: [
+                        //               InkWell(
+                        //                 onTap: () {
+                        //                   dropDownValue1.value = 'No';
+                        //                 },
+                        //                 child: Text('No'.tr,
+                        //                     style: const TextStyle(
+                        //                         fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                        //               ),
+                        //             ],
+                        //           )),
+                        //           PopupMenuItem(
+                        //               child: Column(
+                        //             children: [
+                        //               InkWell(
+                        //                 onTap: () {
+                        //                   setState(() {
+                        //                     dropDownValue1.value = 'Yes';
+                        //                   });
+                        //                 },
+                        //                 child: Text('Yes'.tr,
+                        //                     style: const TextStyle(
+                        //                         fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                        //               ),
+                        //             ],
+                        //           )),
+                        //         ],
+                        //         child: Container(
+                        //           padding: const EdgeInsets.all(9),
+                        //           decoration: BoxDecoration(
+                        //             borderRadius: BorderRadius.circular(10),
+                        //             border: Border.all(color: Colors.white.withOpacity(.35)),
+                        //             color: Colors.white.withOpacity(.10),
+                        //           ),
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               Obx(() {
+                        //                 return Row(
+                        //                   mainAxisAlignment: MainAxisAlignment.center,
+                        //                   crossAxisAlignment: CrossAxisAlignment.center,
+                        //                   children: [
+                        //                     Center(
+                        //                       child: Text(
+                        //                         dropDownValue1.value.toString().isEmpty
+                        //                             ? "Filter"
+                        //                             : dropDownValue1.value.toString(),
+                        //                         style: const TextStyle(
+                        //                             fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 );
+                        //               }),
+                        //               const Spacer(),
+                        //               const Icon(
+                        //                 Icons.arrow_drop_down,
+                        //                 color: Colors.white,
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(width: 20),
                         Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            // width: size.width * .4,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
-                              child: PopupMenuButton<int>(
-                                constraints: const BoxConstraints(maxHeight: 300),
-                                position: PopupMenuPosition.under,
-                                offset: Offset.fromDirection(1, 1),
-                                onSelected: (value) {
-                                  setState(() {});
-                                },
-                                // icon: Icon(Icons.keyboard_arrow_down),
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                      child: Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          dropDownValue1.value = 'No';
-                                        },
-                                        child: Text('No'.tr,
-                                            style: const TextStyle(
-                                                fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                          child: Container(
+                              padding: const EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white.withOpacity(.35)),
+                                color: AppTheme.primaryColor,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: DropdownButtonFormField<String>(
+                                  dropdownColor: AppTheme.primaryColor,
+                                  icon: const Icon(Icons.arrow_drop_down_rounded, color: Colors.white),
+                                  value: selectedValue,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedValue = newValue!;
+                                      log(selectedValue.toString());
+                                      if (filter == 0) {
+                                        getDiningPlacedOrder();
+                                      }
+                                    });
+                                  },
+                                  items: <String>['Place Order', 'Order Rejected', 'Order Completed']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: const TextStyle(color: Colors.white),
                                       ),
-                                    ],
-                                  )),
-                                  PopupMenuItem(
-                                      child: Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            dropDownValue1.value = 'Yes';
-                                          });
-                                        },
-                                        child: Text('Yes'.tr,
-                                            style: const TextStyle(
-                                                fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
-                                      ),
-                                    ],
-                                  )),
-                                ],
-                                child: Container(
-                                  padding: const EdgeInsets.all(9),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.white.withOpacity(.35)),
-                                    color: Colors.white.withOpacity(.10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Obx(() {
-                                        return Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Center(
-                                              child: Text(
-                                                dropDownValue1.value.toString().isEmpty
-                                                    ? "Filter"
-                                                    : dropDownValue1.value.toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }),
-                                      const Spacer(),
-                                      const Icon(
-                                        Icons.arrow_drop_down,
-                                        color: Colors.white,
-                                      )
-                                    ],
+                                    );
+                                  }).toList(),
+                                  decoration: InputDecoration(
+                                    hintText: "Status".tr,
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                    focusColor: Colors.white,
+                                    hintStyle: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            // width: size.width * .4,
-                            child: PopupMenuButton<int>(
-                              constraints: const BoxConstraints(maxHeight: 300),
-                              position: PopupMenuPosition.under,
-                              offset: Offset.fromDirection(1, 1),
-                              onSelected: (value) {
-                                setState(() {});
-                              },
-                              // icon: Icon(Icons.keyboard_arrow_down),
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                    child: Column(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        dropDownValue2.value = 'False';
-                                        Get.back();
-                                      },
-                                      child: Text('False'.tr,
-                                          style:
-                                              const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
-                                    ),
-                                  ],
-                                )),
-                                PopupMenuItem(
-                                    child: Column(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          dropDownValue2.value = 'True';
-                                          Get.back();
-                                        });
-                                      },
-                                      child: Text('True'.tr,
-                                          style:
-                                              const TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
-                                    ),
-                                  ],
-                                )),
-                              ],
-                              child: Container(
-                                padding: const EdgeInsets.all(9),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.white.withOpacity(.35)),
-                                  color: Colors.white.withOpacity(.10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Obx(() {
-                                      return Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              dropDownValue2.value.toString().isEmpty
-                                                  ? "Status"
-                                                  : dropDownValue2.value.toString(),
-                                              style:
-                                                  const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.white,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                              )),
                         ),
                       ],
                     ),
@@ -299,22 +311,17 @@ class _OderListScreenState extends State<OderListScreen> {
                         color: Colors.white.withOpacity(.10),
                       ),
                       child: TextFormField(
+                        onChanged: (value) => {
+                          setState(() {
+                            searchQuery = value;
+                          })
+                        },
                         decoration: InputDecoration(
                           hintText: "Search".tr,
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.only(left: 10),
                           focusColor: Colors.white,
-                          hintStyle: GoogleFonts.poppins(
-                            color: Colors.white,
-                            textStyle: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                            ),
-                            fontSize: 14,
-                            // fontFamily: 'poppins',
-                            fontWeight: FontWeight.w300,
-                          ),
+                          hintStyle: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w500),
                         ),
                         style: const TextStyle(color: Colors.white),
                       ),
@@ -322,14 +329,23 @@ class _OderListScreenState extends State<OderListScreen> {
                   ]),
                 ),
               ),
-              TabBar(labelColor: const Color(0xFF454B5C), indicatorColor: const Color(0xFF3B5998), indicatorWeight: 4, tabs: [
-                Tab(
-                  text: "Dining Orders".tr,
-                ),
-                Tab(
-                  text: "Delivery Orders".tr,
-                ),
-              ]),
+              TabBar(
+                  onTap: (value) {
+                    filter = value;
+                    log(filter.toString());
+                    setState(() {});
+                  },
+                  labelColor: const Color(0xFF454B5C),
+                  indicatorColor: const Color(0xFF3B5998),
+                  indicatorWeight: 4,
+                  tabs: [
+                    Tab(
+                      text: "Dining Orders".tr,
+                    ),
+                    Tab(
+                      text: "Delivery Orders".tr,
+                    ),
+                  ]),
               Expanded(
                 child: TabBarView(children: [
                   SingleChildScrollView(
@@ -362,7 +378,13 @@ class _OderListScreenState extends State<OderListScreen> {
                             color: Colors.black12.withOpacity(0.09),
                           ),
                           StreamBuilder<List<MyDiningOrderModel>>(
-                            stream: getDiningOrdersStreamFromFirestore(),
+                            stream: selectedValue == "Place Order" && filter == 0
+                                ? getDiningPlacedOrder()
+                                : selectedValue == "Order Rejected" && filter == 0
+                                    ? getDiningPlacedOrder()
+                                    : selectedValue == "Order Completed" && filter == 0
+                                        ? getDiningPlacedOrder()
+                                        : getDiningOrdersStreamFromFirestore(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(
@@ -371,14 +393,17 @@ class _OderListScreenState extends State<OderListScreen> {
                                 return Text('Error: ${snapshot.error}');
                               } else {
                                 List<MyDiningOrderModel> users = snapshot.data ?? [];
-                                return users.isNotEmpty
+                                List<MyDiningOrderModel> diningOrder = snapshot.data ?? [];
+                                log(diningOrder.toString());
+                                final filteredUsers = filterDiningOrder(diningOrder, searchQuery); //
+                                return filteredUsers.isNotEmpty
                                     ? ListView.builder(
                                         padding: EdgeInsets.zero,
                                         physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: users.length,
+                                        itemCount: filteredUsers.length,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
-                                          final item = users[index];
+                                          final item = filteredUsers[index];
                                           return GestureDetector(
                                             behavior: HitTestBehavior.translucent,
                                             onTap: () {
@@ -417,7 +442,11 @@ class _OderListScreenState extends State<OderListScreen> {
                                                     Text(
                                                       item.orderStatus,
                                                       style: GoogleFonts.poppins(
-                                                          color: const Color(0xFFFFB26B),
+                                                          color: item.orderStatus == "Order Completed"
+                                                              ? Colors.green
+                                                              : item.orderStatus == "Order Rejected"
+                                                                  ? Colors.red
+                                                                  : const Color(0xFFFFB26B),
                                                           fontWeight: FontWeight.w600,
                                                           fontSize: 12),
                                                     ),
@@ -481,7 +510,13 @@ class _OderListScreenState extends State<OderListScreen> {
                             color: Colors.black12.withOpacity(0.09),
                           ),
                           StreamBuilder<List<MyOrderModel>>(
-                            stream: getOrdersStreamFromFirestore(),
+                            stream: selectedValue == "Place Order" && filter == 1
+                                ? getPlacedOrder()
+                                : selectedValue == "Order Rejected" && filter == 1
+                                    ? getPlacedOrder()
+                                    : selectedValue == "Order Completed" && filter == 1
+                                        ? getPlacedOrder()
+                                        : getOrdersStreamFromFirestore(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(
@@ -490,15 +525,17 @@ class _OderListScreenState extends State<OderListScreen> {
                                 return Text('Error: ${snapshot.error}');
                               } else {
                                 List<MyOrderModel> users = snapshot.data ?? [];
-
-                                return users.isNotEmpty
+                                List<MyOrderModel> order = snapshot.data ?? [];
+                                log(order.toString());
+                                final filteredOrders = filterOrder(order, searchQuery); //
+                                return filteredOrders.isNotEmpty
                                     ? ListView.builder(
                                         padding: EdgeInsets.zero,
                                         physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: users.length,
+                                        itemCount: filteredOrders.length,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
-                                          final item = users[index];
+                                          final item = filteredOrders[index];
                                           return GestureDetector(
                                             behavior: HitTestBehavior.translucent,
                                             onTap: () {
@@ -537,7 +574,11 @@ class _OderListScreenState extends State<OderListScreen> {
                                                     Text(
                                                       item.orderStatus,
                                                       style: GoogleFonts.poppins(
-                                                          color: const Color(0xFFFFB26B),
+                                                          color: item.orderStatus == "Order Completed"
+                                                              ? Colors.green
+                                                              : item.orderStatus == "Order Rejected"
+                                                                  ? Colors.red
+                                                                  : const Color(0xFFFFB26B),
                                                           fontWeight: FontWeight.w600,
                                                           fontSize: 12),
                                                     ),
@@ -579,6 +620,7 @@ class _OderListScreenState extends State<OderListScreen> {
         ));
   }
 
+  List<MyOrderModel> orders = [];
   Stream<List<MyOrderModel>> getOrdersStreamFromFirestore() {
     return FirebaseFirestore.instance
         .collection('order')
@@ -586,7 +628,7 @@ class _OderListScreenState extends State<OderListScreen> {
         .orderBy("time", descending: true)
         .snapshots()
         .map((querySnapshot) {
-      List<MyOrderModel> orders = [];
+      orders = [];
       try {
         for (var doc in querySnapshot.docs) {
           orders.add(MyOrderModel.fromJson(doc.data(), doc.id));
@@ -598,6 +640,42 @@ class _OderListScreenState extends State<OderListScreen> {
     });
   }
 
+  Stream<List<MyOrderModel>> getPlacedOrder() {
+    return FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: selectedValue)
+        .orderBy("time", descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      orders = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          orders.add(MyOrderModel.fromJson(doc.data(), doc.id));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return orders;
+    });
+  }
+
+
+  List<MyOrderModel> filterOrder(List<MyOrderModel> order, String query) {
+    if (query.isEmpty) {
+      return order; // Return all users if the search query is empty
+    } else {
+      // Filter the users based on the search query
+      return order.where((order) {
+        if (order.orderId is String) {
+          return order.orderId.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
+  }
+
+  List<MyDiningOrderModel> diningOrders = [];
   Stream<List<MyDiningOrderModel>> getDiningOrdersStreamFromFirestore() {
     return FirebaseFirestore.instance
         .collection('dining_order')
@@ -605,7 +683,7 @@ class _OderListScreenState extends State<OderListScreen> {
         .orderBy("time", descending: true)
         .snapshots()
         .map((querySnapshot) {
-      List<MyDiningOrderModel> diningOrders = [];
+      diningOrders = [];
       try {
         for (var doc in querySnapshot.docs) {
           diningOrders.add(MyDiningOrderModel.fromJson(doc.data(), doc.id));
@@ -616,4 +694,39 @@ class _OderListScreenState extends State<OderListScreen> {
       return diningOrders;
     });
   }
+
+  Stream<List<MyDiningOrderModel>> getDiningPlacedOrder() {
+    diningOrders = [];
+    return FirebaseFirestore.instance
+        .collection('dining_order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: selectedValue)
+        .orderBy("time", descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      log("Gdf");
+      try {
+        for (var doc in querySnapshot.docs) {
+          diningOrders.add(MyDiningOrderModel.fromJson(doc.data(), doc.id));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return diningOrders;
+    });
+  }
+
+  List<MyDiningOrderModel> filterDiningOrder(List<MyDiningOrderModel> diningOrder, String query) {
+    if (query.isEmpty) {
+      return diningOrder;
+    } else {
+      return diningOrder.where((diningOrder) {
+        if (diningOrder.orderId is String) {
+          return diningOrder.orderId.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
+  }
+
 }
