@@ -46,6 +46,7 @@ class _WalletScreenState extends State<WalletScreen> {
   double totalEarnings1 = 0;
   double totalEarnings2 = 0;
   double totalEarnings3 = 0;
+  double totalEarnings4 = 0;
   double totalEarnings = 0;
   double totalWalletAmount = 0;
 
@@ -76,14 +77,30 @@ class _WalletScreenState extends State<WalletScreen> {
     return totalEarnings2;
   }
 
+  Future<double> adminCommission() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = documentSnapshot.data()["admin_commission"];
+      log("fghgfj$orderAmount");
+      totalEarnings4 += orderAmount;
+    }
+    return totalEarnings4;
+  }
+
   Future<void> fetchTotalEarnings() async {
     double earnings = await calculateTotalEarnings();
     double earnings1 = await calculateTotalEarnings1();
+    double earnings2 = await adminCommission();
     totalWalletEarnings();
     setState(() {
       totalEarnings1 = earnings;
       totalEarnings2 = earnings1;
-      totalEarnings3 = earnings + earnings1;
+      totalEarnings3 = earnings + earnings1 - earnings2;
+      log("dgdgd$totalEarnings3");
       totalEarnings = totalEarnings3 - totalWalletAmount;
       log("dgdfhdfh$totalEarnings");
     });
@@ -106,9 +123,7 @@ class _WalletScreenState extends State<WalletScreen> {
         Get.back();
         showToast("WithDraw Money Successfully");
         totalEarnings = totalEarnings - double.parse(addMoneyController.text.toString());
-        setState(() {
-
-        });
+        setState(() {});
         addMoneyController.clear();
         Helper.hideLoader(loader);
       });
@@ -159,8 +174,6 @@ class _WalletScreenState extends State<WalletScreen> {
       log("teruyturtu$totalWalletAmount");
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +239,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   return "You can withdraw more than $totalEarnings";
                                 }
 
-                                if (parsedValue <= 1) {
+                                if (parsedValue <= 0) {
                                   return "Please enter a valid amount ";
                                 }
 
@@ -328,12 +341,13 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 style: GoogleFonts.poppins(
                                                     color: const Color(0xFF8C9BB2), fontWeight: FontWeight.w500, fontSize: 11),
                                               ),
+
                                               Text(
                                                 walletItem.status.toString(),
                                                 style: GoogleFonts.poppins(
-                                                    color: walletItem.status == "Completed"
+                                                    color: walletItem.status == "Approve"
                                                         ? Colors.green
-                                                        : walletItem.status == "Rejected"
+                                                        : walletItem.status == "Reject"
                                                             ? Colors.red
                                                             : const Color(0xFFFFB26B),
                                                     fontWeight: FontWeight.w600,

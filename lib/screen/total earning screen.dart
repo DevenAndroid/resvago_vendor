@@ -35,10 +35,12 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
   void initState() {
     super.initState();
     fetchTotalEarnings();
+    getOrderList();
   }
 
   double totalEarnings1 = 0;
   double totalEarnings2 = 0;
+  double totalEarnings3 = 0;
   double totalEarnings = 0;
 
   Future<double> calculateTotalEarnings() async {
@@ -69,13 +71,28 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
     return totalEarnings2;
   }
 
+  Future<double> adminCommission() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('order')
+        .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("order_status", isEqualTo: "Order Completed")
+        .get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
+      double orderAmount = documentSnapshot.data()["admin_commission"];
+      log("fghgfj" + orderAmount.toString());
+      totalEarnings3 += orderAmount;
+    }
+    return totalEarnings3;
+  }
+
   Future<void> fetchTotalEarnings() async {
     double earnings = await calculateTotalEarnings();
     double earnings1 = await calculateTotalEarnings1();
+    double earnings2 = await adminCommission();
     setState(() {
       totalEarnings1 = earnings;
       totalEarnings2 = earnings1;
-      totalEarnings = earnings + earnings1;
+      totalEarnings = earnings + earnings1 - earnings2;
       log("dgdfhdfh$totalEarnings");
     });
   }
@@ -87,8 +104,10 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
         .where("vendorId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
+      log("fhfh${jsonEncode(value.docs.first.data())}");
       for (var element in value.docs) {
         var gg = element.data();
+        log("fxvgxcb${jsonEncode(gg.toString())}");
         myOrder ??= [];
         myOrder!.add(MyOrderModel.fromJson(gg, element.id));
       }
@@ -430,16 +449,16 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                                 fontSize: 12,
                                                                 fontWeight: FontWeight.w400),
                                                           ),
-                                                          const SizedBox(
-                                                            height: 3,
-                                                          ),
-                                                          Text(
-                                                            "Admin Commission:",
-                                                            style: GoogleFonts.poppins(
-                                                                color: const Color(0xFF21283D),
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.w400),
-                                                          ),
+                                                          // const SizedBox(
+                                                          //   height: 3,
+                                                          // ),
+                                                          // Text(
+                                                          //   "Admin Commission:",
+                                                          //   style: GoogleFonts.poppins(
+                                                          //       color: const Color(0xFF21283D),
+                                                          //       fontSize: 12,
+                                                          //       fontWeight: FontWeight.w400),
+                                                          // ),
                                                           const SizedBox(
                                                             height: 3,
                                                           ),
@@ -477,16 +496,16 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                               fontSize: 12,
                                                               fontWeight: FontWeight.w300),
                                                         ),
-                                                        const SizedBox(
-                                                          height: 3,
-                                                        ),
-                                                        Text(
-                                                          "\$${orderItem.total}",
-                                                          style: GoogleFonts.poppins(
-                                                              color: const Color(0xFF424750),
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w300),
-                                                        ),
+                                                        // const SizedBox(
+                                                        //   height: 3,
+                                                        // ),
+                                                        // Text(
+                                                        //   "\$${orderItem.total}",
+                                                        //   style: GoogleFonts.poppins(
+                                                        //       color: const Color(0xFF424750),
+                                                        //       fontSize: 12,
+                                                        //       fontWeight: FontWeight.w300),
+                                                        // ),
                                                         const SizedBox(
                                                           height: 3,
                                                         ),
@@ -561,6 +580,8 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                 itemCount: filteredUsers.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var orderItem = filteredUsers[index];
+                                  log(orderItem.admin_commission.toString());
+                                  String earning1 = "\$${(orderItem.total - (orderItem.admin_commission ?? 0.0)).toString()}";
                                   return Padding(
                                       padding: const EdgeInsets.only(left: 16.0, right: 16),
                                       child: Column(
@@ -660,7 +681,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                           height: 3,
                                                         ),
                                                         Text(
-                                                          "\$${orderItem.total}",
+                                                          "\$${(orderItem.admin_commission ?? "0.0")}",
                                                           style: GoogleFonts.poppins(
                                                               color: const Color(0xFF424750),
                                                               fontSize: 12,
@@ -670,7 +691,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                           height: 3,
                                                         ),
                                                         Text(
-                                                          "\$${orderItem.total}",
+                                                          "\$$earning1",
                                                           style: GoogleFonts.poppins(
                                                               color: const Color(0xFF424750),
                                                               fontSize: 12,

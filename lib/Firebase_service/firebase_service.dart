@@ -225,11 +225,13 @@ class FirebaseService {
 
   Future withDrawMoney({dynamic time,dynamic amount,dynamic status}) async {
     try {
-      await FirebaseFirestore.instance.collection('withDrawMoney').add({
+      String docid = DateTime.now().millisecondsSinceEpoch.toString();
+      await FirebaseFirestore.instance.collection('withDrawMoney').doc(docid).set({
         "userId": FirebaseAuth.instance.currentUser!.uid,
         "status": status,
         "amount": amount,
         "time": time,
+        "docid": docid,
       });
       showToast("Amount WithDraw Successfully");
     } catch (e) {
