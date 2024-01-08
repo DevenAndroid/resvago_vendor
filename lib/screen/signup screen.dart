@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -181,12 +182,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     const cloudFunctionUrl = 'https://us-central1-resvago-ire.cloudfunctions.net/searchPlaces';
     FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?query=$query')).call().then((value) {
       List<Places> places = [];
-      if (value.data != null) {
-        value.data.forEach((v) {
+      if (value.data != null && value.data['places'] != null) {
+        log("jhkgj${jsonEncode(value.data.toString())}");
+        List<dynamic> data = List.from(value.data['places']);
+
+        for (var v in data) {
           places.add(Places.fromJson(v));
-        });
+        }
       }
       googlePlacesModel = GooglePlacesModel(places: places);
+
+      log("fgfdh${jsonEncode(googlePlacesModel.toString())}");
       setState(() {});
     });
   }

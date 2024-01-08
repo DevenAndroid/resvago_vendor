@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=C:\Src\flutter"
-export "FLUTTER_APPLICATION_PATH=D:\resvago_vendor"
+export "FLUTTER_APPLICATION_PATH=C:\resvago_vendor"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
