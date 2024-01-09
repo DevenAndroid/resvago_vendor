@@ -146,7 +146,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } catch (e) {
       showToast(e);
-      // await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
       throw Exception(e);
     } finally {

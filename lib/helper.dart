@@ -27,12 +27,27 @@ class Helper {
 
   static Future addFilePicker() async {
     try {
-      final item = await FilePicker.platform.pickFiles(type: FileType.custom,allowedExtensions: ['jpg','png','jpeg'],);
+      final item = await FilePicker.platform.pickFiles(type: FileType.custom,allowedExtensions: ['jpg','png','jpeg','webp'],allowMultiple: true);
       if (item == null) {
         return null;
       } else {
-        // print(item.files.first.bytes!);
         return kIsWeb ? item.files.first.bytes! : File(item.files.first.path!);
+      }
+    } on PlatformException catch (e) {
+      throw Exception(e);
+    }
+  }
+
+
+  static Future addFilePicker1({
+    bool singleFile = false
+  }) async {
+    try {
+      final item = await FilePicker.platform.pickFiles(type: FileType.custom,allowedExtensions: ['jpg','png','jpeg','webp'],allowMultiple: true);
+      if (item == null) {
+        return null;
+      } else {
+        return kIsWeb ? singleFile ? item.files.first.bytes : item.files.map((e) => e.bytes).toList() : File(item.files.first.path!);
       }
     } on PlatformException catch (e) {
       throw Exception(e);

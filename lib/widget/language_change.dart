@@ -57,7 +57,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: backAppBar(title: 'Change Language', context: context),
+      appBar: backAppBar(title: 'Change Language'.tr, context: context),
         body: Column(children: [
               const SizedBox(
                 height: 15,
@@ -115,6 +115,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
 
   showDialogLanguage(context) {
     return showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return Dialog(
@@ -129,9 +130,9 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                   RadioListTile(
                       value: "English",
                       groupValue: selectedLAnguage.value,
-                      title: Text(
-                        "ENGLISH".tr,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      title: const Text(
+                        "English",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
                         locale = const Locale('en', 'US');
@@ -143,9 +144,9 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       }),
                   RadioListTile( value: "Spanish",
                       groupValue: selectedLAnguage.value,
-                      title: Text(
-                        "SPANISH".tr,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      title: const Text(
+                        "Spanish",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
                         locale = const Locale('es', 'ES');
@@ -157,9 +158,9 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       }),
                   RadioListTile( value: "French",
                       groupValue: selectedLAnguage.value,
-                      title: Text(
-                        "French".tr,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      title: const Text(
+                        "French",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
                         locale = const Locale('fr', 'FR');
@@ -171,8 +172,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                       }),
                   RadioListTile( value: "Arabic",
                       groupValue: selectedLAnguage.value,
-                      title: Text(
-                        "Arabic".tr,
+                      title: const Text(
+                        "Arabic",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
                       onChanged: (value) {
@@ -183,6 +184,23 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
+                  Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: (){
+                        Get.back();
+                      },
+                      child:  Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppTheme.primaryColor
+                        ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("Update",style: TextStyle(color: Colors.white),),
+                          )),
+                    ),
+                  )
                 ],
               ),
             ),

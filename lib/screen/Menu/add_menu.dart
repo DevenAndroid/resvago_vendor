@@ -369,7 +369,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                               child: InkWell(
                                 onTap: () {
                                   Helper.addFilePicker().then((value) {
-                                    pickedFile = value;
+                                    pickedFile = value as Uint8List?;
                                     setState(() {});
                                   });
                                 },

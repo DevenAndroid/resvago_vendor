@@ -196,52 +196,81 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             menuPhotoLink.add(imageUrl1);
           }
         }
-      }
-      else {
-        if (controller.galleryFiles.isNotEmpty) {
-          for (var element in controller.galleryFiles.asMap().entries) {
-            UploadTask uploadTask = FirebaseStorage.instance
-                .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
-                .child("${element.key}image")
-                .putData(element.value!);
-
-            TaskSnapshot snapshot = await uploadTask;
-            String imageUrl = await snapshot.ref.getDownloadURL();
-            menuPhotoLink.add(imageUrl);
-          }
-        } else {
-          for (var element in controller.galleryFilesUrl.asMap().entries) {
-            menuPhotoLink.add(element.value.toString());
-          }
-        }
-
-        if (controller.galleryFiles1.isNotEmpty) {
-          for (var element in controller.galleryFiles1.asMap().entries) {
+      } else {
+        for (var element in controller.galleryImagesList1.asMap().entries) {
+          if (element.value.localImage != null) {
             UploadTask uploadTask = FirebaseStorage.instance
                 .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
                 .child("${element.key}image")
-                .putData(element.value!);
+                .putData(element.value.localImage!);
 
             TaskSnapshot snapshot = await uploadTask;
             String imageUrl = await snapshot.ref.getDownloadURL();
             imagesLink.add(imageUrl);
-          }
-        } else {
-          for (var element in controller.galleryFilesUrl1.asMap().entries) {
-            imagesLink.add(element.value.toString());
+          } else {
+            imagesLink.add(element.value.imageUrl!);
           }
         }
+
+        for (var element in controller.galleryImagesList2.asMap().entries) {
+          if (element.value.localImage != null) {
+            UploadTask uploadTask = FirebaseStorage.instance
+                .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
+                .child("${element.key}image")
+                .putData(element.value.localImage!);
+
+            TaskSnapshot snapshot = await uploadTask;
+            String imageUrl = await snapshot.ref.getDownloadURL();
+            menuPhotoLink.add(imageUrl);
+          } else {
+            menuPhotoLink.add(element.value.imageUrl!);
+          }
+        }
+        // if (controller.galleryImagesList1.isNotEmpty) {
+        //   for (var element in controller.galleryImagesList1.asMap().entries) {
+        //     UploadTask uploadTask = FirebaseStorage.instance
+        //         .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
+        //         .child("${element.key}image")
+        //         .putData(element.value.localImage!);
+        //
+        //     TaskSnapshot snapshot = await uploadTask;
+        //     String imageUrl = await snapshot.ref.getDownloadURL();
+        //     menuPhotoLink.add(imageUrl);
+        //   }
+        // } else {
+        //   for (var element in controller.galleryFilesUrl.asMap().entries) {
+        //     menuPhotoLink.add(element.value.toString());
+        //   }
+        // }
+
+        // if (controller.galleryFiles1.isNotEmpty) {
+        //   for (var element in controller.galleryFiles1.asMap().entries) {
+        //     UploadTask uploadTask = FirebaseStorage.instance
+        //         .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
+        //         .child("${element.key}image")
+        //         .putData(element.value!);
+        //
+        //     TaskSnapshot snapshot = await uploadTask;
+        //     String imageUrl = await snapshot.ref.getDownloadURL();
+        //     imagesLink.add(imageUrl);
+        //   }
+        // }
+        // else {
+        //   for (var element in controller.galleryFilesUrl1.asMap().entries) {
+        //     imagesLink.add(element.value.toString());
+        //   }
+        // }
       }
 
-      print("zbxcgxc${controller.galleryFiles1}");
-      print("zbxcgxc${controller.galleryFiles}");
+      // print("zbxcgxc${controller.galleryFiles1}");
+      // print("zbxcgxc${controller.galleryFiles}");
       await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _searchController.text.trim(),
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
-        "restaurantImage": imagesLink,
+        "restaurantImage":imagesLink,
         "menuImage": menuPhotoLink,
         "image": imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
@@ -306,10 +335,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           }
         } else {
           for (var element in profileData.restaurantImage!) {
-            controller.galleryFilesUrl1.add(element);
-            controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
-            print("erfse${controller.galleryFiles1.length}");
+            controller.galleryImagesList1.add(ManageWebImages(imageUrl: element.toString()));
+            // controller.galleryFilesUrl1.add(element);
+            // controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+            // print("erfse${controller.galleryFiles1.length}");
           }
+          controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          setState(() {});
         }
         profileData.menuGalleryImages ??= [];
         controller.menuGallery.clear();
@@ -320,10 +352,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           }
         } else {
           for (var element in profileData.menuGalleryImages!) {
-            controller.galleryFilesUrl.add(element);
-            controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
-            print("fuyguh${controller.galleryFiles.length}");
+            controller.galleryImagesList2.add(ManageWebImages(imageUrl: element.toString()));
+            // controller.galleryFilesUrl.add(element);
+            // controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+            // print("fuyguh${controller.galleryFiles.length}");
           }
+          controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          setState(() {});
         }
         kk++;
         setState(() {});
@@ -1269,12 +1304,21 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                       TextButton(
                         onPressed: () {
                           if (kIsWeb) {
-                            Helper.addFilePicker().then((value) {
+                            Helper.addFilePicker1().then((value) {
                               if (value == null) return;
-                              if (controller.galleryFiles1.length < 5) {
-                                controller.galleryFiles1.add(value);
-                                setState(() {});
+                              List<Uint8List?> item = value;
+                              for (var element in item) {
+                                if (controller.galleryImagesList1.length < 5) {
+                                  controller.galleryImagesList1.add(ManageWebImages(localImage: element));
+                                } else {
+                                  break;
+                                }
                               }
+                              setState(() {});
+                              // if (controller.galleryFiles1.length < 5) {
+                              //   controller.galleryFiles1.addAll(value);
+                              //   setState(() {});
+                              // }
                             });
                           } else {
                             showImagesBottomSheet();
@@ -1282,7 +1326,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                         },
                         child: kIsWeb
                             ? Text(
-                                'Choose From Gallery ${controller.galleryFiles1.isNotEmpty ? "${controller.galleryFiles1.length}/5" : ""}',
+                                'Choose From Gallery ${controller.galleryImagesList1.isNotEmpty ? "${controller.galleryImagesList1.length}/5" : "${controller.galleryImagesList1.length}/5"}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
@@ -1301,73 +1345,58 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                   ),
                 ),
                 kIsWeb
-                    ? controller.galleryFiles1.isNotEmpty
-                        ? SizedBox(
-                            height: 125,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Row(
-                                children: controller.galleryFiles1
-                                    .asMap()
-                                    .entries
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.only(right: 18),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                Helper.addFilePicker().then((value) {
-                                                  controller.galleryFiles1[e.key] = value;
+                    ? SizedBox(
+                        height: 125,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: controller.galleryImagesList1
+                                .asMap()
+                                .entries
+                                .map((e) => Padding(
+                                      padding: const EdgeInsets.only(right: 18),
+                                      child: PopupMenuButton(
+                                          key: ValueKey(e.value.imageUrl.toString()),
+                                          itemBuilder: (BuildContext context) {
+                                            return [
+                                              PopupMenuItem(child: const Text("Add"),onTap: (){
+
+                                                Helper.addFilePicker1(
+                                                    singleFile: true
+                                                ).then((value) {
+                                                  e.value.localImage = value;
+                                                  e.value.imageUrl = null;
+
                                                   setState(() {});
                                                 });
-                                              },
-                                              child: Container(
-                                                constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                                child: Image.memory(
-                                                  e.value!,
-                                                  errorBuilder: (_, __, ___) => const Icon(
-                                                    Icons.video_collection_rounded,
-                                                    color: Colors.blue,
-                                                  ),
+                                              },),
+                                              PopupMenuItem(child: const Text("Remove"),onTap: (){
+                                                controller.galleryImagesList1.remove(e.value);
+                                                setState(() {});
+                                              },)
+                                            ];
+                                          },
+                                          child: Container(
+                                            constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
+                                            child: Image.network(
+                                              controller.galleryImagesList1[e.key].imageUrl.toString(),
+                                              errorBuilder: (_, __, ___) => e.value.localImage != null
+                                                  ? Image.memory(
+                                                e.value.localImage!,
+                                                errorBuilder: (_, __, ___) => const Icon(
+                                                  Icons.video_collection_rounded,
+                                                  color: Colors.blue,
                                                 ),
-                                              )),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 125,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Row(
-                                children: controller.galleryFilesUrl1
-                                    .asMap()
-                                    .entries
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.only(right: 18),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                Helper.addFilePicker().then((value) {
-                                                  controller.galleryFilesUrl1[e.key] = value;
-                                                  setState(() {});
-                                                });
-                                              },
-                                              child: Container(
-                                                constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                                child: Image.network(
-                                                  e.value,
-                                                  errorBuilder: (_, __, ___) => const Icon(
-                                                    Icons.video_collection_rounded,
-                                                    color: Colors.blue,
-                                                  ),
-                                                ),
-                                              )),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          )
+                                              )
+                                                  : const SizedBox(),
+                                            ),
+                                          )),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      )
                     : SizedBox(
                         height: 125,
                         child: SingleChildScrollView(
@@ -1595,12 +1624,21 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                       TextButton(
                         onPressed: () {
                           if (kIsWeb) {
-                            Helper.addFilePicker().then((value) {
+                            Helper.addFilePicker1().then((value) {
                               if (value == null) return;
-                              if (controller.galleryFiles.length < 5) {
-                                controller.galleryFiles.add(value);
-                                setState(() {});
+                              List<Uint8List?> item = value;
+                              for (var element in item) {
+                                if (controller.galleryImagesList2.length < 5) {
+                                  controller.galleryImagesList2.add(ManageWebImages(localImage: element));
+                                } else {
+                                  break;
+                                }
                               }
+                              setState(() {});
+                              // if (controller.galleryFiles1.length < 5) {
+                              //   controller.galleryFiles1.addAll(value);
+                              //   setState(() {});
+                              // }
                             });
                           } else {
                             showImagesBottomSheet();
@@ -1608,7 +1646,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                         },
                         child: kIsWeb
                             ? Text(
-                                'Choose From Gallery ${controller.galleryFiles.isNotEmpty ? "${controller.galleryFiles.length}/5" : ""}',
+                                'Choose From Gallery ${controller.galleryImagesList2.isNotEmpty ? "${controller.galleryImagesList2.length}/5" : "${controller.galleryImagesList2.length}/5"}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
@@ -1627,73 +1665,58 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                   ),
                 ),
                 kIsWeb
-                    ? controller.galleryFiles.isNotEmpty
-                        ? SizedBox(
-                            height: 125,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Row(
-                                children: controller.galleryFiles
-                                    .asMap()
-                                    .entries
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.only(right: 18),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                Helper.addFilePicker().then((value) {
-                                                  controller.galleryFiles[e.key] = value;
-                                                  setState(() {});
-                                                });
-                                              },
-                                              child: Container(
-                                                constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                                child: Image.memory(
-                                                  e.value!,
-                                                  errorBuilder: (_, __, ___) => const Icon(
-                                                    Icons.error_outline,
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              )),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 125,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Row(
-                                children: controller.galleryFilesUrl
-                                    .asMap()
-                                    .entries
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.only(right: 18),
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                Helper.addFilePicker().then((value) {
-                                                  controller.galleryFilesUrl[e.key] = value;
-                                                  setState(() {});
-                                                });
-                                              },
-                                              child: Container(
-                                                constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
-                                                child: Image.network(
-                                                  e.value,
-                                                  errorBuilder: (_, __, ___) => const Icon(
-                                                    Icons.error_outline,
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              )),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          )
+                    ? SizedBox(
+                        height: 125,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: controller.galleryImagesList2
+                                .asMap()
+                                .entries
+                                .map((e) => Padding(
+                                      padding: const EdgeInsets.only(right: 18),
+                                      child: PopupMenuButton(
+                                        key: ValueKey(e.value.imageUrl.toString()),
+                                          itemBuilder: (BuildContext context) {
+                                          return [
+                                            PopupMenuItem(child: Text("Add"),onTap: (){
+
+                                              Helper.addFilePicker1(
+                                                  singleFile: true
+                                              ).then((value) {
+                                                e.value.localImage = value;
+                                                e.value.imageUrl = null;
+
+                                                setState(() {});
+                                              });
+                                            },),
+                                            PopupMenuItem(child: Text("Remove"),onTap: (){
+                                              controller.galleryImagesList2.remove(e.value);
+                                              setState(() {});
+                                            },)
+                                          ];
+                                          },
+                                          child: Container(
+                                            constraints: const BoxConstraints(minWidth: 50, minHeight: 125),
+                                            child: Image.network(
+                                              controller.galleryImagesList2[e.key].imageUrl.toString(),
+                                              errorBuilder: (_, __, ___) => e.value.localImage != null
+                                                  ? Image.memory(
+                                                      e.value.localImage!,
+                                                      errorBuilder: (_, __, ___) => const Icon(
+                                                        Icons.video_collection_rounded,
+                                                        color: Colors.blue,
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
+                                            ),
+                                          )),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      )
                     : controller.menuGallery.isNotEmpty
                         ? SizedBox(
                             height: 125,
@@ -1747,4 +1770,10 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
       );
     });
   }
+}
+
+class ManageWebImages {
+  Uint8List? localImage;
+  String? imageUrl;
+  ManageWebImages({this.imageUrl, this.localImage});
 }
