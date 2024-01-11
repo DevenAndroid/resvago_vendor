@@ -484,7 +484,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                         color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                   ),
                                   Text(
-                                    myDiningOrderModel!.customerData!.mobileNumber,
+                                    (myDiningOrderModel!.customerData!.mobileNumber ?? ""),
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),

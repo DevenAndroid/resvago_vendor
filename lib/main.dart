@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -56,6 +58,9 @@ class _MyAppState extends State<MyApp> {
       translations: LocaleString(),
       locale: const Locale('en', 'US'),
       title: 'Flutter Demo',
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
+      ),
       theme: ThemeData(
           // // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           focusColor: Colors.transparent,

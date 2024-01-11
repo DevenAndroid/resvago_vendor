@@ -249,7 +249,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                           color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
-                                      myOrderModel!.customerData!.userName,
+                                      myOrderModel!.customerData!.userName ?? "",
                                       style: GoogleFonts.poppins(
                                           color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
@@ -284,7 +284,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                           color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                     ),
                                     Text(
-                                      myOrderModel!.customerData!.mobileNumber,
+                                      (myOrderModel!.customerData!.mobileNumber ?? ""),
                                       style: GoogleFonts.poppins(
                                           color: const Color(0xFF21283D), fontWeight: FontWeight.w500, fontSize: 16),
                                     ),
@@ -438,8 +438,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 50, left: 50),
                   child: ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.maxFinite, 50),
                         primary: Colors.blue,
@@ -479,7 +478,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                             'date': DateTime.now(),
                             'userId': myOrderModel!.userId
                           });
-                        }).then((value1){
+                        }).then((value1) {
                           FirebaseFirestore.instance.collection("send_mail").add({
                             "to": "${myOrderModel!.customerData!.email}",
                             "message": {
@@ -554,7 +553,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                   'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                   'date': DateTime.now(),
                                   'userId': myOrderModel!.userId
-                                }).then((value1){
+                                }).then((value1) {
                                   FirebaseFirestore.instance.collection("send_mail").add({
                                     "to": "${myOrderModel!.customerData!.email}",
                                     "message": {
@@ -606,7 +605,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     'body': myOrderModel!.orderDetails!.restaurantInfo!.restaurantName,
                                     'date': DateTime.now(),
                                     'userId': myOrderModel!.userId
-                                  }).then((value1){
+                                  }).then((value1) {
                                     FirebaseFirestore.instance.collection("send_mail").add({
                                       "to": "${myOrderModel!.customerData!.email}",
                                       "message": {

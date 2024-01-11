@@ -84,9 +84,9 @@ class _WalletScreenState extends State<WalletScreen> {
         .where("order_status", isEqualTo: "Order Completed")
         .get();
     for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
-      double orderAmount = documentSnapshot.data()["admin_commission"];
+      double? orderAmount = double.tryParse(documentSnapshot.data()["admin_commission"].toString());
       log("fghgfj$orderAmount");
-      totalEarnings4 += orderAmount;
+      totalEarnings4 += orderAmount!;
     }
     return totalEarnings4;
   }
@@ -158,6 +158,7 @@ class _WalletScreenState extends State<WalletScreen> {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
         .collection('withDrawMoney')
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where("status", isNotEqualTo: "Reject")
         .get();
     for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
       double orderAmount = double.parse(documentSnapshot.data()["amount"].toString());
@@ -236,7 +237,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                 }
 
                                 if (parsedValue > totalEarnings) {
-                                  return "You can withdraw more than $totalEarnings";
+                                  return "You can't withdraw more than $totalEarnings";
                                 }
 
                                 if (parsedValue <= 0) {
