@@ -31,6 +31,7 @@ class _SettingScreenState extends State<SettingScreen> {
   bool state = false;
   bool state1 = false;
   bool state2 = false;
+  bool state3 = false;
 
   // addSetting() {
   //   FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.uid).set({
@@ -127,7 +128,6 @@ class _SettingScreenState extends State<SettingScreen> {
         "address": _address,
         "latitude": latController.text,
         "longitude": longController.text,
-        "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
         "restaurantImage": imagesLink,
@@ -135,12 +135,12 @@ class _SettingScreenState extends State<SettingScreen> {
         "image": imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
-        "confirmPassword": confirmPassController.text.trim(),
         "preparationTime": preparationTimeController.text.trim(),
         "averageMealForMember": averageMealForMemberController.text.trim(),
         "setDelivery": state,
         "cancellation": state1,
         "menuSelection": state2,
+        "twoStepVerification": state3,
         "userID": FirebaseAuth.instance.currentUser!.uid,
       }).then((value) => showToast("Setting Updated"));
       // Get.back();
@@ -188,6 +188,7 @@ class _SettingScreenState extends State<SettingScreen> {
         state = profileData.setDelivery;
         state1 = profileData.cancellation;
         state2 = profileData.menuSelection;
+        state3 = profileData.twoStepVerification;
         log("aboutUs------${aboutUsController.text}");
         setState(() {});
       }
@@ -291,6 +292,33 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ),
               const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Enable 2 step Verification",
+                        style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
+                      ),
+                      const Spacer(),
+                      CupertinoSwitch(
+                        value: state3,
+                        activeColor: const Color(0xffFAAF40),
+                        onChanged: (value) {
+                          state3 = value;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
                 height: 20,
               ),
               Text(
@@ -327,7 +355,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 hint: '\$0.00',
               ),
               const SizedBox(
-                height: 170,
+                height: 130,
               ),
               CommonButtonBlue(
                 title: "Submit",

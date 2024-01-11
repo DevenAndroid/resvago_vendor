@@ -14,8 +14,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:resvago_vendor/controllers/add_product_controller.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -102,8 +100,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Overlay.of(context).insert(loader);
     try {
       geo = Geoflutterfire();
-      GeoFirePoint geoFirePoint =
-          geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
+      GeoFirePoint geoFirePoint = geo!
+          .point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
       // String? imageUrl;
       // if (kIsWeb) {
       //   UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
@@ -120,7 +118,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // if (kDebugMode) {
       //   print("got image url.........    $imageUrl");
       // }
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text);
       if (FirebaseAuth.instance.currentUser != null) {
         firebaseService
             .manageRegisterUsers(
@@ -131,7 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           address: _searchController.text.trim(),
           latitude: selectedPlace!.geometry!.location!.lat.toString(),
           longitude: selectedPlace!.geometry!.location!.lng.toString(),
-          password: "123456",
+          password: passwordController.text.trim(),
+          confirmPassword: confirmPasswordController.text.trim(),
           // image: imageUrl,
           restaurant_position: geoFirePoint.data.toString(),
         )
@@ -153,7 +153,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Helper.hideLoader(loader);
     }
   }
-
+  bool passwordSecure = false;
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -371,6 +371,76 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
                         hint: 'Enter your email',
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Password".tr,
+                        style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      RegisterTextFieldWidget(
+                        controller: passwordController,
+                        // length: 10,
+                        suffix: GestureDetector(
+                            onTap: () {
+                              passwordSecure = !passwordSecure;
+                              setState(() {});
+                            },
+                            child: Icon(
+                              passwordSecure ? Icons.visibility : Icons.visibility_off,
+                              size: 20,
+                              color: Colors.white,
+                            )),
+                        validator: MultiValidator([
+                          RequiredValidator(
+                              errorText: 'Please enter your password'),
+                          MinLengthValidator(8,
+                              errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                          PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                              errorText: "Password must be at least with 1 special character & 1 numerical"),
+                        ]),
+                        keyboardType: TextInputType.emailAddress,
+                        // textInputAction: TextInputAction.next,
+                        hint: 'Enter your password',
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Confirm Password".tr,
+                        style: const TextStyle(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      RegisterTextFieldWidget(
+                        controller: confirmPasswordController,
+                        // length: 10,
+                        suffix: GestureDetector(
+                            onTap: () {
+                              passwordSecure = !passwordSecure;
+                              setState(() {});
+                            },
+                            child: Icon(
+                              passwordSecure ? Icons.visibility : Icons.visibility_off,
+                              size: 20,
+                              color: Colors.white,
+                            )),
+                        validator: MultiValidator([
+                          RequiredValidator(
+                              errorText: 'Please enter your password'),
+                          MinLengthValidator(8,
+                              errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                          PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                              errorText: "Password must be at least with 1 special character & 1 numerical"),
+                        ]),
+                        keyboardType: TextInputType.emailAddress,
+                        // textInputAction: TextInputAction.next,
+                        hint: 'Enter your confirm password',
                       ),
                       const SizedBox(
                         height: 20,

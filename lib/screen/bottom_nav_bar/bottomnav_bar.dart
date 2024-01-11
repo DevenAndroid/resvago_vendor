@@ -13,6 +13,7 @@ import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:resvago_vendor/widget/language_change.dart';
 import '../../Setting screen.dart';
+import '../../change_password.dart';
 import '../../controllers/add_product_controller.dart';
 import '../../controllers/bottomnavbar_controller.dart';
 import '../../controllers/profile_controller.dart';
@@ -375,6 +376,27 @@ class _BottomNavbarState extends State<BottomNavbar> {
                   setState(() {
                     currentDrawer = 6;
                     Get.to(const LanguageChangeScreen());
+                  });
+                },
+              ),
+              const Divider(
+                height: 5,
+                color: Color(0xffEFEFEF),
+                thickness: 1,
+              ),
+              ListTile(
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+                leading: const Icon(Icons.password),
+                title: Text('Change Password'.tr,
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: const Color(0xFF4F535E),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onTap: () {
+                  setState(() {
+                    currentDrawer = 6;
+                    Get.to(const ChangePasswordScreen());
                   });
                 },
               ),

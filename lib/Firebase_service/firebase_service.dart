@@ -27,7 +27,7 @@ class FirebaseService {
     dynamic latitude,
     dynamic longitude,
     dynamic password,
-    //dynamic confirmPassword,
+    dynamic confirmPassword,
     dynamic restaurant_position,
     dynamic image,
     dynamic userID,
@@ -37,6 +37,7 @@ class FirebaseService {
     dynamic setDelivery,
     dynamic cancellation,
     dynamic menuSelection,
+    dynamic twoStepVerification,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -51,7 +52,7 @@ class FirebaseService {
         "latitude": latitude,
         "longitude": longitude,
         "password": password,
-        //"confirmPassword": confirmPassword,
+        "confirmPassword": confirmPassword,
         "restaurant_position": restaurant_position,
         "image": image,
         "aboutUs": aboutUs,
@@ -60,6 +61,7 @@ class FirebaseService {
         "setDelivery": setDelivery,
         "cancellation": cancellation,
         "menuSelection": menuSelection,
+        "twoStepVerification": twoStepVerification,
         "time": DateTime.now(),
         "userID": mobileNumber,
         "deactivate": false

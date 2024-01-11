@@ -19,6 +19,7 @@ class ProfileData {
   dynamic setDelivery;
   dynamic cancellation;
   dynamic menuSelection;
+  dynamic twoStepVerification;
   dynamic deactivate;
   dynamic code;
   dynamic country;
@@ -43,6 +44,7 @@ class ProfileData {
         this.averageMealForMember,
         this.setDelivery,
         this.cancellation,
+        this.twoStepVerification,
         this.menuSelection,
         this.latitude,
         this.longitude,
@@ -70,6 +72,7 @@ class ProfileData {
     averageMealForMember = json['averageMealForMember'];
     setDelivery = json['setDelivery'];
     cancellation = json['cancellation'];
+    twoStepVerification = json['twoStepVerification'];
     menuSelection = json['menuSelection'];
     aboutUs = json['aboutUs'];
     latitude = json['latitude'];
@@ -99,6 +102,7 @@ class ProfileData {
     data['averageMealForMember'] = averageMealForMember;
     data['setDelivery'] = setDelivery;
     data['cancellation'] = cancellation;
+    data['twoStepVerification'] = twoStepVerification;
     data['menuSelection'] = menuSelection;
     data['latitude'] = latitude;
     data['longitude'] = longitude;

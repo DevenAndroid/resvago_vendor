@@ -21,7 +21,9 @@ import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
+import '../forget_password.dart';
 import '../helper.dart';
+import '../verify_otp.dart';
 import '../widget/custom_textfield.dart';
 import 'otp_screen.dart';
 
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   fetchingFcmToken() {
     FirebaseDatabase.instance.reference().child("users").child(FirebaseAuth.instance.currentUser!.uid.toString()).get();
   }
-
+  bool passwordSecure = false;
   String otp = '';
   void generateOTP() {
     int otpLength = 6;
@@ -70,31 +72,43 @@ class _LoginScreenState extends State<LoginScreen> {
     Overlay.of(context).insert(loader);
     generateOTP();
     final QuerySnapshot result =
-        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text.trim()).get();
+    await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
       Map kk = result.docs.first.data() as Map;
       if (kk["deactivate"] == false) {
-        FirebaseFirestore.instance.collection("send_mail").add({
-          "to": emailController.text,
-          "message": {
-            "subject": "This is a otp email",
-            "html": "Your otp is $otp",
-            "text": "asdfgwefddfgwefwn",
-          }
-        }).then((value) {
+        if (kk["email"] == emailController.text.trim() && kk["password"] == passwordController.text.trim()) {
+          FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          )
+              .then((value) async {
+            Helper.hideLoader(loader);
+            if (!kIsWeb) {
+              Fluttertoast.showToast(msg: 'Login successfully');
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Login successfully"),
+              ));
+            }
+            if(kk["twoStepVerification"] == true){
+              Get.to(()=>TwoStepVerificationScreen(email: emailController.text,password:passwordController.text));
+            }
+            else{
+              Get.offAllNamed(MyRouters.bottomNavbar);
+            }
+          });
+          return;
+        } else {
           Helper.hideLoader(loader);
           if (!kIsWeb) {
-            Fluttertoast.showToast(msg: 'Otp send successfully');
+            Fluttertoast.showToast(msg: 'Incorrect Credential');
           } else {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Otp send successfully"),
+              content: Text("Incorrect Credential"),
             ));
           }
-        });
-        setState(() {
-          showOtpField = true;
-        });
-        return;
+        }
       } else {
         Helper.hideLoader(loader);
         if (!kIsWeb) {
@@ -116,7 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
   void checkPhoneNumberInFirestore() async {
     if (loginController.mobileController.text.isEmpty) {
       if (!kIsWeb) {
@@ -148,7 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       logError('An error occurred:');
       if (!kIsWeb) {
-        Fluttertoast.showToast(msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
+        Fluttertoast.showToast(
+            msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Phone Number not register yet Please Signup"),
@@ -203,11 +217,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  bool checkemail = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    generateOTP();
+      generateOTP();
   }
 
   @override
@@ -218,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
         body: SingleChildScrollView(
             child: Container(
                 decoration: const BoxDecoration(
-                    image: DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ? AppAssets.webLogin : AppAssets.login))),
+                    image:
+                        DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ? AppAssets.webLogin : AppAssets.login))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 4),
                   child: Form(
@@ -328,17 +345,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     decoration: InputDecoration(
                                       hintText: 'Enter Email',
                                       hintStyle: const TextStyle(color: Colors.white),
-                                      suffix: InkWell(
-                                        onTap: () {
-                                          if (_formKey.currentState!.validate()) {
-                                            checkEmailInFirestore();
-                                          }
-                                        },
-                                        child: const Text(
-                                          'send',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
+                                      // suffix: InkWell(
+                                      //   onTap: () {
+                                      //     if (_formKey.currentState!.validate()) {
+                                      //       checkEmailInFirestore();
+                                      //     }
+                                      //   },
+                                      //   child: const Text(
+                                      //     'send',
+                                      //     style: TextStyle(color: Colors.white),
+                                      //   ),
+                                      // ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
                                       // contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -351,7 +368,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderSide:
+                                              BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
                                     keyboardType: TextInputType.emailAddress,
@@ -362,11 +380,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   TextFormField(
                                     style: const TextStyle(color: Colors.white),
-                                    controller: otpController,
-                                    keyboardType: TextInputType.number,
-                                    maxLength: 6,
+                                    controller: passwordController,
+                                    keyboardType: TextInputType.text,
+
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Otp',
+                                      hintText: 'Enter Password',
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -380,71 +398,48 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderSide:
+                                              BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(() => ForgotPassword());
+                                },
+                                child: Text(
+                                  'Forgot Password',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                    // fontFamily: 'poppins',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                loginOption == LoginOption.EmailPassword
-                                    ? CommonButton(
-                                        onPressed: () async {
-                                          if (_formKey.currentState!.validate()) {
-                                            if (otpController.text.isEmpty) {
-                                              if (!kIsWeb) {
-                                                Fluttertoast.showToast(msg: 'Please enter otp');
-                                              } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                  content: Text("Please enter otp"),
-                                                ));
-                                              }
-                                            } else if (otp != otpController.text || otpController.text.length < 6) {
-                                              if (!kIsWeb) {
-                                                Fluttertoast.showToast(msg: 'Invalid otp');
-                                              } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                  content: Text("Invalid otp"),
-                                                ));
-                                              }
-                                            } else {
-                                              OverlayEntry loader = Helper.overlayLoader(context);
-                                              Overlay.of(context).insert(loader);
-                                              FirebaseAuth.instance
-                                                  .signInWithEmailAndPassword(
-                                                email: emailController.text.trim(),
-                                                password: "123456",
-                                              )
-                                                  .then((value) {
-                                                Helpers.hideLoader(loader);
-                                                if (!kIsWeb) {
-                                                  Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                                } else {
-                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                    content: Text("Verify otp successfully"),
-                                                  ));
-                                                }
-                                                Get.offAllNamed(MyRouters.bottomNavbar);
-                                              });
-                                            }
-                                          }
-                                        },
-                                        title: 'Login'.tr,
-                                      )
-                                    : CommonButton(
-                                        onPressed: () async {
-                                          if (_formKey.currentState!.validate()) {
-                                            checkPhoneNumberInFirestore();
-                                            throw Error();
-                                          }
-                                        },
-                                        title: 'Login'.tr,
-                                      ),
+                                CommonButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      checkEmailInFirestore();
+                                    }
+                                  },
+                                  title: 'Login'.tr,
+                                ),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -453,7 +448,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: [
                                     Text(
                                       "Don't Have an Account? ".tr,
-                                      style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -472,7 +468,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 Text(
                                   'Signup as a customer'.tr,
-                                  style: const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
+                                  style:
+                                      const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 20,

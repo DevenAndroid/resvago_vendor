@@ -79,6 +79,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   dynamic setDelivery;
   dynamic cancellation;
   dynamic menuSelection;
+  dynamic twoStepVerification;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
@@ -283,6 +284,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "setDelivery": setDelivery,
         "cancellation": cancellation,
         "menuSelection": menuSelection,
+        "twoStepVerification": twoStepVerification,
         "latitude": latitude,
         "longitude": longitude,
         "deactivate": deactivated
@@ -321,7 +323,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _searchController.text = (profileData.address ?? "").toString();
         preparationTime = (profileData.preparationTime ?? "").toString();
         averageMealForMember = (profileData.averageMealForMember ?? "").toString();
+        passwordController.text = profileData.password ?? "";
+        confirmPassController.text = profileData.confirmPassword ?? "";
         setDelivery = (profileData.setDelivery);
+        twoStepVerification = (profileData.twoStepVerification);
         cancellation = (profileData.cancellation);
         menuSelection = (profileData.menuSelection);
         aboutUsController.text = (profileData.aboutUs ?? "").toString();

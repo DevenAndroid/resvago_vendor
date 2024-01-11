@@ -4,6 +4,7 @@ class SettingModel {
   bool? setDelivery;
   bool? cancellation;
   bool? menuSelection;
+  bool? twoStepVerification;
   dynamic docid;
   dynamic time;
   dynamic userID;
@@ -13,6 +14,7 @@ class SettingModel {
     this.averageMealForMember,
     this.cancellation,
     this.setDelivery,
+    this.twoStepVerification,
     this.docid,
     this.menuSelection,
     this.time,
@@ -25,6 +27,7 @@ class SettingModel {
       "averageMealForMember": averageMealForMember,
       "cancellation": cancellation,
       "setDelivery": setDelivery,
+      "twoStepVerification": twoStepVerification,
       "docid": docid,
       "menuSelection": menuSelection,
       "time": time,
@@ -38,6 +41,7 @@ class SettingModel {
       averageMealForMember: map['averageMealForMember'],
       setDelivery: map['setDelivery'],
       cancellation: map['cancellation'],
+      twoStepVerification: map['twoStepVerification'],
       docid: map['docid'],
       menuSelection: map['menuSelection'],
       time: map['time'],
