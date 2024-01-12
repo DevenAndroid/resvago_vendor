@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -98,10 +99,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    String? fcm = "fcm";
+    if (!kIsWeb) {
+      fcm = await FirebaseMessaging.instance.getToken();
+      log("dsgfdsgdfh     $fcm");
+    }
     try {
       geo = Geoflutterfire();
-      GeoFirePoint geoFirePoint = geo!
-          .point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
+      GeoFirePoint geoFirePoint =
+          geo!.point(latitude: double.tryParse(latitude.toString()) ?? 0, longitude: double.tryParse(longitude.toString()) ?? 0);
       // String? imageUrl;
       // if (kIsWeb) {
       //   UploadTask uploadTask = FirebaseStorage.instance.ref("profileImage}").child("profile_image").putData(pickedFile!);
@@ -123,25 +129,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (FirebaseAuth.instance.currentUser != null) {
         firebaseService
             .manageRegisterUsers(
-          restaurantName: restaurantNameController.text.trim(),
-          // category: categoryController.text.trim(),
-          email: emailController.text.trim(),
-          // mobileNumber: code + mobileNumberController.text.trim(),
-          address: _searchController.text.trim(),
-          latitude: selectedPlace!.geometry!.location!.lat.toString(),
-          longitude: selectedPlace!.geometry!.location!.lng.toString(),
-          password: passwordController.text.trim(),
-          confirmPassword: confirmPasswordController.text.trim(),
-          // image: imageUrl,
-          restaurant_position: geoFirePoint.data.toString(),
-        )
+                restaurantName: restaurantNameController.text.trim(),
+                // category: categoryController.text.trim(),
+                email: emailController.text.trim(),
+                // mobileNumber: code + mobileNumberController.text.trim(),
+                address: _searchController.text.trim(),
+                latitude: selectedPlace!.geometry!.location!.lat.toString(),
+                longitude: selectedPlace!.geometry!.location!.lng.toString(),
+                password: passwordController.text.trim(),
+                confirmPassword: confirmPasswordController.text.trim(),
+                // image: imageUrl,
+                restaurant_position: geoFirePoint.data.toString(),
+                fcm: fcm)
             .then((value) async {
           Helper.hideLoader(loader);
-          // print("asgsdgsdfdf");
-          // await FirebaseAuth.instance.signOut();
+          if (!kIsWeb) {
+            await FirebaseAuth.instance.signOut();
+          }
           Get.toNamed(MyRouters.thankYouScreen);
         }).catchError((e) async {
-          await FirebaseAuth.instance.signOut();
+          if (!kIsWeb) {
+            await FirebaseAuth.instance.signOut();
+          }
         });
       }
     } catch (e) {
@@ -153,6 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Helper.hideLoader(loader);
     }
   }
+
   bool passwordSecure = false;
   bool confirmPasswordSecure = false;
   getVendorCategories() {
@@ -398,8 +408,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Colors.white,
                             )),
                         validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your password'),
+                          RequiredValidator(errorText: 'Please enter your password'),
                           MinLengthValidator(8,
                               errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                           PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",

@@ -85,14 +85,14 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                           children: [
                             Text(
                               "Order ID: ${myOrderModel!.orderId.toString()}",
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                             Text(
-                              DateFormat.yMMMMd().format(DateTime.parse(
-                                  DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
-                              style: GoogleFonts.poppins(
-                                  color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                              DateFormat.yMMMMd().format(
+                                  DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel!.time).toLocal().toString())),
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
                             ),
                           ],
                         ),
@@ -123,8 +123,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         children: [
                           Text(
                             "Selected Items".tr,
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 11,
@@ -220,8 +219,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                         children: [
                           Text(
                             "Customer Details".tr,
-                            style: GoogleFonts.poppins(
-                                color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                            style: GoogleFonts.poppins(color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 6,
@@ -445,8 +443,10 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                       ),
                       child: Text(
                         "Order Completed".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Accepted")
@@ -462,10 +462,9 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                             .doc(myOrderModel!.docid)
                             .update({'order_status': 'Order Completed'});
                         sendPushNotification(
-                                body: myOrderModel!.orderDetails.toString(),
+                                body: "Your Order is Completed",
                                 deviceToken: myOrderModel!.fcmToken,
-                                image:
-                                    "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
                                 title: "Your Order is Completed with Order ID ${myOrderModel!.orderId}",
                                 orderID: myOrderModel!.orderId)
                             .then((value) {
@@ -495,8 +494,10 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                       ),
                       child: Text(
                         "Delivery Order".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus == "Order Rejected")
@@ -512,8 +513,10 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                       ),
                       child: Text(
                         "Order Rejected".tr,
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                            color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: AppTheme.backgroundcolor, fontWeight: FontWeight.w500, fontSize: AddSize.font18),
                       )),
                 ),
               if (myOrderModel!.orderStatus != "Order Accepted" &&
@@ -534,7 +537,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                   .doc(myOrderModel!.docid)
                                   .update({'order_status': 'Order Accepted'});
                               sendPushNotification(
-                                      body: myOrderModel!.orderDetails.toString(),
+                                      body: "Your Order is Accepted",
                                       deviceToken: myOrderModel!.fcmToken,
                                       image:
                                           "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
@@ -586,7 +589,7 @@ class _DeliveryOderDetailsScreenState extends State<DeliveryOderDetailsScreen> {
                                     .doc(myOrderModel!.docid)
                                     .update({'order_status': 'Order Rejected'});
                                 sendPushNotification(
-                                        body: myOrderModel!.orderDetails.toString(),
+                                        body: "Your Order is Rejected",
                                         deviceToken: myOrderModel!.fcmToken,
                                         image:
                                             "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",

@@ -664,7 +664,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           .doc(myDiningOrderModel!.docid)
                           .update({'order_status': 'Order Completed'});
                       sendPushNotification(
-                          body: myDiningOrderModel!.orderType.toString(),
+                          body: "Your Order is Completed",
                           deviceToken: myDiningOrderModel!.fcmToken,
                           image: myDiningOrderModel!.restaurantInfo!.image,
                           title:
@@ -680,6 +680,15 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               .restaurantInfo!.restaurantName,
                           'date': DateTime.now(),
                           'userId': myDiningOrderModel!.userId
+                        }).then((value1) {
+                          FirebaseFirestore.instance.collection("send_mail").add({
+                            "to": "${myDiningOrderModel!.customerData!.email}",
+                            "message": {
+                              "subject": "This is a basic email",
+                              "html": "Your order has been completed",
+                              "text": "asdfgwefddfgwefwn",
+                            }
+                          });
                         });
                       });
 
@@ -736,8 +745,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 .doc(myDiningOrderModel!.docid)
                                 .update({'order_status': 'Order Accepted'});
                             sendPushNotification(
-                                body: myDiningOrderModel!.orderType
-                                    .toString(),
+                                body: "Your Order is Accepted",
                                 deviceToken: myDiningOrderModel!.fcmToken,
                                 image:
                                 "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
@@ -754,6 +762,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     .restaurantInfo!.restaurantName,
                                 'date': DateTime.now(),
                                 'userId': myDiningOrderModel!.userId
+                              });
+                            }).then((value1){
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${myDiningOrderModel!
+                                    .customerData!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": "Your order has been accepted",
+                                  "text": "asdfgwefddfgwefwn",
+                                }
                               });
                             });
 
@@ -798,8 +816,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   docId: myDiningOrderModel!.docid,
                                   vendorId: myDiningOrderModel!.restaurantInfo!.userID);
                               sendPushNotification(
-                                  body: myDiningOrderModel!.orderType
-                                      .toString(),
+                                  body: "Your Order is Rejected",
                                   deviceToken: myDiningOrderModel!.fcmToken,
                                   image:
                                   "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
@@ -816,6 +833,16 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       .restaurantInfo!.restaurantName,
                                   'date': DateTime.now(),
                                   'userId': myDiningOrderModel!.userId
+                                }).then((value1){
+                                  FirebaseFirestore.instance.collection("send_mail").add({
+                                    "to": "${myDiningOrderModel!
+                                        .customerData!.email}",
+                                    "message": {
+                                      "subject": "This is a basic email",
+                                      "html": "Your order has been rejected",
+                                      "text": "asdfgwefddfgwefwn",
+                                    }
+                                  });
                                 });
                               });
                             },

@@ -38,6 +38,7 @@ class FirebaseService {
     dynamic cancellation,
     dynamic menuSelection,
     dynamic twoStepVerification,
+    dynamic fcm,
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -64,7 +65,8 @@ class FirebaseService {
         "twoStepVerification": twoStepVerification,
         "time": DateTime.now(),
         "userID": mobileNumber,
-        "deactivate": false
+        "deactivate": false,
+        "fcm": fcm
       });
     } catch (e) {
       throw Exception(e);
@@ -225,7 +227,7 @@ class FirebaseService {
     }
   }
 
-  Future withDrawMoney({dynamic time,dynamic amount,dynamic status}) async {
+  Future withDrawMoney({dynamic time, dynamic amount, dynamic status}) async {
     try {
       String docid = DateTime.now().millisecondsSinceEpoch.toString();
       await FirebaseFirestore.instance.collection('withDrawMoney').doc(docid).set({
