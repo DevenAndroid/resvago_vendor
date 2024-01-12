@@ -7,7 +7,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,11 +15,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:resvago_vendor/Firebase_service/notification_api.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../forget_password.dart';
 import '../helper.dart';
 import '../verify_otp.dart';
@@ -53,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
   fetchingFcmToken() {
     FirebaseDatabase.instance.reference().child("users").child(FirebaseAuth.instance.currentUser!.uid.toString()).get();
   }
+
   bool passwordSecure = false;
   String otp = '';
   void generateOTP() {
@@ -74,38 +74,64 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
     await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
+      print("gfdgdgh" + result.docs.first.toString());
       Map kk = result.docs.first.data() as Map;
       if (kk["deactivate"] == false) {
-        if (kk["email"] == emailController.text.trim() && kk["password"] == passwordController.text.trim()) {
-          FirebaseAuth.instance
+        try {
+          await FirebaseAuth.instance
               .signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim(),
           )
               .then((value) async {
             Helper.hideLoader(loader);
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.setString("password", passwordController.text.trim());
             if (!kIsWeb) {
-              Fluttertoast.showToast(msg: 'Login successfully');
+              if (kk["twoStepVerification"] == true) {
+              } else {
+                Fluttertoast.showToast(msg: 'Login successfully');
+              }
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Login successfully"),
-              ));
+              if (kk["twoStepVerification"] == true) {
+              } else {}
             }
-            if(kk["twoStepVerification"] == true){
-              Get.to(()=>TwoStepVerificationScreen(email: emailController.text,password:passwordController.text));
-            }
-            else{
+            if (kk["twoStepVerification"] == true) {
+              FirebaseFirestore.instance.collection("send_mail").add({
+                "to": emailController.text.trim(),
+                "message": {
+                  "subject": "This is a otp email",
+                  "html": "Your otp is $otp",
+                  "text": "asdfgwefddfgwefwn",
+                }
+              }).then((value) {
+                if (!kIsWeb) {
+                  Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Otp email sent to ${emailController.text.trim()}"),
+                  ));
+                }
+                Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text, otp: otp));
+              });
+            } else {
               Get.offAllNamed(MyRouters.bottomNavbar);
             }
           });
           return;
-        } else {
+        } catch (e) {
           Helper.hideLoader(loader);
+          print(e.toString());
           if (!kIsWeb) {
-            Fluttertoast.showToast(msg: 'Incorrect Credential');
+            if (e.toString() ==
+                "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              Fluttertoast.showToast(msg: "credential is incorrect");
+            } else {
+              Fluttertoast.showToast(msg: e.toString());
+            }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Incorrect Credential"),
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(e.toString()),
             ));
           }
         }
@@ -130,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
   void checkPhoneNumberInFirestore() async {
     if (loginController.mobileController.text.isEmpty) {
       if (!kIsWeb) {
@@ -217,13 +244,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  var oldPasswordSecure = false;
   bool checkemail = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-      generateOTP();
+    generateOTP();
   }
 
   @override
@@ -355,6 +383,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       //     'send',
                                       //     style: TextStyle(color: Colors.white),
                                       //   ),
+                                      //
                                       // ),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -379,12 +408,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 20,
                                   ),
                                   TextFormField(
+
                                     style: const TextStyle(color: Colors.white),
                                     controller: passwordController,
                                     keyboardType: TextInputType.text,
-
+                                    obscureText: !oldPasswordSecure,
                                     decoration: InputDecoration(
                                       hintText: 'Enter Password',
+                                      suffix: GestureDetector(
+                                          onTap: () {
+                                            oldPasswordSecure = !oldPasswordSecure;
+                                            setState(() {});
+                                          },
+                                          child: Icon(
+                                            oldPasswordSecure ? Icons.visibility : Icons.visibility_off,
+                                            size: 20,
+                                            color: Colors.white,
+                                          )),
                                       hintStyle: const TextStyle(color: Colors.white),
                                       filled: true,
                                       fillColor: Colors.white.withOpacity(.10),
@@ -426,7 +466,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20,),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Column(

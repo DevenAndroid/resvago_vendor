@@ -154,6 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
   bool passwordSecure = false;
+  bool confirmPasswordSecure = false;
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -385,13 +386,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: passwordController,
                         // length: 10,
+                        obscureText: passwordSecure,
                         suffix: GestureDetector(
                             onTap: () {
                               passwordSecure = !passwordSecure;
                               setState(() {});
                             },
                             child: Icon(
-                              passwordSecure ? Icons.visibility : Icons.visibility_off,
+                              passwordSecure ? Icons.visibility_off : Icons.visibility,
                               size: 20,
                               color: Colors.white,
                             )),
@@ -420,24 +422,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       RegisterTextFieldWidget(
                         controller: confirmPasswordController,
                         // length: 10,
+                        obscureText: confirmPasswordSecure,
                         suffix: GestureDetector(
                             onTap: () {
-                              passwordSecure = !passwordSecure;
+                              confirmPasswordSecure = !confirmPasswordSecure;
                               setState(() {});
                             },
                             child: Icon(
-                              passwordSecure ? Icons.visibility : Icons.visibility_off,
+                              confirmPasswordSecure ? Icons.visibility_off : Icons.visibility,
                               size: 20,
                               color: Colors.white,
                             )),
-                        validator: MultiValidator([
-                          RequiredValidator(
-                              errorText: 'Please enter your password'),
-                          MinLengthValidator(8,
-                              errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                          PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                              errorText: "Password must be at least with 1 special character & 1 numerical"),
-                        ]),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your confirm password';
+                          }
+                          if (value.toString() == passwordController.text) {
+                            return null;
+                          }
+                          return "Confirm password not matching with password";
+                        },
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
                         hint: 'Enter your confirm password',
@@ -789,6 +793,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             checkEmailInFirestore();
                             await FirebaseAuth.instance.signOut();
                           } else {
+                            showToast('Please accept terms and condition');
                             showValidationImg = true;
                             showValidation = true;
                             setState(() {});

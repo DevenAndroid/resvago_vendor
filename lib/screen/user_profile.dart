@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -140,6 +141,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    String? fcm = "fcm";
+    if (!kIsWeb) {
+      fcm = await FirebaseMessaging.instance.getToken();
+    }
     try {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
@@ -287,7 +292,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "twoStepVerification": twoStepVerification,
         "latitude": latitude,
         "longitude": longitude,
-        "deactivate": deactivated
+        "deactivate": deactivated,
+        "fcm": fcm
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       fetchdata();
       Get.back();

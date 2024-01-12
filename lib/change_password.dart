@@ -7,6 +7,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/utils/helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/profile_model.dart';
 import '../routers/routers.dart';
@@ -48,38 +49,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     });
   }
 
-  FirebaseService firebaseService = FirebaseService();
-  Future<void> changePassword() async {
-    if (profileData.password.toString() != oldPasswordController.text.trim()) {
-      if (!kIsWeb) {
-        Fluttertoast.showToast(msg: 'Old password is incorrect');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Old password is incorrect"),
-        ));
-      }
-      return;
-    }
-
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    FirebaseFirestore.instance.collection('vendor_users').doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "password": passwordController.text.trim(),
-    }).then((value) {
-      Helper.hideLoader(loader);
-      if (!kIsWeb) {
-        Fluttertoast.showToast(msg: 'Password changed successfully');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Password changed successfully"),
-        ));
-      }
-      Get.offAllNamed(MyRouters.loginScreen);
-    });
-  }
 
   void updatePassword({required String newPassword, required String oldPassword, required String confirmPassword}) async {
-    if (profileData.password.toString() != oldPasswordController.text.trim()) {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var password =  pref.getString("password");
+    if (password.toString() != oldPasswordController.text.trim()) {
       if (!kIsWeb) {
         Fluttertoast.showToast(msg: 'Old password is incorrect');
       } else {
@@ -104,7 +78,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: profileData.email,
-        password: profileData.password,
+        password: password.toString(),
       );
       User? user = userCredential.user;
       await user!.updatePassword(newPassword).then((value) {
@@ -127,6 +101,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         });
       });
     } catch (e) {
+      Helper.hideLoader(loader);
+      if (!kIsWeb) {
+        Fluttertoast.showToast(msg: e.toString());
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(e.toString()),
+        ));
+      }
       print('Error changing password: $e');
     }
   }
@@ -198,7 +180,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     setState(() {});
                                   },
                                   child: Icon(
-                                    oldPasswordSecure ? Icons.visibility : Icons.visibility_off,
+                                    oldPasswordSecure ? Icons.visibility_off : Icons.visibility,
                                     size: 20,
                                     color: Colors.white,
                                   )),
@@ -224,7 +206,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 15,
                           ),
                           CommonTextFieldWidget(
-                              obscureText: passwordSecure,
+                              obscureText: !passwordSecure,
                               controller: passwordController,
                               textInputAction: TextInputAction.next,
                               hint: 'Enter your password',
@@ -261,7 +243,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 15,
                           ),
                           CommonTextFieldWidget(
-                            obscureText: confirmPasswordSecure,
+                            obscureText: !confirmPasswordSecure,
                             controller: confirmController,
                             textInputAction: TextInputAction.next,
                             hint: 'Enter your confirm password',
@@ -292,6 +274,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           CommonButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
+                                FocusManager.instance.primaryFocus!.unfocus();
                                 updatePassword(
                                     confirmPassword: confirmController.text.trim(),
                                     newPassword: passwordController.text.trim(),
