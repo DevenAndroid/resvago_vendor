@@ -129,7 +129,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       child: Column(children: [
                         Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                           Text(
-                            averageRating.toString(),
+                            averageRating.toStringAsFixed(2).toString(),
                             style: const TextStyle(
                               color: Color(0xFF1B233A),
                               fontSize: 40,
@@ -366,7 +366,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                         child: Text(
-                                          reviewList.userName.toString(),
+                                          (reviewList.userName ?? "").toString(),
                                           style: GoogleFonts.poppins(
                                             color: const Color(0xFF1B233A),
                                             fontSize: 16,
@@ -378,7 +378,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                         height: 6,
                                       ),
                                       RatingBar.builder(
-                                        initialRating: reviewList.fullRating,
+                                        initialRating: double.tryParse((reviewList.fullRating ?? "0.0").toString())!,
                                         minRating: 1,
                                         unratedColor: const Color(0xff3B5998).withOpacity(.2),
                                         itemCount: 5,
@@ -401,7 +401,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                         child: RichText(
                                           text: TextSpan(children: [
                                             TextSpan(
-                                                text: reviewList.about,
+                                                text: (reviewList.about ?? ""),
                                                 style: GoogleFonts.poppins(
                                                   color: const Color(0xFF969AA3),
                                                   fontSize: 14,

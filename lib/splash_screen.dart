@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:resvago_vendor/screen/bottom_nav_bar/bottomnav_bar.dart';
 import 'package:resvago_vendor/screen/onboarding_screen.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
-import 'package:resvago_vendor/widget/apptheme.dart';
 import 'Firebase_service/firebase_service.dart';
 
 class SplashScreen extends StatefulWidget {

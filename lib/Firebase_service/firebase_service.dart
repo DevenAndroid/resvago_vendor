@@ -106,6 +106,7 @@ class FirebaseService {
     dynamic dishName,
     dynamic category,
     dynamic price,
+    dynamic sellingPrice,
     dynamic docid,
     dynamic discount,
     dynamic description,
@@ -122,6 +123,7 @@ class FirebaseService {
         "dishName": dishName,
         "category": category,
         "price": price,
+        "sellingPrice": sellingPrice,
         "docid": docid,
         "discount": discount,
         "description": description,
@@ -140,6 +142,8 @@ class FirebaseService {
     required DateTime? endDate,
     required String seats,
     required String setOffer,
+    required String lunchInterval,
+    required String dinnerInterval,
     required List<String> morningSlots,
     required List<String> eveningSlots,
   }) async {
@@ -167,6 +171,8 @@ class FirebaseService {
           "evening_slots": eveningMapSlots,
           "noOfGuest": seats,
           "setOffer": setOffer,
+          "lunchInterval": lunchInterval,
+          "dinnerInterval": dinnerInterval,
           "created_time": DateTime.now().millisecondsSinceEpoch,
         });
         return;
@@ -193,6 +199,8 @@ class FirebaseService {
               "evening_slots": eveningMapSlots,
               "noOfGuest": seats,
               "setOffer": setOffer,
+              "lunchInterval": lunchInterval,
+              "dinnerInterval": dinnerInterval,
               "created_time": DateTime.now().millisecondsSinceEpoch,
             });
       }

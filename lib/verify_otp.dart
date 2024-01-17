@@ -102,63 +102,71 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
                                       .asMap()
                                       .entries
                                       .map((e) => Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Container(
-                                        constraints: BoxConstraints(maxWidth: 50),
-                                        child: CommonTextFieldWidget(
-                                          controller: e.value,
-                                          textAlign: TextAlign.center,
-                                          textAlignVertical: TextAlignVertical.center,
-                                          textInputAction: TextInputAction.next,
-                                          hint: '*',
-                                          maxLength: 1,
-                                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          onChanged: (v) {
-                                            if (v.isNotEmpty) {
-                                              FocusManager.instance.primaryFocus!.nextFocus();
-                                            } else {
-                                              FocusManager.instance.primaryFocus!.previousFocus();
-                                            }
-                                            if (otpControllers.map((e) => e.text.trim()).join("").length == 6) {
-                                              if (widget.otp != otpController.text) {
-                                                if (!kIsWeb) {
-                                                  Fluttertoast.showToast(msg: 'Invalid otp');
-                                                } else {
-                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                    content: Text("Invalid otp"),
-                                                  ));
-                                                }
-                                              } else {
-                                                OverlayEntry loader = Helper.overlayLoader(context);
-                                                Overlay.of(context).insert(loader);
-                                                FirebaseAuth.instance
-                                                    .signInWithEmailAndPassword(
-                                                  email: widget.email,
-                                                  password: widget.password,
-                                                )
-                                                    .then((value) {
-                                                  Helper.hideLoader(loader);
-                                                  if (!kIsWeb) {
-                                                    Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                                  } else {
-                                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                      content: Text("Verify otp successfully"),
-                                                    ));
-                                                  }
-                                                  Get.offAllNamed(MyRouters.bottomNavbar);
-                                                });
-                                              }
-                                            }
-                                          },
-                                          validator: MultiValidator([
-                                            RequiredValidator(errorText: 'Please enter your otp'),
-                                          ]).call,
-                                          keyboardType: TextInputType.text,
-                                        ),
-                                      ),
-                                    ),
-                                  ))
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: Container(
+                                                constraints: const BoxConstraints(maxWidth: 50),
+                                                child: CommonTextFieldWidget(
+                                                  controller: e.value,
+                                                  textAlign: TextAlign.center,
+                                                  textAlignVertical: TextAlignVertical.center,
+                                                  textInputAction: TextInputAction.next,
+                                                  hint: '*',
+                                                  maxLength: 1,
+                                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                                  onChanged: (v) {
+                                                    if (v.isNotEmpty) {
+                                                      FocusManager.instance.primaryFocus!.nextFocus();
+                                                    } else {
+                                                      FocusManager.instance.primaryFocus!.previousFocus();
+                                                    }
+                                                    if (otpControllers.map((e) => e.text.trim()).join("").length == 6) {
+                                                      if (widget.otp != otpControllers.map((e) => e.text.trim()).join("")) {
+                                                        if (!kIsWeb) {
+                                                          Fluttertoast.showToast(msg: 'Invalid otp');
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            content: Text("Invalid otp"),
+                                                          ));
+                                                        }
+                                                      } else {
+                                                        OverlayEntry loader = Helper.overlayLoader(context);
+                                                        Overlay.of(context).insert(loader);
+                                                        FirebaseAuth.instance
+                                                            .signInWithEmailAndPassword(
+                                                          email: widget.email,
+                                                          password: widget.password,
+                                                        )
+                                                            .then((value) {
+                                                          Helper.hideLoader(loader);
+                                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                                            "to": widget.email.trim(),
+                                                            "message": {
+                                                              "subject": "This is email",
+                                                              "html": "You have logged in new device",
+                                                              "text": "asdfgwefddfgwefwn",
+                                                            }
+                                                          });
+                                                          if (!kIsWeb) {
+                                                            Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                              content: Text("Verify otp successfully"),
+                                                            ));
+                                                          }
+                                                          Get.offAllNamed(MyRouters.bottomNavbar);
+                                                        });
+                                                      }
+                                                    }
+                                                  },
+                                                  validator: MultiValidator([
+                                                    RequiredValidator(errorText: 'Please enter your otp'),
+                                                  ]).call,
+                                                  keyboardType: TextInputType.text,
+                                                ),
+                                              ),
+                                            ),
+                                          ))
                                       .toList(),
                                 )
                               else
@@ -201,6 +209,14 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
                                         )
                                             .then((value) {
                                           Helper.hideLoader(loader);
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": widget.email.trim(),
+                                            "message": {
+                                              "subject": "This is email",
+                                              "html": "You have logged in new device",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
                                           if (!kIsWeb) {
                                             Fluttertoast.showToast(msg: 'Verify otp successfully');
                                           } else {

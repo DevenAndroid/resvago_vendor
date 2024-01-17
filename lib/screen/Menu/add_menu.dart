@@ -26,7 +26,7 @@ import '../../widget/addsize.dart';
 import '../../widget/common_text_field.dart';
 
 class AddMenuScreen extends StatefulWidget {
-  const AddMenuScreen({super.key, required this.menuId, this.menuItemData,required this.isEdit});
+  const AddMenuScreen({super.key, required this.menuId, this.menuItemData, required this.isEdit});
   final String menuId;
   final MenuData? menuItemData;
   final bool isEdit;
@@ -77,7 +77,10 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       String? imageUrl = kIsWeb ? null : categoryFile.path;
       if (kIsWeb) {
         if (pickedFile != null) {
-          UploadTask uploadTask = FirebaseStorage.instance.ref("categoryImages}").child("profile_image").putData(pickedFile!);
+          UploadTask uploadTask = FirebaseStorage.instance
+              .ref("categoryImages}/${DateTime.now().millisecondsSinceEpoch.toString()}")
+              .child("profile_image")
+              .putData(pickedFile!);
           TaskSnapshot snapshot = await uploadTask;
           imageUrl = await snapshot.ref.getDownloadURL();
         } else {
@@ -86,56 +89,59 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
       } else {
         if (!categoryFile.path.contains("https") && categoryFile.path.isNotEmpty) {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref("categoryImages")
-              .child(DateTime.now().millisecondsSinceEpoch.toString())
+              .ref("categoryImages/${DateTime.now().millisecondsSinceEpoch.toString()}")
+              .child("profile_image")
               .putFile(categoryFile);
 
           TaskSnapshot snapshot = await uploadTask;
           imageUrl = await snapshot.ref.getDownloadURL();
         }
       }
-      if(widget.isEdit){
+      double? priceValue = double.tryParse(priceController.text.trim().toString());
+      double? discountValue = double.tryParse(discountNumberController.text.trim().toString());
+      double result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+      log("hgjkghvkbkj$result");
+      if (widget.isEdit) {
         await firebaseService
             .manageMenu(
-          menuId: menuId,
-          vendorId: FirebaseAuth.instance.currentUser!.uid,
-          dishName: dishNameController.text.trim(),
-          category: categoryValue,
-          price: priceController.text.trim(),
-          discount: discountNumberController.text.trim(),
-          description: descriptionController.text,
-          bookingForDining: dining,
-          bookingForDelivery: delivery,
-          image: imageUrl,
-          time: DateTime.now().millisecondsSinceEpoch,
-        )
+                menuId: menuId,
+                vendorId: FirebaseAuth.instance.currentUser!.uid,
+                dishName: dishNameController.text.trim(),
+                category: categoryValue,
+                price: priceController.text.trim(),
+                discount: discountNumberController.text.trim(),
+                description: descriptionController.text,
+                bookingForDining: dining,
+                bookingForDelivery: delivery,
+                image: imageUrl,
+                time: DateTime.now().millisecondsSinceEpoch,
+                sellingPrice: result)
             .then((value) {
           Get.back();
           showToast("Menu Edited Successfully");
           Helper.hideLoader(loader);
         });
-      }else{
+      } else {
         await firebaseService
             .manageMenu(
-          menuId: menuId,
-          vendorId: FirebaseAuth.instance.currentUser!.uid,
-          dishName: dishNameController.text.trim(),
-          category: categoryValue,
-          price: priceController.text.trim(),
-          discount: discountNumberController.text.trim(),
-          description: descriptionController.text,
-          bookingForDining: dining,
-          bookingForDelivery: delivery,
-          image: imageUrl,
-          time: DateTime.now().millisecondsSinceEpoch,
-        )
+                menuId: menuId,
+                vendorId: FirebaseAuth.instance.currentUser!.uid,
+                dishName: dishNameController.text.trim(),
+                category: categoryValue,
+                price: priceController.text.trim(),
+                discount: discountNumberController.text.trim(),
+                description: descriptionController.text,
+                bookingForDining: dining,
+                bookingForDelivery: delivery,
+                image: imageUrl,
+                time: DateTime.now().millisecondsSinceEpoch,
+                sellingPrice: result)
             .then((value) {
           Get.back();
           showToast("Menu Added Successfully");
           Helper.hideLoader(loader);
         });
       }
-
     } catch (e) {
       Helper.hideLoader(loader);
       showToast(e.toString());
@@ -555,7 +561,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                             }
                           }
                         },
-                        title: widget.isEdit ? "Update" :'Save'.tr,
+                        title: widget.isEdit ? "Update" : 'Save'.tr,
                       ),
                       const SizedBox(
                         height: 20,

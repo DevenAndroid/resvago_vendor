@@ -15,9 +15,9 @@ import '../../widget/common_text_field.dart';
 import '../../widget/custom_textfield.dart';
 
 class EditSlotsScreen extends StatefulWidget {
-   EditSlotsScreen({super.key, required this.createSlotData, required this.refreshValues});
+  EditSlotsScreen({super.key, required this.createSlotData, required this.refreshValues});
   CreateSlotData? createSlotData;
-   final Function() refreshValues;
+  final Function() refreshValues;
   @override
   State<EditSlotsScreen> createState() => _EditSlotsScreenState();
 }
@@ -30,13 +30,15 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
   FirebaseService firebaseService = FirebaseService();
   bool apiLoaded = false;
 
-  getData(){
+  getData() {
     // widget.createSlotData = null;
     FirebaseFirestore.instance
         .collection('vendor_slot')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("slot")
-        .doc(widget.createSlotData!.slotId.toString()).get().then((value) {
+        .doc(widget.createSlotData!.slotId.toString())
+        .get()
+        .then((value) {
       widget.createSlotData = CreateSlotData.fromMap(value.data()!);
       apiLoaded = true;
       setState(() {});
@@ -48,69 +50,78 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
     super.initState();
     getData();
     if (widget.createSlotData == null) return;
-    slotController.startDate.text = widget.createSlotData!.slotDate.toString();
+    slotController.startDate.text = (widget.createSlotData!.slotDate ?? "").toString();
     // slotController.serviceDuration.text = slotDataList!.lunchDuration;
     // slotController.dinnerServiceDuration.text = slotDataList!.dinnerDuration;
-    slotController.noOfGuest.text = widget.createSlotData!.noOfGuest.toString();
-    slotController.setOffer.text = widget.createSlotData!.setOffer.toString();
+    slotController.noOfGuest.text = (widget.createSlotData!.noOfGuest ?? "").toString();
+    slotController.setOffer.text = (widget.createSlotData!.setOffer ?? "").toString();
+    slotController.serviceDuration.text = (widget.createSlotData!.lunchInterval ?? "").toString();
+    slotController.dinnerServiceDuration.text = (widget.createSlotData!.dinnerInterval ?? "").toString();
     // slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),
         appBar: backAppBar(title: "Edit Slot".tr, context: context, backgroundColor: Colors.white),
-        body: apiLoaded ?
-        Theme(
-          data: ThemeData(useMaterial3: true),
-          child: SingleChildScrollView(
-              child: Form(
-                  key: formKey,
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    BookableUI(title: "Lunch".tr, slotDataList: widget.createSlotData, showDates: false, editing: true),
-                    BookableUI(
-                      title: "Dinner".tr,
-                      slotDataList: widget.createSlotData,
-                      showDates: false,
-                      editing: true,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10).copyWith(bottom: 30),
-                      child: CommonButtonBlue(
-                        onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            slotController.getLunchTimeSlot();
-                            slotController.getDinnerTimeSlot();
-                            print(slotController.timeslots);
-                            print(slotController.dinnerTimeslots);
-                            await firebaseService.manageSlot(
-                                setOffer: widget.createSlotData!.setOffer ?? "",
-                                seats: slotController.noOfGuest.text,
-                                startDate: widget.createSlotData!.slotId!,
-                                endDate: null,
-                                eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
-                                morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
-                            );
-                            showToast("Slot Updated Successfully");
-                            widget.refreshValues();
-                            Get.back();
-                          }
-                        },
-                        title: 'Update Slot'.tr.toUpperCase(),
-                      ),
-                    ),
-                  ]).appPaddingForScreen)),
-        ) : const Center(child: CircularProgressIndicator(),)
-    );
+        body: apiLoaded
+            ? Theme(
+                data: ThemeData(useMaterial3: true),
+                child: SingleChildScrollView(
+                    child: Form(
+                        key: formKey,
+                        child: Column(children: [
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          BookableUI(title: "Lunch".tr, slotDataList: widget.createSlotData, showDates: false, editing: true),
+                          BookableUI(
+                            title: "Dinner".tr,
+                            slotDataList: widget.createSlotData,
+                            showDates: false,
+                            editing: true,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding10)
+                                .copyWith(bottom: 30),
+                            child: CommonButtonBlue(
+                              onPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  slotController.getLunchTimeSlot();
+                                  slotController.getDinnerTimeSlot();
+                                  print(slotController.timeslots);
+                                  print(slotController.dinnerTimeslots);
+                                  await firebaseService.manageSlot(
+                                    setOffer: widget.createSlotData!.setOffer ?? "",
+                                    seats: slotController.noOfGuest.text,
+                                    startDate: widget.createSlotData!.slotId!,
+                                    lunchInterval: slotController.serviceDuration.text,
+                                    dinnerInterval: slotController.dinnerServiceDuration.text,
+                                    endDate: null,
+                                    eveningSlots: slotController.editDinner
+                                        ? slotController.dinnerTimeslots
+                                        : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
+                                    morningSlots: slotController.editLunch
+                                        ? slotController.timeslots
+                                        : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
+                                  );
+                                  showToast("Slot Updated Successfully");
+                                  widget.refreshValues();
+                                  Get.back();
+                                }
+                              },
+                              title: 'Update Slot'.tr.toUpperCase(),
+                            ),
+                          ),
+                        ]).appPaddingForScreen)),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }

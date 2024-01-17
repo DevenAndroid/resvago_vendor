@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_vendor/screen/user_profile.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/common_text_field.dart';
@@ -32,6 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
   bool state1 = false;
   bool state2 = false;
   bool state3 = false;
+  bool state4 = false;
 
   // addSetting() {
   //   FirebaseFirestore.instance.collection('Vendor_Setting').doc(FirebaseAuth.instance.currentUser!.uid).set({
@@ -75,10 +78,13 @@ class _SettingScreenState extends State<SettingScreen> {
   TextEditingController latController = TextEditingController();
   TextEditingController longController = TextEditingController();
   String? _address = "";
+  Uint8List? pickedFile;
+  String fileUrl = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
   File categoryFile = File("");
+  bool deactivated = false;
   final controller = Get.put(AddProductController());
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
@@ -86,40 +92,89 @@ class _SettingScreenState extends State<SettingScreen> {
     try {
       List<String> imagesLink = [];
       List<String> menuPhotoLink = [];
-      String imageUrlProfile = categoryFile.path;
-      if (!categoryFile.path.contains("http")) {
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
-            .child("image")
-            .putFile(categoryFile);
-        TaskSnapshot snapshot = await uploadTask;
-        imageUrlProfile = await snapshot.ref.getDownloadURL();
-      }
-      for (var element in controller.galleryImages.asMap().entries) {
-        if (element.value.path.contains("http")) {
-          imagesLink.add(element.value.path);
-        } else {
+      String? imageUrlProfile = kIsWeb ? null : controller.categoryFile.path;
+      if (kIsWeb) {
+        if (pickedFile != null) {
           UploadTask uploadTask = FirebaseStorage.instance
-              .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
-              .child("${element.key}image")
-              .putFile(element.value);
+              .ref("profile_image/${FirebaseAuth.instance.currentUser!.uid}")
+              .child("image")
+              .putData(pickedFile!);
           TaskSnapshot snapshot = await uploadTask;
-          String imageUrl = await snapshot.ref.getDownloadURL();
-          imagesLink.add(imageUrl);
+          imageUrlProfile = await snapshot.ref.getDownloadURL();
+        } else {
+          imageUrlProfile = fileUrl;
+        }
+      } else {
+        // if (profileData.image.toString().isNotEmpty) {
+        //   Reference gg = FirebaseStorage.instance.refFromURL(profileData.image.toString());
+        //   await gg.delete();
+        // }
+        if (!controller.categoryFile.path.contains("http") && controller.categoryFile.path.isNotEmpty) {
+          UploadTask uploadTask = FirebaseStorage.instance
+              .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
+              .child("image")
+              .putFile(controller.categoryFile);
+          TaskSnapshot snapshot = await uploadTask;
+          imageUrlProfile = await snapshot.ref.getDownloadURL();
         }
       }
-      for (var element in controller.menuGallery.asMap().entries) {
-        if (element.value.path.contains("http")) {
-          menuPhotoLink.add(element.value.path);
-        } else {
-          UploadTask uploadMenuImage = FirebaseStorage.instance
-              .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
-              .child("${element.key}image")
-              .putFile(element.value);
+      if (!kIsWeb) {
+        for (var element in controller.galleryImages.asMap().entries) {
+          if (element.value.path.contains("http")) {
+            imagesLink.add(element.value.path);
+          } else {
+            UploadTask uploadTask = FirebaseStorage.instance
+                .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
+                .child("${element.key}image")
+                .putFile(element.value);
+            TaskSnapshot snapshot = await uploadTask;
+            String imageUrl = await snapshot.ref.getDownloadURL();
+            imagesLink.add(imageUrl);
+          }
+        }
+        for (var element in controller.menuGallery.asMap().entries) {
+          if (element.value.path.contains("http")) {
+            menuPhotoLink.add(element.value.path);
+          } else {
+            UploadTask uploadMenuImage = FirebaseStorage.instance
+                .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
+                .child("${element.key}image")
+                .putFile(element.value);
 
-          TaskSnapshot snapshot1 = await uploadMenuImage;
-          String imageUrl1 = await snapshot1.ref.getDownloadURL();
-          menuPhotoLink.add(imageUrl1);
+            TaskSnapshot snapshot1 = await uploadMenuImage;
+            String imageUrl1 = await snapshot1.ref.getDownloadURL();
+            menuPhotoLink.add(imageUrl1);
+          }
+        }
+      } else {
+        for (var element in controller.galleryImagesList1.asMap().entries) {
+          if (element.value.localImage != null) {
+            UploadTask uploadTask = FirebaseStorage.instance
+                .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
+                .child("${element.key}image")
+                .putData(element.value.localImage!);
+
+            TaskSnapshot snapshot = await uploadTask;
+            String imageUrl = await snapshot.ref.getDownloadURL();
+            imagesLink.add(imageUrl);
+          } else {
+            imagesLink.add(element.value.imageUrl!);
+          }
+        }
+
+        for (var element in controller.galleryImagesList2.asMap().entries) {
+          if (element.value.localImage != null) {
+            UploadTask uploadTask = FirebaseStorage.instance
+                .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
+                .child("${element.key}image")
+                .putData(element.value.localImage!);
+
+            TaskSnapshot snapshot = await uploadTask;
+            String imageUrl = await snapshot.ref.getDownloadURL();
+            menuPhotoLink.add(imageUrl);
+          } else {
+            menuPhotoLink.add(element.value.imageUrl!);
+          }
         }
       }
 
@@ -141,6 +196,7 @@ class _SettingScreenState extends State<SettingScreen> {
         "cancellation": state1,
         "menuSelection": state2,
         "twoStepVerification": state3,
+        "paymentEnabled": state4,
         "userID": FirebaseAuth.instance.currentUser!.uid,
       }).then((value) => showToast("Setting Updated"));
       // Get.back();
@@ -161,7 +217,11 @@ class _SettingScreenState extends State<SettingScreen> {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
         log(profileData.toJson().toString());
-        categoryFile = File(profileData.image.toString());
+        if (!kIsWeb) {
+          controller.categoryFile = File(profileData.image ?? "");
+        } else {
+          fileUrl = profileData.image ?? "";
+        }
         mobileController.text = (profileData.mobileNumber ?? "").toString();
         code = (profileData.code ?? "").toString();
         restaurantController.text = profileData.restaurantName.toString();
@@ -173,25 +233,50 @@ class _SettingScreenState extends State<SettingScreen> {
         preparationTimeController.text = (profileData.preparationTime ?? "").toString();
         averageMealForMemberController.text = (profileData.averageMealForMember ?? "").toString();
         aboutUsController.text = (profileData.aboutUs ?? "").toString();
-        log("aboutUs------${aboutUsController.text}");
+        deactivated = profileData.deactivate;
+        state = profileData.setDelivery ?? false;
+        state1 = profileData.cancellation ?? false;
+        state2 = profileData.menuSelection ?? false;
+        state3 = profileData.twoStepVerification ?? false;
+        state4 = profileData.paymentEnabled ?? false;
         log("aboutUs------${aboutUsController.text}");
         profileData.restaurantImage ??= [];
-        for (var element in profileData.restaurantImage!) {
-          controller.galleryImages.add(File(element));
+        controller.galleryImages.clear();
+        if (!kIsWeb) {
+          for (var element in profileData.restaurantImage!) {
+            controller.galleryImages.add(File(element));
+            controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          }
+        } else {
+          for (var element in profileData.restaurantImage!) {
+            controller.galleryImagesList1.add(ManageWebImages(imageUrl: element.toString()));
+            // controller.galleryFilesUrl1.add(element);
+            // controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+            // print("erfse${controller.galleryFiles1.length}");
+          }
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          setState(() {});
         }
         profileData.menuGalleryImages ??= [];
-        for (var element in profileData.menuGalleryImages!) {
-          controller.menuGallery.add(File(element));
+        controller.menuGallery.clear();
+        if (!kIsWeb) {
+          for (var element in profileData.menuGalleryImages!) {
+            controller.menuGallery.add(File(element));
+            controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          }
+        } else {
+          for (var element in profileData.menuGalleryImages!) {
+            controller.galleryImagesList2.add(ManageWebImages(imageUrl: element.toString()));
+            // controller.galleryFilesUrl.add(element);
+            // controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+            // print("fuyguh${controller.galleryFiles.length}");
+          }
           controller.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+          setState(() {});
         }
-        state = profileData.setDelivery;
-        state1 = profileData.cancellation;
-        state2 = profileData.menuSelection;
-        state3 = profileData.twoStepVerification;
-        log("aboutUs------${aboutUsController.text}");
         setState(() {});
       }
+        setState(() {});
     });
   }
 
@@ -284,6 +369,9 @@ class _SettingScreenState extends State<SettingScreen> {
                         activeColor: const Color(0xffFAAF40),
                         onChanged: (value) {
                           state2 = value;
+                          if(state2 == false){
+                            state4=false;
+                          }
                           setState(() {});
                         },
                       ),
@@ -291,6 +379,34 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              if (state2 == true)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Payment enable",
+                          style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                        const Spacer(),
+                        CupertinoSwitch(
+                          value: state4,
+                          activeColor: const Color(0xffFAAF40),
+                          onChanged: (value) {
+                            state4 = value;
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               const SizedBox(
                 height: 10,
               ),
@@ -330,10 +446,11 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               RegisterTextFieldWidget(
                 controller: preparationTimeController,
-                validator: MultiValidator([
-                  RequiredValidator(errorText: 'Please enter your preparation Time'),
-                ]).call,
-                keyboardType: TextInputType.number,
+              // ),
+              //   validator: MultiValidator([
+              //     RequiredValidator(errorText: 'Please enter your preparation Time'),
+              //   ]).call,
+              //   keyboardType: TextInputType.number,
                 hint: 'Preparation time',
               ),
               const SizedBox(
@@ -348,9 +465,9 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               RegisterTextFieldWidget(
                 controller: averageMealForMemberController,
-                validator: MultiValidator([
-                  RequiredValidator(errorText: 'Please enter your average Meal For 1 Member'),
-                ]).call,
+                // validator: MultiValidator([
+                //   RequiredValidator(errorText: 'Please enter your average Meal For 1 Member'),
+                // ]).call,
                 keyboardType: TextInputType.number,
                 hint: '\$0.00',
               ),

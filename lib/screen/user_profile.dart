@@ -232,51 +232,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             menuPhotoLink.add(element.value.imageUrl!);
           }
         }
-        // if (controller.galleryImagesList1.isNotEmpty) {
-        //   for (var element in controller.galleryImagesList1.asMap().entries) {
-        //     UploadTask uploadTask = FirebaseStorage.instance
-        //         .ref("menu_images/${FirebaseAuth.instance.currentUser!.uid}")
-        //         .child("${element.key}image")
-        //         .putData(element.value.localImage!);
-        //
-        //     TaskSnapshot snapshot = await uploadTask;
-        //     String imageUrl = await snapshot.ref.getDownloadURL();
-        //     menuPhotoLink.add(imageUrl);
-        //   }
-        // } else {
-        //   for (var element in controller.galleryFilesUrl.asMap().entries) {
-        //     menuPhotoLink.add(element.value.toString());
-        //   }
-        // }
-
-        // if (controller.galleryFiles1.isNotEmpty) {
-        //   for (var element in controller.galleryFiles1.asMap().entries) {
-        //     UploadTask uploadTask = FirebaseStorage.instance
-        //         .ref("restaurant_images/${FirebaseAuth.instance.currentUser!.uid}")
-        //         .child("${element.key}image")
-        //         .putData(element.value!);
-        //
-        //     TaskSnapshot snapshot = await uploadTask;
-        //     String imageUrl = await snapshot.ref.getDownloadURL();
-        //     imagesLink.add(imageUrl);
-        //   }
-        // }
-        // else {
-        //   for (var element in controller.galleryFilesUrl1.asMap().entries) {
-        //     imagesLink.add(element.value.toString());
-        //   }
-        // }
       }
 
-      // print("zbxcgxc${controller.galleryFiles1}");
-      // print("zbxcgxc${controller.galleryFiles}");
       await FirebaseFirestore.instance.collection("vendor_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "restaurantName": restaurantController.text.trim(),
         "address": _searchController.text.trim(),
         "password": passwordController.text.trim(),
         "email": emailController.text.trim(),
         "category": categoryController.text.trim(),
-        "restaurantImage":imagesLink,
+        "restaurantImage": imagesLink,
         "menuImage": menuPhotoLink,
         "image": imageUrlProfile,
         "aboutUs": aboutUsController.text.trim(),
@@ -292,7 +256,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "twoStepVerification": twoStepVerification,
         "latitude": latitude,
         "longitude": longitude,
-        "deactivate": deactivated,
         "fcm": fcm
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       fetchdata();
@@ -1151,7 +1114,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                     .then((value) {
                                   if (value == null) return;
                                   Get.back();
-                                  if (controller.galleryImages.length < 5) {
+                                  if (controller.galleryImages.length < 20) {
                                     controller.galleryImages.add(value);
                                     setState(() {});
                                   }
@@ -1186,7 +1149,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 )
                                     .then((value) {
                                   if (value == null) return;
-                                  if (controller.galleryImages.length < 5) {
+                                  if (controller.galleryImages.length < 20) {
                                     controller.galleryImages.add(value);
                                     setState(() {});
                                   }
@@ -1218,7 +1181,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                 NewHelper().multiImagePicker().then((value) {
                                   if (value == null) return;
                                   for (var element in value) {
-                                    if (controller.galleryImages.length < 5) {
+                                    if (controller.galleryImages.length < 20) {
                                       controller.galleryImages.add(element);
                                     } else {
                                       break;
@@ -1319,7 +1282,7 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                               if (value == null) return;
                               List<Uint8List?> item = value;
                               for (var element in item) {
-                                if (controller.galleryImagesList1.length < 5) {
+                                if (controller.galleryImagesList1.length < 20) {
                                   controller.galleryImagesList1.add(ManageWebImages(localImage: element));
                                 } else {
                                   break;
@@ -1337,14 +1300,14 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                         },
                         child: kIsWeb
                             ? Text(
-                                'Choose From Gallery ${controller.galleryImagesList1.isNotEmpty ? "${controller.galleryImagesList1.length}/5" : "${controller.galleryImagesList1.length}/5"}',
+                                'Choose From Gallery ${controller.galleryImagesList1.isNotEmpty ? "${controller.galleryImagesList1.length}/20" : "${controller.galleryImagesList1.length}/20"}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
                                   fontWeight: FontWeight.w600,
                                 ))
                             : Text(
-                                'Choose From Gallery ${controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/5" : ""}',
+                                'Choose From Gallery ${controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/20" : ""}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
@@ -1371,21 +1334,24 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                           key: ValueKey(e.value.imageUrl.toString()),
                                           itemBuilder: (BuildContext context) {
                                             return [
-                                              PopupMenuItem(child: const Text("Add"),onTap: (){
+                                              PopupMenuItem(
+                                                child: const Text("Add"),
+                                                onTap: () {
+                                                  Helper.addFilePicker1(singleFile: true).then((value) {
+                                                    e.value.localImage = value;
+                                                    e.value.imageUrl = null;
 
-                                                Helper.addFilePicker1(
-                                                    singleFile: true
-                                                ).then((value) {
-                                                  e.value.localImage = value;
-                                                  e.value.imageUrl = null;
-
+                                                    setState(() {});
+                                                  });
+                                                },
+                                              ),
+                                              PopupMenuItem(
+                                                child: const Text("Remove"),
+                                                onTap: () {
+                                                  controller.galleryImagesList1.remove(e.value);
                                                   setState(() {});
-                                                });
-                                              },),
-                                              PopupMenuItem(child: const Text("Remove"),onTap: (){
-                                                controller.galleryImagesList1.remove(e.value);
-                                                setState(() {});
-                                              },)
+                                                },
+                                              )
                                             ];
                                           },
                                           child: Container(
@@ -1394,12 +1360,12 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                                               controller.galleryImagesList1[e.key].imageUrl.toString(),
                                               errorBuilder: (_, __, ___) => e.value.localImage != null
                                                   ? Image.memory(
-                                                e.value.localImage!,
-                                                errorBuilder: (_, __, ___) => const Icon(
-                                                  Icons.video_collection_rounded,
-                                                  color: Colors.blue,
-                                                ),
-                                              )
+                                                      e.value.localImage!,
+                                                      errorBuilder: (_, __, ___) => const Icon(
+                                                        Icons.video_collection_rounded,
+                                                        color: Colors.blue,
+                                                      ),
+                                                    )
                                                   : const SizedBox(),
                                             ),
                                           )),
@@ -1506,7 +1472,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 )
                                     .then((value) {
                                   if (value == null) return;
-                                  if (controller.menuGallery.length < 5) {
+                                  if (controller.menuGallery.length < 20) {
                                     controller.menuGallery.add(value);
                                     setState(() {});
                                   }
@@ -1538,7 +1504,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 NewHelper().multiImagePicker().then((value) {
                                   if (value == null) return;
                                   for (var element in value) {
-                                    if (controller.menuGallery.length < 5) {
+                                    if (controller.menuGallery.length < 20) {
                                       controller.menuGallery.add(element);
                                     } else {
                                       break;
@@ -1639,7 +1605,7 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                               if (value == null) return;
                               List<Uint8List?> item = value;
                               for (var element in item) {
-                                if (controller.galleryImagesList2.length < 5) {
+                                if (controller.galleryImagesList2.length < 20) {
                                   controller.galleryImagesList2.add(ManageWebImages(localImage: element));
                                 } else {
                                   break;
@@ -1657,14 +1623,14 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                         },
                         child: kIsWeb
                             ? Text(
-                                'Choose From Gallery ${controller.galleryImagesList2.isNotEmpty ? "${controller.galleryImagesList2.length}/5" : "${controller.galleryImagesList2.length}/5"}',
+                                'Choose From Gallery ${controller.galleryImagesList2.isNotEmpty ? "${controller.galleryImagesList2.length}/20" : "${controller.galleryImagesList2.length}/20"}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
                                   fontWeight: FontWeight.w600,
                                 ))
                             : Text(
-                                'Choose From Gallery ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/5" : ""}',
+                                'Choose From Gallery ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/20" : ""}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.orange,
@@ -1688,25 +1654,28 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                                 .map((e) => Padding(
                                       padding: const EdgeInsets.only(right: 18),
                                       child: PopupMenuButton(
-                                        key: ValueKey(e.value.imageUrl.toString()),
+                                          key: ValueKey(e.value.imageUrl.toString()),
                                           itemBuilder: (BuildContext context) {
-                                          return [
-                                            PopupMenuItem(child: Text("Add"),onTap: (){
+                                            return [
+                                              PopupMenuItem(
+                                                child: Text("Add"),
+                                                onTap: () {
+                                                  Helper.addFilePicker1(singleFile: true).then((value) {
+                                                    e.value.localImage = value;
+                                                    e.value.imageUrl = null;
 
-                                              Helper.addFilePicker1(
-                                                  singleFile: true
-                                              ).then((value) {
-                                                e.value.localImage = value;
-                                                e.value.imageUrl = null;
-
-                                                setState(() {});
-                                              });
-                                            },),
-                                            PopupMenuItem(child: Text("Remove"),onTap: (){
-                                              controller.galleryImagesList2.remove(e.value);
-                                              setState(() {});
-                                            },)
-                                          ];
+                                                    setState(() {});
+                                                  });
+                                                },
+                                              ),
+                                              PopupMenuItem(
+                                                child: Text("Remove"),
+                                                onTap: () {
+                                                  controller.galleryImagesList2.remove(e.value);
+                                                  setState(() {});
+                                                },
+                                              )
+                                            ];
                                           },
                                           child: Container(
                                             constraints: const BoxConstraints(minWidth: 50, minHeight: 125),

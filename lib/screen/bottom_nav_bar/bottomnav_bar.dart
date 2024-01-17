@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -344,7 +343,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ),
               ListTile(
                 visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-                leading: const Icon(Icons.settings),
+                leading: const Icon(Icons.feedback_outlined),
                 title: Text('FeedBack'.tr,
                     style: GoogleFonts.poppins(
                       fontSize: 15,

@@ -23,12 +23,12 @@ class BookableUI extends StatefulWidget {
 class _BookableUIState extends State<BookableUI> {
   final slotController = Get.put(SlotController());
   final DateFormat selectedDateFormat = DateFormat("dd-MMM-yyyy");
-  pickDate({required Function(DateTime gg) onPick, DateTime? initialDate, DateTime? firstDate, DateTime? lastDate}) async {
+  pickDate({required Function(DateTime gg) onPick, DateTime? initialDate, DateTime? firstDate,}) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: initialDate ?? DateTime.now(),
         firstDate: firstDate ?? DateTime.now(),
-        lastDate: lastDate ?? DateTime(2101),
+        lastDate: DateTime(2101),
         initialEntryMode: DatePickerEntryMode.calendarOnly);
     if (pickedDate == null) return;
     onPick(pickedDate);
@@ -153,7 +153,7 @@ class _BookableUIState extends State<BookableUI> {
                                           slotController.selectedStartDateTime = gg;
                                         },
                                         initialDate: slotController.selectedStartDateTime,
-                                        lastDate: slotController.selectedEndDateTIme);
+                                        );
                                   },
                                   controller: slotController.startDate,
                                   validator: (value) {

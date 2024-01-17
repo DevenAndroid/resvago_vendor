@@ -78,9 +78,9 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
         .where("order_status", isEqualTo: "Order Completed")
         .get();
     for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot in querySnapshot.docs) {
-      double orderAmount = documentSnapshot.data()["admin_commission"];
-      log("fghgfj" + orderAmount.toString());
-      totalEarnings3 += orderAmount;
+      double? orderAmount = double.tryParse(documentSnapshot.data()["admin_commission"].toString());
+      log("fghgfj$orderAmount");
+      totalEarnings3 += orderAmount!;
     }
     return totalEarnings3;
   }

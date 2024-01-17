@@ -20,40 +20,41 @@ class ProfileData {
   dynamic cancellation;
   dynamic menuSelection;
   dynamic twoStepVerification;
+  dynamic paymentEnabled;
+  dynamic state4;
   dynamic deactivate;
   dynamic code;
   dynamic country;
   dynamic order_count = 0;
 
-  ProfileData(
-      {
-        this.restaurantImage,
-        this.menuGalleryImages,
-        this.password,
-        this.image,
-        this.address,
-        this.restaurantName,
-        this.docid,
-        this.mobileNumber,
-        this.confirmPassword,
-        this.category,
-        this.userID,
-        this.email,
-        this.aboutUs,
-        this.preparationTime,
-        this.averageMealForMember,
-        this.setDelivery,
-        this.cancellation,
-        this.twoStepVerification,
-        this.menuSelection,
-        this.latitude,
-        this.longitude,
-        this.deactivate,
-        this.order_count,
-        this.country,
-        this.code,
-
-      });
+  ProfileData({
+    this.restaurantImage,
+    this.menuGalleryImages,
+    this.password,
+    this.image,
+    this.address,
+    this.restaurantName,
+    this.docid,
+    this.mobileNumber,
+    this.confirmPassword,
+    this.category,
+    this.userID,
+    this.email,
+    this.aboutUs,
+    this.preparationTime,
+    this.averageMealForMember,
+    this.setDelivery,
+    this.cancellation,
+    this.twoStepVerification,
+    this.paymentEnabled,
+    this.menuSelection,
+    this.latitude,
+    this.longitude,
+    this.deactivate,
+    this.order_count,
+    this.country,
+    this.code,
+  });
 
   ProfileData.fromJson(Map<String, dynamic> json) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
@@ -73,6 +74,7 @@ class ProfileData {
     setDelivery = json['setDelivery'];
     cancellation = json['cancellation'];
     twoStepVerification = json['twoStepVerification'];
+    paymentEnabled = json['paymentEnabled'];
     menuSelection = json['menuSelection'];
     aboutUs = json['aboutUs'];
     latitude = json['latitude'];
@@ -103,6 +105,7 @@ class ProfileData {
     data['setDelivery'] = setDelivery;
     data['cancellation'] = cancellation;
     data['twoStepVerification'] = twoStepVerification;
+    data['paymentEnabled'] = paymentEnabled;
     data['menuSelection'] = menuSelection;
     data['latitude'] = latitude;
     data['longitude'] = longitude;

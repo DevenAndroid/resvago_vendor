@@ -7,6 +7,8 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_vendor/utils/helper.dart';
+import 'package:resvago_vendor/widget/addsize.dart';
+import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/profile_model.dart';
@@ -33,9 +35,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   String code = "+353";
   String verificationId = "";
   bool value = false;
-  bool passwordSecure = false;
-  var confirmPasswordSecure = false;
-  var oldPasswordSecure = false;
+  bool passwordSecure = true;
+  bool confirmPasswordSecure = true;
+  bool oldPasswordSecure = true;
 
   ProfileData profileData = ProfileData();
 
@@ -136,160 +138,176 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 child: Form(
                   key: _formKey,
                   child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    SizedBox(
-                      height: 200,
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Change Password',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 26,
-                          // fontFamily: 'poppins',
+                  Stack(
+                    children: [
+                      Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const SizedBox(
+                          height: 240,
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Old Password',
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Change Password',
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 26,
+                              // fontFamily: 'poppins',
                             ),
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CommonTextFieldWidget(
-                              obscureText: oldPasswordSecure,
-                              controller: oldPasswordController,
-                              textInputAction: TextInputAction.next,
-                              hint: 'Enter your old password',
-                              keyboardType: TextInputType.text,
-                              suffix: GestureDetector(
-                                  onTap: () {
-                                    oldPasswordSecure = !oldPasswordSecure;
-                                    setState(() {});
-                                  },
-                                  child: Icon(
-                                    oldPasswordSecure ? Icons.visibility_off : Icons.visibility,
-                                    size: 20,
-                                    color: Colors.white,
-                                  )),
-                              validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter old your password'),
-                                MinLengthValidator(8,
-                                    errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                                PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                                    errorText: "Password must be at least with 1 special character & 1 numerical"),
-                              ])),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            'Password',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CommonTextFieldWidget(
-                              obscureText: !passwordSecure,
-                              controller: passwordController,
-                              textInputAction: TextInputAction.next,
-                              hint: 'Enter your password',
-                              keyboardType: TextInputType.text,
-                              suffix: GestureDetector(
-                                  onTap: () {
-                                    passwordSecure = !passwordSecure;
-                                    setState(() {});
-                                  },
-                                  child: Icon(
-                                    passwordSecure ? Icons.visibility : Icons.visibility_off,
-                                    size: 20,
-                                    color: Colors.white,
-                                  )),
-                              validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter your password'),
-                                MinLengthValidator(8,
-                                    errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
-                                PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
-                                    errorText: "Password must be at least with 1 special character & 1 numerical"),
-                              ])),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            'Confirm Password',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CommonTextFieldWidget(
-                            obscureText: !confirmPasswordSecure,
-                            controller: confirmController,
-                            textInputAction: TextInputAction.next,
-                            hint: 'Enter your confirm password',
-                            keyboardType: TextInputType.text,
-                            suffix: GestureDetector(
-                                onTap: () {
-                                  confirmPasswordSecure = !confirmPasswordSecure;
-                                  setState(() {});
-                                },
-                                child: Icon(
-                                  confirmPasswordSecure ? Icons.visibility : Icons.visibility_off,
-                                  size: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Old Password',
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                )),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your confirm password';
-                              }
-                              if (value.toString() == passwordController.text) {
-                                return null;
-                              }
-                              return "Confirm password not matching with password";
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CommonTextFieldWidget(
+                                  obscureText: oldPasswordSecure,
+                                  controller: oldPasswordController,
+                                  textInputAction: TextInputAction.next,
+                                  hint: 'Enter your old password',
+                                  keyboardType: TextInputType.text,
+                                  suffix: GestureDetector(
+                                      onTap: () {
+                                        oldPasswordSecure = !oldPasswordSecure;
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        oldPasswordSecure ? Icons.visibility_off : Icons.visibility,
+                                        size: 20,
+                                        color: Colors.white,
+                                      )),
+                                  validator: MultiValidator([
+                                    RequiredValidator(errorText: 'Please enter old your password'),
+                                    MinLengthValidator(8,
+                                        errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                                    PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                                        errorText: "Password must be at least with 1 special character & 1 numerical"),
+                                  ]).call),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Password',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CommonTextFieldWidget(
+                                  obscureText: passwordSecure,
+                                  controller: passwordController,
+                                  textInputAction: TextInputAction.next,
+                                  hint: 'Enter your password',
+                                  keyboardType: TextInputType.text,
+                                  suffix: GestureDetector(
+                                      onTap: () {
+                                        passwordSecure = !passwordSecure;
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        passwordSecure ? Icons.visibility_off : Icons.visibility,
+                                        size: 20,
+                                        color: Colors.white,
+                                      )),
+                                  validator: MultiValidator([
+                                    RequiredValidator(errorText: 'Please enter your password'),
+                                    MinLengthValidator(8,
+                                        errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                                    PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                                        errorText: "Password must be at least with 1 special character & 1 numerical"),
+                                  ]).call),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Confirm Password',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CommonTextFieldWidget(
+                                obscureText: confirmPasswordSecure,
+                                controller: confirmController,
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter your confirm password',
+                                keyboardType: TextInputType.text,
+                                suffix: GestureDetector(
+                                    onTap: () {
+                                      confirmPasswordSecure = !confirmPasswordSecure;
+                                      setState(() {});
+                                    },
+                                    child: Icon(
+                                      confirmPasswordSecure ? Icons.visibility_off : Icons.visibility,
+                                      size: 20,
+                                      color: Colors.white,
+                                    )),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your confirm password';
+                                  }
+                                  if (value.toString() == passwordController.text) {
+                                    return null;
+                                  }
+                                  return "Confirm password not matching with password";
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CommonButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    FocusManager.instance.primaryFocus!.unfocus();
+                                    updatePassword(
+                                        confirmPassword: confirmController.text.trim(),
+                                        newPassword: passwordController.text.trim(),
+                                        oldPassword: oldPasswordController.text.trim());
+                                  }
+                                },
+                                title: 'Change Password',
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
+                       Positioned(
+                        top: 40,
+                          left: 20,
+                          child:GestureDetector(
+                            onTap: (){
+                              Get.back();
                             },
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CommonButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                FocusManager.instance.primaryFocus!.unfocus();
-                                updatePassword(
-                                    confirmPassword: confirmController.text.trim(),
-                                    newPassword: passwordController.text.trim(),
-                                    oldPassword: oldPasswordController.text.trim());
-                              }
-                            },
-                            title: 'Change Password',
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                        ],
-                      ),
-                    )
-                  ]),
+                            child: Image.asset(
+                              AppAssets.back,
+                              height: 25,
+                            ),
+                          ))
+                    ],
+                  ),
                 ),
               )).appPadding,
         ));

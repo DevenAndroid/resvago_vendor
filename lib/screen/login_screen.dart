@@ -23,7 +23,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../forget_password.dart';
 import '../helper.dart';
 import '../verify_otp.dart';
+import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
+import '../widget/language_change.dart';
 import 'otp_screen.dart';
 
 enum LoginOption { Mobile, EmailPassword }
@@ -72,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Overlay.of(context).insert(loader);
     generateOTP();
     final QuerySnapshot result =
-    await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
+        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      print("gfdgdgh" + result.docs.first.toString());
+      print("gfdgdgh${result.docs.first}");
       Map kk = result.docs.first.data() as Map;
       if (kk["deactivate"] == false) {
         try {
@@ -115,6 +117,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text, otp: otp));
               });
             } else {
+              FirebaseFirestore.instance.collection("send_mail").add({
+                "to": emailController.text.trim(),
+                "message": {
+                  "subject": "This is a otp email",
+                  "html": "You have logged in new device",
+                  "text": "asdfgwefddfgwefwn",
+                }
+              });
               Get.offAllNamed(MyRouters.bottomNavbar);
             }
           });
@@ -130,9 +140,16 @@ class _LoginScreenState extends State<LoginScreen> {
               Fluttertoast.showToast(msg: e.toString());
             }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString()),
-            ));
+            if (e.toString() ==
+                "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("credential is incorrect"),
+              ));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(e.toString()),
+              ));
+            }
           }
         }
       } else {
@@ -157,91 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void checkPhoneNumberInFirestore() async {
-    if (loginController.mobileController.text.isEmpty) {
-      if (!kIsWeb) {
-        Fluttertoast.showToast(msg: 'Please enter phone number');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Please enter phone number"),
-        ));
-      }
-      return;
-    }
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('vendor_users')
-        .where('mobileNumber', isEqualTo: code + loginController.mobileController.text)
-        .get();
-    if (result.docs.isNotEmpty) {
-      Map kk = result.docs.first.data() as Map;
-      if (kk["deactivate"] == true) {
-        if (!kIsWeb) {
-          Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Your account has been deactivated, Please contact administrator"),
-          ));
-        }
-      } else {
-        login(kk["email"].toString());
-      }
-    } else {
-      logError('An error occurred:');
-      if (!kIsWeb) {
-        Fluttertoast.showToast(
-            msg: '${code + loginController.mobileController.text}Phone Number not register yet Please Signup');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Phone Number not register yet Please Signup"),
-        ));
-      }
-    }
-  }
-
   void logError(String message) {
     FirebaseCrashlytics.instance.log(message);
-  }
-
-  login(String email) async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
-      final String phoneNumber = code + loginController.mobileController.text;
-      await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {
-          if (kDebugMode) {
-            print("Verification credential: $credential");
-          }
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          if (kDebugMode) {
-            print("Verification Failed: $e");
-          }
-        },
-        codeSent: (String verificationId, [int? resendToken]) {
-          if (kDebugMode) {
-            print("Code Sent: $verificationId");
-          }
-          verificationId = verificationId;
-          Get.to(() => OtpScreen(
-                verificationId: verificationId,
-                code: code,
-                email: email,
-              ));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          if (kDebugMode) {
-            print("Auto Retrieval Timeout: $verificationId");
-          }
-        },
-      );
-      Helper.hideLoader(loader);
-    } catch (e, stack) {
-      logError('An error occurred: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack);
-      Helper.hideLoader(loader);
-    }
   }
 
   var oldPasswordSecure = false;
@@ -252,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     super.initState();
     generateOTP();
+    checkLanguage();
   }
 
   @override
@@ -262,8 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: SingleChildScrollView(
             child: Container(
                 decoration: const BoxDecoration(
-                    image:
-                        DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ? AppAssets.webLogin : AppAssets.login))),
+                    image: DecorationImage(fit: BoxFit.fill, image: AssetImage(kIsWeb ? AppAssets.webLogin : AppAssets.login))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 4),
                   child: Form(
@@ -371,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       EmailValidator(errorText: 'Enter a valid email address'),
                                     ]).call,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Email',
+                                      hintText: 'Enter Email'.tr,
                                       hintStyle: const TextStyle(color: Colors.white),
                                       // suffix: InkWell(
                                       //   onTap: () {
@@ -397,8 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                       border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
                                     keyboardType: TextInputType.emailAddress,
@@ -408,13 +341,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 20,
                                   ),
                                   TextFormField(
-
                                     style: const TextStyle(color: Colors.white),
                                     controller: passwordController,
                                     keyboardType: TextInputType.text,
                                     obscureText: !oldPasswordSecure,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Password',
+                                      hintText: 'Enter Password'.tr,
                                       suffix: GestureDetector(
                                           onTap: () {
                                             oldPasswordSecure = !oldPasswordSecure;
@@ -438,8 +370,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                       border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                                          borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                           borderRadius: BorderRadius.circular(6.0)),
                                     ),
                                   ),
@@ -455,7 +386,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Get.to(() => ForgotPassword());
                                 },
                                 child: Text(
-                                  'Forgot Password',
+                                  'Forgot Password'.tr,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w300,
@@ -483,16 +414,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                   title: 'Login'.tr,
                                 ),
                                 const SizedBox(
-                                  height: 20,
+                                  height: 15,
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                      showDialogLanguage(context);
+                                    },
+                                    child: Text(
+                                      "Change Language".tr,
+                                      style: const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
+                                    )),
+                                const SizedBox(
+                                  height: 10,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Don't Have an Account? ".tr,
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                      "Don't Have an Account?".tr,
+                                      style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
+                                    const SizedBox(width: 5),
                                     InkWell(
                                       onTap: () {
                                         Get.toNamed(MyRouters.signUpScreen);
@@ -510,8 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 Text(
                                   'Signup as a customer'.tr,
-                                  style:
-                                      const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
+                                  style: const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(
                                   height: 20,
@@ -625,5 +566,134 @@ class _LoginScreenState extends State<LoginScreen> {
                         ]),
                   ),
                 )).appPaddingForScreen));
+  }
+
+  updateLanguage(String gg) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("app_language", gg);
+  }
+
+  RxString selectedLAnguage = "English".obs;
+  checkLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? appLanguage = sharedPreferences.getString("app_language");
+    if (appLanguage == null || appLanguage == "English") {
+      Get.updateLocale(const Locale('en', 'US'));
+      selectedLAnguage.value = "English";
+    } else if (appLanguage == "Spanish") {
+      Get.updateLocale(const Locale('es', 'ES'));
+      selectedLAnguage.value = "Spanish";
+    } else if (appLanguage == "French") {
+      Get.updateLocale(const Locale('fr', 'FR'));
+      selectedLAnguage.value = "French";
+    } else if (appLanguage == "Arabic") {
+      Get.updateLocale(const Locale('ar', 'AE'));
+      selectedLAnguage.value = "Arabic";
+    }
+  }
+
+  showDialogLanguage(context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RadioListTile(
+                      value: "English",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "English",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('en', 'US');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        updateLanguage("English");
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Spanish",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Spanish",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('es', 'ES');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        updateLanguage("Spanish");
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "French",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "French",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('fr', 'FR');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        updateLanguage("French");
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Arabic",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Arabic",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('ar', 'AE');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        updateLanguage("Arabic");
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Update",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

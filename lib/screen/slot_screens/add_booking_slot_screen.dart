@@ -48,7 +48,9 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
               startDate: slotController.selectedStartDateTime!,
               endDate: slotController.selectedEndDateTIme,
               eveningSlots: slotController.dinnerTimeslots,
-              morningSlots: slotController.timeslots)
+              morningSlots: slotController.timeslots,
+              lunchInterval: slotController.serviceDuration.text,
+              dinnerInterval: slotController.dinnerServiceDuration.text)
           .then((value) {
         showToast("Slot Created Successfully");
         Get.back();
@@ -97,7 +99,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                           if (_formKeyBooking.currentState!.validate()) {
                             slotController.getLunchTimeSlot();
                             slotController.getDinnerTimeSlot();
-                            if (slotController.timeslots.isNotEmpty && slotController.dinnerTimeslots.isNotEmpty) {
+                            if (slotController.timeslots.isNotEmpty || slotController.dinnerTimeslots.isNotEmpty) {
                               addSlotToFirestore();
                             }
                           }

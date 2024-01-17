@@ -243,12 +243,30 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Interval TIme".tr,
+                              "Lunch Interval Time".tr,
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
-                              "30 Mins".tr,
+                              slotDataList!.lunchInterval ?? "".toString(),
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Dinner Interval Time".tr,
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
+                            ),
+                            Text(
+                              slotDataList!.dinnerInterval ?? "".toString(),
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),

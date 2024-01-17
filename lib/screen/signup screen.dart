@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:resvago_vendor/screen/verify_otp_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
@@ -75,6 +78,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // File categoryFile = File("");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   FirebaseService firebaseService = FirebaseService();
+  String otp = '';
+  void generateOTP() {
+    int otpLength = 6;
+    Random random = Random();
+    String otpCode = '';
+    for (int i = 0; i < otpLength; i++) {
+      otpCode += random.nextInt(10).toString();
+    }
+    setState(() {
+      otp = otpCode;
+      print("gjfkyhgfkfgh" + otp);
+    });
+  }
 
   void checkEmailInFirestore() async {
     final QuerySnapshot result =
@@ -83,14 +99,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
-    // final QuerySnapshot phoneResult = await FirebaseFirestore.instance
-    //     .collection('vendor_users')
-    //     .where('mobileNumber', isEqualTo: code + mobileNumberController.text)
-    //     .get();
-    // if (phoneResult.docs.isNotEmpty) {
-    //   Fluttertoast.showToast(msg: 'Mobile Number already exits');
-    //   return;
-    // }
     addUserToFirestore();
   }
 
@@ -99,10 +107,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    generateOTP();
     String? fcm = "fcm";
     if (!kIsWeb) {
       fcm = await FirebaseMessaging.instance.getToken();
-      log("dsgfdsgdfh     $fcm");
     }
     try {
       geo = Geoflutterfire();
@@ -127,7 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text);
       if (FirebaseAuth.instance.currentUser != null) {
-        firebaseService
+        await firebaseService
             .manageRegisterUsers(
                 restaurantName: restaurantNameController.text.trim(),
                 // category: categoryController.text.trim(),
@@ -143,14 +151,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 fcm: fcm)
             .then((value) async {
           Helper.hideLoader(loader);
-          if (!kIsWeb) {
-            await FirebaseAuth.instance.signOut();
-          }
-          Get.toNamed(MyRouters.thankYouScreen);
+          FirebaseFirestore.instance.collection("send_mail").add({
+            "to": emailController.text.trim(),
+            "message": {
+              "subject": "This is a otp email",
+              "html": "Your otp is $otp",
+              "text": "asdfgwefddfgwefwn",
+            }
+          }).then((value) {
+            if (!kIsWeb) {
+              Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Otp email sent to ${emailController.text.trim()}"),
+              ));
+            }
+            Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp));
+          });
         }).catchError((e) async {
-          if (!kIsWeb) {
-            await FirebaseAuth.instance.signOut();
-          }
+          showToast(e);
         });
       }
     } catch (e) {
@@ -158,13 +177,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Helper.hideLoader(loader);
       throw Exception(e);
     } finally {
-      // await FirebaseAuth.instance.signOut();
       Helper.hideLoader(loader);
     }
   }
 
-  bool passwordSecure = false;
-  bool confirmPasswordSecure = false;
+  bool passwordSecure = true;
+  bool confirmPasswordSecure = true;
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -193,22 +211,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?query=$query')).call().then((value) {
       List<Places> places = [];
       if (value.data != null && value.data['places'] != null) {
-        log("jhkgj${jsonEncode(value.data.toString())}");
         List<dynamic> data = List.from(value.data['places']);
-
         for (var v in data) {
           places.add(Places.fromJson(v));
         }
       }
       googlePlacesModel = GooglePlacesModel(places: places);
-
-      log("fgfdh${jsonEncode(googlePlacesModel.toString())}");
       setState(() {});
     });
   }
 
   Timer? timer;
-
   makeDelay({
     required Function() delay,
   }) {
@@ -351,7 +364,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         _searchController.text = item.name ?? "";
                                         selectedPlace = item;
                                         googlePlacesModel = null;
-                                        log(selectedPlace!.geometry!.toJson().toString());
                                         setState(() {});
                                         // places = [];
                                         // setState(() {});
@@ -405,7 +417,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: Icon(
                               passwordSecure ? Icons.visibility_off : Icons.visibility,
                               size: 20,
-                              color: Colors.white,
+                              color: Colors.black,
                             )),
                         validator: MultiValidator([
                           RequiredValidator(errorText: 'Please enter your password'),
@@ -413,7 +425,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                           PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
                               errorText: "Password must be at least with 1 special character & 1 numerical"),
-                        ]),
+                        ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
                         hint: 'Enter your password',
@@ -440,7 +452,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: Icon(
                               confirmPasswordSecure ? Icons.visibility_off : Icons.visibility,
                               size: 20,
-                              color: Colors.white,
+                              color: Colors.black,
                             )),
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -778,9 +790,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             // Return the dialog box widget
                                             return AlertDialog(
                                               title: Text('Terms And Conditions'.tr),
-                                              content: const Text(
+                                              content: Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
-                                                  'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
+                                                  'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'.tr),
                                               actions: const <Widget>[],
                                             );
                                           },
@@ -808,11 +820,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() {});
                           }
                         },
-                        title: 'Signup',
+                        title: 'Signup'.tr,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Already Have an Account?".tr,
+                            style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
+                          ),
+                          SizedBox(width: 5,),
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Text(
+                              'Login'.tr,
+                              style:
+                                  GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -823,6 +855,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+
 
   void showActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(
