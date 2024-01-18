@@ -275,7 +275,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
-        print(profileData.toJson().toString());
         if (!kIsWeb) {
           controller.categoryFile = File(profileData.image ?? "");
         } else {

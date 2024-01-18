@@ -576,35 +576,6 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 return null;
               }),
           const SizedBox(height: 10),
-          RegisterTextFieldWidget(
-              controller: slotController.noOfGuest,
-              hint: "Enter no. of guest".tr,
-              onChanged: (f) {
-                clearSlots();
-              },
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value!.trim().isEmpty) {
-                  return "Guest no. is required".tr;
-                }
-                return null;
-              }),
-          const SizedBox(height: 10),
-          RegisterTextFieldWidget(
-              controller: slotController.setOffer,
-              hint: "Set offer".tr,
-              onChanged: (f) {
-                clearSlots();
-              },
-              keyboardType: TextInputType.number,
-              // validator: (value) {
-              //   if (value!.trim().isEmpty) {
-              //     return "Offer is required";
-              //   }
-              //   return null;
-              // }
-              ),
-          const SizedBox(height: 10,),
           Row(
             children: [
               Expanded(

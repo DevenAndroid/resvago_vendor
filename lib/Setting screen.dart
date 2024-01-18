@@ -401,6 +401,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           onChanged: (value) {
                             state4 = value;
                             setState(() {});
+                            log(state4.toString());
                           },
                         ),
                       ],

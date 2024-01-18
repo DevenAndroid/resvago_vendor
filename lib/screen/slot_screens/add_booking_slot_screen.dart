@@ -29,7 +29,8 @@ class AddBookingSlot extends StatefulWidget {
 class _AddBookingSlotState extends State<AddBookingSlot> {
   final slotController = Get.put(SlotController());
   final _formKeyBooking = GlobalKey<FormState>();
-
+  bool lunch = false;
+  bool dinner = false;
   FirebaseService firebaseService = FirebaseService();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String get slotId => widget.slotId;
@@ -39,7 +40,6 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   Future<void> addSlotToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-
     try {
       await firebaseService
           .manageSlot(
@@ -68,10 +68,18 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
   @override
   void initState() {
     super.initState();
+    slotController.timeslots = [];
+    slotController.dinnerTimeslots = [];
+    slotController.selectedEndDateTIme = null;
     if (widget.slotDataList == null) return;
     setState(() {});
   }
-
+  clearSlots() {
+    if (slotController.dinnerSlots.isNotEmpty) {
+      slotController.dinnerSlots.clear();
+      setState(() {});
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +96,50 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                     ),
                     BookableUI(title: "Lunch".tr, slotsDate: widget.slotsDate, slotDataList: widget.slotDataList),
                     BookableUI(title: "Dinner".tr, slotsDate: widget.slotsDate, slotDataList: widget.slotDataList),
+                    Card(
+                      color: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      elevation: 2,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20)
+                            .copyWith(bottom: 10),
+                        child: Column(
+                          children: [
+                            RegisterTextFieldWidget(
+                                controller: slotController.noOfGuest,
+                                hint: "Enter no. of guest".tr,
+                                onChanged: (f) {
+                                  // clearSlots();
+                                },
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "Guest no. is required".tr;
+                                  }
+                                  return null;
+                                }),
+                            const SizedBox(height: 10),
+                            RegisterTextFieldWidget(
+                              controller: slotController.setOffer,
+                              hint: "Set offer".tr,
+                              onChanged: (f) {
+                                // clearSlots();
+                              },
+                              keyboardType: TextInputType.number,
+                              // validator: (value) {
+                              //   if (value!.trim().isEmpty) {
+                              //     return "Offer is required";
+                              //   }
+                              //   return null;
+                              // }
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -99,8 +151,13 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                           if (_formKeyBooking.currentState!.validate()) {
                             slotController.getLunchTimeSlot();
                             slotController.getDinnerTimeSlot();
+                            log(slotController.timeslots.toList().toString());
+                            log(slotController.dinnerTimeslots.toList().toString());
                             if (slotController.timeslots.isNotEmpty || slotController.dinnerTimeslots.isNotEmpty) {
                               addSlotToFirestore();
+                            }
+                            else{
+                              showToast("Please create slot");
                             }
                           }
                         },

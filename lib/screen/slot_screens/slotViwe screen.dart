@@ -248,7 +248,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
-                              slotDataList!.lunchInterval ?? "".toString(),
+                              "${slotDataList!.lunchInterval} min" ?? "",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),
@@ -266,7 +266,7 @@ class _SlotViewScreenState extends State<SlotViewScreen> {
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w300, fontSize: 16),
                             ),
                             Text(
-                              slotDataList!.dinnerInterval ?? "".toString(),
+                             "${slotDataList!.dinnerInterval} min" ?? "",
                               style: GoogleFonts.poppins(
                                   color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                             ),

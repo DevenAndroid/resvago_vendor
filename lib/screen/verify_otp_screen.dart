@@ -65,7 +65,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 240,
                               ),
                               Align(

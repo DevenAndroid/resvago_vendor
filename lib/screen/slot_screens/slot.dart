@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_vendor/controllers/slot_controller.dart';
 import '../../model/createslot_model.dart';
 import '../../widget/addsize.dart';
+import '../../widget/apptheme.dart';
 import '../../widget/common_text_field.dart';
 import '../create_slot.dart';
 
@@ -22,16 +25,29 @@ class BookableUI extends StatefulWidget {
 
 class _BookableUIState extends State<BookableUI> {
   final slotController = Get.put(SlotController());
+  bool lunch = false;
+  bool dinner = false;
   final DateFormat selectedDateFormat = DateFormat("dd-MMM-yyyy");
-  pickDate({required Function(DateTime gg) onPick, DateTime? initialDate, DateTime? firstDate,}) async {
+  pickDate({
+    required Function(DateTime gg) onPick,
+    DateTime? initialDate,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: initialDate ?? DateTime.now(),
         firstDate: firstDate ?? DateTime.now(),
-        lastDate: DateTime(2101),
+        lastDate: lastDate ?? DateTime(2101),
         initialEntryMode: DatePickerEntryMode.calendarOnly);
     if (pickedDate == null) return;
     onPick(pickedDate);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    slotController.selectedEndDateTIme = null;
   }
 
   @override
@@ -153,11 +169,11 @@ class _BookableUIState extends State<BookableUI> {
                                           slotController.selectedStartDateTime = gg;
                                         },
                                         initialDate: slotController.selectedStartDateTime,
-                                        );
+                                        lastDate: DateTime(2100));
                                   },
                                   controller: slotController.startDate,
                                   validator: (value) {
-                                    if (slotController.selectedStartDateTime == null) {
+                                    if (value!.trim().isEmpty) {
                                       return "Start date is required";
                                     }
                                     return null;
@@ -179,7 +195,7 @@ class _BookableUIState extends State<BookableUI> {
                                   // key: slotController.endDate.getKey,
                                   // key: endTime.getKey,
                                   validator: (value) {
-                                    if (slotController.selectedEndDateTIme == null) {
+                                    if (value!.trim().isEmpty) {
                                       return "End date is required";
                                     }
                                     return null;
@@ -220,56 +236,82 @@ class _BookableUIState extends State<BookableUI> {
           color: Colors.white,
           surfaceTintColor: Colors.white,
           elevation: 2,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20).copyWith(bottom: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Lunch Time Slot".tr,
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                      activeColor: AppTheme.primaryColor,
+                      value: lunch,
+                      onChanged: (value) {
+                        setState(() {
+                          lunch = value!;
+                        });
+                      }),
+                  Text(
+                    "Lunch Time Slot",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (lunch == true)
+          Card(
+            color: Colors.white,
+            surfaceTintColor: Colors.white,
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20).copyWith(bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Lunch Time Slot".tr,
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
+                        ),
                       ),
-                    ),
-                    if (widget.showDates == false)
-                      TextButton(
-                          onPressed: () {
-                            slotController.editLunch = !slotController.editLunch;
-                            setState(() {});
-                          },
-                          child: Text(slotController.editLunch ? "Previous Slots".tr : "Create New".tr)),
-                  ],
-                ),
-                if (widget.slotDataList == null || slotController.editLunch == true)
-                  const CreateSlotsScreen()
-                else
-                  ...morningSlots.map((e) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            e.replaceAll(",", " - "),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                      if (widget.showDates == false)
+                        TextButton(
+                            onPressed: () {
+                              slotController.editLunch = !slotController.editLunch;
+                              setState(() {});
+                            },
+                            child: Text(slotController.editLunch ? "Previous Slots".tr : "Create New".tr)),
+                    ],
+                  ),
+                  if (widget.slotDataList == null || slotController.editLunch == true)
+                    const CreateSlotsScreen()
+                  else
+                    ...morningSlots.map((e) => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              e.replaceAll(",", " - "),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          InkWell(
-                              onTap: () {
-                                widget.slotDataList!.morningSlots!.remove(e);
-                                setState(() {});
-                              },
-                              child: const Icon(
-                                Icons.clear_rounded,
-                                color: Colors.grey,
-                              ))
-                        ],
-                      ))
-              ],
+                            InkWell(
+                                onTap: () {
+                                  widget.slotDataList!.morningSlots!.remove(e);
+                                  setState(() {});
+                                },
+                                child: const Icon(
+                                  Icons.clear_rounded,
+                                  color: Colors.grey,
+                                ))
+                          ],
+                        ))
+                ],
+              ),
             ),
           ),
-        )
       ],
     );
   }
@@ -282,59 +324,90 @@ class _BookableUIState extends State<BookableUI> {
       final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b));
       return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
     });
-    return Card(
-      color: Colors.white,
-      surfaceTintColor: Colors.white,
-      elevation: 2,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20).copyWith(bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "Dinner Time Slot".tr,
+    return Column(
+      children: [
+        Card(
+          color: Colors.white,
+          surfaceTintColor: Colors.white,
+          elevation: 2,
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                      activeColor: AppTheme.primaryColor,
+                      value: dinner,
+                      onChanged: (value) {
+                        setState(() {
+                          dinner = value!;
+                          log(dinner.toString());
+                        });
+                      }),
+                  Text(
+                    "Dinner Time Slot",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
-                  ),
-                ),
-                if (widget.showDates == false)
-                  TextButton(
-                      onPressed: () {
-                        slotController.editDinner = !slotController.editDinner;
-                        setState(() {});
-                      },
-                      child: Text(slotController.editDinner ? "Previous Slots".tr : "Create New".tr)),
-              ],
-            ),
-            if (widget.slotDataList == null || slotController.editDinner == true)
-              const DinnerCreateSlotsScreen()
-            else
-              ...eveningSlots.map((e) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (dinner == true)
+          Card(
+            color: Colors.white,
+            surfaceTintColor: Colors.white,
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20).copyWith(bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        e.replaceAll(",", " - "),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Text(
+                          "Dinner Time Slot".tr,
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
                         ),
                       ),
-                      InkWell(
-                          onTap: () {
-                            widget.slotDataList!.eveningSlots!.remove(e);
-                            setState(() {});
-                          },
-                          child: const Icon(
-                            Icons.clear_rounded,
-                            color: Colors.grey,
-                          ))
+                      if (widget.showDates == false)
+                        TextButton(
+                            onPressed: () {
+                              slotController.editDinner = !slotController.editDinner;
+                              setState(() {});
+                            },
+                            child: Text(slotController.editDinner ? "Previous Slots".tr : "Create New".tr)),
                     ],
-                  ))
-          ],
-        ),
-      ),
+                  ),
+                  if (widget.slotDataList == null || slotController.editDinner == true)
+                    const DinnerCreateSlotsScreen()
+                  else
+                    ...eveningSlots.map((e) => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              e.replaceAll(",", " - "),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  widget.slotDataList!.eveningSlots!.remove(e);
+                                  setState(() {});
+                                },
+                                child: const Icon(
+                                  Icons.clear_rounded,
+                                  color: Colors.grey,
+                                ))
+                          ],
+                        ))
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -129,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           });
           return;
-        } catch (e) {
+        }
+        catch (e) {
           Helper.hideLoader(loader);
           print(e.toString());
           if (!kIsWeb) {
