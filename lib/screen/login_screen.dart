@@ -129,14 +129,13 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           });
           return;
-        }
-        catch (e) {
+        } catch (e) {
           Helper.hideLoader(loader);
           print(e.toString());
           if (!kIsWeb) {
             if (e.toString() ==
                 "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
-              Fluttertoast.showToast(msg: "credential is incorrect");
+              Fluttertoast.showToast(msg: "Credential is incorrect");
             } else {
               Fluttertoast.showToast(msg: e.toString());
             }
@@ -144,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (e.toString() ==
                 "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("credential is incorrect"),
+                content: Text("Credential is incorrect"),
               ));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -192,6 +191,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialogLanguage(context);
+    });
     var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -414,17 +416,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                   title: 'Login'.tr,
                                 ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                GestureDetector(
-                                    onTap: () {
-                                      showDialogLanguage(context);
-                                    },
-                                    child: Text(
-                                      "Change Language".tr,
-                                      style: const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
-                                    )),
+                                // const SizedBox(
+                                //   height: 15,
+                                // ),
+                                // GestureDetector(
+                                //     onTap: () {
+                                //       showDialogLanguage(context);
+                                //     },
+                                //     child: Text(
+                                //       "Change Language".tr,
+                                //       style: const TextStyle(color: Color(0xFF1877F2), fontSize: 16, fontWeight: FontWeight.w600),
+                                //     )),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -593,108 +595,138 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  showDialogLanguage(context) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RadioListTile(
-                      value: "English",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "English",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('en', 'US');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        updateLanguage("English");
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "Spanish",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "Spanish",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('es', 'ES');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        updateLanguage("Spanish");
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "French",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "French",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('fr', 'FR');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        updateLanguage("French");
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "Arabic",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "Arabic",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('ar', 'AE');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        updateLanguage("Arabic");
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  Align(
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "Update",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )),
+  final keyIsFirstLoaded = 'is_first_loaded';
+
+  Future<void> showDialogLanguage(context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
+    if (isFirstLoaded == null) {
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(Icons.clear_rounded,color: Colors.black,),
+                          onTap: (){
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          prefs.setBool(keyIsFirstLoaded, false);
+                        },)
+                      ],
                     ),
-                  )
-                ],
+                    RadioListTile(
+                        value: "English",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "English",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('en', 'US');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("English");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Spanish",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Spanish",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('es', 'ES');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Spanish");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "French",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "French",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('fr', 'FR');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("French");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Arabic",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Arabic",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('ar', 'AE');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Arabic");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            updateLanguage(selectedLAnguage.value);
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          });
+    }
   }
 }

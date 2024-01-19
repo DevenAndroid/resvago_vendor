@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-     updateLanguage();
+    updateLanguage();
   }
 
   @override
@@ -62,12 +62,12 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       translations: LocaleString(),
       locale: const Locale('en', 'US'),
-      title: 'Flutter Demo',
+      title: 'Resvago Vendor',
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
       ),
       theme: ThemeData(
-          // // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
           useMaterial3: false,
@@ -79,36 +79,6 @@ class _MyAppState extends State<MyApp> {
       // home: MyClass(),
       initialRoute: "/",
       getPages: MyRouters.route,
-    );
-  }
-}
-
-class MyClass extends StatefulWidget {
-  const MyClass({super.key});
-
-  @override
-  State<MyClass> createState() => _MyClassState();
-}
-
-class _MyClassState extends State<MyClass> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            FirebaseFirestore.instance.collection("send_mail").add({
-              "to": "",
-              "message": {
-                "subject": "This is a basic email",
-                "html": "That requires minimum configuration",
-                "text": "asdfgwefddfgwefwn",
-              }
-            });
-          },
-          child: const Text("send"),
-        ),
-      ),
     );
   }
 }

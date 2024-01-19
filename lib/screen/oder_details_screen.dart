@@ -13,6 +13,7 @@ import 'package:resvago_vendor/widget/custom_textfield.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Firebase_service/notification_api.dart';
 import '../helper.dart';
+import '../model/admin_model.dart';
 import '../model/createslot_model.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
@@ -59,6 +60,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  AdminModel? adminModel;
+  void getAdminData() {
+    FirebaseFirestore.instance.collection("admin_login").get().then((value) {
+      adminModel = AdminModel.fromJson(value.docs.first.data());
+    });
   }
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -122,6 +130,13 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    getAdminData();
   }
 
   @override
@@ -689,6 +704,14 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               "text": "asdfgwefddfgwefwn",
                             }
                           });
+                          FirebaseFirestore.instance.collection("send_mail").add({
+                            "to": "${adminModel!.email}",
+                            "message": {
+                              "subject": "This is a basic email",
+                              "html": "Order has been completed with Order ID ${myDiningOrderModel!.orderId}",
+                              "text": "asdfgwefddfgwefwn",
+                            }
+                          });
                         });
                       });
 
@@ -773,6 +796,14 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${adminModel!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": "Order has been accepted with Order ID ${myDiningOrderModel!.orderId}",
+                                  "text": "asdfgwefddfgwefwn",
+                                }
+                              });
                             });
 
                             showToast("Order is Accepted");
@@ -840,6 +871,14 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     "message": {
                                       "subject": "This is a basic email",
                                       "html": "Your order has been rejected",
+                                      "text": "asdfgwefddfgwefwn",
+                                    }
+                                  });
+                                  FirebaseFirestore.instance.collection("send_mail").add({
+                                    "to": "${adminModel!.email}",
+                                    "message": {
+                                      "subject": "This is a basic email",
+                                      "html": "Order has been rejected with Order ID ${myDiningOrderModel!.orderId}",
                                       "text": "asdfgwefddfgwefwn",
                                     }
                                   });
