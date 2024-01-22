@@ -57,6 +57,10 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
     slotController.setOffer.text = (widget.createSlotData!.setOffer ?? "").toString();
     slotController.serviceDuration.text = (widget.createSlotData!.lunchInterval ?? "").toString();
     slotController.dinnerServiceDuration.text = (widget.createSlotData!.dinnerInterval ?? "").toString();
+    slotController.startTime.text = (widget.createSlotData!.startLunchTime ?? "").toString();
+    slotController.endTime.text = (widget.createSlotData!.endLunchTime ?? "").toString();
+    slotController.dinnerStartTime.text = (widget.createSlotData!.startDinnerTime ?? "").toString();
+    slotController.dinnerEndTime.text = (widget.createSlotData!.endDinnerTime ?? "").toString();
     // slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
@@ -84,6 +88,30 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                             editing: true,
                           ),
                           const SizedBox(
+                            height: 10,
+                          ),
+                          Card(
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            elevation: 2,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: AddSize.padding10, vertical: AddSize.padding15).copyWith(bottom: 10),
+                              child: RegisterTextFieldWidget(
+                                  controller: slotController.noOfGuest,
+                                  hint: "Enter no. of guest".tr,
+                                  onChanged: (f) {
+                                    // clearSlots();
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value!.trim().isEmpty) {
+                                      return "Guest no. is required".tr;
+                                    }
+                                    return null;
+                                  }),
+                            ),
+                          ),
+                          const SizedBox(
                             height: 30,
                           ),
                           Padding(
@@ -102,6 +130,10 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                                     startDate: widget.createSlotData!.slotId!,
                                     lunchInterval: slotController.serviceDuration.text,
                                     dinnerInterval: slotController.dinnerServiceDuration.text,
+                                    startLunchTime: slotController.startTime.text,
+                                    endLunchTime: slotController.endTime.text,
+                                    startDinnerTime: slotController.dinnerStartTime.text,
+                                    endDinnerTime: slotController.dinnerEndTime.text,
                                     endDate: null,
                                     eveningSlots: slotController.editDinner
                                         ? slotController.dinnerTimeslots

@@ -219,14 +219,14 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                                 // ));
                                               },
                                               // value: '/Edit',
-                                              child:  Text("Edit".tr),
+                                              child: Text("Edit".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
                                                 Get.to(() => SlotViewScreen(slotDataList: item));
                                               },
                                               // value: '/slotViewScreen',
-                                              child:  Text("View".tr),
+                                              child: Text("View".tr),
                                             ),
                                             PopupMenuItem(
                                               onTap: () {
@@ -289,10 +289,10 @@ class _SlotListScreenState extends State<SlotListScreen> {
                                         })
                                   ]));
                         })
-                    :  Center(
+                    : Center(
                         child: Text("Slots are not created yet".tr),
                       )
-                :  Center(
+                : Center(
                     child: Text("Slots are not created yet".tr),
                   ),
           )

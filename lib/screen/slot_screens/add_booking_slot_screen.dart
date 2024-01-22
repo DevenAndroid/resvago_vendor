@@ -50,7 +50,11 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
               eveningSlots: slotController.dinnerTimeslots,
               morningSlots: slotController.timeslots,
               lunchInterval: slotController.serviceDuration.text,
-              dinnerInterval: slotController.dinnerServiceDuration.text)
+              dinnerInterval: slotController.dinnerServiceDuration.text,
+              startLunchTime: slotController.startTime.text,
+              endLunchTime: slotController.endTime.text,
+              startDinnerTime: slotController.dinnerStartTime.text,
+              endDinnerTime: slotController.dinnerEndTime.text,)
           .then((value) {
         showToast("Slot Created Successfully");
         Get.back();
@@ -74,12 +78,14 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
     if (widget.slotDataList == null) return;
     setState(() {});
   }
+
   clearSlots() {
     if (slotController.dinnerSlots.isNotEmpty) {
       slotController.dinnerSlots.clear();
       setState(() {});
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,8 +107,8 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                       surfaceTintColor: Colors.white,
                       elevation: 2,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20)
-                            .copyWith(bottom: 10),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding20).copyWith(bottom: 10),
                         child: Column(
                           children: [
                             RegisterTextFieldWidget(
@@ -155,8 +161,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                             log(slotController.dinnerTimeslots.toList().toString());
                             if (slotController.timeslots.isNotEmpty || slotController.dinnerTimeslots.isNotEmpty) {
                               addSlotToFirestore();
-                            }
-                            else{
+                            } else {
                               showToast("Please create slot");
                             }
                           }

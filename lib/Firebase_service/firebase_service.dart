@@ -140,12 +140,17 @@ class FirebaseService {
   Future manageSlot({
     required DateTime startDate,
     required DateTime? endDate,
+    required String? startLunchTime,
+    required String? endLunchTime,
+    required String? startDinnerTime,
+    required String? endDinnerTime,
     required String seats,
     required String setOffer,
     required String lunchInterval,
     required String dinnerInterval,
     required List<String> morningSlots,
     required List<String> eveningSlots,
+
   }) async {
     try {
       Map<String, int> morningMapSlots = {};
@@ -173,6 +178,10 @@ class FirebaseService {
           "setOffer": setOffer,
           "lunchInterval": lunchInterval,
           "dinnerInterval": dinnerInterval,
+          "startLunchTime": startLunchTime,
+          "endLunchTime": endLunchTime,
+          "startDinnerTime": startDinnerTime,
+          "endDinnerTime": endDinnerTime,
           "created_time": DateTime.now().millisecondsSinceEpoch,
         });
         return;
@@ -201,6 +210,10 @@ class FirebaseService {
               "setOffer": setOffer,
               "lunchInterval": lunchInterval,
               "dinnerInterval": dinnerInterval,
+              "startLunchTime": startLunchTime,
+              "endLunchTime": endLunchTime,
+              "startDinnerTime": startDinnerTime,
+              "endDinnerTime": endDinnerTime,
               "created_time": DateTime.now().millisecondsSinceEpoch,
             });
       }

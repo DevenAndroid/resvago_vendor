@@ -232,7 +232,7 @@ class _BookableUIState extends State<BookableUI> {
               ),
             ),
           ),
-        Card(
+          Card(
           color: Colors.white,
           surfaceTintColor: Colors.white,
           elevation: 2,

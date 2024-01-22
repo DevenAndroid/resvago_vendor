@@ -455,8 +455,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                   child: Text(!slotController.dinnerResetSlots ? "Create Slots".tr : "Previous Slots".tr))
           ],
         ),
-        if (slotController.dinnerResetSlots == true ||
-            !(slotController.dinnerServiceTimeSloat.isNotEmpty)) ...[
+        if (slotController.dinnerResetSlots == true || !(slotController.dinnerServiceTimeSloat.isNotEmpty)) ...[
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

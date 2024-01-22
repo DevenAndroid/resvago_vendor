@@ -204,10 +204,12 @@ class LocaleString extends Translations {
           "Create New": "Create New",
           "Dinner Time Slot": "Dinner Time Slot",
           "Enter Password": "Enter Password",
+          "Change Password": "Change Password",
         },
 
         //Spanish LANGUAGE
         'es_ES': {
+          "Change Password": "Change Password",
           'Change Language': 'Cambiar idioma',
           'english': "inglesa",
           'You first': 'tú primero',
@@ -414,6 +416,7 @@ class LocaleString extends Translations {
 
         // french Language
         'fr_FR': {
+          "Change Password": "Change Password",
           'Change Language': 'Changer de langue',
           'English': 'anglaise',
           'Restaurant Name': '',
@@ -616,6 +619,7 @@ class LocaleString extends Translations {
 
         // Arabic Language
         'ar_AE': {
+          "Change Password": "Change Password",
           'Change Language': 'تغيير اللغة',
           'English': 'إنجليزي',
           'Restaurant Name': '',

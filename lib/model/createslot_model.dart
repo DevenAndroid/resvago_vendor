@@ -11,17 +11,26 @@ class CreateSlotData {
   String? setOffer;
   String? lunchInterval;
   String? dinnerInterval;
-  CreateSlotData(
-      {this.createdTime,
-      this.slotDate,
-      this.noOfGuest,
-      this.morningSlots,
-      this.vendorId,
-      this.slotId,
-      this.eveningSlots,
-      this.setOffer,
-      this.dinnerInterval,
-      this.lunchInterval});
+  String? startLunchTime;
+  String? endLunchTime;
+  String? startDinnerTime;
+  String? endDinnerTime;
+  CreateSlotData({
+    this.createdTime,
+    this.slotDate,
+    this.noOfGuest,
+    this.morningSlots,
+    this.vendorId,
+    this.slotId,
+    this.eveningSlots,
+    this.setOffer,
+    this.dinnerInterval,
+    this.lunchInterval,
+    this.startLunchTime,
+    this.endLunchTime,
+    this.startDinnerTime,
+    this.endDinnerTime,
+  });
 
   factory CreateSlotData.fromJson(String str) => CreateSlotData.fromMap(json.decode(str));
 
@@ -38,6 +47,10 @@ class CreateSlotData {
         setOffer: json["setOffer"],
         dinnerInterval: json["dinnerInterval"],
         lunchInterval: json["lunchInterval"],
+        startLunchTime: json["startLunchTime"],
+        endLunchTime: json["endLunchTime"],
+        startDinnerTime: json["startDinnerTime"],
+        endDinnerTime: json["endDinnerTime"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -51,5 +64,9 @@ class CreateSlotData {
         "setOffer": setOffer,
         "lunchInterval": lunchInterval,
         "dinnerInterval": dinnerInterval,
+        "startLunchTime": startLunchTime,
+        "endLunchTime": endLunchTime,
+        "startDinnerTime": startDinnerTime,
+        "endDinnerTime": endDinnerTime,
       };
 }
