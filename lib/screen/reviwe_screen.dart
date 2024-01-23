@@ -103,7 +103,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: 'Feedback'.tr, context: context),
+      appBar: backAppBar(title: 'FeedBack'.tr, context: context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
@@ -113,15 +113,23 @@ class _ReviewScreenState extends State<ReviewScreen> {
             children: [
               if (reviewModel != null)
                 Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    "Review(${reviewModel!.length})",
-                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                  Row(
+                    children: [
+                      Text(
+                        "Review".tr,
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                      ),
+                      Text(
+                        "(${reviewModel!.length})",
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   Text(
-                    "Overall Rating",
+                    "Overall Rating".tr,
                     style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
                   ),
                   Padding(

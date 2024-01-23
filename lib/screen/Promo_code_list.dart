@@ -27,7 +27,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: backAppBar(
-            title: "Promo code List".tr,
+            title: "Promo Code List".tr,
             context: context,
             icon2: GestureDetector(
               behavior: HitTestBehavior.translucent,

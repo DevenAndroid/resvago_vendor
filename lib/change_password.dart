@@ -147,7 +147,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            'Change Password',
+                            'Change Password'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -162,7 +162,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Old Password',
+                                'Old Password'.tr,
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -176,7 +176,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   obscureText: oldPasswordSecure,
                                   controller: oldPasswordController,
                                   textInputAction: TextInputAction.next,
-                                  hint: 'Enter your old password',
+                                  hint: 'Enter your old password'.tr,
                                   keyboardType: TextInputType.text,
                                   suffix: GestureDetector(
                                       onTap: () {
@@ -199,7 +199,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 height: 15,
                               ),
                               Text(
-                                'Password',
+                                'Password'.tr,
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -213,7 +213,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   obscureText: passwordSecure,
                                   controller: passwordController,
                                   textInputAction: TextInputAction.next,
-                                  hint: 'Enter your password',
+                                  hint: 'Enter your password'.tr,
                                   keyboardType: TextInputType.text,
                                   suffix: GestureDetector(
                                       onTap: () {
@@ -236,7 +236,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 height: 15,
                               ),
                               Text(
-                                'Confirm Password',
+                                'Confirm Password'.tr,
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -250,7 +250,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 obscureText: confirmPasswordSecure,
                                 controller: confirmController,
                                 textInputAction: TextInputAction.next,
-                                hint: 'Enter your confirm password',
+                                hint: 'Enter your confirm password'.tr,
                                 keyboardType: TextInputType.text,
                                 suffix: GestureDetector(
                                     onTap: () {
@@ -285,7 +285,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                         oldPassword: oldPasswordController.text.trim());
                                   }
                                 },
-                                title: 'Change Password',
+                                title: 'Change Password'.tr,
                               ),
                               const SizedBox(
                                 height: 30,

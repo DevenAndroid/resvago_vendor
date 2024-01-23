@@ -43,18 +43,19 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
     try {
       await firebaseService
           .manageSlot(
-              setOffer: slotController.setOffer.text,
-              seats: slotController.noOfGuest.text,
-              startDate: slotController.selectedStartDateTime!,
-              endDate: slotController.selectedEndDateTIme,
-              eveningSlots: slotController.dinnerTimeslots,
-              morningSlots: slotController.timeslots,
-              lunchInterval: slotController.serviceDuration.text,
-              dinnerInterval: slotController.dinnerServiceDuration.text,
-              startLunchTime: slotController.startTime.text,
-              endLunchTime: slotController.endTime.text,
-              startDinnerTime: slotController.dinnerStartTime.text,
-              endDinnerTime: slotController.dinnerEndTime.text,)
+        setOffer: slotController.setOffer.text,
+        seats: slotController.noOfGuest.text,
+        startDate: slotController.selectedStartDateTime!,
+        endDate: slotController.selectedEndDateTIme,
+        eveningSlots: slotController.dinnerTimeslots,
+        morningSlots: slotController.timeslots,
+        lunchInterval: slotController.serviceDuration.text,
+        dinnerInterval: slotController.dinnerServiceDuration.text,
+        startLunchTime: slotController.startTime.text,
+        endLunchTime: slotController.endTime.text,
+        startDinnerTime: slotController.dinnerStartTime.text,
+        endDinnerTime: slotController.dinnerEndTime.text,
+      )
           .then((value) {
         showToast("Slot Created Successfully");
         Get.back();
@@ -127,7 +128,7 @@ class _AddBookingSlotState extends State<AddBookingSlot> {
                             const SizedBox(height: 10),
                             RegisterTextFieldWidget(
                               controller: slotController.setOffer,
-                              hint: "Set offer".tr,
+                              hint: "Set Offer".tr,
                               onChanged: (f) {
                                 // clearSlots();
                               },

@@ -143,7 +143,7 @@ class _OderListScreenState extends State<OderListScreen> {
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 28),
                               ),
                               Text(
-                                "Your earning this month",
+                                "Your earning this month".tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12),
                               ),
                             ],
@@ -660,7 +660,6 @@ class _OderListScreenState extends State<OderListScreen> {
     });
   }
 
-
   List<MyOrderModel> filterOrder(List<MyOrderModel> order, String query) {
     if (query.isEmpty) {
       return order; // Return all users if the search query is empty
@@ -728,5 +727,4 @@ class _OderListScreenState extends State<OderListScreen> {
       }).toList();
     }
   }
-
 }

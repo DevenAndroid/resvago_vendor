@@ -94,7 +94,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
           children: [
             Expanded(
               child: Text(
-                !slotController.resetSlots ? "Create Slots".tr : "Create Slot".tr,
+                !slotController.resetSlots ? "Create Slot".tr : "Create Slot".tr,
                 style:
                     GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
@@ -105,7 +105,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                     slotController.resetSlots = !slotController.resetSlots;
                     setState(() {});
                   },
-                  child: Text(!slotController.resetSlots ? "Create Slots".tr : "Previous Slots".tr))
+                  child: Text(!slotController.resetSlots ? "Create Slot".tr : "Previous Slot".tr))
           ],
         ),
         if (slotController.resetSlots == true ||
@@ -441,7 +441,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
           children: [
             Expanded(
               child: Text(
-                !slotController.dinnerResetSlots ? "Create Slots".tr : "Create Slot".tr,
+                !slotController.dinnerResetSlots ? "Create Slot".tr : "Create Slot".tr,
                 style:
                 GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
@@ -452,7 +452,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                     slotController.dinnerResetSlots = !slotController.dinnerResetSlots;
                     setState(() {});
                   },
-                  child: Text(!slotController.dinnerResetSlots ? "Create Slots".tr : "Previous Slots".tr))
+                  child: Text(!slotController.dinnerResetSlots ? "Create Slot".tr : "Previous Slot".tr))
           ],
         ),
         if (slotController.dinnerResetSlots == true || !(slotController.dinnerServiceTimeSloat.isNotEmpty)) ...[

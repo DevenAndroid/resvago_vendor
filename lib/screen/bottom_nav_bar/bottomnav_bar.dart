@@ -481,11 +481,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 0
                               ? Text(
-                            " Dashboard".tr,
+                            "Dashboard".tr,
                             style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w400),
                           )
                               : Text(
-                            " Dashboard".tr,
+                            "Dashboard".tr,
                             style: const TextStyle(color: AppTheme.registortext, fontSize: 15, fontWeight: FontWeight.w400),
                           )
                         ],

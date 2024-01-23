@@ -72,9 +72,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
   void initState() {
     super.initState();
     weekSchedule = generateWeekSchedule();
-    getWeekSchedule(userId).then((value) {
-
-    });
+    getWeekSchedule(userId).then((value) {});
   }
 
   @override
@@ -127,9 +125,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
         weekSchedule = List.from(data['schedule']);
-        setState(() {
-
-        });
+        setState(() {});
         return weekSchedule;
       } else {
         return [];
@@ -149,136 +145,135 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
         backgroundColor: Colors.white,
         appBar: backAppBar(title: "Set Store Time".tr, context: context, backgroundColor: Colors.white),
         body: ListView(
+          physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 10),
           children: [
-              ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: weekSchedule.length,
-                  itemBuilder: (context, index) {
-                    var itemData = weekSchedule[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(kIsWeb ? 20 : 0),
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.greycolor)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Theme(
-                              data: ThemeData(
-                                  checkboxTheme:
-                                      CheckboxThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-                              child: Checkbox(
-                                activeColor: AppTheme.primaryColor,
-                                checkColor: Colors.white,
-                                value: itemData["status"],
-                                onChanged: (value) {
-                                  itemData["status"] = value;
-                                  log(itemData["status"].toString());
-                                  setState(() {});
-                                },
+            ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
+                itemCount: weekSchedule.length,
+                itemBuilder: (context, index) {
+                  var itemData = weekSchedule[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(kIsWeb ? 20 : 0),
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.greycolor)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Theme(
+                            data: ThemeData(
+                                checkboxTheme:
+                                    CheckboxThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                            child: Checkbox(
+                              activeColor: AppTheme.primaryColor,
+                              checkColor: Colors.white,
+                              value: itemData["status"],
+                              onChanged: (value) {
+                                itemData["status"] = value;
+                                log(itemData["status"].toString());
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              itemData["day"].toString(),
+                              style: GoogleFonts.poppins(color: Colors.grey.shade900, fontSize: 14, fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                if ((itemData["status"] ?? false) == false) return;
+                                _showDialog(
+                                  CupertinoTimerPicker(
+                                    mode: CupertinoTimerPickerMode.hm,
+                                    initialTimerDuration: itemData["start_time"].toString().durationTime,
+                                    onTimerDurationChanged: (Duration newDuration) {
+                                      makeDelay(nowPerform: (bool v) {
+                                        String hour =
+                                            "${newDuration.inHours < 10 ? "0${newDuration.inHours}" : newDuration.inHours}";
+                                        int minute = newDuration.inMinutes % 60;
+                                        String inMinute = "${minute < 10 ? "0$minute" : minute}";
+                                        itemData["start_time"] = "$hour:$inMinute";
+                                        setState(() {});
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    itemData["start_time"].toString().normalTime,
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
+                                  ),
+                                  const Icon(Icons.keyboard_arrow_down_rounded)
+                                ],
                               ),
                             ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                itemData["day"].toString(),
-                                style:
-                                    GoogleFonts.poppins(color: Colors.grey.shade900, fontSize: 14, fontWeight: FontWeight.w400),
+                          ),
+                          Expanded(
+                            child: Text(
+                              "To".tr,
+                              style: GoogleFonts.poppins(color: Colors.grey.shade900, fontSize: 14, fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                if ((itemData["status"] ?? false) == false) return;
+                                _showDialog(
+                                  CupertinoTimerPicker(
+                                    mode: CupertinoTimerPickerMode.hm,
+                                    initialTimerDuration: itemData["end_time"].toString().durationTime,
+                                    onTimerDurationChanged: (Duration newDuration) {
+                                      makeDelay(nowPerform: (bool v) {
+                                        String hour =
+                                            "${newDuration.inHours < 10 ? "0${newDuration.inHours}" : newDuration.inHours}";
+                                        int minute = newDuration.inMinutes % 60;
+                                        String inMinute = "${minute < 10 ? "0$minute" : minute}";
+                                        itemData["end_time"] = "$hour:$inMinute";
+                                        setState(() {});
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    itemData["end_time"].toString().normalTime,
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
+                                  ),
+                                  const Icon(Icons.keyboard_arrow_down_rounded)
+                                ],
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () {
-                                  if ((itemData["status"] ?? false) == false) return;
-                                  _showDialog(
-                                    CupertinoTimerPicker(
-                                      mode: CupertinoTimerPickerMode.hm,
-                                      initialTimerDuration: itemData["start_time"].toString().durationTime,
-                                      onTimerDurationChanged: (Duration newDuration) {
-                                        makeDelay(nowPerform: (bool v) {
-                                          String hour =
-                                              "${newDuration.inHours < 10 ? "0${newDuration.inHours}" : newDuration.inHours}";
-                                          int minute = newDuration.inMinutes % 60;
-                                          String inMinute = "${minute < 10 ? "0$minute" : minute}";
-                                          itemData["start_time"] = "$hour:$inMinute";
-                                          setState(() {});
-                                        });
-                                      },
-                                    ),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      itemData["start_time"].toString().normalTime,
-                                      style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
-                                    ),
-                                    const Icon(Icons.keyboard_arrow_down_rounded)
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "To".tr,
-                                style:
-                                    GoogleFonts.poppins(color: Colors.grey.shade900, fontSize: 14, fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () {
-                                  if ((itemData["status"] ?? false) == false) return;
-                                  _showDialog(
-                                    CupertinoTimerPicker(
-                                      mode: CupertinoTimerPickerMode.hm,
-                                      initialTimerDuration: itemData["end_time"].toString().durationTime,
-                                      onTimerDurationChanged: (Duration newDuration) {
-                                        makeDelay(nowPerform: (bool v) {
-                                          String hour =
-                                              "${newDuration.inHours < 10 ? "0${newDuration.inHours}" : newDuration.inHours}";
-                                          int minute = newDuration.inMinutes % 60;
-                                          String inMinute = "${minute < 10 ? "0$minute" : minute}";
-                                          itemData["end_time"] = "$hour:$inMinute";
-                                          setState(() {});
-                                        });
-                                      },
-                                    ),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      itemData["end_time"].toString().normalTime,
-                                      style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
-                                    ),
-                                    const Icon(Icons.keyboard_arrow_down_rounded)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ).appPaddingForScreen,
-                    );
-                  }),
+                          ),
+                        ],
+                      ),
+                    ).appPaddingForScreen,
+                  );
+                }),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(
                 onPressed: () async {
-                    await uploadWeekSchedule(FirebaseAuth.instance.currentUser!.uid, weekSchedule);
-                    // Get.back();
+                  await uploadWeekSchedule(FirebaseAuth.instance.currentUser!.uid, weekSchedule);
+                  // Get.back();
                   // getWeekSchedule(userId);
                 },
                 style: ElevatedButton.styleFrom(
@@ -290,7 +285,7 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Text(
-                    "Continue".tr.toUpperCase(),
+                    "CONTINUE".tr,
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                 )).appPaddingForScreen,

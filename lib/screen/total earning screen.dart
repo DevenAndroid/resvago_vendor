@@ -245,7 +245,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                 ),
                                 const SizedBox(width: 20),
                                 Text(
-                                  "TOTAL EARNING",
+                                  "Total Earning".tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w400),
                                 ),
                               ],
@@ -325,7 +325,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                   Get.back();
                                 },
                                 child: Text(
-                                  "Withdrawal Amount",
+                                  "Withdrawal Amount".tr,
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
                                 )),
                           ),
@@ -374,7 +374,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                     borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(10))),
                                 fillColor: Colors.white,
                                 contentPadding: EdgeInsets.symmetric(horizontal: AddSize.padding20, vertical: AddSize.padding10),
-                                hintText: 'Search',
+                                hintText: 'Search'.tr,
                                 hintStyle: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w300)),
                           ),
                         ),
@@ -433,7 +433,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            "Order ID:",
+                                                            "Order ID:".tr,
                                                             style: GoogleFonts.poppins(
                                                                 color: const Color(0xFF21283D),
                                                                 fontSize: 12,
@@ -443,7 +443,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                             height: 3,
                                                           ),
                                                           Text(
-                                                            "Amount:",
+                                                            "Amount:".tr,
                                                             style: GoogleFonts.poppins(
                                                                 color: const Color(0xFF21283D),
                                                                 fontSize: 12,
@@ -463,7 +463,7 @@ class _TotalEarningScreenState extends State<TotalEarningScreen> {
                                                             height: 3,
                                                           ),
                                                           Text(
-                                                            "Earning:",
+                                                            "Earning:".tr,
                                                             style: GoogleFonts.poppins(
                                                                 color: const Color(0xFF21283D),
                                                                 fontSize: 12,

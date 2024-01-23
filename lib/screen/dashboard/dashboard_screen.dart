@@ -182,10 +182,19 @@ class _VendorDashboardState extends State<VendorDashboard> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Hi, ${(profileController.profileData!.restaurantName ?? "")}",
-                              style: GoogleFonts.ibmPlexSansArabic(
-                                  fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
+                            Row(
+                              children: [
+                                Text(
+                                  "Hi".tr,
+                                  style: GoogleFonts.ibmPlexSansArabic(
+                                      fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
+                                ),
+                                Text(
+                                  ", ${(profileController.profileData!.restaurantName ?? "")}".tr,
+                                  style: GoogleFonts.ibmPlexSansArabic(
+                                      fontWeight: FontWeight.w500, fontSize: AddSize.font16, color: const Color(0xff292F45)),
+                                ),
+                              ],
                             ),
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
@@ -197,9 +206,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Restaurant Time: ".tr,
+                                    "Restaurant Time:".tr,
                                     style: GoogleFonts.ibmPlexSansArabic(
                                         fontWeight: FontWeight.w500, fontSize: AddSize.font14, color: const Color(0xff737A8A)),
+                                  ),
+                                  SizedBox(
+                                    width: AddSize.size5,
                                   ),
                                   Flexible(child: RestaurantTimingScreen(docId: profileData.docid.toString())),
                                   SizedBox(
@@ -336,7 +348,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Gross Sales",
+                                  "Gross Sales".tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -391,7 +403,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Earning",
+                                  "Earning".tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -470,7 +482,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Sold Items",
+                                  "Sold items".tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -544,7 +556,7 @@ class _VendorDashboardState extends State<VendorDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Order Received",
+                                  "Order Received".tr,
                                   style: GoogleFonts.ibmPlexSansArabic(
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -565,12 +577,12 @@ class _VendorDashboardState extends State<VendorDashboard> {
                   ],
                 ),
               ),
-              const TabBar(labelColor: Color(0xFF454B5C), indicatorColor: Color(0xFF3B5998), indicatorWeight: 4, tabs: [
+              TabBar(labelColor: const Color(0xFF454B5C), indicatorColor: const Color(0xFF3B5998), indicatorWeight: 4, tabs: [
                 Tab(
-                  text: "Dining",
+                  text: "Dining".tr,
                 ),
                 Tab(
-                  text: "Delivery",
+                  text: "Delivery".tr,
                 ),
               ]),
               Expanded(

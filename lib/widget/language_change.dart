@@ -96,7 +96,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'LANGUAGE'.tr,
+                              'Language'.tr,
                               style: const TextStyle(
                                   color: AppTheme.blackcolor, fontSize: 16),
                             ),

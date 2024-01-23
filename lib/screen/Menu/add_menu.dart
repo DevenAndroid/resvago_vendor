@@ -220,7 +220,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                       RegisterTextFieldWidget(
                         controller: dishNameController,
                         validator: RequiredValidator(errorText: 'Please enter your menu name ').call,
-                        hint: 'Dish Name',
+                        hint: 'Dish Name'.tr,
                       ),
                       const SizedBox(
                         height: 20,
@@ -352,7 +352,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
                         controller: descriptionController,
                         validator: RequiredValidator(errorText: 'Please enter menu description ').call,
                         keyboardType: TextInputType.streetAddress,
-                        hint: 'Menu Description',
+                        hint: 'Menu Description'.tr,
                       ),
                       const SizedBox(
                         height: 20,

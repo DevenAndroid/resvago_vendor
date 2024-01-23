@@ -99,6 +99,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
+    final QuerySnapshot result1 =
+    await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
+    if (result1.docs.isNotEmpty) {
+      Fluttertoast.showToast(msg: 'Email already used in customer please use another account');
+      return;
+    }
     addUserToFirestore();
   }
 
@@ -393,7 +399,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
-                        hint: 'Enter your email',
+                        hint: 'Enter your email'.tr,
                       ),
                       const SizedBox(
                         height: 10,
@@ -428,7 +434,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ]).call,
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
-                        hint: 'Enter your password',
+                        hint: 'Enter your password'.tr,
                       ),
                       const SizedBox(
                         height: 10,
@@ -465,7 +471,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         keyboardType: TextInputType.emailAddress,
                         // textInputAction: TextInputAction.next,
-                        hint: 'Enter your confirm password',
+                        hint: 'Enter your confirm password'.tr,
                       ),
                       const SizedBox(
                         height: 20,
@@ -778,7 +784,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textDirection: TextDirection.rtl,
                             softWrap: true,
                             text: TextSpan(
-                              text: 'Yes I understand and agree to the'.tr,
+                              text: 'Yes I understand and agree to the '.tr,
                               style: const TextStyle(color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
@@ -832,7 +838,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "Already Have an Account?".tr,
                             style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
                           ),
-                          SizedBox(width: 5,),
+                          const SizedBox(width: 5,),
                           InkWell(
                             onTap: () {
                               Get.back();

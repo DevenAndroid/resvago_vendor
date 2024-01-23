@@ -1298,20 +1298,44 @@ class _ProductGalleryImagesState extends State<ProductGalleryImages> {
                           }
                         },
                         child: kIsWeb
-                            ? Text(
-                                'Choose From Gallery ${controller.galleryImagesList1.isNotEmpty ? "${controller.galleryImagesList1.length}/20" : "${controller.galleryImagesList1.length}/20"}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                ))
-                            : Text(
-                                'Choose From Gallery ${controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/20" : ""}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ? Row(
+                                children: [
+                                  Text('Choose From Gallery'.tr,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  Text(
+                                      controller.galleryImagesList1.isNotEmpty
+                                          ? "${controller.galleryImagesList1.length}/20"
+                                          : "${controller.galleryImagesList1.length}/20",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.w600,
+                                      ))
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                    'Choose From Gallery'.tr,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.galleryImages.isNotEmpty ? "${controller.galleryImages.length}/20" : "",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                       ),
                     ],
@@ -1621,20 +1645,44 @@ class _ProductMenuImagesState extends State<ProductMenuImages> {
                           }
                         },
                         child: kIsWeb
-                            ? Text(
-                                'Choose From Gallery ${controller.galleryImagesList2.isNotEmpty ? "${controller.galleryImagesList2.length}/20" : "${controller.galleryImagesList2.length}/20"}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                ))
-                            : Text(
-                                'Choose From Gallery ${controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/20" : ""}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ? Row(
+                                children: [
+                                  Text('Choose From Gallery'.tr,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  Text(
+                                      controller.galleryImagesList2.isNotEmpty
+                                          ? "${controller.galleryImagesList2.length}/20"
+                                          : "${controller.galleryImagesList2.length}/20",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                    'Choose From Gallery'.tr,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.menuGallery.isNotEmpty ? "${controller.menuGallery.length}/20" : "",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                       ),
                     ],

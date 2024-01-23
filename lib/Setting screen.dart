@@ -290,8 +290,9 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Setting", context: context),
+      appBar: backAppBar(title: "Setting".tr, context: context),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -306,7 +307,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Set Delivery",
+                        "Set Delivery".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -333,7 +334,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Cancellation",
+                        "Cancellation".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -360,7 +361,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Menu selection",
+                        "Menu selection".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -391,7 +392,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: Row(
                       children: [
                         Text(
-                          "Payment enable",
+                          "Payment enable".tr,
                           style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                         ),
                         const Spacer(),
@@ -419,7 +420,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Enable 2 step Verification",
+                        "Enable 2 step Verification".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -439,7 +440,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 20,
               ),
               Text(
-                "Preparation time(min)",
+                "Preparation time(min)".tr,
                 style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
               ),
               const SizedBox(
@@ -452,13 +453,13 @@ class _SettingScreenState extends State<SettingScreen> {
               //     RequiredValidator(errorText: 'Please enter your preparation Time'),
               //   ]).call,
               //   keyboardType: TextInputType.number,
-                hint: 'Preparation time',
+                hint: 'Preparation time'.tr,
               ),
               const SizedBox(
                 height: 20,
               ),
               Text(
-                "Average meal for 1 Member",
+                "Average meal for 1 Member".tr,
                 style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
               ),
               const SizedBox(
@@ -473,10 +474,10 @@ class _SettingScreenState extends State<SettingScreen> {
                 hint: '\$0.00',
               ),
               const SizedBox(
-                height: 130,
+                height: 50,
               ),
               CommonButtonBlue(
-                title: "Submit",
+                title: "Submit".tr,
                 onPressed: () {
                   updateProfileToFirestore();
                 },

@@ -249,7 +249,7 @@ class _BookableUIState extends State<BookableUI> {
                         });
                       }),
                   Text(
-                    "Lunch Time Slot",
+                    "Lunch Time Slot".tr,
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
                   )
                 ],
@@ -344,7 +344,7 @@ class _BookableUIState extends State<BookableUI> {
                         });
                       }),
                   Text(
-                    "Dinner Time Slot",
+                    "Dinner Time Slot".tr,
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 16),
                   )
                 ],
