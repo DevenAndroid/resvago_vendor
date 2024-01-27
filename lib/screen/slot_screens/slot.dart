@@ -9,7 +9,7 @@ import '../../model/createslot_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/common_text_field.dart';
-import '../create_slot.dart';
+import 'create_slot.dart';
 
 class BookableUI extends StatefulWidget {
   String title;
@@ -285,7 +285,7 @@ class _BookableUIState extends State<BookableUI> {
                     ],
                   ),
                   if (widget.slotDataList == null || slotController.editLunch == true)
-                    const CreateSlotsScreen()
+                     CreateSlotsScreen()
                   else
                     ...morningSlots.map((e) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

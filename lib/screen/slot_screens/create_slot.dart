@@ -6,14 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../controllers/slot_controller.dart';
-import '../helper.dart';
-import '../model/slot_model.dart';
-import '../widget/apptheme.dart';
-import '../widget/common_text_field.dart';
+import '../../controllers/slot_controller.dart';
+import '../../helper.dart';
+import '../../model/createslot_model.dart';
+import '../../model/slot_model.dart';
+import '../../widget/apptheme.dart';
+import '../../widget/common_text_field.dart';
 
 class CreateSlotsScreen extends StatefulWidget {
-  const CreateSlotsScreen({super.key});
+  CreateSlotsScreen({
+    super.key,
+  });
 
   @override
   State<CreateSlotsScreen> createState() => _CreateSlotsScreenState();
@@ -36,6 +39,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
     }
   }
 
+  final DateFormat timeFormat = DateFormat("hh:mm a");
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
       context: context,
@@ -89,14 +93,15 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
               child: Text(
                 !slotController.resetSlots ? "Create Slot".tr : "Create Slot".tr,
-                style:
-                    GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
             ),
             if (slotController.serviceTimeSloat.isNotEmpty)
@@ -108,8 +113,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                   child: Text(!slotController.resetSlots ? "Create Slot".tr : "Previous Slot".tr))
           ],
         ),
-        if (slotController.resetSlots == true ||
-            !(slotController.serviceTimeSloat.isNotEmpty)) ...[
+        if (slotController.resetSlots == true || !(slotController.serviceTimeSloat.isNotEmpty)) ...[
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,8 +122,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                   child: RegisterTextFieldWidget(
                       readOnly: true,
                       onTap: () {
-                        String hour =
-                            "${startDuration.inHours < 10 ? "0${startDuration.inHours}" : startDuration.inHours}";
+                        String hour = "${startDuration.inHours < 10 ? "0${startDuration.inHours}" : startDuration.inHours}";
                         int minute = startDuration.inMinutes % 60;
                         String inMinute = "${minute < 10 ? "0$minute" : minute}";
                         slotController.startTime.text = "$hour : $inMinute";
@@ -162,8 +165,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                   child: RegisterTextFieldWidget(
                       readOnly: true,
                       onTap: () {
-                        String hour =
-                            "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
+                        String hour = "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
                         int minute = endDuration.inMinutes % 60;
                         String inMinute = "${minute < 10 ? "0$minute" : minute}";
                         slotController.endTime.text = "$hour : $inMinute";
@@ -180,8 +182,7 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                                 if (kDebugMode) {
                                   print("performed....    $endDuration");
                                 }
-                                String hour =
-                                    "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
+                                String hour = "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
                                 int minute = endDuration.inMinutes % 60;
                                 String inMinute = "${minute < 10 ? "0$minute" : minute}";
                                 slotController.endTime.text = "$hour : $inMinute";
@@ -198,8 +199,8 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                         if (value!.trim().isEmpty) {
                           return "End time is required".tr;
                         }
-                        if(endDuration<=startDuration){
-                          return  "Start time is less than end time".tr;
+                        if (endDuration <= startDuration) {
+                          return "Start time is less than end time".tr;
                         }
                         return null;
                       }),
@@ -219,16 +220,14 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                 if (value!.trim().isEmpty) {
                   return "Service duration is required".tr;
                 }
-                if (startDateTime
-                        .difference(endDateTime)
-                        .abs()
-                        .compareTo(Duration(minutes: int.tryParse(value) ?? 0)) ==
-                    -1) {
+                if (startDateTime.difference(endDateTime).abs().compareTo(Duration(minutes: int.tryParse(value) ?? 0)) == -1) {
                   return "Service duration is greater then start & end time duration".tr;
                 }
                 return null;
               }),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -246,23 +245,8 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                       showToast("Select service duration".tr);
                       return;
                     }
-
                     slotController.slots.clear();
-                    if (kDebugMode) {
-                      print(startDateTime.difference(endDateTime).abs());
-                      print(startDateTime
-                          .difference(endDateTime)
-                          .abs()
-                          .compareTo(Duration(minutes: int.tryParse(slotController.serviceDuration.text) ?? 0)));
-                      print(startDateTime
-                              .difference(endDateTime)
-                              .abs()
-                              .compareTo(Duration(minutes: int.tryParse(slotController.serviceDuration.text) ?? 0)) ==
-                          -1);
-                    }
-
                     Duration minutes = Duration(minutes: int.tryParse(slotController.serviceDuration.text) ?? 0);
-
                     DateTime temp = startDateTime;
                     while (temp.millisecondsSinceEpoch < endDateTime.millisecondsSinceEpoch) {
                       slotController.slots[{temp: temp.add(minutes)}] = false;
@@ -270,8 +254,6 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
                     }
                     FocusManager.instance.primaryFocus!.unfocus();
                     setState(() {});
-                    // updateValues();
-                    log(slotController.slots.toString());
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
@@ -358,7 +340,6 @@ class _CreateSlotsScreenState extends State<CreateSlotsScreen> {
   }
 }
 
-
 class DinnerCreateSlotsScreen extends StatefulWidget {
   const DinnerCreateSlotsScreen({super.key});
 
@@ -436,14 +417,15 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
               child: Text(
                 !slotController.dinnerResetSlots ? "Create Slot".tr : "Create Slot".tr,
-                style:
-                GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, color: const Color(0xff2F2F2F), fontSize: 15),
               ),
             ),
             if (slotController.dinnerServiceTimeSloat.isNotEmpty)
@@ -465,8 +447,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       readOnly: true,
                       hint: "Start Time".tr,
                       onTap: () {
-                        String hour =
-                            "${startDuration.inHours < 10 ? "0${startDuration.inHours}" : startDuration.inHours}";
+                        String hour = "${startDuration.inHours < 10 ? "0${startDuration.inHours}" : startDuration.inHours}";
                         int minute = startDuration.inMinutes % 60;
                         String inMinute = "${minute < 10 ? "0$minute" : minute}";
                         slotController.dinnerStartTime.text = "$hour : $inMinute";
@@ -509,8 +490,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       readOnly: true,
                       hint: "End Time".tr,
                       onTap: () {
-                        String hour =
-                            "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
+                        String hour = "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
                         int minute = endDuration.inMinutes % 60;
                         String inMinute = "${minute < 10 ? "0$minute" : minute}";
                         slotController.dinnerEndTime.text = "$hour : $inMinute";
@@ -527,8 +507,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                                 if (kDebugMode) {
                                   print("performed....    $endDuration");
                                 }
-                                String hour =
-                                    "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
+                                String hour = "${endDuration.inHours < 10 ? "0${endDuration.inHours}" : endDuration.inHours}";
                                 int minute = endDuration.inMinutes % 60;
                                 String inMinute = "${minute < 10 ? "0$minute" : minute}";
                                 slotController.dinnerEndTime.text = "$hour : $inMinute";
@@ -544,8 +523,8 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                         if (value!.trim().isEmpty) {
                           return "End time is required".tr;
                         }
-                        if(endDuration<=startDuration){
-                          return  "Start time is less than end time".tr;
+                        if (endDuration <= startDuration) {
+                          return "Start time is less than end time".tr;
                         }
                         return null;
                       }),
@@ -565,11 +544,7 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                 if (value!.trim().isEmpty) {
                   return "Service duration is required".tr;
                 }
-                if (startDateTime
-                    .difference(endDateTime)
-                    .abs()
-                    .compareTo(Duration(minutes: int.tryParse(value) ?? 0)) ==
-                    -1) {
+                if (startDateTime.difference(endDateTime).abs().compareTo(Duration(minutes: int.tryParse(value) ?? 0)) == -1) {
                   return "Service duration is greater then start & end time duration".tr;
                 }
                 return null;
@@ -601,9 +576,9 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                           .abs()
                           .compareTo(Duration(minutes: int.tryParse(slotController.dinnerServiceDuration.text) ?? 0)));
                       print(startDateTime
-                          .difference(endDateTime)
-                          .abs()
-                          .compareTo(Duration(minutes: int.tryParse(slotController.dinnerServiceDuration.text) ?? 0)) ==
+                              .difference(endDateTime)
+                              .abs()
+                              .compareTo(Duration(minutes: int.tryParse(slotController.dinnerServiceDuration.text) ?? 0)) ==
                           -1);
                     }
 
@@ -624,7 +599,9 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
                       surfaceTintColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                   child: Text(
-                    slotController.dinnerSlots.isEmpty ? "Create Slot".tr : "Slots Created - ${slotController.dinnerSlots.length}",
+                    slotController.dinnerSlots.isEmpty
+                        ? "Create Slot".tr
+                        : "Slots Created - ${slotController.dinnerSlots.length}",
                     style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
                   ),
                 ),
@@ -704,7 +681,6 @@ class _DinnerCreateSlotsScreenState extends State<DinnerCreateSlotsScreen> {
   }
 }
 
-
 extension ConvertToDateon on Duration {
   DateTime get fromTodayStart {
     DateTime now = DateTime.now();
@@ -716,7 +692,11 @@ extension ConvertToDateon on Duration {
 class SingleSlotUI extends StatefulWidget {
   final int index;
   final DateTime endDateTime;
-  const SingleSlotUI({super.key, required this.index, required this.endDateTime,});
+  const SingleSlotUI({
+    super.key,
+    required this.index,
+    required this.endDateTime,
+  });
 
   @override
   State<SingleSlotUI> createState() => _SingleSlotUIState();
@@ -760,7 +740,11 @@ class _SingleSlotUIState extends State<SingleSlotUI> {
 class DinnerSingleSlotUI extends StatefulWidget {
   final int index;
   final DateTime endDateTime;
-  const DinnerSingleSlotUI({super.key, required this.index, required this.endDateTime,});
+  const DinnerSingleSlotUI({
+    super.key,
+    required this.index,
+    required this.endDateTime,
+  });
 
   @override
   State<DinnerSingleSlotUI> createState() => _DinnerSingleSlotUIState();

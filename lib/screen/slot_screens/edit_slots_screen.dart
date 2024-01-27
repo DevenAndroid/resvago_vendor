@@ -57,10 +57,10 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
     slotController.setOffer.text = (widget.createSlotData!.setOffer ?? "").toString();
     slotController.serviceDuration.text = (widget.createSlotData!.lunchInterval ?? "").toString();
     slotController.dinnerServiceDuration.text = (widget.createSlotData!.dinnerInterval ?? "").toString();
-    slotController.startTime.text = (widget.createSlotData!.startLunchTime ?? "").toString();
-    slotController.endTime.text = (widget.createSlotData!.endLunchTime ?? "").toString();
-    slotController.dinnerStartTime.text = (widget.createSlotData!.startDinnerTime ?? "").toString();
-    slotController.dinnerEndTime.text = (widget.createSlotData!.endDinnerTime ?? "").toString();
+    slotController.startTime.text = "";
+    slotController.endTime.text = "";
+    slotController.dinnerStartTime.text = "";
+    slotController.dinnerEndTime.text = "";
     // slotController.dateType.value = slotDataList!.dateType ?? "date";
     setState(() {});
   }
@@ -135,12 +135,8 @@ class _EditSlotsScreenState extends State<EditSlotsScreen> {
                                     startDinnerTime: slotController.dinnerStartTime.text,
                                     endDinnerTime: slotController.dinnerEndTime.text,
                                     endDate: null,
-                                    eveningSlots: slotController.editDinner
-                                        ? slotController.dinnerTimeslots
-                                        : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
-                                    morningSlots: slotController.editLunch
-                                        ? slotController.timeslots
-                                        : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
+                                    eveningSlots: slotController.editDinner ? slotController.dinnerTimeslots : widget.createSlotData!.eveningSlots!.entries.map((e) => e.key).toList(),
+                                    morningSlots: slotController.editLunch ? slotController.timeslots : widget.createSlotData!.morningSlots!.entries.map((e) => e.key).toList(),
                                   );
                                   showToast("Slot Updated Successfully");
                                   widget.refreshValues();

@@ -172,7 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 content: Text("Otp email sent to ${emailController.text.trim()}"),
               ));
             }
-            Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp));
+            Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp,pass:passwordController.text));
           });
         }).catchError((e) async {
           showToast(e);

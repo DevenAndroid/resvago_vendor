@@ -357,616 +357,619 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F6F6),
-      appBar: AppBar(
-        leading: BackButton(
-          color: Colors.black,
-          onPressed: () {
-            Get.back();
-          },
+    return Theme(
+      data: ThemeData(useMaterial3: true, backgroundColor: Colors.white),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF6F6F6),
+        appBar: AppBar(
+          leading: BackButton(
+            color: Colors.black,
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Form(
-          key: _formKeySignup,
-          child: Column(
-            children: [
-              Container(
-                // padding: const EdgeInsets.all(15),
-                width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                            width: kIsWeb ? 500 : size.width,
-                            padding: const EdgeInsets.only(bottom: 30),
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                            child: Image.asset('assets/images/Group.png')),
-                        Positioned(
-                          top: 90,
-                          left: 0,
-                          right: 0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                width: 100,
-                                child: kIsWeb
-                                    ? Stack(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(10000),
-                                            child: Container(
-                                                height: 100,
-                                                width: 100,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xffFAAF40),
-                                                  border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                                  borderRadius: BorderRadius.circular(5000),
-                                                  // color: Colors.brown
-                                                ),
-                                                child: pickedFile != null
-                                                    ? Image.memory(
-                                                        pickedFile!,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                          fit: BoxFit.cover,
-                                                          imageUrl: controller.categoryFile.path,
-                                                          height: AddSize.size30,
-                                                          width: AddSize.size30,
-                                                          errorWidget: (_, __, ___) => const Icon(
-                                                            Icons.person,
-                                                            size: 60,
-                                                          ),
-                                                          placeholder: (_, __) => const SizedBox(),
-                                                        ),
-                                                      )
-                                                    : Image.network(
-                                                        fileUrl,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                          fit: BoxFit.cover,
-                                                          imageUrl: controller.categoryFile.path,
-                                                          height: AddSize.size30,
-                                                          width: AddSize.size30,
-                                                          errorWidget: (_, __, ___) => const Icon(
-                                                            Icons.person,
-                                                            size: 60,
-                                                          ),
-                                                          placeholder: (_, __) => const SizedBox(),
-                                                        ),
-                                                      )),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            child: IconButton(
-                                              onPressed: () {
-                                                Helper.addFilePicker().then((value) {
-                                                  pickedFile = value;
-                                                  setState(() {});
-                                                });
-                                              },
-                                              icon: Container(
-                                                height: 30,
-                                                width: 30,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xff04666E),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.camera_alt,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    : Stack(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(10000),
-                                            child: Container(
-                                                height: 100,
-                                                width: 100,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xffFAAF40),
-                                                  border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                                  borderRadius: BorderRadius.circular(5000),
-                                                  // color: Colors.brown
-                                                ),
-                                                child: controller.categoryFile.path.contains("http") ||
-                                                        controller.categoryFile.path == ""
-                                                    ? Image.network(
-                                                        profileData.image.toString(),
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                          fit: BoxFit.cover,
-                                                          imageUrl: profileData.image.toString(),
-                                                          height: AddSize.size30,
-                                                          width: AddSize.size30,
-                                                          errorWidget: (_, __, ___) => const Icon(
-                                                            Icons.person,
-                                                            size: 20,
-                                                            color: Colors.black,
-                                                          ),
-                                                          placeholder: (_, __) => const SizedBox(),
-                                                        ),
-                                                      )
-                                                    : Image.file(
-                                                        controller.categoryFile,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                          fit: BoxFit.cover,
-                                                          imageUrl: controller.categoryFile.path,
-                                                          height: AddSize.size30,
-                                                          width: AddSize.size30,
-                                                          errorWidget: (_, __, ___) => const Icon(
-                                                            Icons.person,
-                                                            size: 60,
-                                                          ),
-                                                          placeholder: (_, __) => const SizedBox(),
-                                                        ),
-                                                      )
-                                                // controller.categoryFile.path.contains("http") || controller.categoryFile.path == ""
-                                                //     ? Image.network(
-                                                //   controller.categoryFile.path,
-                                                //         fit: BoxFit.cover,
-                                                //         errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                //           fit: BoxFit.cover,
-                                                //           imageUrl: controller.categoryFile.path,
-                                                //           height: AddSize.size30,
-                                                //           width: AddSize.size30,
-                                                //           errorWidget: (_, __, ___) => const Icon(
-                                                //             Icons.person,
-                                                //             size: 60,
-                                                //           ),
-                                                //           placeholder: (_, __) => const SizedBox(),
-                                                //         ),
-                                                //       )
-                                                //     : Image.file(
-                                                //   controller.categoryFile,
-                                                //         fit: BoxFit.cover,
-                                                //         errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                //           fit: BoxFit.cover,
-                                                //           imageUrl: controller.categoryFile.path,
-                                                //           height: AddSize.size30,
-                                                //           width: AddSize.size30,
-                                                //           errorWidget: (_, __, ___) => const Icon(
-                                                //             Icons.person,
-                                                //             size: 60,
-                                                //           ),
-                                                //           placeholder: (_, __) => const SizedBox(),
-                                                //         ),
-                                                //       )
-                                                ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            child: GestureDetector(
-                                              behavior: HitTestBehavior.translucent,
-                                              onTap: () {
-                                                showActionSheet(context);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xff04666E),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.camera_alt,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        restaurantController.text.toString(),
-                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        emailController.text.toString(),
-                        style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        extendBodyBehindAppBar: true,
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKeySignup,
+            child: Column(
+              children: [
+                Container(
+                  // padding: const EdgeInsets.all(15),
+                  width: size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
                         children: [
-                          Text(
-                            'Restaurant Name'.tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          RegisterTextFieldWidget(
-                            controller: restaurantController,
-                            validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
-                            hint:
-                                profileData.restaurantName == null ? "restaurant name".tr : profileData.restaurantName.toString(),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Category".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          if (categoryList != null)
-                            RegisterTextFieldWidget(
-                              readOnly: true,
-                              controller: categoryController,
-                              // length: 10,
-                              // validator: MultiValidator([
-                              //   RequiredValidator(errorText: 'Please enter your category'.tr),
-                              // ]).call,
-                              keyboardType: TextInputType.emailAddress,
-                              hint: 'Select category'.tr,
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    content: SizedBox(
-                                      height: 400,
-                                      width: double.maxFinite,
-                                      child: ListView.builder(
-                                        physics: const AlwaysScrollableScrollPhysics(),
-                                        itemCount: categoryList!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return InkWell(
-                                              onTap: () {
-                                                categoryController.text = categoryList![index].name;
-                                                Get.back();
-                                                setState(() {});
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                child: Text(categoryList![index].name),
-                                              ));
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          else
-                            Center(
-                              child: Text("No Category Available".tr),
-                            ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Email".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          RegisterTextFieldWidget(
-                            readOnly: true,
-                            controller: emailController,
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your email'.tr),
-                              EmailValidator(errorText: 'Enter a valid email address'.tr),
-                            ]).call,
-                            keyboardType: TextInputType.emailAddress,
-                            // textInputAction: TextInputAction.next,
-                            hint: profileData.email == null ? "email" : profileData.email.toString(),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Mobile Number".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          IntlPhoneField(
-                            key: ValueKey(kk),
-                            cursorColor: Colors.black,
-                            dropdownIcon: const Icon(
-                              Icons.arrow_drop_down_rounded,
-                              color: Colors.black,
-                            ),
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your phone number'.tr),
-                            ]).call,
-                            dropdownTextStyle: const TextStyle(color: Colors.black),
-                            style: const TextStyle(color: Colors.black),
-                            flagsButtonPadding: const EdgeInsets.all(8),
-                            dropdownIconPosition: IconPosition.trailing,
-                            controller: mobileController,
-                            decoration: InputDecoration(
-                                hintStyle: const TextStyle(
-                                  color: Color(0xFF384953),
-                                  fontSize: 14,
-                                  // fontFamily: 'poppins',
-                                  fontWeight: FontWeight.w300,
+                          Container(
+                              width: kIsWeb ? 500 : size.width,
+                              padding: const EdgeInsets.only(bottom: 30),
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+                              child: Image.asset('assets/images/Group.png')),
+                          Positioned(
+                            top: 90,
+                            left: 0,
+                            right: 0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: kIsWeb
+                                      ? Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(10000),
+                                              child: Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xffFAAF40),
+                                                    border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                    borderRadius: BorderRadius.circular(5000),
+                                                    // color: Colors.brown
+                                                  ),
+                                                  child: pickedFile != null
+                                                      ? Image.memory(
+                                                          pickedFile!,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                            fit: BoxFit.cover,
+                                                            imageUrl: controller.categoryFile.path,
+                                                            height: AddSize.size30,
+                                                            width: AddSize.size30,
+                                                            errorWidget: (_, __, ___) => const Icon(
+                                                              Icons.person,
+                                                              size: 60,
+                                                            ),
+                                                            placeholder: (_, __) => const SizedBox(),
+                                                          ),
+                                                        )
+                                                      : Image.network(
+                                                          fileUrl,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                            fit: BoxFit.cover,
+                                                            imageUrl: controller.categoryFile.path,
+                                                            height: AddSize.size30,
+                                                            width: AddSize.size30,
+                                                            errorWidget: (_, __, ___) => const Icon(
+                                                              Icons.person,
+                                                              size: 60,
+                                                            ),
+                                                            placeholder: (_, __) => const SizedBox(),
+                                                          ),
+                                                        )),
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  Helper.addFilePicker().then((value) {
+                                                    pickedFile = value;
+                                                    setState(() {});
+                                                  });
+                                                },
+                                                icon: Container(
+                                                  height: 30,
+                                                  width: 30,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xff04666E),
+                                                    borderRadius: BorderRadius.circular(50),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.camera_alt,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(10000),
+                                              child: Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xffFAAF40),
+                                                    border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                    borderRadius: BorderRadius.circular(5000),
+                                                    // color: Colors.brown
+                                                  ),
+                                                  child: controller.categoryFile.path.contains("http") ||
+                                                          controller.categoryFile.path == ""
+                                                      ? Image.network(
+                                                          profileData.image.toString(),
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                            fit: BoxFit.cover,
+                                                            imageUrl: profileData.image.toString(),
+                                                            height: AddSize.size30,
+                                                            width: AddSize.size30,
+                                                            errorWidget: (_, __, ___) => const Icon(
+                                                              Icons.person,
+                                                              size: 20,
+                                                              color: Colors.black,
+                                                            ),
+                                                            placeholder: (_, __) => const SizedBox(),
+                                                          ),
+                                                        )
+                                                      : Image.file(
+                                                          controller.categoryFile,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                            fit: BoxFit.cover,
+                                                            imageUrl: controller.categoryFile.path,
+                                                            height: AddSize.size30,
+                                                            width: AddSize.size30,
+                                                            errorWidget: (_, __, ___) => const Icon(
+                                                              Icons.person,
+                                                              size: 60,
+                                                            ),
+                                                            placeholder: (_, __) => const SizedBox(),
+                                                          ),
+                                                        )
+                                                  // controller.categoryFile.path.contains("http") || controller.categoryFile.path == ""
+                                                  //     ? Image.network(
+                                                  //   controller.categoryFile.path,
+                                                  //         fit: BoxFit.cover,
+                                                  //         errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                  //           fit: BoxFit.cover,
+                                                  //           imageUrl: controller.categoryFile.path,
+                                                  //           height: AddSize.size30,
+                                                  //           width: AddSize.size30,
+                                                  //           errorWidget: (_, __, ___) => const Icon(
+                                                  //             Icons.person,
+                                                  //             size: 60,
+                                                  //           ),
+                                                  //           placeholder: (_, __) => const SizedBox(),
+                                                  //         ),
+                                                  //       )
+                                                  //     : Image.file(
+                                                  //   controller.categoryFile,
+                                                  //         fit: BoxFit.cover,
+                                                  //         errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                  //           fit: BoxFit.cover,
+                                                  //           imageUrl: controller.categoryFile.path,
+                                                  //           height: AddSize.size30,
+                                                  //           width: AddSize.size30,
+                                                  //           errorWidget: (_, __, ___) => const Icon(
+                                                  //             Icons.person,
+                                                  //             size: 60,
+                                                  //           ),
+                                                  //           placeholder: (_, __) => const SizedBox(),
+                                                  //         ),
+                                                  //       )
+                                                  ),
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: GestureDetector(
+                                                behavior: HitTestBehavior.translucent,
+                                                onTap: () {
+                                                  showActionSheet(context);
+                                                },
+                                                child: Container(
+                                                  height: 30,
+                                                  width: 30,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xff04666E),
+                                                    borderRadius: BorderRadius.circular(50),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.camera_alt,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                 ),
-                                hintText: 'Phone Number'.tr,
-                                // labelStyle: TextStyle(color: Colors.black),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(),
-                                ),
-                                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
-                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
-                            initialCountryCode: country,
-                            keyboardType: TextInputType.number,
-                            onCountryChanged: (phone) {
-                              setState(() {
-                                code = "+${phone.dialCode}";
-                                country = phone.code;
-                                log(phone.code.toString());
-                                log(phone.dialCode.toString());
-                              });
-                            },
-                          ),
-                          // RegisterTextFieldWidget(
-                          //   // readOnly: true,
-                          //   controller: mobileController,
-                          //   length: 10,
-                          //   // validator: RequiredValidator(errorText: 'Please enter your Mobile Number'.tr).call,
-                          //   keyboardType: TextInputType.number,
-                          //   // textInputAction: TextInputAction.next,
-                          //   hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
-                          // ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Address".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          RegisterTextFieldWidget(
-                            controller: _searchController,
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your location'.tr),
-                            ]).call,
-                            keyboardType: TextInputType.emailAddress,
-                            hint: 'Search your location',
-                            onChanged: (value) {
-                              makeDelay(delay: () {
-                                _searchPlaces(value);
-                              });
-                            },
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          googlePlacesModel != null
-                              ? Container(
-                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-                                  child: ListView.builder(
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    itemCount: googlePlacesModel!.places!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      final item = googlePlacesModel!.places![index];
-                                      return InkWell(
-                                          onTap: () {
-                                            _searchController.text = item.name ?? "";
-                                            selectedPlace = item;
-                                            googlePlacesModel = null;
-                                            latitude = selectedPlace!.geometry!.location!.lat;
-                                            longitude = selectedPlace!.geometry!.location!.lng;
-                                            log(selectedPlace!.geometry!.toJson().toString());
-                                            setState(() {});
-                                            // places = [];
-                                            // setState(() {});
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                            child: Text(item.name ?? ""),
-                                          ));
-                                    },
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                          // RegisterTextFieldWidget(
-                          //   readOnly: true,
-                          //   controller: locationUsController,
-                          //   length: 10,
-                          //   validator: RequiredValidator(errorText: 'Please enter your address'.tr).call,
-                          //   keyboardType: TextInputType.number,
-                          //   // textInputAction: TextInputAction.next,
-                          //   hint: profileData.address == null ? "Address" : profileData.address.toString(),
-                          // ),
-                          // InkWell(
-                          //     onTap: () async {
-                          //       var place = await PlacesAutocomplete.show(
-                          //           hint: "Location".tr,
-                          //           context: context,
-                          //           apiKey: googleApikey,
-                          //           mode: Mode.overlay,
-                          //           types: [],
-                          //           strictbounds: false,
-                          //           onError: (err) {
-                          //             log("error.....   ${err.errorMessage}");
-                          //           });
-                          //       if (place != null) {
-                          //         setState(() {
-                          //           _address = (place.description ?? "Location").toString();
-                          //         });
-                          //         final plist = GoogleMapsPlaces(
-                          //           apiKey: googleApikey,
-                          //           apiHeaders: await const GoogleApiHeaders().getHeaders(),
-                          //         );
-                          //         print(plist);
-                          //         String placeid = place.placeId ?? "0";
-                          //         final detail = await plist.getDetailsByPlaceId(placeid);
-                          //         final geometry = detail.result.geometry!;
-                          //         final lat = geometry.location.lat;
-                          //         final lang = geometry.location.lng;
-                          //         setState(() {
-                          //           _address = (place.description ?? "Location").toString();
-                          //           latitude = lat;
-                          //           longitude = lang;
-                          //         });
-                          //       }
-                          //     },
-                          //     child: Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: [
-                          //         Container(
-                          //             height: 55,
-                          //             decoration: BoxDecoration(
-                          //                 border: Border.all(
-                          //                     color: !checkValidation(showValidation1.value, _address == "")
-                          //                         ? Colors.grey.shade300
-                          //                         : Colors.red),
-                          //                 borderRadius: BorderRadius.circular(5.0),
-                          //                 color: Colors.white),
-                          //             // width: MediaQuery.of(context).size.width - 40,
-                          //             child: ListTile(
-                          //               leading: const Icon(Icons.location_on),
-                          //               title: Text(
-                          //                 _address ?? "Location".toString(),
-                          //                 style: TextStyle(fontSize: AddSize.font14),
-                          //               ),
-                          //               trailing: const Icon(Icons.search),
-                          //               dense: true,
-                          //             )),
-                          //         checkValidation(showValidation1.value, _address == "")
-                          //             ? Padding(
-                          //                 padding: EdgeInsets.only(top: AddSize.size5),
-                          //                 child: Text(
-                          //                   "Location is required".tr,
-                          //                   style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
-                          //                 ),
-                          //               )
-                          //             : const SizedBox()
-                          //       ],
-                          //     )),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "About Us".tr,
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          RegisterTextFieldWidget(
-                            controller: aboutUsController,
-                            minLines: 5,
-                            maxLines: 5,
-                            // validator: MultiValidator([
-                            //   RequiredValidator(errorText: 'Please enter about yourself'.tr),
-                            // ]).call,
-                            keyboardType: TextInputType.text,
-                            hint: 'About Us',
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          // if (!kIsWeb)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Upload Restaurant Images or Videos".tr,
-                                style:
-                                    GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const ProductGalleryImages(),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Upload Restaurant Menu Card".tr,
-                                style:
-                                    GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const ProductMenuImages(),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          ),
-                          CommonButtonBlue(
-                            onPressed: () {
-                              if (_formKeySignup.currentState!.validate() && _searchController.text != "") {
-                                updateProfileToFirestore();
-                              } else {
-                                showValidation1.value = true;
-                                setState(() {});
-                              }
-                            },
-                            title: 'Save'.tr,
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ).appPaddingForScreen,
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          restaurantController.text.toString(),
+                          style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          emailController.text.toString(),
+                          style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Restaurant Name'.tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            RegisterTextFieldWidget(
+                              controller: restaurantController,
+                              validator: RequiredValidator(errorText: 'Please enter your Restaurant Name'.tr).call,
+                              hint: profileData.restaurantName == null
+                                  ? "restaurant name".tr
+                                  : profileData.restaurantName.toString(),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Category".tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            if (categoryList != null)
+                              RegisterTextFieldWidget(
+                                readOnly: true,
+                                controller: categoryController,
+                                // length: 10,
+                                // validator: MultiValidator([
+                                //   RequiredValidator(errorText: 'Please enter your category'.tr),
+                                // ]).call,
+                                keyboardType: TextInputType.emailAddress,
+                                hint: 'Select category'.tr,
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      content: SizedBox(
+                                        height: 400,
+                                        width: double.maxFinite,
+                                        child: ListView.builder(
+                                          physics: const AlwaysScrollableScrollPhysics(),
+                                          itemCount: categoryList!.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            return InkWell(
+                                                onTap: () {
+                                                  categoryController.text = categoryList![index].name;
+                                                  Get.back();
+                                                  setState(() {});
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text(categoryList![index].name),
+                                                ));
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            else
+                              Center(
+                                child: Text("No Category Available".tr),
+                              ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Email".tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            RegisterTextFieldWidget(
+                              readOnly: true,
+                              controller: emailController,
+                              validator: MultiValidator([
+                                RequiredValidator(errorText: 'Please enter your email'.tr),
+                                EmailValidator(errorText: 'Enter a valid email address'.tr),
+                              ]).call,
+                              keyboardType: TextInputType.emailAddress,
+                              // textInputAction: TextInputAction.next,
+                              hint: profileData.email == null ? "email" : profileData.email.toString(),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Mobile Number".tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            IntlPhoneField(
+                              key: ValueKey(kk),
+                              cursorColor: Colors.black,
+                              dropdownIcon: const Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: Colors.black,
+                              ),
+                              validator: MultiValidator([
+                                RequiredValidator(errorText: 'Please enter your phone number'.tr),
+                              ]).call,
+                              dropdownTextStyle: const TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
+                              flagsButtonPadding: const EdgeInsets.all(8),
+                              dropdownIconPosition: IconPosition.trailing,
+                              controller: mobileController,
+                              decoration: InputDecoration(
+                                  hintStyle: const TextStyle(
+                                    color: Color(0xFF384953),
+                                    fontSize: 14,
+                                    // fontFamily: 'poppins',
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  hintText: 'Phone Number'.tr,
+                                  // labelStyle: TextStyle(color: Colors.black),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
+                              initialCountryCode: country,
+                              keyboardType: TextInputType.number,
+                              onCountryChanged: (phone) {
+                                setState(() {
+                                  code = "+${phone.dialCode}";
+                                  country = phone.code;
+                                  log(phone.code.toString());
+                                  log(phone.dialCode.toString());
+                                });
+                              },
+                            ),
+                            // RegisterTextFieldWidget(
+                            //   // readOnly: true,
+                            //   controller: mobileController,
+                            //   length: 10,
+                            //   // validator: RequiredValidator(errorText: 'Please enter your Mobile Number'.tr).call,
+                            //   keyboardType: TextInputType.number,
+                            //   // textInputAction: TextInputAction.next,
+                            //   hint: profileData.mobileNumber == null ? "mobile number" : profileData.mobileNumber.toString(),
+                            // ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Address".tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+
+                            RegisterTextFieldWidget(
+                              controller: _searchController,
+                              validator: MultiValidator([
+                                RequiredValidator(errorText: 'Please enter your location'.tr),
+                              ]).call,
+                              keyboardType: TextInputType.emailAddress,
+                              hint: 'Search your location',
+                              onChanged: (value) {
+                                makeDelay(delay: () {
+                                  _searchPlaces(value);
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            googlePlacesModel != null
+                                ? Container(
+                                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                                    child: ListView.builder(
+                                      physics: const AlwaysScrollableScrollPhysics(),
+                                      itemCount: googlePlacesModel!.places!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        final item = googlePlacesModel!.places![index];
+                                        return InkWell(
+                                            onTap: () {
+                                              _searchController.text = item.name ?? "";
+                                              selectedPlace = item;
+                                              googlePlacesModel = null;
+                                              latitude = selectedPlace!.geometry!.location!.lat;
+                                              longitude = selectedPlace!.geometry!.location!.lng;
+                                              log(selectedPlace!.geometry!.toJson().toString());
+                                              setState(() {});
+                                              // places = [];
+                                              // setState(() {});
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                              child: Text(item.name ?? ""),
+                                            ));
+                                      },
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                            // RegisterTextFieldWidget(
+                            //   readOnly: true,
+                            //   controller: locationUsController,
+                            //   length: 10,
+                            //   validator: RequiredValidator(errorText: 'Please enter your address'.tr).call,
+                            //   keyboardType: TextInputType.number,
+                            //   // textInputAction: TextInputAction.next,
+                            //   hint: profileData.address == null ? "Address" : profileData.address.toString(),
+                            // ),
+                            // InkWell(
+                            //     onTap: () async {
+                            //       var place = await PlacesAutocomplete.show(
+                            //           hint: "Location".tr,
+                            //           context: context,
+                            //           apiKey: googleApikey,
+                            //           mode: Mode.overlay,
+                            //           types: [],
+                            //           strictbounds: false,
+                            //           onError: (err) {
+                            //             log("error.....   ${err.errorMessage}");
+                            //           });
+                            //       if (place != null) {
+                            //         setState(() {
+                            //           _address = (place.description ?? "Location").toString();
+                            //         });
+                            //         final plist = GoogleMapsPlaces(
+                            //           apiKey: googleApikey,
+                            //           apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                            //         );
+                            //         print(plist);
+                            //         String placeid = place.placeId ?? "0";
+                            //         final detail = await plist.getDetailsByPlaceId(placeid);
+                            //         final geometry = detail.result.geometry!;
+                            //         final lat = geometry.location.lat;
+                            //         final lang = geometry.location.lng;
+                            //         setState(() {
+                            //           _address = (place.description ?? "Location").toString();
+                            //           latitude = lat;
+                            //           longitude = lang;
+                            //         });
+                            //       }
+                            //     },
+                            //     child: Column(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Container(
+                            //             height: 55,
+                            //             decoration: BoxDecoration(
+                            //                 border: Border.all(
+                            //                     color: !checkValidation(showValidation1.value, _address == "")
+                            //                         ? Colors.grey.shade300
+                            //                         : Colors.red),
+                            //                 borderRadius: BorderRadius.circular(5.0),
+                            //                 color: Colors.white),
+                            //             // width: MediaQuery.of(context).size.width - 40,
+                            //             child: ListTile(
+                            //               leading: const Icon(Icons.location_on),
+                            //               title: Text(
+                            //                 _address ?? "Location".toString(),
+                            //                 style: TextStyle(fontSize: AddSize.font14),
+                            //               ),
+                            //               trailing: const Icon(Icons.search),
+                            //               dense: true,
+                            //             )),
+                            //         checkValidation(showValidation1.value, _address == "")
+                            //             ? Padding(
+                            //                 padding: EdgeInsets.only(top: AddSize.size5),
+                            //                 child: Text(
+                            //                   "Location is required".tr,
+                            //                   style: TextStyle(color: Colors.red.shade700, fontSize: AddSize.font12),
+                            //                 ),
+                            //               )
+                            //             : const SizedBox()
+                            //       ],
+                            //     )),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "About Us".tr,
+                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            RegisterTextFieldWidget(
+                              controller: aboutUsController,
+                              minLines: 5,
+                              maxLines: 5,
+                              // validator: MultiValidator([
+                              //   RequiredValidator(errorText: 'Please enter about yourself'.tr),
+                              // ]).call,
+                              keyboardType: TextInputType.text,
+                              hint: 'About Us',
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            // if (!kIsWeb)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Upload Restaurant Images or Videos".tr,
+                                  style: GoogleFonts.poppins(
+                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const ProductGalleryImages(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "Upload Restaurant Menu Card".tr,
+                                  style: GoogleFonts.poppins(
+                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const ProductMenuImages(),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                            CommonButtonBlue(
+                              onPressed: () {
+                                if (_formKeySignup.currentState!.validate() && _searchController.text != "") {
+                                  updateProfileToFirestore();
+                                } else {
+                                  showValidation1.value = true;
+                                  setState(() {});
+                                }
+                              },
+                              title: 'Save'.tr,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ).appPaddingForScreen,
+          ),
         ),
       ),
     );
