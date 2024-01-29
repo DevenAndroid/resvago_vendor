@@ -21,6 +21,7 @@ import 'package:resvago_vendor/screen/verify_otp_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/apptheme.dart';
 import 'package:resvago_vendor/widget/custom_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Firebase_service/firebase_service.dart';
 import '../controllers/Register_controller.dart';
 import '../helper.dart';
@@ -199,12 +200,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {});
     });
   }
+  String? appLanguage = "English";
+  getLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    appLanguage = sharedPreferences.getString("app_language");
+    print("hfgdhfgh"+appLanguage.toString());
+    setState(() {
+
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getVendorCategories();
+      getLanguage();
     });
   }
 
@@ -212,9 +223,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   GooglePlacesModel? googlePlacesModel;
   Places? selectedPlace;
 
-  Future<void> _searchPlaces(String query) async {
+  Future<void> _searchPlaces(String query,String language) async {
     const cloudFunctionUrl = 'https://us-central1-resvago-ire.cloudfunctions.net/searchPlaces';
-    FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?query=$query')).call().then((value) {
+    FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?input=$query&language=$language')).call().then((value) {
       List<Places> places = [];
       if (value.data != null && value.data['places'] != null) {
         List<dynamic> data = List.from(value.data['places']);
@@ -349,7 +360,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hint: 'Search your location',
                         onChanged: (value) {
                           makeDelay(delay: () {
-                            _searchPlaces(value);
+                            _searchPlaces(value,appLanguage == "French" ? "fr" : appLanguage == "Spanish"?"es": appLanguage == "Arabic"?"ar":"en");
                           });
                         },
                       ),
@@ -367,7 +378,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   final item = googlePlacesModel!.places![index];
                                   return InkWell(
                                       onTap: () {
-                                        _searchController.text = item.name ?? "";
+                                        _searchController.text = item.formattedAddress ?? "";
                                         selectedPlace = item;
                                         googlePlacesModel = null;
                                         setState(() {});
@@ -376,7 +387,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                        child: Text(item.name ?? ""),
+                                        child: Text(item.formattedAddress ?? ""),
                                       ));
                                 },
                               ),

@@ -510,7 +510,7 @@ class LocaleString extends Translations {
           "Already Have an Account?": "Déjà un Compte ?",
           'Change Language': 'Changer de langue',
           'English': 'anglaise',
-          'Restaurant Name': '',
+          'Restaurant Name': 'Nom du restaurant',
           'You first': 'Toi en premier',
           'We don’t charge you order fees. We don’t spy on you. We just help you enjoy your meals':
               'Nous ne vous facturons pas de frais de commande. Nous ne vous espionnons pas. Nous vous aidons simplement à profiter de vos repas',

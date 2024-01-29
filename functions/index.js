@@ -8,15 +8,18 @@ exports.searchPlaces = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', '*');
 
-  const apiKey = 'AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU';
-  const { query } = req.query;
+
+  const apiKey = 'AIzaSyAP9njE_z7lH2tii68WLoQGju0DF8KryXA';
+  const searchQuery = req.query.input || '';
+  const languageCode = req.query.language || 'en';
 
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${apiKey}`
+      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchQuery}&key=${apiKey}&language=${languageCode}`
     );
 
     const places = response.data.results;
+
     res.status(200).json({ data: { places } });
   } catch (error) {
     functions.logger.error('Error:', error.message);
