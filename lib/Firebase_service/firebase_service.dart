@@ -39,6 +39,7 @@ class FirebaseService {
     dynamic menuSelection,
     dynamic twoStepVerification,
     dynamic fcm,
+    bool? verified
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('vendor_users');
@@ -66,7 +67,8 @@ class FirebaseService {
         "time": DateTime.now(),
         "userID": mobileNumber,
         "deactivate": false,
-        "fcm": fcm
+        "fcm": fcm,
+        "verified": false,
       });
     } catch (e) {
       throw Exception(e);

@@ -17,6 +17,7 @@ import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_vendor/controllers/login_controller.dart';
 import 'package:resvago_vendor/routers/routers.dart';
+import 'package:resvago_vendor/screen/verify_otp_screen.dart';
 import 'package:resvago_vendor/utils/helper.dart';
 import 'package:resvago_vendor/widget/appassets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool passwordSecure = false;
   String otp = '';
+
   void generateOTP() {
     int otpLength = 6;
     Random random = Random();
@@ -76,9 +78,68 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      print("gfdgdgh${result.docs.first}");
+      if (kDebugMode) {
+        print("${result.docs.first}");
+      }
       Map kk = result.docs.first.data() as Map;
-      if (kk["deactivate"] == false) {
+      if (kk["verified"] == false) {
+        try {
+          await FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          )
+              .then((value) {
+            Helper.hideLoader(loader);
+            FirebaseFirestore.instance.collection("send_mail").add({
+              "to": emailController.text.trim(),
+              "message": {
+                "subject": "This is a otp email",
+                "html": "Your otp is $otp",
+                "text": "asdfgwefddfgwefwn",
+              }
+            }).then((value) {
+              if (kDebugMode) {
+                print(otp);
+              }
+              Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp, pass: passwordController.text));
+              if (!kIsWeb) {
+                Fluttertoast.showToast(
+                    msg: 'Your account is not verify, Please verify it, Otp email sent to ${emailController.text.trim()}');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Your account is not verify, Please verify it, Otp email sent to ${emailController.text.trim()}"),
+                ));
+              }
+            });
+          });
+        } catch (e) {
+          Helper.hideLoader(loader);
+          if (kDebugMode) {
+            print(e.toString());
+          }
+          if (!kIsWeb) {
+            if (e.toString() ==
+                "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              Fluttertoast.showToast(msg: "Credential is incorrect");
+            } else {
+              Fluttertoast.showToast(msg: e.toString());
+            }
+          } else {
+            if (e.toString() ==
+                "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Credential is incorrect"),
+              ));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(e.toString()),
+              ));
+            }
+          }
+        }
+      }
+      else if (kk["deactivate"] == false) {
         try {
           await FirebaseAuth.instance
               .signInWithEmailAndPassword(
@@ -131,7 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
           return;
         } catch (e) {
           Helper.hideLoader(loader);
-          print(e.toString());
+          if (kDebugMode) {
+            print(e.toString());
+          }
           if (!kIsWeb) {
             if (e.toString() ==
                 "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
@@ -152,7 +215,8 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           }
         }
-      } else {
+      }
+      else {
         Helper.hideLoader(loader);
         if (!kIsWeb) {
           Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
@@ -616,14 +680,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         GestureDetector(
-                          child: const Icon(Icons.clear_rounded,color: Colors.black,),
-                          onTap: (){
-                          Get.back();
-                          Get.back();
-                          Get.back();
-                          Get.back();
-                          prefs.setBool(keyIsFirstLoaded, false);
-                        },)
+                          child: const Icon(
+                            Icons.clear_rounded,
+                            color: Colors.black,
+                          ),
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                        )
                       ],
                     ),
                     RadioListTile(

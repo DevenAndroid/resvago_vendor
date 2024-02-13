@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
     final QuerySnapshot result1 =
-    await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
+        await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result1.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already used in customer please use another account');
       return;
@@ -173,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 content: Text("Otp email sent to ${emailController.text.trim()}"),
               ));
             }
-            Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp,pass:passwordController.text));
+            Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp, pass: passwordController.text));
           });
         }).catchError((e) async {
           showToast(e);
@@ -200,14 +200,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {});
     });
   }
+
   String? appLanguage = "English";
   getLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     appLanguage = sharedPreferences.getString("app_language");
-    print("hfgdhfgh"+appLanguage.toString());
-    setState(() {
-
-    });
+    print("hfgdhfgh" + appLanguage.toString());
+    setState(() {});
   }
 
   @override
@@ -223,9 +222,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   GooglePlacesModel? googlePlacesModel;
   Places? selectedPlace;
 
-  Future<void> _searchPlaces(String query,String language) async {
+  Future<void> _searchPlaces(String query, String language) async {
     const cloudFunctionUrl = 'https://us-central1-resvago-ire.cloudfunctions.net/searchPlaces';
-    FirebaseFunctions.instance.httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?input=$query&language=$language')).call().then((value) {
+    FirebaseFunctions.instance
+        .httpsCallableFromUri(Uri.parse('$cloudFunctionUrl?input=$query&language=$language'))
+        .call()
+        .then((value) {
       List<Places> places = [];
       if (value.data != null && value.data['places'] != null) {
         List<dynamic> data = List.from(value.data['places']);
@@ -360,7 +362,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hint: 'Search your location',
                         onChanged: (value) {
                           makeDelay(delay: () {
-                            _searchPlaces(value,appLanguage == "French" ? "fr" : appLanguage == "Spanish"?"es": appLanguage == "Arabic"?"ar":"en");
+                            _searchPlaces(
+                                value,
+                                appLanguage == "French"
+                                    ? "fr"
+                                    : appLanguage == "Spanish"
+                                        ? "es"
+                                        : appLanguage == "Arabic"
+                                            ? "ar"
+                                            : "en");
                           });
                         },
                       ),
@@ -809,7 +819,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               title: Text('Terms And Conditions'.tr),
                                               content: Text(
                                                   'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
-                                                  'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'.tr),
+                                                          'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'
+                                                      .tr),
                                               actions: const <Widget>[],
                                             );
                                           },
@@ -849,15 +860,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "Already Have an Account?".tr,
                             style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
                           ),
-                          const SizedBox(width: 5,),
+                          const SizedBox(
+                            width: 5,
+                          ),
                           InkWell(
                             onTap: () {
                               Get.back();
                             },
                             child: Text(
                               'Login'.tr,
-                              style:
-                                  GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w600, fontSize: 15),
+                              style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                           )
                         ],
@@ -872,8 +884,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
-
 
   void showActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(

@@ -28,7 +28,6 @@ class OtpVerifyScreen extends StatefulWidget {
 }
 
 class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool showOtpField = false;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
@@ -54,7 +53,6 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -135,7 +133,11 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                           email: widget.email,
                                                           password: widget.pass,
                                                         )
-                                                            .then((value) {
+                                                            .then((value) async {
+                                                          await FirebaseFirestore.instance
+                                                              .collection("vendor_users")
+                                                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                                                              .update({"verified": true});
                                                           FirebaseFirestore.instance.collection("send_mail").add({
                                                             "to": widget.email,
                                                             "message": {
@@ -210,7 +212,11 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                           email: widget.email,
                                           password: widget.pass,
                                         )
-                                            .then((value) {
+                                            .then((value) async {
+                                          await FirebaseFirestore.instance
+                                              .collection("vendor_users")
+                                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                                              .update({"verified": true});
                                           FirebaseFirestore.instance.collection("send_mail").add({
                                             "to": widget.email,
                                             "message": {
