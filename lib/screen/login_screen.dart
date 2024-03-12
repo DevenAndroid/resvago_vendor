@@ -634,7 +634,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 )).appPaddingForScreen));
   }
-
   updateLanguage(String gg) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("app_language", gg);
@@ -797,4 +796,5 @@ class _LoginScreenState extends State<LoginScreen> {
           });
     }
   }
+
 }

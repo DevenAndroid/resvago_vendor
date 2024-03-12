@@ -97,8 +97,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Email already exits');
-      return;
+      Map kk = result.docs.first.data() as Map;
+      if (kk["verified"] == false){
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        ).then((value){
+          FirebaseFirestore.instance
+              .collection("vendor_users")
+              .doc(kk["docid"])
+              .delete().then((value){
+            FirebaseAuth _auth = FirebaseAuth.instance;
+            User? user = _auth.currentUser;
+            user!.delete().then((value){
+              addUserToFirestore();
+            });
+          });
+        });
+        return;
+      }
+      else{
+        Fluttertoast.showToast(msg: 'Email already exits');
+        return;
+      }
     }
     final QuerySnapshot result1 =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
