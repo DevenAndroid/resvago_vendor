@@ -48,7 +48,7 @@ class FirebaseService {
         "restaurantName": restaurantName,
         "category": category,
         "email": email,
-        "docid": docid,
+        "docid": FirebaseAuth.instance.currentUser!.uid,
         "mobileNumber": mobileNumber,
         "address": address,
         "latitude": latitude,
